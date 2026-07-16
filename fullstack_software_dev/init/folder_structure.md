@@ -16,7 +16,11 @@ This document defines the unified directory layout scaffolded, mapped, and enfor
 │   │   ├── sidecars/            # Co-pilot validation subagents (empty by default)
 │   │   └── plans/               # Blueprint planning blueprints & status tracking
 │   │       ├── PLAN_STATUS.md   # Checkbox tracker of planning phase
-│   │       └── phase-*.md       # Phase blueprints (1 to 5)
+│   │       ├── phase-1-summary.md # Phase 1: High-level summary & folder map
+│   │       ├── phase-2-layout.md # Phase 2: Design system & styling laws
+│   │       ├── phase-3-engine.md # Phase 3: Engine logic & mappers (DTOs)
+│   │       ├── phase-4-verification.md # Phase 4: Test specs & assertions
+│   │       └── phase-5-operation.md # Phase 5: Dockerfiles, compose, CI/CD
 │   │
 │   ├── .github/ (or .gitlab/)   # Platform CI/CD (Integration/E2E pipelines)
 │   │   └── workflows/
