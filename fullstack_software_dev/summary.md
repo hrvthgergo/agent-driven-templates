@@ -6,15 +6,18 @@ This document acts as the central summary and entry point for the Guards Framewo
 
 ## 1. Project Goal
 
-The primary objective is to define a standardized framework of **Guards** (Rules, Workflows, Skills, Hooks, and Sidecars) that guide developers and AI agents through a structured, safe, and token-optimized development lifecycle. It guarantees that agents always plan before implementing, verify before committing, and maintain a decoupled, flexible codebase layout.
+The primary objective is to define a standardized framework of **Guards** (Rules, Workflows, Skills, Hooks, and Sidecars) that guide developers and AI agents through a structured, safe, and token-optimized development lifecycle. It guarantees that agents always plan before implementing, verify before committing, and maintain a decoupled, flexible codebase layout. 
+
+Importantly, this framework is designed to support the entire project lifecycle—from greenfield setup to brownfield restructuring, and the post-release evolutionary iteration of live codebases operating under a hybrid, symbolic-link multi-repository structure.
 
 ---
 
 ## 2. General-Purpose Components
 
-The framework utilizes shared components that operate across all stages of the lifecycle:
+The framework utilizes shared components and architectural blueprints that operate across all stages of the lifecycle:
 
 - **[Interactive Q&A Engine (Grill Engine)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md)**: A stateful, resume-ready interview module used to gather requirements and resolve architecture ambiguities before generating plans or code.
+- **[Multi-Repository Architecture Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md)**: Specifications mapping out directory separation, symbolic link mapping, and config dependency policies (Rule of Dependency) to isolate UI and Engine components.
 
 ---
 

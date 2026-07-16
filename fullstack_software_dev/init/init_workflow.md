@@ -74,7 +74,7 @@ graph TD
 ### Connected Descriptions of the Step-by-Step Design:
 
 *   **Step 1: Check Environment (Node S1)**:
-    Verifies that the software environment is valid. The agent runs `docker info` to check Docker installation status and permission boundaries.
+    Verifies that the software environment is valid. The agent runs `docker info` to check Docker installation status and permission boundaries, and verifies the local workspace integration (checks that `src/layout` and `src/engine` are valid symbolic links pointing to local repository directories).
 *   **Step 2: Scan Workspace (Node S2)**:
     Scans the repository structure at a high level using workspace search tools to determine if the project is Greenfield (new/empty) or Brownfield (existing codebase).
 *   **Step 3: Optional Restructuring (Nodes S3, S3A, S3B, S3C)**:
@@ -83,11 +83,11 @@ graph TD
     *   **Consent (Node S3B)**: Stalls execution until the developer explicitly approves the proposal.
     *   **Move (Node S3C)**: Executes file movements and updates import statements.
 *   **Step 4: Q&A Grill Gate (Node S4)**:
-    Runs the interactive interview loop to gather core project scope, tech stack, and remote source settings.
+    Runs the interactive interview loop to gather core project scope, tech stack, and remote source settings. For multi-repo setups, it asks the user to confirm the local paths of `codebase-layout` and `codebase-engine` to map the symlinks.
     *   *Reference (Engine)*: Refer to [grill_engine.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md) for detail on Grill behaviors.
     *   *Reference (Questions)*: Refer to [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md) for the exact questions and auto-detection rules.
 *   **Step 5: Scaffolding Workspace (Node S5)**:
-    Scaffolds the physical directories and deploys the essential guards framework files. Refer to the [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/folder_structure.md) for the detailed scaffolding outline.
+    Scaffolds the physical directories and deploys the essential guards framework files. It also maps the symlinks for layout and engine workspaces and scaffolds the central secrets configurations skeleton in `src/config/` (or `.env` file). Refer to the [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/folder_structure.md) for the detailed scaffolding outline.
 *   **Step 6: Git Hook Registration (Node S6)**:
     Registers Git origin (prompting for remote setups like GitHub, GitLab, or Bitbucket) and installs the pre-commit hook pointing to `pre-commit-plan-validator.sh` to enforce phase validation on commits.
 

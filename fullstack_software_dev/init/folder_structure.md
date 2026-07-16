@@ -29,9 +29,9 @@ This document defines the standard folder layout scaffolded and enforced by the 
 │   └── prod.Dockerfile        # Minimal production release image
 │
 ├── src/ (or app/)              # Source Code (The Software Environment)
-│   ├── layout/                 # UI / Views / Layout layer (separated from engine)
-│   ├── engine/                 # Core business logic / background services
-│   └── config/                 # Application configuration & variables
+│   ├── layout/                 # [SYMLINK] Points to codebase-layout (UI code & local config)
+│   ├── engine/                 # [SYMLINK] Points to codebase-engine (Backend logic & local config)
+│   └── config/                 # Central environment & secrets config (orchestration layer)
 │
 ├── tests/                      # Automated Verification Layer
 │   ├── unit/                  # Isolated module tests
