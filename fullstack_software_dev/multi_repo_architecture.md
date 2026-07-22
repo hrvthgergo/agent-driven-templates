@@ -9,14 +9,12 @@ This document summarizes our transition to a hybrid multi-repo workspace structu
 To prevent the master project workspace from becoming a heavy, congested monorepo, the raw codebase is split into **three completely separate Git repositories**:
 
 *   **Main Orchestrator Repo (`antigravity-workspace`):** Handles agent control (`.agents/`), documentation (`docs/`), deployment pipelines (`docker/`, `.github/`), and orchestration profiles.
-*   **Layout Repo (`codebase-layout`):** A standalone repository dedicated entirely to frontend code, UI views, and styling layers.
-*   **Engine Repo (`codebase-engine`):** A standalone repository dedicated entirely to backend service logic, database integrations, and core computation.
+*   **Layer Skeletons (`codebase-<layer_name>`):** Standalone repositories dedicated entirely to specific architectural layers (e.g., `codebase-layout` for UI/Views, `codebase-engine` for backend logic/APIs).
 
 ### Local Development Integration (Symlinks)
-On local development environments (both macOS and Windows), symbolic links are placed inside the main workspace to map the separate repositories seamlessly into a single visual workspace. This allows agents to read and modify codebase files natively:
+On local development environments (both macOS and Windows), symbolic links are placed inside the main workspace `src/` directory to map the active layer repositories into a single visual workspace (e.g., `src/layout` $\rightarrow$ `codebase-layout`, `src/engine` $\rightarrow$ `codebase-engine`). 
 
-*   `src/layout` ---> Symbolic link pointing to external `codebase-layout` directory.
-*   `src/engine` ---> Symbolic link pointing to external `codebase-engine` directory.
+*Note: Projects can initially focus on a single layer (e.g. UI-only or Engine API-only), fullstack, or multi-layer. The initial layer scope and `codebase-*` skeleton count are defined during the `/init` Grill-me session, and can be expanded later via the dynamic layer expansion workflow.*
 
 ---
 
@@ -50,3 +48,49 @@ This structural segregation establishes an incredibly fast, dual-tier continuous
 
 *   **Isolated Verification (Micro-pipelines):** Commits to the standalone `layout` or `engine` repositories trigger isolated, fast-running workflows (linting, styling checks, and language-specific unit tests). Frontend updates do not run backend unit tests, saving execution time.
 *   **Integration Verification (Macro-pipelines):** Commits to the main `antigravity-workspace` repository run the heavier integration pipelines (e.g., pulling latest code, initializing database containers, and spinning up full system End-to-End (E2E) integration tests).
+
+---
+
+## 4. Docker Handling Strategy (The Hybrid Docker Model)
+
+Docker configurations follow **Option 3 (The Hybrid Docker Handling Strategy)** to balance standalone container production deployment with centralized local multi-service orchestration.
+
+### Target Docker Layout & Ownership
+
+```text
+antigravity-workspace/
+└── docker/
+    ├── dev.Dockerfile       # Agent sandbox environment
+    └── docker-compose.yml   # Local multi-service orchestrator (links sub-repos)
+
+codebase-layout/
+└── Dockerfile               # Standalone production build spec for UI/Frontend
+
+codebase-engine/
+└── Dockerfile               # Standalone production build spec for Engine/Backend
+```
+
+### Container Orchestration Rules
+*   **Production Autonomy:** `codebase-layout` and `codebase-engine` maintain standalone `Dockerfile` specs in their respective repository roots. This allows UI and backend services to be built, tagged, and deployed to production independently.
+*   **Local Multi-Service Orchestration:** `antigravity-workspace/docker/docker-compose.yml` acts as the orchestrator for local development and E2E testing. It links the sub-repos, injects central runtime secrets from `antigravity-workspace/src/config/`, and provisions shared networking and database containers.
+*   **Agent Execution Sandbox:** `antigravity-workspace/docker/dev.Dockerfile` provisions the sandboxed container environment for agent-driven execution and verification.
+
+---
+
+## 5. Dynamic Layer Expansion & Lifecycle Consistency
+
+A project may start as single-layer (e.g. backend API engine only under `codebase-engine`) and later evolve to require an additional software layer (e.g. adding a UI under `codebase-layout` or a background worker under `codebase-worker`). 
+
+The multi-repo and folder structure rules are enforced **consistently across the entire project lifecycle**:
+
+### Layer Expansion Workflow (`/plan --evolve` / `/init --add-layer <layer_name>`)
+1. **Target Sub-Repository Provisioning**:
+   - Creates the new standalone sub-repository `codebase-<new_layer>` following the exact generic skeleton (`src/`, `config/`, `tests/`, `.github/workflows/`, `Dockerfile`).
+2. **Orchestrator Symlink Registration**:
+   - Adds a symbolic link under `antigravity-workspace/src/<new_layer>` pointing to `../codebase-<new_layer>/src/`.
+3. **Configuration & Docker Injection**:
+   - Scaffolds local autonomous configurations in `codebase-<new_layer>/config/`.
+   - Injects runtime environment parameters into central `antigravity-workspace/src/config/`.
+   - Updates `antigravity-workspace/docker/docker-compose.yml` to include the new container service.
+4. **Blueprint Synchronization**:
+   - Updates `PLAN_STATUS.md` and generates a delta blueprint (`.agents/plans/feature-add-<new_layer>.md`) defining the integration boundaries, preserving system consistency.

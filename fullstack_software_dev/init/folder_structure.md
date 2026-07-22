@@ -1,6 +1,6 @@
 # Desired Project Folder Structure
 
-This document defines the unified directory layout scaffolded, mapped, and enforced by the `/init` workflow across the three separate repositories.
+This document defines the generic directory layout scaffolded, mapped, and enforced by the `/init` workflow across project repositories. The initial number and scope of `codebase-*` layers (e.g., single-layer UI/Engine only, or multi-layer fullstack) are dynamically configured during the `/init` Grill-me session, and can later be expanded at any point during the project lifecycle.
 
 ```
 [Local Workspace Root]
@@ -26,26 +26,32 @@ This document defines the unified directory layout scaffolded, mapped, and enfor
 │   │   └── workflows/
 │   │       └── ci.yml           # Automated E2E verification
 │   │
-│   ├── docker/                  # Docker Compose runtime configurations
-│   │   ├── dev.Dockerfile       # Agent container sandbox
-│   │   └── prod.Dockerfile      # Release container base
+│   ├── docker/                  # Local multi-service orchestrator & dev sandbox
+│   │   ├── dev.Dockerfile       # Agent sandbox environment
+│   │   └── docker-compose.yml   # Local multi-service orchestrator (links sub-repos)
 │   │
 │   ├── docs/                    # Global human-facing documentation
 │   │
-│   └── src/                     # Source Code Entry Points
-│       ├── layout/              # [SYMLINK] Points to ../codebase-layout/src/
-│       ├── engine/              # [SYMLINK] Points to ../codebase-engine/src/
+│   └── src/                     # Source Code Entry Points (Examples of symlink targets)
+│       ├── layout/              # [SYMLINK] Points to ../codebase-layout/src/ (Example UI layer)
+│       ├── engine/              # [SYMLINK] Points to ../codebase-engine/src/ (Example Engine layer)
 │       └── config/              # Central configuration (Secrets & environment envs)
 │
-├── codebase-layout/             # Repo 2: Standalone Layout UI Workspace
-│   ├── .github/ (or .gitlab/)   # UI-specific micro-pipelines (linting, tests)
-│   ├── config/                  # UI autonomous layout routing & themes
-│   ├── src/                     # Raw frontend code (HTML, views, layout assets)
-│   └── tests/                   # UI unit and visual styling tests
+├── codebase-<layer_a>/          # Generic Layer Skeleton A (e.g. codebase-layout for UI-only/fullstack)
+│   ├── .github/ (or .gitlab/)   # Layer micro-pipelines (linting, unit tests)
+│   ├── config/                  # Layer autonomous routing, themes, or DB settings
+│   ├── Dockerfile               # Standalone production build spec for Layer A
+│   ├── src/                     # Raw layer source code (views, services, APIs)
+│   └── tests/                   # Layer-specific unit and isolation tests
 │
-└── codebase-engine/             # Repo 3: Standalone Engine Backend Workspace
-    ├── .github/ (or .gitlab/)   # Engine-specific micro-pipelines (unit tests)
-    ├── config/                  # DB mappers & autonomous background settings
-    ├── src/                     # Core engine services (API routing, mappers)
-    └── tests/                   # Engine unit and data verification tests
+└── codebase-<layer_b>/          # Generic Layer Skeleton B (e.g. codebase-engine for fullstack/multi-layer)
+    ├── .github/ (or .gitlab/)   # Layer micro-pipelines (unit tests, build checks)
+    ├── config/                  # Layer autonomous background & service settings
+    ├── Dockerfile               # Standalone production build spec for Layer B
+    ├── src/                     # Core layer services (API routing, computational logic)
+    └── tests/                   # Layer-specific unit and integration tests
 ```
+
+*Note: Projects can initially be single-layer (e.g., developing only `codebase-layout` or `codebase-engine`), dual-layer (fullstack), or multi-layer. The `codebase-*` sub-repository layout is uniform across all layers, and the initial layer scope is confirmed in the `/init` Grill-me Q&A.*
+
+*Lifecycle Layer Expansion: If a project begins as single-layer (e.g., `codebase-engine`) and later requires an additional layer (e.g., adding `codebase-layout` or `codebase-worker`), the framework introduces the new layer skeleton under the same `codebase-<new_layer>` pattern, registers a new symlink under `src/<new_layer>`, updates `docker-compose.yml`, and preserves complete structural consistency across the repository lifecycle.*
