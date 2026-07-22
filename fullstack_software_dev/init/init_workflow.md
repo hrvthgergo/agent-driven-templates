@@ -95,6 +95,8 @@ The `/init` command is configured and run using the following operational rules 
 
 ### Parameters & Options
 - `/init`: Executes lightweight scan, runs Grill Q&A gate, scaffolds `.agents/` structures, and links existing source folders. Restructuring is strictly omitted.
+- `/init --release <version>`: Initializes a new release scope (e.g. `v1.0.0`), creates the Git branch `release/<version>`, and scaffolds a fresh `PROCESS_STATUS.md` document for managing the release lifecycle.
+- `/init --feature <feature_name>`: Initializes a parallel feature development scope based on existing sources, creates Git branch `feature/<feature_name>`, and scaffolds a feature-bound `PROCESS_STATUS.md`.
 - `/init --add-layer <layer_name>`: Introduces a new software layer sub-repository (`codebase-<layer_name>`) into an existing workspace, registering its symlink under `src/<layer_name>`, scaffolding its `Dockerfile`, and updating `docker-compose.yml`.
 - `/init --dry-run`: Scans the directory and prints proposed scaffolding files and Docker status without writing any changes to disk.
 - `/init --force`: Overwrites existing default rules and workflows in `.agents/rules/` and `.agents/workflows/`.
