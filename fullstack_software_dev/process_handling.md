@@ -31,21 +31,26 @@ When a project adopts the Guards framework, its entire development process is go
 
 ## Block 1: Workflow Execution Matrix
 
-This matrix tracks the top-level workflows and optional sub-processes. Sub-processes must remain concise and focused; no bloated or diffused states are allowed.
+This matrix tracks top-level workflows and focused sub-processes. The 5-Phase Planning Framework is integrated directly into the `/plan` workflow matrix, eliminating the need for a separate `PLAN_STATUS.md` file.
 
-| Workflow | Status | Sub-Processes / Key Focus | Last Updated |
+| Workflow / Sub-Process | Status | Focus / Artifact | Last Updated |
 | :--- | :--- | :--- | :--- |
 | **1. /init** | `[x] Done` | Environment checks, layer symlinks, Git branch creation | YYYY-MM-DD |
 | **2. /process-history** | `[-] Not In Scope` | Legacy code & docs analysis (Brownfield only) | YYYY-MM-DD |
-| **3. /plan** | `[>] In Progress` | 5-Phase Blueprinting (Phases 1-5) | YYYY-MM-DD |
+| **3. /plan** | `[>] In Progress` | 5-Phase Blueprinting Framework | YYYY-MM-DD |
+| ├── **3.1 Phase 1: Summary** | `[x] Done` | High-level summary & folder map (`phase-1-summary.md`) | YYYY-MM-DD |
+| ├── **3.2 Phase 2: Layout** | `[>] In Progress` | Design system & styling laws (`phase-2-layout.md`) | YYYY-MM-DD |
+| ├── **3.3 Phase 3: Engine** | `[ ] Not Started` | Core engine logic & DTO mappers (`phase-3-engine.md`) | YYYY-MM-DD |
+| ├── **3.4 Phase 4: Verify** | `[ ] Not Started` | Test specs & assertions (`phase-4-verification.md`) | YYYY-MM-DD |
+| └── **3.5 Phase 5: Operations** | `[ ] Not Started` | Dockerfiles, Compose & CI/CD (`phase-5-operation.md`) | YYYY-MM-DD |
 | **4. /implement** | `[ ] Not Started` | Code scaffolding & layout implementation | YYYY-MM-DD |
 | **5. /verify** | `[ ] Not Started` | Automated test suite execution & E2E checks | YYYY-MM-DD |
 | **6. /release** | `[ ] Not Started` | Docker builds, PR creation & deployment | YYYY-MM-DD |
 
 ### Status Key:
-- `[ ] Not Started`: Workflow has not been initiated.
-- `[>] In Progress`: Workflow is currently active.
-- `[x] Done`: Workflow has been successfully completed and verified.
+- `[ ] Not Started`: Workflow or sub-process has not been initiated.
+- `[>] In Progress`: Workflow or sub-process is currently active.
+- `[x] Done`: Workflow or sub-process has been successfully completed and verified.
 - `[-] Not In Scope`: Workflow is omitted for this feature/release scope.
 
 ---

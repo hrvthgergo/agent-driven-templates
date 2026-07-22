@@ -15,7 +15,7 @@ This document defines the generic directory layout scaffolded, mapped, and enfor
 │   │   ├── hooks/               # Safety script interceptors (empty by default)
 │   │   ├── sidecars/            # Co-pilot validation subagents (empty by default)
 │   │   └── plans/               # Blueprint planning blueprints & status tracking
-│   │       ├── PLAN_STATUS.md   # Checkbox tracker of planning phase
+│   │       ├── PROCESS_STATUS.md # Release-governed process & daily execution log (includes 5-phase plan status)
 │   │       ├── phase-1-summary.md # Phase 1: High-level summary & folder map
 │   │       ├── phase-2-layout.md # Phase 2: Design system & styling laws
 │   │       ├── phase-3-engine.md # Phase 3: Engine logic & mappers (DTOs)

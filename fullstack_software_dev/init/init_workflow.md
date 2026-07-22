@@ -65,9 +65,9 @@ The execution of the `/init` workflow follows this lightweight design:
 
 ```mermaid
 graph TD
-    S1[Step 1: Check Environment] --> S2[Step 2: Lightweight Layer Scan]
-    S2 --> S3[Step 3: Q&A Grill Gate]
-    S3 --> S4[Step 4: Scaffolding Workspace & Linking Folders]
+    S1[Step 1: Check Environment] --> S2[Step 2: Q&A Grill Gate]
+    S2 --> S3[Step 3: Lightweight Layer Scan & Linking]
+    S3 --> S4[Step 4: Scaffolding Workspace & PROCESS_STATUS.md]
     S4 --> S5[Step 5: Git Hook Registration]
     S5 --> S6[Step 6: Initialization Done]
 ```
@@ -76,14 +76,14 @@ graph TD
 
 *   **Step 1: Check Environment (Node S1)**:
     Verifies that the software environment is valid (`docker info`) and checks local workspace integration.
-*   **Step 2: Lightweight Layer Scan (Node S2)**:
-    Scans the repository at a surface level ONLY to identify existing high-level layer directories (e.g. `frontend/`, `backend/`, `api/`). **No deep code parsing or restructuring is permitted during `/init`**.
-*   **Step 3: Q&A Grill Gate (Node S3)**:
-    Runs the interactive interview loop to gather core project scope, tech stack, remote Git settings, and layer scope (single-layer vs fullstack vs multi-service), confirming the initial `codebase-<layer_name>` skeletons and existing folder links.
+*   **Step 2: Q&A Grill Gate (Node S2)**:
+    Runs the interactive interview loop *first* to gather core project scope, tech stack, remote Git settings, layer scope, and **discover whether existing source codebases or legacy documentation folders exist**.
     *   *Reference (Engine)*: Refer to [grill_engine.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md).
     *   *Reference (Questions)*: Refer to [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md).
-*   **Step 4: Scaffolding Workspace & Linking Folders (Node S4)**:
-    Scaffolds physical directories and deploys essential guards framework files. It registers `src/` symlinks pointing to existing source folders or `codebase-<layer_name>` skeletons, provisions `docker/dev.Dockerfile` and `docker/docker-compose.yml`, scaffolds standalone `Dockerfile` specs in defined sub-repositories, and links existing source folders into `phase-1-summary.md`.
+*   **Step 3: Lightweight Layer Scan & Linking (Node S3)**:
+    Guided by the user's answers from the Q&A session, the agent performs a surface-level scan to detect existing high-level layer directories (e.g. `frontend/`, `backend/`, `api/`) to confirm `codebase-*` layer skeletons and link existing source folders. **No deep code parsing or restructuring is permitted during `/init`**.
+*   **Step 4: Scaffolding Workspace & PROCESS_STATUS.md (Node S4)**:
+    Scaffolds physical directories and deploys essential guards framework files. **Crucially, it initializes the `PROCESS_STATUS.md` file** (Block 1: Workflow Execution Matrix; Block 2: Datestamped Daily History) bound to the active release or feature branch. It registers `src/` symlinks pointing to existing source folders or `codebase-<layer_name>` skeletons, provisions `docker/dev.Dockerfile` and `docker/docker-compose.yml`, scaffolds standalone `Dockerfile` specs in defined sub-repositories, and links existing source folders into `phase-1-summary.md`.
 *   **Step 5: Git Hook Registration (Node S5)**:
     Registers Git origin (prompting for GitHub/GitLab/Bitbucket) and installs `pre-commit-plan-validator.sh`.
 

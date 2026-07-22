@@ -33,7 +33,7 @@ graph TD
     Init --> CheckType{Project Type?}
     
     CheckType -->|Brownfield / Legacy Code| ProcHist["/process-history (Legacy Processing)<br/>• Deep Historical Code/Docs Scan<br/>• Draft restructure-proposal.md<br/>• Refactor & Fix Relative Imports"]
-    CheckType -->|Greenfield / New Feature| Plan["/plan (Interactive Planning)<br/>• Q&A Grill Gate (Max 2 questions/turn)<br/>• Generate Phase 1-5 Blueprints<br/>• Maintain PLAN_STATUS.md"]
+    CheckType -->|Greenfield / New Feature| Plan["/plan (Interactive Planning)<br/>• Q&A Grill Gate (Max 2 questions/turn)<br/>• Generate Phase 1-5 Blueprints<br/>• Update PROCESS_STATUS.md"]
     
     ProcHist --> Plan
     
@@ -67,7 +67,7 @@ graph TD
         *   [process_history_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/process_history_workflow.md) (Detailed specifications)
 3.  **Interactive Planning (/plan)**
     *   *Path*: `fullstack_software_dev/plan/`
-    *   *Purpose*: Leads the user through the creation of the 5-phase blueprint plans tracking status in `PLAN_STATUS.md`.
+    *   *Purpose*: Leads the user through the creation of the 5-phase blueprint plans tracking status in `PROCESS_STATUS.md`.
 4.  **Action Implementation (/implement)**
     *   *Path*: `fullstack_software_dev/implement/`
     *   *Purpose*: Scaffolds layout and logic components in increments after approval of a specific `implementation-map.md`.

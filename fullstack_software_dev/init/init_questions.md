@@ -38,15 +38,18 @@ This file defines the questions, auto-detection rules, and Q&A prompts used by t
 
 ---
 
-### Q2: Project Description & Core Goals
-*   **Goal**: Define the scope, purpose, and milestones for planning phase documentation.
+### Q2: Project Description, Goals, & Existing Assets Discovery
+*   **Goal**: Define the project scope, purpose, and discover whether existing legacy codebases or documentation folders are present.
 *   **Auto-Detection Scanning Rule**:
     *   Inspect `README.md` (extract lines under `# Project Name` or first paragraph).
     *   Inspect `package.json` (`description` key) or `pyproject.toml`/`setup.py`.
+    *   Inspect workspace root for legacy folders (`docs/`, `legacy/`, `old_src/`, `v1/`, etc.).
 *   **Reframed Grill Prompt** (If not detected or needs elaboration):
-    > **Could you provide a brief description (1-2 sentences) of the project's goal?**
-    > *Example: "A web app to manage shared household chores with automated email notifications."*
-*   **Resulting Action**: Writes this information to `.agents/plans/phase-1-summary.md` and initializes the vision document.
+    > **Could you provide a brief description of the project goal, and specify if there are existing source code or legacy documentation folders to link?**
+    > 1. Greenfield project (New codebase & fresh documentation)
+    > 2. Brownfield project with existing source code (Specify folder paths, e.g. `src/`, `backend/`)
+    > 3. Brownfield project with legacy documentation only (Specify doc paths, e.g. `docs/`)
+*   **Resulting Action**: Writes this information to `.agents/plans/phase-1-summary.md`, links existing legacy folders into the workspace's 'Folders' map for `/process-history`, and initializes the vision document.
 
 ---
 
