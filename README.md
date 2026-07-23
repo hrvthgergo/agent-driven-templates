@@ -1,31 +1,40 @@
-# agent-driven-templates
-collection of rules, skills and workflows for agent driven development
+# Agent-Driven Guards Framework
 
-# Antigravity 2.0 5-Phase Planning Framework
+A comprehensive framework of **Guards** (Rules, Workflows, Skills, Hooks, Sidecars, and Process Status specifications) to guide AI agents through a disciplined, safe, and token-optimized software planning and development lifecycle using Google Antigravity.
 
-This repository contains the global rules and automated workflows required to standardize and execute our **5-Phase Interactive Planning Assembly Line** within Google Antigravity 2.0,
+---
 
-## What is Included
-- **`@implementation-plan` Rule:** Enforces a rigid 5-Phase layout structure (Summary, Layout, Specs, Verification, Operations) across all new blueprints.
-- **`/plan` Workflow:** An automated, state-tracking playbook that builds the planning folders, scaffolds files, tracks progress via `PLAN_STATUS.md`, and guides you phase-by-phase.
+## Key Components
 
-## Quick Installation (macOS)
+All active specifications and operational playbooks are maintained under `fullstack_software_dev/`:
 
-To install this framework globally on your Mac so that **every new project** automatically inherits these features, open your terminal and run this single installer command block:
+- **[Summary & Operational Lifecycle](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/summary.md)**: Central entry point detailing the 6 development workflows and lifecycle Mermaid diagram.
+- **[Guard Process Handling Spec (`PROCESS_STATUS.md`)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md)**: Release and feature governance with a concise 2-block status matrix and daily execution history log.
+- **[Multi-Repo & Docker Strategy Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md)**: Option 3 Hybrid Docker containerization, symlink mapping, and dynamic layer expansion.
+- **[Initialization Workflow (/init)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md)**: Bootstrapping playbook, 3-block Q&A schema (`init_questions.md`), and directory layouts (`folder_structure.md`).
+- **[Legacy Code & Docs Processing (/process-history)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/process_history_workflow.md)**: Standalone workflow for deep historical code analysis, documentation review, and refactoring proposals.
+- **[Grill Engine Gate](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md)**: Reusable Q&A engine design rules and state file formats (`GRILL_STATUS.md`).
 
-```bash
-# 1. Clone the repository templates
-git clone [https://github.com/YOUR_GITHUB_USERNAME/antigravity-planning-template.git](https://github.com/YOUR_GITHUB_USERNAME/antigravity-planning-template.git) /tmp/ag-template
+---
 
-# 2. Ensure global configuration directories exist
-mkdir -p ~/.agents/rules ~/.agents/workflows
+## Directory Layout
 
-# 3. Copy files to your global environment
-cp /tmp/ag-template/rules/implementation-plan.md ~/.agents/rules/
-cp /tmp/ag-template/workflows/planning-line.md ~/.agents/workflows/
-
-# 4. Clean up temporary files
-rm -rf /tmp/ag-template
-
-echo "Installation complete! Open Antigravity 2.0 and type /plan to start."
+```text
+agent-driven-templates/
+├── README.md
+└── fullstack_software_dev/
+    ├── summary.md                     # Central entry point & workflow sitemap
+    ├── grill_engine.md                # Reusable Q&A Grill Engine specification
+    ├── multi_repo_architecture.md     # Multi-repo symlinks & Hybrid Docker strategy
+    ├── process_handling.md            # Guard Process Handling Spec (PROCESS_STATUS.md)
+    ├── init/
+    │   ├── init_workflow.md           # /init Bootstrapping workflow specification
+    │   ├── init_questions.md          # 3-Block Q&A Grill schema
+    │   └── folder_structure.md        # Standard repository folder layout
+    ├── process_history/
+    │   └── process_history_workflow.md# /process-history Brownfield workflow specification
+    ├── plan/                          # Interactive Planning workflow (Planned)
+    ├── implement/                     # Action Implementation workflow (Planned)
+    ├── verify/                        # Automated Verification workflow (Planned)
+    └── release/                       # Release & Operations workflow (Planned)
 ```
