@@ -77,7 +77,7 @@ graph TD
 *   **Step 1: Check Environment (Node S1)**:
     Verifies that the software environment is valid (`docker info`) and checks local workspace integration.
 *   **Step 2: Q&A Grill Gate (Node S2)**:
-    Runs the interactive interview loop *first* structured across three environment blocks (**Block A: Agentic Environment**, **Block B: Software Environment**, and **Block C: Folder Environment**) to gather core project scope, tech stack, remote Git settings, container sandbox options, layer scope, and discover existing source or legacy doc assets.
+    Runs the interactive interview loop *first* to discover dependencies for the three environments (**Agentic Environment**, **Software Environment**, and **Folder Environment**). Enforces **Baseline 1** (Option 3 Hybrid Docker) and **Baseline 2** (Standard Guards Folder Structure) without asking questions, and executes the strict **Q1 to Q10** question sequence neutrally (Scope Q1, System Folders Q2/Q2a/Q2b, Cloud Docs Q3, Additional Remotes Q4/Q4a, Git Provider Q5/Q5a, Architecture Pattern Q6, Layer Scope Q7, Software Stack Q8, Agent Guiders Q9, and Q10 Summary Verification & Reflection).
     *   *Reference (Engine)*: Refer to [grill_engine.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md).
     *   *Reference (Questions)*: Refer to [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md).
 *   **Step 3: Lightweight Layer Scan & Linking (Node S3)**:
