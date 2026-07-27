@@ -31,7 +31,9 @@ agent-driven-templates/
     │   ├── init_workflow.md           # /init Bootstrapping workflow specification
     │   ├── init_questions.md          # 3-Block Q&A Grill schema
     │   ├── folder_structure.md        # Standard repository folder layout
-    │   └── init_implementation_map.md # /init Guard creation roadmap & decision links
+    │   ├── init_implementation_map.md # /init Antigravity execution map & decision links
+    │   └── guards/
+    │       └── antigravity/           # Environment-specific Antigravity guards
     ├── process_history/
     │   └── process_history_workflow.md# /process-history Brownfield workflow specification
     ├── plan/                          # Interactive Planning workflow (Planned)

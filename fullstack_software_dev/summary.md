@@ -34,10 +34,10 @@ fullstack_software_dev/
 │   ├── init_workflow.md                # Detailed workflow specifications
 │   ├── init_questions.md               # Scan & Q&A schemas
 │   ├── folder_structure.md             # Repository directory layout spec
-│   ├── init_implementation_map.md      # Environment & time-bound execution map
-│   └── guards/                         # [Tier 3] Environment-Specific Guards
-│       ├── antigravity/                # Antigravity guards (rules, hooks, sidecars, skills)
-│       └── codex/                      # Codex / Claude Code / other env guards
+│   └── antigravity/                    # [Tier 3] Antigravity-specific resources & guards
+│       ├── init_implementation_map.md  # Antigravity execution map & decision links
+│       ├── init_tests.md               # Greenfield & brownfield verification test suite
+│       └── guards/                     # Antigravity native primitives (rules, skills, hooks)
 │
 ├── process_history/                    # [Tier 2] Legacy Processing Workflow Subfolder
 │   ├── process_history_workflow.md     # Detailed workflow specifications
@@ -129,7 +129,8 @@ graph TD
         *   [init_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md) (Detailed specifications)
         *   [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md) (Scans and Q&A schema)
         *   [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/folder_structure.md) (Desired repository directory layout)
-        *   [init_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_implementation_map.md) (Guard implementation roadmap & decision links)
+        *   [antigravity/init_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/antigravity/init_implementation_map.md) (Antigravity guard execution roadmap)
+        *   [antigravity/init_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/antigravity/init_tests.md) (Greenfield & brownfield verification test specification)
 2.  **[Legacy Code & Docs Processing (/process-history)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/process_history_workflow.md)**
     *   *Path*: `fullstack_software_dev/process_history/`
     *   *Purpose*: Handles deep historical code analysis, legacy documentation processing, refactoring proposals, and codebase restructuring for brownfield projects.
