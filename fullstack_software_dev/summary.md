@@ -4,15 +4,84 @@ This document acts as the central summary and entry point for the Guards Framewo
 
 ---
 
-## 1. Project Goal
+## 1. Project Goal & Core Philosophy
 
-The primary objective is to define a standardized framework of **Guards** (Rules, Workflows, Skills, Hooks, and Sidecars) that guide developers and AI agents through a structured, safe, and token-optimized development lifecycle. It guarantees that agents always plan before implementing, verify before committing, and maintain a decoupled, flexible codebase layout. 
+### Project Goal
+The primary objective is to define a standardized platform—the **Guards Framework**—that guides AI agents through structured, safe, and token-optimized development lifecycles using explicit **Guards**. It guarantees that agents always plan before implementing, verify before committing, and maintain a decoupled, flexible codebase layout across greenfield setup, brownfield restructuring, and post-release evolution.
 
-Importantly, this framework is designed to support the entire project lifecycle—from greenfield setup to brownfield restructuring, and the post-release evolutionary iteration of live codebases operating under a hybrid, symbolic-link multi-repository structure.
+### Core Philosophy: Universal Design vs. Environment Implementation
+The Guard Framework intentionally separates high-level design intent from runtime-specific implementations:
+- **Universal Design & Objectives**: The overall workflow steps, architectural principles, and guard goals remain identical regardless of the target platform.
+- **Environment-Specific Resources**: Different AI agent environments offer distinct native primitives to instruct and govern agentic workflows. For example, **Antigravity** provides native resources such as *rules, hooks, sidecars, skills, and workflows*. Environments like **Codex** or **Claude Code** rely on their own specific prompt formats, custom commands, or file structures.
+- **Portable Guard Concept**: While the concrete implementation of guards varies based on the target environment's capabilities, the underlying guard logic and workflow boundaries remain unified.
 
 ---
 
-## 2. General-Purpose Components
+## 2. Architectural Design & Project Structure
+
+The project directory structure is designed in a 3-tier layout to maintain separation between general design specifications and environment-specific implementations:
+
+### Directory Scaffold
+
+```text
+fullstack_software_dev/
+├── summary.md                          # Central Entry Point & Framework Summary
+├── grill_engine.md                     # [Tier 1] General Q&A Engine Spec
+├── multi_repo_architecture.md          # [Tier 1] Multi-Repo & Symlink Architecture Spec
+├── process_handling.md                 # [Tier 1] Process Guard & Matrix Spec
+│
+├── init/                               # [Tier 2] Initialization Workflow Subfolder
+│   ├── init_workflow.md                # Detailed workflow specifications
+│   ├── init_questions.md               # Scan & Q&A schemas
+│   ├── folder_structure.md             # Repository directory layout spec
+│   ├── init_implementation_map.md      # Environment & time-bound execution map
+│   └── guards/                         # [Tier 3] Environment-Specific Guards
+│       ├── antigravity/                # Antigravity guards (rules, hooks, sidecars, skills)
+│       └── codex/                      # Codex / Claude Code / other env guards
+│
+├── process_history/                    # [Tier 2] Legacy Processing Workflow Subfolder
+│   ├── process_history_workflow.md     # Detailed workflow specifications
+│   ├── process_history_implementation_map.md
+│   └── guards/                         # [Tier 3] Environment-Specific Guards
+│
+├── plan/                               # [Tier 2] Interactive Planning Subfolder
+│   ├── plan_workflow.md                # Detailed workflow specifications
+│   ├── plan_implementation_map.md
+│   └── guards/                         # [Tier 3] Environment-Specific Guards
+│
+├── implement/                          # [Tier 2] Action Implementation Subfolder
+│   ├── implement_workflow.md           # Detailed workflow specifications
+│   ├── implement_implementation_map.md
+│   └── guards/                         # [Tier 3] Environment-Specific Guards
+│
+├── verify/                             # [Tier 2] Automated Verification Subfolder
+│   ├── verify_workflow.md              # Detailed workflow specifications
+│   ├── verify_implementation_map.md
+│   └── guards/                         # [Tier 3] Environment-Specific Guards
+│
+└── release/                            # [Tier 2] Release & Operations Subfolder
+    ├── release_workflow.md             # Detailed workflow specifications
+    ├── release_implementation_map.md
+    └── guards/                         # [Tier 3] Environment-Specific Guards
+```
+
+### 3-Tier Structure Rationale
+
+1. **General Design Elements (Main Root Folder)**
+   - Located directly in `fullstack_software_dev/`.
+   - Defines overarching concepts, cross-cutting rules, and general-purpose specs (e.g., [Grill Engine](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md), [Multi-Repository Architecture Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md), and [Process Guard Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md)) applied across all workflow steps.
+
+2. **Step-Specific Workflow Subfolders & Implementation Maps**
+   - Subdirectories dedicated to each operational phase (e.g., `init/`, `process_history/`, `plan/`, `implement/`, `verify/`, `release/`).
+   - Contain detailed step specifications and environment/time-bound `*_implementation_map.md` files (e.g., `init_implementation_map.md`). These provide step-by-step execution roadmaps for implementing a specific workflow phase in a given environment at a specific point in time (e.g., an Antigravity-based implementation snapshot).
+
+3. **Environment-Specific Guard Folders (`guards/`)**
+   - Subdirectories located within each workflow step folder (e.g., `init/guards/`, `plan/guards/`).
+   - Contain the concrete guard implementations (e.g., specific rules, hooks, skill manifests, or prompt files) tailored for a target agent environment.
+
+---
+
+## 3. General-Purpose Components
 
 The framework utilizes shared components and architectural blueprints that operate across all stages of the lifecycle:
 
@@ -22,7 +91,7 @@ The framework utilizes shared components and architectural blueprints that opera
 
 ---
 
-## 3. Planned Development Workflows
+## 4. Planned Development Workflows
 
 The framework is organized into six development workflows, each with its dedicated subdirectory under `fullstack_software_dev/`. The following workflow diagram details the complete operational lifecycle from initialization to post-release evolution:
 
