@@ -21,7 +21,7 @@ To ensure the Guards Framework can be baselined and implemented consistently acr
     *   [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md): 3-block Q&A interview schema, baselines, auto-detection rules, and Q1–Q10 questions.
     *   [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/folder_structure.md): Standard workspace folder layout specifications.
 2.  **Environment-Specific Execution Guidelines**:
-    *   [implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/implementation_map.md): Specific execution guideline detailing how our agent implements these baselines within the **Google Antigravity** environment by scaffolding master guard files under `fullstack_software_dev/init/guards/`.
+    *   [init_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_implementation_map.md): Specific execution guideline detailing how our agent implements these baselines within the **Google Antigravity** environment by scaffolding master guard files under `fullstack_software_dev/init/guards/`.
 
 ### Simplicity & Separation of Concerns Rule
 For brownfield projects with existing source code and documentation, `/init` performs **only high-level layer identification** to create `codebase-*` skeletons and link existing source folders. **No code restructuring, deep historical analysis, or refactoring is required or allowed during `/init`**. All historical code analysis and legacy codebase restructuring are decoupled into the dedicated `/process-history` workflow.
