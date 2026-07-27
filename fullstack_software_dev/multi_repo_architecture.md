@@ -51,9 +51,9 @@ This structural segregation establishes an incredibly fast, dual-tier continuous
 
 ---
 
-## 4. Docker Handling Strategy (The Hybrid Docker Model)
+## 4. Docker Handling Strategy (The Hybrid Docker Strategy)
 
-Docker configurations follow **Option 3 (The Hybrid Docker Handling Strategy)** to balance standalone container production deployment with centralized local multi-service orchestration.
+Docker configurations follow **The Hybrid Docker Handling Strategy** to balance standalone container production deployment with centralized local multi-service orchestration.
 
 ### Target Docker Layout & Ownership
 
@@ -93,4 +93,4 @@ The multi-repo and folder structure rules are enforced **consistently across the
    - Injects runtime environment parameters into central `antigravity-workspace/src/config/`.
    - Updates `antigravity-workspace/docker/docker-compose.yml` to include the new container service.
 4. **Blueprint Synchronization**:
-   - Updates `PLAN_STATUS.md` and generates a delta blueprint (`.agents/plans/feature-add-<new_layer>.md`) defining the integration boundaries, preserving system consistency.
+   - Updates `PROCESS_STATUS.md` and generates a delta blueprint (`.agents/plans/feature-add-<new_layer>.md`) defining the integration boundaries, preserving system consistency.

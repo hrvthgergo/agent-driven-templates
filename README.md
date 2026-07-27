@@ -10,7 +10,7 @@ All active specifications and operational playbooks are maintained under `fullst
 
 - **[Summary & Operational Lifecycle](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/summary.md)**: Central entry point detailing the 6 development workflows and lifecycle Mermaid diagram.
 - **[Guard Process Handling Spec (`PROCESS_STATUS.md`)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md)**: Release and feature governance with a concise 2-block status matrix and daily execution history log.
-- **[Multi-Repo & Docker Strategy Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md)**: Option 3 Hybrid Docker containerization, symlink mapping, and dynamic layer expansion.
+- **[Multi-Repo & Docker Strategy Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md)**: Hybrid Docker containerization, symlink mapping, and dynamic layer expansion.
 - **[Initialization Workflow (/init)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md)**: Bootstrapping playbook, 3-block Q&A schema (`init_questions.md`), and directory layouts (`folder_structure.md`).
 - **[Legacy Code & Docs Processing (/process-history)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/process_history_workflow.md)**: Standalone workflow for deep historical code analysis, documentation review, and refactoring proposals.
 - **[Grill Engine Gate](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md)**: Reusable Q&A engine design rules and state file formats (`GRILL_STATUS.md`).
@@ -30,7 +30,8 @@ agent-driven-templates/
     ├── init/
     │   ├── init_workflow.md           # /init Bootstrapping workflow specification
     │   ├── init_questions.md          # 3-Block Q&A Grill schema
-    │   └── folder_structure.md        # Standard repository folder layout
+    │   ├── folder_structure.md        # Standard repository folder layout
+    │   └── implementation_map.md      # /init Guard creation roadmap & decision links
     ├── process_history/
     │   └── process_history_workflow.md# /process-history Brownfield workflow specification
     ├── plan/                          # Interactive Planning workflow (Planned)

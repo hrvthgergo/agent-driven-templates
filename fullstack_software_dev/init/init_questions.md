@@ -14,7 +14,7 @@ The primary objective of the `/init` Grill-Me session is to discover and initial
 To ensure operational consistency and structural stability, the following two baselines are solid and non-negotiable. **Zero questions are asked about these baselines during the `/init` interview**:
 
 ### Baseline 1: Containerization Setup (Software Environment)
-*   **Specification**: The **Option 3 Hybrid Docker Handling Strategy** MUST be used without exception.
+*   **Specification**: The **Hybrid Docker Handling Strategy** MUST be used without exception.
 *   **Enforced Architecture**:
     *   `antigravity-workspace/docker/dev.Dockerfile`: Isolated agent execution sandbox environment.
     *   `antigravity-workspace/docker/docker-compose.yml`: Local multi-service orchestrator linking layer sub-repositories.
