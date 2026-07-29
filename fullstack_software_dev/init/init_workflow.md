@@ -134,17 +134,19 @@ graph TD
 ---
 
 #### Step 4: Scaffolding Workspace & `PROCESS_STATUS.md` (Node S4)
-*   **Description**: Creates physical workspace directories, scaffolds `.agents/` control structures, registers relative symbolic links under `src/`, provisions Hybrid Docker files, and initializes `.agents/plans/PROCESS_STATUS.md` and `.agents/plans/phase-1-summary.md`.
+*   **Description**: Creates physical workspace directories, scaffolds `.agents/` control structures, registers relative symbolic links under `src/`, provisions Hybrid Docker files, provisions `.gitkeep` files across all scaffolded directories, and initializes `.agents/plans/PROCESS_STATUS.md` and `.agents/plans/phase-1-summary.md`.
 *   **Architectural & Implementation Reasoning**:
+    *   *Directory Preservation Policy (`.gitkeep` Rule)*:
+        *   Git natively tracks files rather than empty directory nodes. To ensure that every scaffolded directory path (both control folders under `.agents/` like `skills/`, `hooks/`, `sidecars/`, `plans/`, `rules/`, `workflows/` and codebase directories like `src/`, `config/`, `tests/`, `docs/`, `docker/`) is preserved and synchronized on remote Git origins, **the `/init` workflow automatically provisions a `.gitkeep` file inside every scaffolded directory node**.
     *   *Multi-Repo Symlinking & 3-Part Verification*:
         *   Creates relative symbolic links (e.g., `ln -s ../../codebase-layout/src src/layout`) to ensure cross-machine and CI/CD portability without hardcoding absolute paths.
         *   Executes a mandatory **3-part verification check**: (1) verify symlink attribute exists, (2) confirm link target resolves to an active directory catching dangling links, and (3) assert relative pathing.
     *   *Hybrid Docker Provisioning*: Scaffolds `antigravity-workspace/docker/dev.Dockerfile` (sandbox), `antigravity-workspace/docker/docker-compose.yml` (orchestrator), and standalone `Dockerfile` specs in each `codebase-<layer_name>` sub-repo.
     *   *Process Guard Initialization*: Deploys `.agents/plans/PROCESS_STATUS.md` containing **Block 1 (Workflow Execution Matrix)** with 5-phase planning sub-rows (3.1 to 3.5), and **Block 2 (Datestamped Daily History)** bound to the active release (`/init --release <v>`) or feature (`/init --feature <name>`) branch.
 *   **State & Storage Processing**:
-    *   Deploys starter templates `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md` into `.agents/plans/`. Fills architecture metadata gathered from Q1–Q10.
+    *   Creates directory tree, provisions `.gitkeep` files in every created folder node, and deploys starter templates `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md` into `.agents/plans/`. Fills architecture metadata gathered from Q1–Q10.
 *   **Guard Elements Implementing S4**:
-    *   **Action Skill**: Executed by `skills/init-scaffolder/SKILL.md` (Symlinks + 3-part check, Hybrid Docker files).
+    *   **Action Skill**: Executed by `skills/init-scaffolder/SKILL.md` (Directory scaffolding, `.gitkeep` provisioning, relative symlinks + 3-part check, Hybrid Docker files).
     *   **Templates**: Deploys `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md`.
 
 ---

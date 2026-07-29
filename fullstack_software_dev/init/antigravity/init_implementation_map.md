@@ -122,8 +122,10 @@ The implementation plan directly realizes the following design blueprints and `/
 
 *   **List of Actions**:
     1.  Create `fullstack_software_dev/init/antigravity/guards/skills/init-scaffolder/SKILL.md` with YAML frontmatter (`name: init-scaffolder`, `description: Antigravity skill for workspace scaffolding, relative symlinking, and Docker provisioning`).
-    2.  Define **Directory Scaffolding Procedures**:
+    2.  Define **Directory Scaffolding & `.gitkeep` Preservation Procedures**:
         *   Create `antigravity-workspace/` and `.agents/` (`rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`, `plans/`).
+        *   Create `codebase-<layer_name>` sub-repositories (`src/`, `config/`, `tests/`, `.github/workflows/`).
+        *   Provision a `.gitkeep` file inside **every scaffolded directory node** to guarantee that empty placeholder folders (e.g. `skills/`, `hooks/`, `sidecars/`) and scaffolded sub-repo layouts are fully tracked, preserved, and synchronized on remote Git origins immediately after `/init` runs.
     3.  Define **Relative Symbolic Linking & 3-Part Verification Procedures**:
         *   Create relative symlinks under `src/` (e.g., `ln -s ../../codebase-layout/src src/layout`).
         *   Execute 3-part verification check: (1) verify symlink attribute exists, (2) confirm link target resolves to an active directory catching dangling links, and (3) assert relative pathing for cross-machine/CI portability.

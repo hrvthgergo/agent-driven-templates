@@ -55,3 +55,12 @@ This document defines the generic directory layout scaffolded, mapped, and enfor
 *Note: Projects can initially be single-layer (e.g., developing only `codebase-layout` or `codebase-engine`), dual-layer (fullstack), or multi-layer. The `codebase-*` sub-repository layout is uniform across all layers, and the initial layer scope is confirmed in the `/init` Grill-me Q&A.*
 
 *Lifecycle Layer Expansion: If a project begins as single-layer (e.g., `codebase-engine`) and later requires an additional layer (e.g., adding `codebase-layout` or `codebase-worker`), the framework introduces the new layer skeleton under the same `codebase-<new_layer>` pattern, registers a new symlink under `src/<new_layer>`, updates `docker-compose.yml`, and preserves complete structural consistency across the repository lifecycle.*
+
+---
+
+## Directory Preservation Policy (`.gitkeep` Rule)
+
+Because Git natively tracks files rather than empty directory paths, the `/init` workflow enforces a strict directory preservation policy:
+1. **Universal `.gitkeep` Provisioning**: Every scaffolded directory node across `antigravity-workspace/` (e.g., `.agents/rules/`, `.agents/workflows/`, `.agents/skills/`, `.agents/hooks/`, `.agents/sidecars/`, `.agents/plans/`, `docs/`, `docker/`, `src/config/`) and inside each `codebase-<layer_name>` sub-repository (`src/`, `config/`, `tests/`, `.github/workflows/`) MUST include a `.gitkeep` file upon creation.
+2. **Remote Synchronization Guarantee**: Provisioning `.gitkeep` across all directory nodes ensures that empty placeholder folders (such as `skills/`, `hooks/`, `sidecars/`) and scaffolded sub-repo layouts are fully tracked, preserved, and synchronized on remote Git origins (GitHub, GitLab, Bitbucket) immediately after `/init` runs.
+3. **Ignore-Resilience**: `.gitkeep` files lock directory node paths in Git index, preventing folders from disappearing if sub-files are deleted or ignored by `.gitignore` rules during local development.

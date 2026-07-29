@@ -57,10 +57,10 @@ Upon completion of Node S6, the test harness executes automated verification che
 | :--- | :--- | :--- | :--- |
 | **S1** | Docker Verification | Host Environment | `docker info` returns exit code `0`. Sandbox container image verified. |
 | **S2** | Permanent Audit Log | `.agents/plans/GRILL_STATUS.md` | File exists. Contains full Q1–Q10 transcript, question texts, selected options, and user inputs. |
-| **S4** | Control Directory | `.agents/` | Directories present: `rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`, `plans/`. |
+| **S4** | Control Directory & `.gitkeep` | `.agents/` | Directories present: `rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`, `plans/`. **`.gitkeep` present inside every control folder node**. |
 | **S4** | Guard Process Status | `.agents/plans/PROCESS_STATUS.md` | Block 1 matrix contains `/init` row marked `Completed`. Sub-rows 3.1–3.5 for 5 planning phases present. Block 2 daily history updated with datestamped entry. |
 | **S4** | Architecture Summary | `.agents/plans/phase-1-summary.md` | File exists. Contains vision, Go + Vanilla JS stack, Modular Monolith pattern, and folder map. |
-| **S4** | Layer Sub-Repos | `codebase-layout/`, `codebase-engine/` | Sub-repository folders created. Each contains `src/`, `config/`, `tests/`, and standalone `Dockerfile`. |
+| **S4** | Layer Sub-Repos & `.gitkeep` | `codebase-layout/`, `codebase-engine/` | Sub-repository folders created. Each contains `src/`, `config/`, `tests/`, and standalone `Dockerfile`. **`.gitkeep` present inside every sub-repo folder node**. |
 | **S4** | Relative Symlinks | `antigravity-workspace/src/layout`<br/>`antigravity-workspace/src/engine` | Relative symlinks created pointing to `../../codebase-layout/src` and `../../codebase-engine/src`. Pass 3-part verification check (attribute check, active directory target resolution, relative path assertion). |
 | **S4** | Hybrid Docker Files | `antigravity-workspace/docker/dev.Dockerfile`<br/>`antigravity-workspace/docker/docker-compose.yml` | `dev.Dockerfile` agent sandbox present. `docker-compose.yml` links `layout` and `engine` services. |
 | **S5** | Pre-Commit Safety Hook | `.git/hooks/pre-commit` | File installed, executable (`chmod +x`), intercepts commits missing valid `PROCESS_STATUS.md`. |
@@ -86,6 +86,8 @@ git init
 # 4. Run automated assertions
 test -f .agents/plans/GRILL_STATUS.md && echo "ASSERT PASS: GRILL_STATUS.md present"
 test -f .agents/plans/PROCESS_STATUS.md && echo "ASSERT PASS: PROCESS_STATUS.md present"
+test -f .agents/skills/.gitkeep && echo "ASSERT PASS: .gitkeep present in .agents/skills/"
+test -f codebase-layout/src/.gitkeep && echo "ASSERT PASS: .gitkeep present in codebase-layout/src/"
 test -L antigravity-workspace/src/layout && echo "ASSERT PASS: Relative symlink src/layout present"
 test -x .git/hooks/pre-commit && echo "ASSERT PASS: Pre-commit hook executable"
 ```
