@@ -129,15 +129,15 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 
 ---
 
-### Q4: Legacy Documentation, Code Graph, & Blueprint Extraction Strategy
+### Q4: Legacy Documentation, Layer Code Graphs, & Blueprint Extraction Strategy
 * **Target Environment**: Agentic Environment
-* **Goal**: Define how legacy documentation, specifications, API schemas, and architecture notes should be extracted to populate the 5-phase agentic blueprints (`phase-1-summary.md` through `phase-5-operation.md`) and generate the **Code Graph Document** (`.agents/plans/code_graph.md`).
+* **Goal**: Define how legacy documentation, specifications, API schemas, and architecture notes should be extracted to populate the 5-phase agentic blueprints (`phase-1-summary.md` through `phase-5-operation.md`) and generate **Layer-Scoped Code Graph Documents** (`codebase-<layer>/code_graph.md`).
 * **Auto-Detection Scanning Rule**:
   * Scan linked legacy folders for markdown docs (`*.md`), OpenAPI/Swagger specs (`.yaml`, `.json`), database schemas (`.sql`, ORM models), and source code structural elements (interfaces, classes, functions, entities).
 * **Reframed Grill Prompt**:
-  > **How should legacy documentation and architectural specs be processed into the `.agents/plans/` blueprints and Code Graph?**
-  > 1. Full Extraction & Code Graph: Parse legacy docs/code, generate `.agents/plans/code_graph.md`, and populate all 5 phase blueprints in `.agents/plans/`
-  > 2. API & Data Schema Focus: Extract API endpoints and DB models into Phase 3 (`phase-3-engine.md`) and generate Code Graph for backend services
+  > **How should legacy documentation and architectural specs be processed into `.agents/plans/` blueprints and layer-scoped Code Graphs?**
+  > 1. Full Extraction & Layer Code Graphs: Parse legacy docs/code, generate `codebase-<layer>/code_graph.md` inside each sub-repository, and populate all 5 phase blueprints in `.agents/plans/`
+  > 2. API & Data Schema Focus: Extract API endpoints and DB models into Phase 3 (`phase-3-engine.md`) and generate Code Graphs for backend services
   > 3. High-Level Summary Only: Extract core goals into Phase 1 (`phase-1-summary.md`) without deep documentation restructuring
   > 4. Other / Free-text (Specify custom documentation extraction guidelines)
 
@@ -182,7 +182,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > | **Agentic & Folder** | Q1 Baseline Review | *[Q1 Answer / Baseline status]* |
   > | **Agentic** | Q2 Omitted Remotes Audit | *[Q2 Answer / Remotes & submodules]* |
   > | **Folder & Software** | Q3 Legacy Source Mapping | *[Q3 Answer / Layer mapping strategy]* |
-  > | **Agentic** | Q4 Code Graph & Docs | *[Q4 Answer / Code Graph & blueprint extraction scope]* |
+  > | **Agentic** | Q4 Code Graph & Docs | *[Q4 Answer / Layer Code Graphs & blueprint extraction scope]* |
   > | **Governance** | Q5 Execution Mode | *[Q5 Answer / Plan-First vs Immediate]* |
   > | **Software** | Q6 Path & Link Strategy | *[Q6 Answer / Symlink & path aliasing strategy]* |
   >
@@ -190,4 +190,4 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > 1. Everything is accurate $\rightarrow$ Execute `/process-history` action
   > 2. Edit a specific answer (Specify question number to re-run)
   > 3. Other / Free-text (Add further instructions, constraints, or notes for execution)
-* **Resulting Action**: Saves answers to `.agents/plans/GRILL_STATUS.md`, copies legacy files intact to target `codebase-*` layers, generates `.agents/plans/code_graph.md`, populates all 5 phase blueprints in `.agents/plans/` (`phase-1-summary.md` through `phase-5-operation.md`), and updates `.agents/plans/PROCESS_STATUS.md` to finalize `/process-history`.
+* **Resulting Action**: Saves answers to `.agents/plans/GRILL_STATUS.md`, copies legacy files intact to target `codebase-*` layers, generates layer-scoped `codebase-<layer>/code_graph.md` files inside each sub-repository, populates all 5 phase blueprints in `.agents/plans/` (`phase-1-summary.md` through `phase-5-operation.md`), and updates `.agents/plans/PROCESS_STATUS.md` to finalize `/process-history`.
