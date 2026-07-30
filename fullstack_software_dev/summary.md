@@ -136,6 +136,7 @@ graph TD
     *   *Purpose*: Handles deep historical code analysis, legacy documentation processing, refactoring proposals, and codebase restructuring for brownfield projects.
     *   *Key Files*:
         *   [process_history_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/process_history_workflow.md) (Detailed specifications)
+        *   [process_history_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/process_history_questions.md) (Scans and Q&A Grill schema)
 3.  **Interactive Planning (/plan)**
     *   *Path*: `fullstack_software_dev/plan/`
     *   *Purpose*: Leads the user through the creation of the 5-phase blueprint plans tracking status in `PROCESS_STATUS.md`.
