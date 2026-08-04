@@ -72,22 +72,23 @@ graph TD
 
 ---
 
-## 3. Step-by-Step Workflow Design & Implementation Reasoning
+## ### Step-by-Step Workflow Design & Implementation Reasoning
 
-The execution of the `/init` workflow follows a strict, sequential 6-node state machine design:
+The execution of the `/init` workflow follows a strict, sequential 7-node state machine design:
 
 ```mermaid
 graph TD
     S1[Step 1: Check Environment] --> S2[Step 2: Q&A Grill Gate]
     S2 --> S3[Step 3: Lightweight Layer Scan & Linking]
-    S3 --> S4[Step 4: Scaffolding Workspace & PROCESS_STATUS.md]
-    S4 --> S5[Step 5: Git Hook Registration]
-    S5 --> S6[Step 6: Initialization Done]
+    S3 --> S4[Step 4: Execution Acceptance Gate]
+    S4 -->|Approved / --auto| S5[Step 5: Scaffolding Workspace & PROCESS_STATUS.md]
+    S5 --> S6[Step 6: Git Hook Registration & Remote Setup]
+    S6 --> S7[Step 7: Initialization Done]
 ```
 
 ### State Machine Execution & Transition Rules
-1.  **Sequential Execution Guarantee**: Step execution is strictly linear (S1 $\rightarrow$ S2 $\rightarrow$ S3 $\rightarrow$ S4 $\rightarrow$ S5 $\rightarrow$ S6). No step may be skipped, reordered, or executed out of sequence.
-2.  **Gate Validation Before Transition**: A step MUST complete its verification assertions before transitioning state to the next node. If any step fails (e.g. S1 Docker missing, S4 symlink target invalid), execution halts immediately with a diagnostic report.
+1.  **Sequential Execution Guarantee**: Step execution is strictly linear (S1 $\rightarrow$ S2 $\rightarrow$ S3 $\rightarrow$ S4 $\rightarrow$ S5 $\rightarrow$ S6 $\rightarrow$ S7). No step may be skipped, reordered, or executed out of sequence.
+2.  **Gate Validation Before Transition**: A step MUST complete its verification assertions before transitioning state to the next node. If any step fails (e.g. S1 Docker missing, S4 User Rejection, S5 symlink target invalid), execution halts immediately with a diagnostic report.
 3.  **Resume & Audit State**: If execution is interrupted, the state machine reads `.agents/plans/GRILL_STATUS.md` and `.agents/plans/PROCESS_STATUS.md` to resume from the last completed node without re-prompting previously answered questions.
 
 ---
@@ -133,7 +134,21 @@ graph TD
 
 ---
 
-#### Step 4: Scaffolding Workspace & `PROCESS_STATUS.md` (Node S4)
+#### Step 4: Execution Acceptance Gate (Node S4)
+*   **Description**: Synthesizes all information collected during Nodes S2 and S3, presents a structured summary of the agent's understanding of the project, lists all planned execution steps to be taken, and requests explicit user acceptance before creating physical directories or files.
+*   **Architectural & Implementation Reasoning**:
+    *   *Why Execution Acceptance?*: Mirrors the execution acceptance gate pattern established in `/process-history`. Ensures total alignment between user intent and planned scaffolding operations before mutating filesystem state.
+    *   *Dual Execution Modes*:
+        *   **Default / Interactive Mode**: Prompts the user with the summary and planned step list, waiting for explicit confirmation (`1. Proceed with execution` / `2. Modify parameters`) before proceeding to S5.
+        *   **Automated Mode (`--auto`)**: When the `--auto` flag is passed, the agent logs the summary and planned action list for auditing and immediately transitions to Node S5 without pausing for user confirmation.
+*   **State & Storage Processing**:
+    *   Appends the Execution Acceptance Summary and acceptance status to `.agents/plans/GRILL_STATUS.md`.
+*   **Guard Elements Implementing S4**:
+    *   **Workflow Playbook Guard**: Executed by `workflows/init.md` (Node S4 execution acceptance gate logic).
+
+---
+
+#### Step 5: Scaffolding Workspace & `PROCESS_STATUS.md` (Node S5)
 *   **Description**: Creates physical workspace directories, scaffolds `.agents/` control structures, registers relative symbolic links under `src/`, provisions Hybrid Docker files, provisions `.gitkeep` files across all scaffolded directories, and initializes `.agents/plans/PROCESS_STATUS.md` and `.agents/plans/phase-1-summary.md`.
 *   **Architectural & Implementation Reasoning**:
     *   *Directory Preservation Policy (`.gitkeep` Rule)*:
@@ -145,13 +160,13 @@ graph TD
     *   *Process Guard Initialization*: Deploys `.agents/plans/PROCESS_STATUS.md` containing **Block 1 (Workflow Execution Matrix)** with 5-phase planning sub-rows (3.1 to 3.5), and **Block 2 (Datestamped Daily History)** bound to the active release (`/init --release <v>`) or feature (`/init --feature <name>`) branch.
 *   **State & Storage Processing**:
     *   Creates directory tree, provisions `.gitkeep` files in every created folder node, and deploys starter templates `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md` into `.agents/plans/`. Fills architecture metadata gathered from Q1–Q10.
-*   **Guard Elements Implementing S4**:
+*   **Guard Elements Implementing S5**:
     *   **Action Skill**: Executed by `skills/init-scaffolder/SKILL.md` (Directory scaffolding, `.gitkeep` provisioning, relative symlinks + 3-part check, Hybrid Docker files).
     *   **Templates**: Deploys `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md`.
 
 ---
 
-#### Step 5: Git Hook Registration & Remote Origin Setup (Node S5)
+#### Step 6: Git Hook Registration & Remote Origin Setup (Node S6)
 *   **Description**: Configures Git repositories and remote origins on GitHub/GitLab/Bitbucket based on Q4, Q5, and Q5.a answers, and installs the `pre-commit-plan-validator.sh` safety hook into `.git/hooks/pre-commit`.
 *   **Architectural & Implementation Reasoning**:
     *   *Git & Remote Origin Setup*:
@@ -160,19 +175,19 @@ graph TD
     *   *Why Safety Interception?*: To guarantee process compliance, code changes MUST NOT be committed if `PROCESS_STATUS.md` or required `.agents/plans/` status sheets are missing or corrupted.
 *   **State & Storage Processing**:
     *   Initializes `.git` and configures remotes for target folders, then copies `hooks/pre-commit-plan-validator.sh` to `.git/hooks/pre-commit` and runs `chmod +x`.
-*   **Guard Elements Implementing S5**:
+*   **Guard Elements Implementing S6**:
     *   **Safety Hook**: Installed from `hooks/pre-commit-plan-validator.sh`.
 
 ---
 
-#### Step 6: Initialization Done (Node S6)
+#### Step 7: Initialization Done (Node S7)
 *   **Description**: Finalizes state machine execution, updates `PROCESS_STATUS.md` Block 1 row 1 (`/init` $\rightarrow$ `Completed`), logs daily history in Block 2, and displays a summary of scaffolded assets and recommended next commands.
 *   **Architectural & Implementation Reasoning**:
     *   *Operational Transition*: Formally marks `/init` completed and directs the user to the next logical workflow: `/process-history` (for legacy codebase restructuring) or `/plan` (for feature development).
 *   **State & Storage Processing**:
     *   Updates `.agents/plans/PROCESS_STATUS.md` Block 1 and appends `[YYYY-MM-DD] /init workflow completed` log entry to Block 2.
-*   **Guard Elements Implementing S6**:
-    *   **Workflow Playbook Guard**: Executed by `workflows/init.md` (Node S6 finalization logic).
+*   **Guard Elements Implementing S7**:
+    *   **Workflow Playbook Guard**: Executed by `workflows/init.md` (Node S7 finalization logic).
 
 ---
 
@@ -181,7 +196,8 @@ graph TD
 The `/init` command is configured and run using the following operational rules and flags:
 
 ### Parameters & Options
-- `/init`: Executes lightweight scan, runs Grill Q&A gate, scaffolds `.agents/` structures, and links existing source folders. Restructuring is strictly omitted.
+- `/init`: Default interactive execution. Runs environment check, Q&A Grill gate, lightweight scan, displays Execution Acceptance summary (Node S4) for user approval, scaffolds `.agents/` structures, and links existing source folders.
+- `/init --auto`: Automatic execution mode. Bypasses the interactive Execution Acceptance prompt (Node S4) and executes all planned workspace scaffolding and Git hook registration tasks automatically.
 - `/init --release <version>`: Initializes a new release scope (e.g. `v1.0.0`), creates the Git branch `release/<version>`, and scaffolds a fresh `PROCESS_STATUS.md` document for managing the release lifecycle.
 - `/init --feature <feature_name>`: Initializes a parallel feature development scope based on existing sources, creates Git branch `feature/<feature_name>`, and scaffolds a feature-bound `PROCESS_STATUS.md`.
 - `/init --add-layer <layer_name>`: Introduces a new software layer sub-repository (`codebase-<layer_name>`) into an existing workspace, registering its symlink under `src/<layer_name>`, scaffolding its `Dockerfile`, and updating `docker-compose.yml`.

@@ -9,7 +9,7 @@ This document defines the test scenario, mock execution sequence, user input sim
 *   **Target Workflow**: `/init` (Bootstrapping workflow for Guards framework)
 *   **Target Environment**: Google Antigravity Agent Execution Environment
 *   **Test Scenario**: Greenfield Multi-Repo Setup (Fullstack Web App: `codebase-layout` UI + `codebase-engine` Backend)
-*   **Primary Objective**: Validate end-to-end execution of the `/init` workflow state machine (Nodes S1 $\rightarrow$ S6), asserting that all Q1–Q10 prompts generate neutral choices, persistent `GRILL_STATUS.md` audit logs, relative symlinks (`../../codebase-X/src`), Hybrid Docker files (`docker/dev.Dockerfile`, `docker/docker-compose.yml`, sub-repo `Dockerfile`s), `PROCESS_STATUS.md` process matrices, and `.git/hooks/pre-commit` safety interceptors.
+*   **Primary Objective**: Validate end-to-end execution of the `/init` workflow state machine (Nodes S1 $\rightarrow$ S7), asserting that all Q1–Q10 prompts generate neutral choices, persistent `GRILL_STATUS.md` audit logs, Node S4 Execution Acceptance Gate prompts, relative symlinks (`../../codebase-X/src`), Hybrid Docker files (`docker/dev.Dockerfile`, `docker/docker-compose.yml`, sub-repo `Dockerfile`s), `PROCESS_STATUS.md` process matrices, and `.git/hooks/pre-commit` safety interceptors.
 
 ---
 
@@ -30,9 +30,9 @@ To ensure isolated, reproducible test runs, the test environment MUST meet the f
 /init
 ```
 
-### Mock User Input Sequence (Q1 to Q10 Greenfield Prompts)
+### Mock User Input Sequence (Q1 to Q10 Greenfield Prompts & Node S4 Execution Acceptance)
 
-The test harness simulates an interactive user session responding to the sequential Q1–Q10 interview prompts enforced by `rules/init-grill.md`:
+The test harness simulates an interactive user session responding to the sequential Q1–Q10 interview prompts enforced by `rules/init-grill.md` and confirming Node S4 Execution Acceptance:
 
 | Step | Prompt Title | Mock User Selection / Input | Asserted Output & Action |
 | :--- | :--- | :--- | :--- |
@@ -45,26 +45,28 @@ The test harness simulates an interactive user session responding to the sequent
 | **Q7** | **Layer Scope & Sub-repos** | Selected Option 1 (*Fullstack - UI Layout + Backend Engine*). | Sub-repository skeletons registered: `codebase-layout` and `codebase-engine`. |
 | **Q8** | **Software Stack & Frameworks** | Selected Option 4 (*Other / Free-text*) $\rightarrow$ Inputs: *"Engine API in Go with PostgreSQL; UI Layout in Vanilla JS and Pure CSS."* | Package manifests (`go.mod`, `package.json`) generated inside respective sub-repositories. |
 | **Q9** | **Agent Guidance Rules & Tooling** | Selected Option 1 (*Standard Guards framework defaults*). | Core rules, skills, workflows deployed to `.agents/`. |
-| **Q10** | **Summary Reflection & Verification** | Displays Q1–Q9 recap matrix. Selected Option 1 (*Everything is accurate $\rightarrow$ Proceed to finalize /init*). | Q&A finalized. Permanent audit log written to `.agents/plans/GRILL_STATUS.md`. |
+| **Q10** | **Summary Reflection & Verification** | Displays Q1–Q9 recap matrix. Selected Option 1 (*Everything is accurate $\rightarrow$ Proceed to finalize Q&A*). | Q&A finalized. Permanent audit log written to `.agents/plans/GRILL_STATUS.md`. |
+| **S4** | **Node S4 Execution Acceptance Gate** | Agent displays understanding summary & planned scaffolding steps. Selected Option 1 (*Proceed with execution*). | User acceptance logged; transitions to Node S5 workspace scaffolding. |
 
 ---
 
 ## 4. Verification Assertions & Validation Matrix
 
-Upon completion of Node S6, the test harness executes automated verification checks asserting that all physical and logical resources were scaffolded exactly as designed:
+Upon completion of Node S7, the test harness executes automated verification checks asserting that all physical and logical resources were scaffolded exactly as designed:
 
 | Node | Verification Target | Asserted Resource Path | Expected State / Content Assertion |
 | :--- | :--- | :--- | :--- |
 | **S1** | Docker Verification | Host Environment | `docker info` returns exit code `0`. Sandbox container image verified. |
 | **S2** | Permanent Audit Log | `.agents/plans/GRILL_STATUS.md` | File exists. Contains full Q1–Q10 transcript, question texts, selected options, and user inputs. |
-| **S4** | Control Directory & `.gitkeep` | `.agents/` | Directories present: `rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`, `plans/`. **`.gitkeep` present inside every control folder node**. |
-| **S4** | Guard Process Status | `.agents/plans/PROCESS_STATUS.md` | Block 1 matrix contains `/init` row marked `Completed`. Sub-rows 3.1–3.5 for 5 planning phases present. Block 2 daily history updated with datestamped entry. |
-| **S4** | Architecture Summary | `.agents/plans/phase-1-summary.md` | File exists. Contains vision, Go + Vanilla JS stack, Modular Monolith pattern, and folder map. |
-| **S4** | Layer Sub-Repos & `.gitkeep` | `codebase-layout/`, `codebase-engine/` | Sub-repository folders created. Each contains `src/`, `config/`, `tests/`, and standalone `Dockerfile`. **`.gitkeep` present inside every sub-repo folder node**. |
-| **S4** | Relative Symlinks | `antigravity-workspace/src/layout`<br/>`antigravity-workspace/src/engine` | Relative symlinks created pointing to `../../codebase-layout/src` and `../../codebase-engine/src`. Pass 3-part verification check (attribute check, active directory target resolution, relative path assertion). |
-| **S4** | Hybrid Docker Files | `antigravity-workspace/docker/dev.Dockerfile`<br/>`antigravity-workspace/docker/docker-compose.yml` | `dev.Dockerfile` agent sandbox present. `docker-compose.yml` links `layout` and `engine` services. |
-| **S5** | Pre-Commit Safety Hook | `.git/hooks/pre-commit` | File installed, executable (`chmod +x`), intercepts commits missing valid `PROCESS_STATUS.md`. |
-| **S6** | Execution Output | Subprocess Stdout | Terminal prints completion summary report and recommended next workflow command (`/plan`). |
+| **S4** | Execution Acceptance Record | `.agents/plans/GRILL_STATUS.md` | Contains Execution Acceptance Summary and User Confirmation record (`Accepted`). |
+| **S5** | Control Directory & `.gitkeep` | `.agents/` | Directories present: `rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`, `plans/`. **`.gitkeep` present inside every control folder node**. |
+| **S5** | Guard Process Status | `.agents/plans/PROCESS_STATUS.md` | Block 1 matrix contains `/init` row marked `Completed`. Sub-rows 3.1–3.5 for 5 planning phases present. Block 2 daily history updated with datestamped entry. |
+| **S5** | Architecture Summary | `.agents/plans/phase-1-summary.md` | File exists. Contains vision, Go + Vanilla JS stack, Modular Monolith pattern, and folder map. |
+| **S5** | Layer Sub-Repos & `.gitkeep` | `codebase-layout/`, `codebase-engine/` | Sub-repository folders created. Each contains `src/`, `config/`, `tests/`, and standalone `Dockerfile`. **`.gitkeep` present inside every sub-repo folder node**. |
+| **S5** | Relative Symlinks | `antigravity-workspace/src/layout`<br/>`antigravity-workspace/src/engine` | Relative symlinks created pointing to `../../codebase-layout/src` and `../../codebase-engine/src`. Pass 3-part verification check (attribute check, active directory target resolution, relative path assertion). |
+| **S5** | Hybrid Docker Files | `antigravity-workspace/docker/dev.Dockerfile`<br/>`antigravity-workspace/docker/docker-compose.yml` | `dev.Dockerfile` agent sandbox present. `docker-compose.yml` links `layout` and `engine` services. |
+| **S6** | Pre-Commit Safety Hook | `.git/hooks/pre-commit` | File installed, executable (`chmod +x`), intercepts commits missing valid `PROCESS_STATUS.md`. |
+| **S7** | Execution Output | Subprocess Stdout | Terminal prints completion summary report and recommended next workflow command (`/plan` or `/process-history`). |
 
 ---
 
@@ -80,10 +82,13 @@ git init
 # 2. Run /init workflow in dry-run mode first to verify output
 /init --dry-run
 
-# 3. Run full /init workflow execution
+# 3. Run full /init workflow execution in interactive mode (accepting Node S4 summary)
 /init
 
-# 4. Run automated assertions
+# 4. Run /init workflow in automated mode to test --auto flag bypass
+/init --auto
+
+# 5. Run automated assertions
 test -f .agents/plans/GRILL_STATUS.md && echo "ASSERT PASS: GRILL_STATUS.md present"
 test -f .agents/plans/PROCESS_STATUS.md && echo "ASSERT PASS: PROCESS_STATUS.md present"
 test -f .agents/skills/.gitkeep && echo "ASSERT PASS: .gitkeep present in .agents/skills/"

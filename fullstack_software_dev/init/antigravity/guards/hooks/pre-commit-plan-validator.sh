@@ -2,7 +2,7 @@
 # ==============================================================================
 # Guards Framework Pre-Commit Validator Hook
 # Location: .git/hooks/pre-commit
-# Installed during: /init Step 5 (Node S5)
+# Installed during: /init Step 6 (Node S6)
 # ==============================================================================
 
 set -e

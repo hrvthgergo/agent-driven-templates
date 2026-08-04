@@ -150,7 +150,7 @@ When asking questions during the `/init` Grill session, the agent MUST strictly 
 - **Prompt**:
   - *"Please review the summary matrix above. Do you have any additional information, notes, or modifications to add before we finalize `/init`?"*
 - **Options**:
-  1. Everything is accurate $\rightarrow$ Proceed to finalize `/init`
+  1. Everything is accurate $\rightarrow$ Proceed to Node S4 Execution Acceptance
   2. Modify a specific answer (Specify question number)
   3. Add additional reflection / free-text notes (...)
 

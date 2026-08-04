@@ -31,6 +31,7 @@
 - **Actions Completed**:
   - Executed Docker environment assertion (`docker info`).
   - Conducted sequential Q1–Q10 Grill session; persisted transcript into `.agents/plans/GRILL_STATUS.md`.
+  - Displayed Execution Acceptance Summary & planned steps at Node S4 (user accepted / `--auto` mode).
   - Scaffolded `.agents/` control directory and `codebase-*` sub-repository skeletons.
   - Provisioned `.gitkeep` files inside every scaffolded folder node for remote Git tracking.
   - Registered relative symbolic links (`../../codebase-X/src`) under `src/` and verified via 3-part check.

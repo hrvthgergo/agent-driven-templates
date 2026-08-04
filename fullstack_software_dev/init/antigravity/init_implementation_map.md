@@ -40,7 +40,17 @@ The implementation plan directly realizes the following design blueprints and `/
 
 ---
 
-### Step 1: Scaffold Antigravity Guard Master Directory Tree
+### Step 1: Clean & Delete Existing Guard Assets
+
+*   **List of Actions**:
+    1.  Inspect directory `fullstack_software_dev/init/antigravity/guards/`.
+    2.  If `fullstack_software_dev/init/antigravity/guards/` exists and contains pre-existing guard files or subdirectories (`workflows/`, `rules/`, `templates/`, `skills/`, `hooks/`), remove all existing sources inside `fullstack_software_dev/init/antigravity/guards/`.
+*   **Reasons & Design Decision Links**:
+    *   *Clean Slate & Idempotency Guarantee*: Ensures that prior, partial, or outdated guard files are completely purged before scaffolding new master guard assets, guaranteeing a clean, repeatable, and idempotent implementation run.
+
+---
+
+### Step 2: Scaffold Antigravity Guard Master Directory Tree
 
 *   **List of Actions**:
     1.  Create Antigravity tier-3 guard root directory: `fullstack_software_dev/init/antigravity/guards/`.
@@ -56,32 +66,34 @@ The implementation plan directly realizes the following design blueprints and `/
 
 ---
 
-### Step 2: Implement Stateful Workflow Playbook (`workflows/init.md`)
+### Step 3: Implement Stateful Workflow Playbook (`workflows/init.md`)
 
 *   **List of Actions**:
     1.  Create `fullstack_software_dev/init/antigravity/guards/workflows/init.md`.
     2.  Define YAML frontmatter (`name: init`, `description: Bootstrapping workflow for Guards framework in Antigravity`).
-    3.  Implement the 6-step state machine execution nodes using Antigravity workflow syntax:
+    3.  Implement the 7-step state machine execution nodes using Antigravity workflow syntax:
         *   **Node S1 (Check Environment)**: Executes `docker info` to verify Docker engine availability and privileges.
         *   **Node S2 (Q&A Grill Gate)**: Invokes the interview engine adhering to `rules/init-grill.md`.
         *   **Node S3 (Lightweight Layer Scan & Linking)**: Surface-level layer directory scanning without codebase restructuring.
-        *   **Node S4 (Scaffolding Workspace & `PROCESS_STATUS.md`)**: Invokes `skills/init-scaffolder/SKILL.md` to deploy `.agents/`, symlinks, Docker files, and initial status templates.
-        *   **Node S5 (Git Hook Registration)**: Registers remote origin and installs `hooks/pre-commit-plan-validator.sh`.
-        *   **Node S6 (Initialization Done)**: Reports initialization summary and available next commands.
+        *   **Node S4 (Execution Acceptance Gate)**: Synthesizes gathered info, displays understanding summary and planned steps, and requests user approval (or bypasses prompt in `--auto` mode).
+        *   **Node S5 (Scaffolding Workspace & `PROCESS_STATUS.md`)**: Invokes `skills/init-scaffolder/SKILL.md` to deploy `.agents/`, symlinks, Docker files, `.gitkeep` files, and initial status templates.
+        *   **Node S6 (Git Hook Registration & Remote Setup)**: Registers remote origins and installs `hooks/pre-commit-plan-validator.sh`.
+        *   **Node S7 (Initialization Done)**: Reports initialization summary and available next commands (`/plan` or `/process-history`).
     4.  Implement CLI parameter handling:
+        *   `/init --auto`: Automatic execution mode. Bypasses interactive Node S4 acceptance prompt and executes all planned scaffolding tasks.
         *   `/init --release <version>`: Creates Git branch `release/<version>` and deploys release-bound `PROCESS_STATUS.md`.
         *   `/init --feature <feature_name>`: Creates Git branch `feature/<feature_name>` and deploys feature-bound `PROCESS_STATUS.md`.
         *   `/init --add-layer <layer_name>`: Introduces a new sub-repo `codebase-<layer_name>`, registers its `src/` symlink, provisions its `Dockerfile`, and updates `docker-compose.yml`.
         *   `/init --dry-run`: Previews proposed files, symlinks, Docker configs, and status sheets without writing to disk.
         *   `/init --force`: Overwrites default `.agents/` rules/workflows while preserving custom phase blueprints.
 *   **Reasons & Design Decision Links**:
-    *   *Step-by-Step Lifecycle*: Realizes the 6-node execution design documented in [init_workflow.md Section 3](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md#L62-L89).
-    *   *Parameter Behaviors*: Implements parameter rules documented in [init_workflow.md Section 4](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md#L96-L103) and `/grill-me` Question 4 flag alignment.
-    *   *Decoupled Brownfield Rule*: Enforces the no-restructuring constraint during `/init`, referencing [init_workflow.md Section 1](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md#L14-L15).
+    *   *Step-by-Step Lifecycle*: Realizes the 7-node execution design documented in [init_workflow.md Section 3](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md#L75-L180).
+    *   *Parameter Behaviors*: Implements parameter rules documented in [init_workflow.md Section 4](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md#L182-L210) and `/grill-me` alignment.
+    *   *Decoupled Brownfield Rule*: Enforces the no-restructuring constraint during `/init`, referencing [init_workflow.md Section 1](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md#L26-L28).
 
 ---
 
-### Step 3: Implement Neutral Q&A Grill Rule Guard (`rules/init-grill.md`)
+### Step 4: Implement Neutral Q&A Grill Rule Guard (`rules/init-grill.md`)
 
 *   **List of Actions**:
     1.  Create `fullstack_software_dev/init/antigravity/guards/rules/init-grill.md`.
@@ -102,7 +114,7 @@ The implementation plan directly realizes the following design blueprints and `/
 
 ---
 
-### Step 4: Implement Document Templates (`templates/PROCESS_STATUS.md` & `templates/phase-1-summary.md`)
+### Step 5: Implement Document Templates (`templates/PROCESS_STATUS.md` & `templates/phase-1-summary.md`)
 
 *   **List of Actions**:
     1.  Create `fullstack_software_dev/init/antigravity/guards/templates/PROCESS_STATUS.md`:
@@ -118,7 +130,7 @@ The implementation plan directly realizes the following design blueprints and `/
 
 ---
 
-### Step 5: Implement Multi-Repo & Hybrid Docker Scaffolding Skill (`skills/init-scaffolder/SKILL.md`)
+### Step 6: Implement Multi-Repo & Hybrid Docker Scaffolding Skill (`skills/init-scaffolder/SKILL.md`)
 
 *   **List of Actions**:
     1.  Create `fullstack_software_dev/init/antigravity/guards/skills/init-scaffolder/SKILL.md` with YAML frontmatter (`name: init-scaffolder`, `description: Antigravity skill for workspace scaffolding, relative symlinking, and Docker provisioning`).
@@ -141,7 +153,7 @@ The implementation plan directly realizes the following design blueprints and `/
 
 ---
 
-### Step 6: Implement Pre-Commit Validator Safety Hook (`hooks/pre-commit-plan-validator.sh`)
+### Step 7: Implement Pre-Commit Validator Safety Hook (`hooks/pre-commit-plan-validator.sh`)
 
 *   **List of Actions**:
     1.  Create `fullstack_software_dev/init/antigravity/guards/hooks/pre-commit-plan-validator.sh`.
@@ -156,7 +168,7 @@ The implementation plan directly realizes the following design blueprints and `/
 
 ---
 
-### Step 7: Verification & Testing
+### Step 8: Verification & Testing
 
 *   **List of Actions**:
     1.  Validate execution permissions on shell scripts (`chmod +x fullstack_software_dev/init/antigravity/guards/hooks/pre-commit-plan-validator.sh`).
@@ -168,7 +180,7 @@ The implementation plan directly realizes the following design blueprints and `/
 
 ---
 
-### Step 8: Workflow E2E Testing
+### Step 9: Workflow E2E Testing
 
 *   **List of Actions**:
     1.  Execute the end-to-end greenfield test scenario collected and designed in [init_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/antigravity/init_tests.md) inside an isolated test sandbox (`/tmp/test-init-workspace`).
@@ -176,6 +188,7 @@ The implementation plan directly realizes the following design blueprints and `/
     3.  Run and evaluate all automated validation assertions:
         *   Verify Docker engine status (`docker info`).
         *   Assert permanent audit log creation (`.agents/plans/GRILL_STATUS.md`).
+        *   Assert Node S4 Execution Acceptance Gate prompt summary presentation and acceptance record in `GRILL_STATUS.md` (and `--auto` bypass mode execution).
         *   Assert `.agents/` control directory scaffold (`rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`, `plans/`).
         *   Assert `.agents/plans/PROCESS_STATUS.md` matrix and daily history log entries.
         *   Assert `.agents/plans/phase-1-summary.md` blueprint metadata.
@@ -191,11 +204,12 @@ The implementation plan directly realizes the following design blueprints and `/
 
 ## 4. Verification & Readiness Checklist
 
-- `[ ]` Step 1: Scaffold Antigravity Guard Master Directory Tree (`fullstack_software_dev/init/antigravity/guards/`)
-- `[ ]` Step 2: Implement Stateful Workflow Playbook (`workflows/init.md`)
-- `[ ]` Step 3: Implement Neutral Q&A Grill Rule (`rules/init-grill.md`)
-- `[ ]` Step 4: Implement Document Templates (`templates/PROCESS_STATUS.md` & `templates/phase-1-summary.md`)
-- `[ ]` Step 5: Implement Multi-Repo & Hybrid Docker Scaffolding Skill (`skills/init-scaffolder/SKILL.md`)
-- `[ ]` Step 6: Implement Pre-Commit Validator Hook (`hooks/pre-commit-plan-validator.sh`)
-- `[ ]` Step 7: Perform Syntax, Link, and Execution Verification
-- `[ ]` Step 8: Execute Workflow E2E Testing (`init_tests.md` final validation round)
+- `[ ]` Step 1: Clean & Delete Existing Guard Assets (`fullstack_software_dev/init/antigravity/guards/`)
+- `[ ]` Step 2: Scaffold Antigravity Guard Master Directory Tree (`fullstack_software_dev/init/antigravity/guards/`)
+- `[ ]` Step 3: Implement Stateful Workflow Playbook (`workflows/init.md`)
+- `[ ]` Step 4: Implement Neutral Q&A Grill Rule (`rules/init-grill.md`)
+- `[ ]` Step 5: Implement Document Templates (`templates/PROCESS_STATUS.md` & `templates/phase-1-summary.md`)
+- `[ ]` Step 6: Implement Multi-Repo & Hybrid Docker Scaffolding Skill (`skills/init-scaffolder/SKILL.md`)
+- `[ ]` Step 7: Implement Pre-Commit Validator Hook (`hooks/pre-commit-plan-validator.sh`)
+- `[ ]` Step 8: Perform Syntax, Link, and Execution Verification
+- `[ ]` Step 9: Execute Workflow E2E Testing (`init_tests.md` final validation round)

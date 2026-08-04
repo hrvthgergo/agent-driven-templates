@@ -235,4 +235,4 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
     > 1. Everything is accurate $\rightarrow$ Proceed to finalize `/init`
     > 2. Edit a specific answer (Specify question number to re-run)
     > 3. Other / Free-text (Add further instructions, notes, or constraints for the agent)
-*   **Resulting Action**: Incorporates any additional user notes into `.agents/plans/phase-1-summary.md` and initializes `PROCESS_STATUS.md` to finalize the `/init` workflow.
+*   **Resulting Action**: Writes permanent audit log into `.agents/plans/GRILL_STATUS.md` and transitions to **Node S4 (Execution Acceptance Gate)** to present the understanding summary and planned scaffolding steps for user approval (or proceeds automatically if `/init --auto` is passed).
