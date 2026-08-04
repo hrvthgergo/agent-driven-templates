@@ -18,6 +18,21 @@ On local development environments (both macOS and Windows), symbolic links are p
 
 ---
 
+### Git & GitHub Remote Origin Setup (`/init` Behavior)
+
+During the `/init` workflow, Git and GitHub remotes are initialized for all three folders (`antigravity-workspace`, `codebase-layout`, and `codebase-engine`) based on the choices made during the Grill Q&A session (Questions Q4 and Q5):
+
+1. **Option A: True Multi-Repository Setup (3 Independent GitHub Repositories)**:
+   - **`antigravity-workspace/`**: Initialized with its own `.git` repository and linked to the orchestrator/docs GitHub remote origin (e.g. `https://github.com/org/my-project-workspace.git`). Tracks `.agents/`, `docs/`, `docker/`, and the **relative symlinks** under `src/`.
+   - **`codebase-layout/`**: Initialized with its own `.git` repository and linked to the UI layer GitHub remote origin (e.g. `https://github.com/org/my-project-layout.git`). Tracks `src/`, `config/`, `tests/`, and standalone `Dockerfile`.
+   - **`codebase-engine/`**: Initialized with its own `.git` repository and linked to the Engine layer GitHub remote origin (e.g. `https://github.com/org/my-project-engine.git`). Tracks `src/`, `config/`, `tests/`, and standalone `Dockerfile`.
+   - *Symlink Portability*: Because symlinks under `antigravity-workspace/src/` use relative paths (`../../codebase-layout/src`), `antigravity-workspace` can be committed and pushed to its own GitHub repository without embedding or duplicating sub-repo source code.
+
+2. **Option B: Umbrella Workspace Setup (Single GitHub Repository)**:
+   - If a single repository is selected in Q5, `/init` initializes one root `.git` repository at `[Local Workspace Root]` encompassing all three subfolders (`antigravity-workspace/`, `codebase-layout/`, `codebase-engine/`) under a single GitHub remote origin URL.
+
+---
+
 ## 2. Configuration Handling (The Hybrid Autonomy Model)
 
 To maintain absolute development autonomy without exposing runtime secrets, configurations are divided according to the **"Rule of Dependency"**:

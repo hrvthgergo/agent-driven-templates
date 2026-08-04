@@ -35,7 +35,11 @@ agent-driven-templates/
     │   └── guards/
     │       └── antigravity/           # Environment-specific Antigravity guards
     ├── process_history/
-    │   └── process_history_workflow.md# /process-history Brownfield workflow specification
+    │   ├── process_history_workflow.md# /process-history Brownfield workflow specification
+    │   ├── process_history_questions.md# /process-history Q&A Grill schema
+    │   └── antigravity/               # Antigravity implementation map & test specifications
+    │       ├── process_history_implementation_map.md
+    │       └── process_history_tests.md
     ├── plan/                          # Interactive Planning workflow (Planned)
     ├── implement/                     # Action Implementation workflow (Planned)
     ├── verify/                        # Automated Verification workflow (Planned)

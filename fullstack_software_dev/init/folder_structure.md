@@ -32,19 +32,29 @@ This document defines the generic directory layout scaffolded, mapped, and enfor
 │   │
 │   ├── docs/                    # Global human-facing documentation
 │   │
-│   └── src/                     # Source Code Entry Points (Examples of symlink targets)
+│   └── src/                     # Source Code Entry Points & Agentic Layer Graphs
 │       ├── layout/              # [SYMLINK] Points to ../codebase-layout/src/ (Example UI layer)
+│       │   └── code_graph/      # Modular Code Graph Subfolder for Layout Layer (No symlink needed)
+│       │       ├── graph.md          # Block 1: Unordered structural dependency graph
+│       │       ├── process_flow.md   # Block 2A: Process entry points & control flow
+│       │       ├── data_flow.md      # Block 2B: Data sources (user, configs, APIs, DB, hardcoded)
+│       │       └── risk_analysis.md  # Block 2C: Coupling metrics & risk maps
 │       ├── engine/              # [SYMLINK] Points to ../codebase-engine/src/ (Example Engine layer)
+│       │   └── code_graph/      # Modular Code Graph Subfolder for Engine Layer (No symlink needed)
+│       │       ├── graph.md
+│       │       ├── process_flow.md
+│       │       ├── data_flow.md
+│       │       └── risk_analysis.md
 │       └── config/              # Central configuration (Secrets & environment envs)
 │
-├── codebase-<layer_a>/          # Generic Layer Skeleton A (e.g. codebase-layout for UI-only/fullstack)
+├── codebase-<layer_a>/          # Generic Layer Skeleton A (Production source repo; clean of doc overhead)
 │   ├── .github/ (or .gitlab/)   # Layer micro-pipelines (linting, unit tests)
 │   ├── config/                  # Layer autonomous routing, themes, or DB settings
 │   ├── Dockerfile               # Standalone production build spec for Layer A
 │   ├── src/                     # Raw layer source code (views, services, APIs)
 │   └── tests/                   # Layer-specific unit and isolation tests
 │
-└── codebase-<layer_b>/          # Generic Layer Skeleton B (e.g. codebase-engine for fullstack/multi-layer)
+└── codebase-<layer_b>/          # Generic Layer Skeleton B (Production source repo; clean of doc overhead)
     ├── .github/ (or .gitlab/)   # Layer micro-pipelines (unit tests, build checks)
     ├── config/                  # Layer autonomous background & service settings
     ├── Dockerfile               # Standalone production build spec for Layer B
@@ -52,7 +62,7 @@ This document defines the generic directory layout scaffolded, mapped, and enfor
     └── tests/                   # Layer-specific unit and integration tests
 ```
 
-*Note: Projects can initially be single-layer (e.g., developing only `codebase-layout` or `codebase-engine`), dual-layer (fullstack), or multi-layer. The `codebase-*` sub-repository layout is uniform across all layers, and the initial layer scope is confirmed in the `/init` Grill-me Q&A.*
+*Note: Production `codebase-*` sub-repositories contain strictly implementation source code, test suites, and build specs required to build/run the service. Documentation overhead like layer Code Graphs (`code_graph/`) are generated exclusively inside `antigravity-workspace/src/<layer>/code_graph/` (no symlink required).*
 
 *Lifecycle Layer Expansion: If a project begins as single-layer (e.g., `codebase-engine`) and later requires an additional layer (e.g., adding `codebase-layout` or `codebase-worker`), the framework introduces the new layer skeleton under the same `codebase-<new_layer>` pattern, registers a new symlink under `src/<new_layer>`, updates `docker-compose.yml`, and preserves complete structural consistency across the repository lifecycle.*
 

@@ -25,7 +25,7 @@ The `/process-history` workflow synthesizes three distinct knowledge sources to 
 Based on these three knowledge sources, `/process-history` executes three primary operations:
 - **Migrate & Organize Intact**: Copies existing source code and documentation intact into the newly created `codebase-*` sub-repository folder layout established during `/init` without code modifications.
 - **Link Previous Sources**: Registers and links external remote code repositories, Git submodules, and cloud documentation links into workspace project configurations and phase blueprints.
-- **Populate Blueprints & Generate Layer-Scoped Code Graphs**: Fills out all 5 phase blueprint documents in `.agents/plans/` and generates dedicated **Layer-Scoped Code Graph Documents** (`codebase-<layer>/code_graph.md`) inside each sub-repository, mapping code elements (interfaces, classes, functions, entities, services) and their structural connections specifically at that layer's level.
+- **Populate Blueprints & Generate Workspace Code Graph Subfolders**: Fills out all 5 phase blueprint documents in `.agents/plans/` and generates a dedicated **Modular Code Graph Subfolder** (`antigravity-workspace/src/<layer>/code_graph/`) inside the workspace layer directory containing 2 distinct analytical blocks (Unordered Graph + Multi-Perspective Analysis).
 
 ### Key Features
 1. **Grill Engine Gate**: Uses a stateful, interactive interview based on [process_history_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/process_history_questions.md) to confirm legacy source mappings and execution strategies.
@@ -33,10 +33,14 @@ Based on these three knowledge sources, `/process-history` executes three primar
 3. **Remote Sources & Submodules Audit**: Identifies remote code repositories, Git submodules, and external documentation sources connected to the legacy codebase that were omitted during `/init`.
 4. **Dual Execution Options**: Supports both **Plan-First Mode** (generating `.agents/plans/restructure-proposal.md` and waiting for developer approval) and **Immediate Execution Mode** (copying files into `codebase-*` layers immediately while recording the execution plan artifact).
 5. **Untouched Legacy Source & As-Is Migration Policy**: Original legacy repositories remain 100% untouched and read-only. Files are migrated as-is into the new directory structure created during `/init` (`antigravity-workspace/` and `codebase-*` sub-repositories) without code modifications.
-6. **Layer-Scoped Code Graphs & Blueprints Synthesis**: Automatically populates `.agents/plans/phase-1-summary.md` through `phase-5-operation.md` and generates layer-scoped `codebase-<layer>/code_graph.md` files (mapping interfaces, classes, functions, and modules per sub-repository) to serve as dedicated resources for datastream evaluations and code element utilization.
+6. **2-Block Modular Workspace Code Graph Subfolders**: To keep production `codebase-*` sub-repositories clean and free of documentation overhead, code graphs are placed exclusively inside **`antigravity-workspace/src/<layer>/code_graph/`** (no symlinks required), containing:
+   * **Block 1**: `graph.md` (Unordered structural dependency graph & element registry).
+   * **Block 2 (Perspective A)**: `process_flow.md` (Process entry points & control flow initiation).
+   * **Block 2 (Perspective B)**: `data_flow.md` (Data sources: user provided, configs, APIs, databases, hardcoded).
+   * **Block 2 (Perspective C)**: `risk_analysis.md` (Dependency fan-in/fan-out, risk metrics, & test coverage maps).
 
 ### Separation from `/init`
-While `/init` focuses strictly on lightweight bootstrapping, container checks, and establishing workspace boundaries, `/process-history` handles legacy code analysis, file organization into `codebase-*` layers, layer-scoped Code Graph generation, and blueprint synthesis.
+While `/init` focuses strictly on lightweight bootstrapping, container checks, and establishing workspace boundaries, `/process-history` handles legacy code analysis, file organization into `codebase-*` layers, modular Code Graph generation, and blueprint synthesis.
 
 ---
 
@@ -60,7 +64,7 @@ graph TD
         B -->|"Immediate Execution Mode (--auto)"| C1
         C1 --> C2["Record Execution Plan Artifact (restructure-proposal.md)"]
         
-        C2 --> D1["Generate Layer-Scoped Code Graphs (codebase-<layer>/code_graph.md)"]
+        C2 --> D1["Generate Code Graph Subfolders (src/<layer>/code_graph/)"]
         D1 --> D2["Populate Phase 1-5 Blueprints & Update PROCESS_STATUS.md"]
     end
 ```
@@ -78,7 +82,7 @@ graph TD
     S3 --> S4[Step 4: Draft Restructuring & Migration Plan]
     S4 --> S5[Step 5: Consent Gate / Immediate Execution]
     S5 --> S6[Step 6: Execute As-Is File Copies to codebase-*]
-    S6 --> S7[Step 7: Generate Layer Code Graphs & Populate Blueprints]
+    S6 --> S7[Step 7: Generate Workspace Code Graph Subfolders & Populate Blueprints]
 ```
 
 ### Connected Descriptions of the Step-by-Step Design:
@@ -90,8 +94,12 @@ graph TD
 *   **Step 4: Draft Restructuring Plan (Node S4)**: Generates `.agents/plans/restructure-proposal.md` mapping legacy files into `codebase-*` sub-repository targets.
 *   **Step 5: Consent Gate / Execution Choice (Node S5)**: In Plan-First Mode, pauses for explicit developer approval. In Immediate Execution Mode, proceeds directly to file operations.
 *   **Step 6: Execute As-Is File Copies (Node S6)**: Copies legacy source files intact into respective target `codebase-*` sub-repositories without modifying code logic.
-*   **Step 7: Generate Layer Code Graphs & Populate Blueprints (Node S7)**:
-    *   Generates layer-scoped Code Graph documents inside each target sub-repository (`codebase-<layer>/code_graph.md`), linking logical structural elements (interfaces, classes, functions, entities, services) specifically at the level of that layer. These graphs serve as dedicated resources for datastream evaluations and element utilization maps.
+*   **Step 7: Generate Workspace Code Graph Subfolders & Populate Blueprints (Node S7)**:
+    *   Generates a dedicated `antigravity-workspace/src/<layer>/code_graph/` subfolder per layer (preventing documentation overhead inside production `codebase-*` repositories; no symlinks required) with 2 analytical blocks:
+        *   `graph.md`: Unordered dependency graph & structural node registry (interfaces, classes, functions, entities, services).
+        *   `process_flow.md`: Process entry points & control flow initiation paths.
+        *   `data_flow.md`: Data sources (user, configs, APIs, DB, hardcoded) & datastream transformations.
+        *   `risk_analysis.md`: Coupling metrics (fan-in/fan-out), critical nodes, & test coverage maps.
     *   Fills out all 5 phase blueprint documents (`phase-1-summary.md` through `phase-5-operation.md` in `.agents/plans/`) with synthesized legacy domain knowledge.
     *   Updates `.agents/plans/PROCESS_STATUS.md` marking Row 2.0 (`/process-history`) as `Completed`.
 

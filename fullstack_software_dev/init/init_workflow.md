@@ -151,12 +151,15 @@ graph TD
 
 ---
 
-#### Step 5: Git Hook Registration (Node S5)
-*   **Description**: Configures Git origin remotes (GitHub, GitLab, Bitbucket) based on Q5/Q5.a answers and installs the `pre-commit-plan-validator.sh` safety hook into `.git/hooks/pre-commit`.
+#### Step 5: Git Hook Registration & Remote Origin Setup (Node S5)
+*   **Description**: Configures Git repositories and remote origins on GitHub/GitLab/Bitbucket based on Q4, Q5, and Q5.a answers, and installs the `pre-commit-plan-validator.sh` safety hook into `.git/hooks/pre-commit`.
 *   **Architectural & Implementation Reasoning**:
+    *   *Git & Remote Origin Setup*:
+        *   **Multi-Repo Setup (Separate Remotes for Docs vs. UI vs. Engine)**: Executes `git init` and registers remote origin URLs (`git remote add origin <url>`) inside `antigravity-workspace/`, `codebase-layout/`, and `codebase-engine/` independently. This ensures all three folders are initialized and tracked on their respective GitHub repositories.
+        *   **Umbrella Monorepo Setup (Single Remote)**: Initializes a single root Git repository at `[Local Workspace Root]` containing all three subfolders under one single GitHub remote origin URL.
     *   *Why Safety Interception?*: To guarantee process compliance, code changes MUST NOT be committed if `PROCESS_STATUS.md` or required `.agents/plans/` status sheets are missing or corrupted.
 *   **State & Storage Processing**:
-    *   Copies `hooks/pre-commit-plan-validator.sh` to `.git/hooks/pre-commit` and runs `chmod +x`.
+    *   Initializes `.git` and configures remotes for target folders, then copies `hooks/pre-commit-plan-validator.sh` to `.git/hooks/pre-commit` and runs `chmod +x`.
 *   **Guard Elements Implementing S5**:
     *   **Safety Hook**: Installed from `hooks/pre-commit-plan-validator.sh`.
 

@@ -137,6 +137,8 @@ graph TD
     *   *Key Files*:
         *   [process_history_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/process_history_workflow.md) (Detailed specifications)
         *   [process_history_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/process_history_questions.md) (Scans and Q&A Grill schema)
+        *   [antigravity/process_history_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/antigravity/process_history_implementation_map.md) (Antigravity guard execution roadmap)
+        *   [antigravity/process_history_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/antigravity/process_history_tests.md) (Brownfield verification test specification)
 3.  **Interactive Planning (/plan)**
     *   *Path*: `fullstack_software_dev/plan/`
     *   *Purpose*: Leads the user through the creation of the 5-phase blueprint plans tracking status in `PROCESS_STATUS.md`.
