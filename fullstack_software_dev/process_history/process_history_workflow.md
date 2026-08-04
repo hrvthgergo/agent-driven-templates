@@ -33,8 +33,8 @@ Based on these three knowledge sources, `/process-history` executes three primar
 3. **Remote Sources & Submodules Audit**: Identifies remote code repositories, Git submodules, and external documentation sources connected to the legacy codebase that were omitted during `/init`.
 4. **Dual Execution Options**: Supports both **Plan-First Mode** (generating `.agents/plans/restructure-proposal.md` and waiting for developer approval) and **Immediate Execution Mode** (copying files into `codebase-*` layers immediately while recording the execution plan artifact).
 5. **Untouched Legacy Source & As-Is Migration Policy**: Original legacy repositories remain 100% untouched and read-only. Files are migrated as-is into the new directory structure created during `/init` (`antigravity-workspace/` and `codebase-*` sub-repositories) without code modifications.
-6. **2-Block Modular Workspace Code Graph Subfolders**: To keep production `codebase-*` sub-repositories clean and free of documentation overhead, code graphs are placed exclusively inside **`antigravity-workspace/src/<layer>/code_graph/`** (no symlinks required), containing:
-   * **Block 1**: `graph.md` (Unordered structural dependency graph & element registry).
+6. **2-Block Modular Workspace Code Graph Subfolders**: To keep production `codebase-*` sub-repositories clean and free of documentation overhead, code graphs are built adhering to [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/code_graph_taxonomy.md) and placed exclusively inside **`antigravity-workspace/src/<layer>/code_graph/`** (no symlinks required), containing:
+   * **Block 1**: `graph.md` (Unordered structural dependency graph & element registry based on language-specific nodes for Python, Go, and JS).
    * **Block 2 (Perspective A)**: `process_flow.md` (Process entry points & control flow initiation).
    * **Block 2 (Perspective B)**: `data_flow.md` (Data sources: user provided, configs, APIs, databases, hardcoded).
    * **Block 2 (Perspective C)**: `risk_analysis.md` (Dependency fan-in/fan-out, risk metrics, & test coverage maps).

@@ -29,6 +29,7 @@ fullstack_software_dev/
 ├── grill_engine.md                     # [Tier 1] General Q&A Engine Spec
 ├── multi_repo_architecture.md          # [Tier 1] Multi-Repo & Symlink Architecture Spec
 ├── process_handling.md                 # [Tier 1] Process Guard & Matrix Spec
+├── code_graph_taxonomy.md              # [Tier 1] Language-Specific Code Graph Taxonomy (Python, Go, JS)
 │
 ├── init/                               # [Tier 2] Initialization Workflow Subfolder
 │   ├── init_workflow.md                # Detailed workflow specifications

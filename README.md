@@ -25,6 +25,7 @@ All active specifications and operational playbooks are maintained under `fullst
 - **[Initialization Workflow (/init)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md)**: Bootstrapping playbook, 3-block Q&A schema (`init_questions.md`), and repository directory layouts (`folder_structure.md`).
 - **[Legacy Code & Docs Processing (/process-history)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/process_history_workflow.md)**: Standalone workflow for deep historical code analysis, documentation review, and refactoring proposals.
 - **[Grill Engine Gate](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md)**: Reusable Q&A engine design rules and state file formats (`GRILL_STATUS.md`).
+- **[Language-Specific Code Graph Taxonomy](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/code_graph_taxonomy.md)**: Universal node and connection rules for Python, Go, and JavaScript.
 
 ---
 
@@ -38,6 +39,7 @@ agent-driven-templates/
     ├── grill_engine.md                # Reusable Q&A Grill Engine specification
     ├── multi_repo_architecture.md     # Multi-repo symlinks & Hybrid Docker strategy
     ├── process_handling.md            # Guard Process Handling Spec (PROCESS_STATUS.md)
+    ├── code_graph_taxonomy.md         # Language-Specific Code Graph Taxonomy (Python, Go, JS)
     ├── init/                          # [Tier 2] Initialization Workflow Subfolder
     │   ├── init_workflow.md           # /init Bootstrapping workflow specification
     │   ├── init_questions.md          # 3-Block Q&A Grill schema
