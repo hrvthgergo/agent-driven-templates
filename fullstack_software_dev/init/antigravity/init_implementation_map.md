@@ -72,7 +72,7 @@ The implementation plan directly realizes the following design blueprints and `/
     1.  Create `fullstack_software_dev/init/antigravity/guards/workflows/init.md`.
     2.  Define YAML frontmatter (`name: init`, `description: Bootstrapping workflow for Guards framework in Antigravity`).
     3.  Implement the 7-step state machine execution nodes using Antigravity workflow syntax:
-        *   **Node S1 (Check Environment)**: Executes `docker info` to verify Docker engine availability and privileges.
+        *   **Node S1 (Check Environment & Branch Initialization)**: Executes `docker info` to verify Docker engine availability/privileges, initializes Git context, creates/checks out the `initial` branch for greenfield runs, or creates/checks out a `feature/<feature_name>` branch for re-runs in an already initialized workspace.
         *   **Node S2 (Q&A Grill Gate)**: Invokes the interview engine adhering to `rules/init-grill.md`.
         *   **Node S3 (Lightweight Layer Scan & Linking)**: Surface-level layer directory scanning without codebase restructuring.
         *   **Node S4 (Execution Acceptance Gate)**: Synthesizes gathered info, displays understanding summary and planned steps, and requests user approval (or bypasses prompt in `--auto` mode).
@@ -80,9 +80,9 @@ The implementation plan directly realizes the following design blueprints and `/
         *   **Node S6 (Git Hook Registration & Remote Setup)**: Registers remote origins and installs `hooks/pre-commit-plan-validator.sh`.
         *   **Node S7 (Initialization Done)**: Reports initialization summary and available next commands (`/plan` or `/process-history`).
     4.  Implement CLI parameter handling:
+        *   `/init`: Default interactive execution (creates `initial` branch on greenfield; creates `feature/<feature_name>` branch on re-runs).
         *   `/init --auto`: Automatic execution mode. Bypasses interactive Node S4 acceptance prompt and executes all planned scaffolding tasks.
-        *   `/init --release <version>`: Creates Git branch `release/<version>` and deploys release-bound `PROCESS_STATUS.md`.
-        *   `/init --feature <feature_name>`: Creates Git branch `feature/<feature_name>` and deploys feature-bound `PROCESS_STATUS.md`.
+        *   `/init --feature <feature_name>`: Explicitly creates Git branch `feature/<feature_name>` and deploys feature-bound `PROCESS_STATUS.md`.
         *   `/init --add-layer <layer_name>`: Introduces a new sub-repo `codebase-<layer_name>`, registers its `src/` symlink, provisions its `Dockerfile`, and updates `docker-compose.yml`.
         *   `/init --dry-run`: Previews proposed files, symlinks, Docker configs, and status sheets without writing to disk.
         *   `/init --force`: Overwrites default `.agents/` rules/workflows while preserving custom phase blueprints.

@@ -67,7 +67,7 @@ graph TD
     *   **MCP Settings (Node B2)**: Generates basic configuration settings for Model Context Protocol integrations.
 *   **Folder-Based Environment (Node C)**:
     Organizes physical files, workspace boundaries, and existing source code links.
-    *   **Plans & Tracking (Node C1)**: Scaffolds `.agents/plans/` containing 5-phase blueprint templates and `PROCESS_STATUS.md`.
+    *   **Plans & Tracking (Node C1)**: Scaffolds `.agents/plans/` organized into feature/branch subdirectories (e.g., `.agents/plans/initial/` for initial setup, `.agents/plans/<feature_name>/` for feature branches) containing 5-phase blueprint templates, `GRILL_STATUS.md`, and `PROCESS_STATUS.md`.
     *   **Decoupled Layout & Source Linking (Node C2)**: Maps `src/` symlinks to existing source folders or `codebase-<layer_name>` skeletons. For full details, refer to [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/folder_structure.md).
 
 ---
@@ -89,7 +89,7 @@ graph TD
 ### State Machine Execution & Transition Rules
 1.  **Sequential Execution Guarantee**: Step execution is strictly linear (S1 $\rightarrow$ S2 $\rightarrow$ S3 $\rightarrow$ S4 $\rightarrow$ S5 $\rightarrow$ S6 $\rightarrow$ S7). No step may be skipped, reordered, or executed out of sequence.
 2.  **Gate Validation Before Transition**: A step MUST complete its verification assertions before transitioning state to the next node. If any step fails (e.g. S1 Docker missing, S4 User Rejection, S5 symlink target invalid), execution halts immediately with a diagnostic report.
-3.  **Resume & Audit State**: If execution is interrupted, the state machine reads `.agents/plans/GRILL_STATUS.md` and `.agents/plans/PROCESS_STATUS.md` to resume from the last completed node without re-prompting previously answered questions.
+3.  **Resume & Audit State**: If execution is interrupted, the state machine reads `.agents/plans/<branch_name>/GRILL_STATUS.md` and `.agents/plans/<branch_name>/PROCESS_STATUS.md` to resume from the last completed node without re-prompting previously answered questions.
 
 ---
 
@@ -115,11 +115,11 @@ graph TD
     *   *Neutral Choice & Free-Text Law*: All options are presented neutrally without `[Recommended]` labels to avoid biasing user decisions. Every multiple-choice prompt includes a mandatory final free-text choice (`Other / Free-text (...)`).
     *   *Sequential Question Order*: Executes Q1 (Scope), Q2 (System Folders Q2.a path listing with version-control auto-detection for remotes, Q2.b folder creation), Q3 (Cloud Docs with scan failure statement), Q4 (Additional Remotes Q4.a), Q5 (Cloud Provider Q5.a), Q6 (Architecture Pattern), Q7 (Layer Scope), Q8 (Tech Stack), Q9 (Agent Guiders), and Q10 (Summary Verification & Reflection).
 *   **State & Storage Processing**:
-    *   **Persistent Q&A Audit Log (`GRILL_STATUS.md`)**: As questions are answered, the agent records all prompts, options, and user inputs into `.agents/plans/GRILL_STATUS.md`. This file is preserved permanently alongside `PROCESS_STATUS.md` as an immutable audit log.
+    *   **Persistent Q&A Audit Log (`GRILL_STATUS.md`)**: As questions are answered, the agent records all prompts, options, and user inputs into `.agents/plans/<branch_name>/GRILL_STATUS.md` (e.g., `.agents/plans/initial/GRILL_STATUS.md` or `.agents/plans/<feature_name>/GRILL_STATUS.md`). This file is preserved permanently alongside `PROCESS_STATUS.md` as an immutable audit log.
     *   **Q10 Reflection & Modification**: In Q10, the agent formats a clean recap table of all gathered Q1–Q9 answers. The user can choose to confirm, modify any specific answer by re-running its prompt, or add open-ended notes.
 *   **Guard Elements Implementing S2**:
     *   **Rule Guard**: Governed by `rules/init-grill.md` (Neutral prompts, 2 baselines, Q1–Q10 sequence).
-    *   **State Engine**: Governed by `grill_engine.md` (Managing `.agents/plans/GRILL_STATUS.md` state machine).
+    *   **State Engine**: Governed by `grill_engine.md` (Managing `.agents/plans/<branch_name>/GRILL_STATUS.md` state machine).
 
 ---
 
@@ -128,7 +128,7 @@ graph TD
 *   **Architectural & Implementation Reasoning**:
     *   *Simplicity & Non-Restructuring Rule*: `/init` strictly limits scanning to surface-level directory detection and folder linking into `phase-1-summary.md`. **Deep code parsing, historical analysis, file moves, and import rewrites are explicitly forbidden during `/init`** and decoupled into the standalone `/process-history` workflow.
 *   **State & Storage Processing**:
-    *   Scans folder paths provided in Q2.a and analyzes version control configs (`.git/config`, etc.) to auto-detect remote origins. Maps discovered directories into the 'Folders' section of `.agents/plans/phase-1-summary.md`.
+    *   Scans folder paths provided in Q2.a and analyzes version control configs (`.git/config`, etc.) to auto-detect remote origins. Maps discovered directories into the 'Folders' section of `.agents/plans/<branch_name>/phase-1-summary.md`.
 *   **Guard Elements Implementing S3**:
     *   **Action Skill**: Executed by `skills/init-scaffolder/SKILL.md` (Surface layer detection & brownfield folder linking).
 
@@ -142,24 +142,26 @@ graph TD
         *   **Default / Interactive Mode**: Prompts the user with the summary and planned step list, waiting for explicit confirmation (`1. Proceed with execution` / `2. Modify parameters`) before proceeding to S5.
         *   **Automated Mode (`--auto`)**: When the `--auto` flag is passed, the agent logs the summary and planned action list for auditing and immediately transitions to Node S5 without pausing for user confirmation.
 *   **State & Storage Processing**:
-    *   Appends the Execution Acceptance Summary and acceptance status to `.agents/plans/GRILL_STATUS.md`.
+    *   Appends the Execution Acceptance Summary and acceptance status to `.agents/plans/<branch_name>/GRILL_STATUS.md`.
 *   **Guard Elements Implementing S4**:
     *   **Workflow Playbook Guard**: Executed by `workflows/init.md` (Node S4 execution acceptance gate logic).
 
 ---
 
 #### Step 5: Scaffolding Workspace & `PROCESS_STATUS.md` (Node S5)
-*   **Description**: Creates physical workspace directories, scaffolds `.agents/` control structures, registers relative symbolic links under `src/`, provisions Hybrid Docker files, provisions `.gitkeep` files across all scaffolded directories, and initializes `.agents/plans/PROCESS_STATUS.md` and `.agents/plans/phase-1-summary.md`.
+*   **Description**: Creates physical workspace directories, scaffolds `.agents/` control structures, creates the feature/branch subfolder under `.agents/plans/<branch_name>/` (e.g. `.agents/plans/initial/` or `.agents/plans/<feature_name>/`), registers relative symbolic links under `src/`, provisions Hybrid Docker files, provisions `.gitkeep` files across all scaffolded directories, and initializes `.agents/plans/<branch_name>/PROCESS_STATUS.md` and `.agents/plans/<branch_name>/phase-1-summary.md`.
 *   **Architectural & Implementation Reasoning**:
+    *   *Feature-Bound Planning Organization*:
+        *   Because every `/init` execution runs on a specific Git branch (`initial` for greenfield setup; `feature/<feature_name>` for feature runs), all planning blueprints and status tracking sheets are organized into subfolders inside `.agents/plans/` matching the feature/branch scope (e.g. `.agents/plans/initial/` or `.agents/plans/<feature_name>/`).
     *   *Directory Preservation Policy (`.gitkeep` Rule)*:
         *   Git natively tracks files rather than empty directory nodes. To ensure that every scaffolded directory path (both control folders under `.agents/` like `skills/`, `hooks/`, `sidecars/`, `plans/`, `rules/`, `workflows/` and codebase directories like `src/`, `config/`, `tests/`, `docs/`, `docker/`) is preserved and synchronized on remote Git origins, **the `/init` workflow automatically provisions a `.gitkeep` file inside every scaffolded directory node**.
     *   *Multi-Repo Symlinking & 3-Part Verification*:
         *   Creates relative symbolic links (e.g., `ln -s ../../codebase-layout/src src/layout`) to ensure cross-machine and CI/CD portability without hardcoding absolute paths.
         *   Executes a mandatory **3-part verification check**: (1) verify symlink attribute exists, (2) confirm link target resolves to an active directory catching dangling links, and (3) assert relative pathing.
     *   *Hybrid Docker Provisioning*: Scaffolds `antigravity-workspace/docker/dev.Dockerfile` (sandbox), `antigravity-workspace/docker/docker-compose.yml` (orchestrator), and standalone `Dockerfile` specs in each `codebase-<layer_name>` sub-repo.
-    *   *Process Guard Initialization*: Deploys `.agents/plans/PROCESS_STATUS.md` containing **Block 1 (Workflow Execution Matrix)** with 5-phase planning sub-rows (3.1 to 3.5), and **Block 2 (Datestamped Daily History)** bound to the active release (`/init --release <v>`) or feature (`/init --feature <name>`) branch.
+    *   *Process Guard Initialization*: Deploys `.agents/plans/<branch_name>/PROCESS_STATUS.md` containing **Block 1 (Workflow Execution Matrix)** with 5-phase planning sub-rows (3.1 to 3.5), and **Block 2 (Datestamped Daily History)** bound to the active branch (e.g. `initial` or `feature/<feature_name>`).
 *   **State & Storage Processing**:
-    *   Creates directory tree, provisions `.gitkeep` files in every created folder node, and deploys starter templates `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md` into `.agents/plans/`. Fills architecture metadata gathered from Q1–Q10.
+    *   Creates directory tree, provisions `.gitkeep` files in every created folder node, creates `.agents/plans/<branch_name>/` subfolder, and deploys starter templates `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md` into `.agents/plans/<branch_name>/`. Fills architecture metadata gathered from Q1–Q10.
 *   **Guard Elements Implementing S5**:
     *   **Action Skill**: Executed by `skills/init-scaffolder/SKILL.md` (Directory scaffolding, `.gitkeep` provisioning, relative symlinks + 3-part check, Hybrid Docker files).
     *   **Templates**: Deploys `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md`.
@@ -196,10 +198,11 @@ graph TD
 The `/init` command is configured and run using the following operational rules and flags:
 
 ### Parameters & Options
-- `/init`: Default interactive execution. Runs environment check, Q&A Grill gate, lightweight scan, displays Execution Acceptance summary (Node S4) for user approval, scaffolds `.agents/` structures, and links existing source folders.
+- `/init`: Default interactive execution.
+  - **Initial Run (Greenfield)**: When run for the first time in an uninitialized workspace, `/init` automatically creates and checks out the **`initial`** Git branch (`git checkout -b initial`) and scaffolds all initial `.agents/` control structures and blueprints.
+  - **Subsequent Run (Initialized Workspace)**: When invoked without options in a workspace that is already properly initialized, `/init` is automatically recognized as a **New Feature Initialization**. It prompts the user for a feature name, creates and checks out a new branch `feature/<feature_name>`, and scaffolds a feature-bound `PROCESS_STATUS.md`.
 - `/init --auto`: Automatic execution mode. Bypasses the interactive Execution Acceptance prompt (Node S4) and executes all planned workspace scaffolding and Git hook registration tasks automatically.
-- `/init --release <version>`: Initializes a new release scope (e.g. `v1.0.0`), creates the Git branch `release/<version>`, and scaffolds a fresh `PROCESS_STATUS.md` document for managing the release lifecycle.
-- `/init --feature <feature_name>`: Initializes a parallel feature development scope based on existing sources, creates Git branch `feature/<feature_name>`, and scaffolds a feature-bound `PROCESS_STATUS.md`.
+- `/init --feature <feature_name>`: Explicitly initializes a new feature development scope, creates and checks out Git branch `feature/<feature_name>`, and scaffolds a feature-bound `PROCESS_STATUS.md`.
 - `/init --add-layer <layer_name>`: Introduces a new software layer sub-repository (`codebase-<layer_name>`) into an existing workspace, registering its symlink under `src/<layer_name>`, scaffolding its `Dockerfile`, and updating `docker-compose.yml`.
 - `/init --dry-run`: Previews all proposed files, symlinks, Docker configs, and `PROCESS_STATUS.md` content without writing any changes to disk.
 - `/init --force`: Overwrites existing default rules and workflows in `.agents/rules/` and `.agents/workflows/` while strictly preserving custom phase blueprints (`phase-1-summary.md`, `PROCESS_STATUS.md`).
@@ -207,5 +210,8 @@ The `/init` command is configured and run using the following operational rules 
 *Historical Codebase Restructuring Note: Codebase restructuring, historical code analysis, and legacy migrations are explicitly decoupled from `/init` and managed by the separate `/process-history` workflow.*
 
 ### Operational Rules of Thumb
-1.  **No-Restructuring Rule**: `/init` MUST NOT perform file moves, code refactoring, or import rewrites. If legacy codebase restructuring is required, the user is directed to call `/process-history`.
-2.  **Idempotency Rule**: Running `/init` multiple times in an already initialized workspace will verify container status and restore missing default files without modifying active plans or custom project blueprints.
+1.  **Branch Initialization Rule**:
+    - **First-Time Run**: Scaffolds on a newly created `initial` branch.
+    - **Re-running `/init`**: If the workspace is already initialized, calling `/init` without options automatically creates a new `feature/<feature_name>` branch.
+2.  **No-Restructuring Rule**: `/init` MUST NOT perform file moves, code refactoring, or import rewrites. If legacy codebase restructuring is required, the user is directed to call `/process-history`.
+3.  **Idempotency Rule**: Running `/init` multiple times in an already initialized workspace will verify container status and restore missing default files without modifying active plans or custom project blueprints.

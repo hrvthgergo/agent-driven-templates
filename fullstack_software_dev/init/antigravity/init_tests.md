@@ -56,7 +56,7 @@ Upon completion of Node S7, the test harness executes automated verification che
 
 | Node | Verification Target | Asserted Resource Path | Expected State / Content Assertion |
 | :--- | :--- | :--- | :--- |
-| **S1** | Docker Verification | Host Environment | `docker info` returns exit code `0`. Sandbox container image verified. |
+| **S1** | Docker & Branch Verification | Host Environment & Git Context | `docker info` returns exit code `0`. Greenfield run creates and checks out the `initial` branch (`git branch --show-current` returns `initial`). |
 | **S2** | Permanent Audit Log | `.agents/plans/GRILL_STATUS.md` | File exists. Contains full Q1–Q10 transcript, question texts, selected options, and user inputs. |
 | **S4** | Execution Acceptance Record | `.agents/plans/GRILL_STATUS.md` | Contains Execution Acceptance Summary and User Confirmation record (`Accepted`). |
 | **S5** | Control Directory & `.gitkeep` | `.agents/` | Directories present: `rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`, `plans/`. **`.gitkeep` present inside every control folder node**. |
