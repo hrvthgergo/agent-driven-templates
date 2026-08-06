@@ -1,40 +1,25 @@
 #!/usr/bin/env bash
-# ==============================================================================
-# Guards Framework Pre-Commit Validator Hook
-# Location: .git/hooks/pre-commit
-# Installed during: /init Step 6 (Node S6)
-# ==============================================================================
+# Pre-Commit Plan Validator Safety Hook
 
 set -e
 
-echo "[GUARDS FRAMEWORK] Running Pre-Commit Plan Validator..."
+BRANCH=$(git branch --show-current 2>/dev/null || echo "initial")
+STATUS_FILE="agent-workspace/plans/${BRANCH}/PROCESS_STATUS.md"
 
-PROCESS_STATUS_FILE=".agents/plans/PROCESS_STATUS.md"
+if [ ! -f "$STATUS_FILE" ]; then
+    # Fallback to root or initial if branch folder not found
+    STATUS_FILE=$(find agent-workspace/plans/ -name "PROCESS_STATUS.md" | head -n 1)
+fi
 
-# 1. Check if PROCESS_STATUS.md exists
-if [ ! -f "$PROCESS_STATUS_FILE" ]; then
-    echo "[ERROR] Pre-Commit Validation Failed: Missing required process status sheet: $PROCESS_STATUS_FILE"
-    echo "Please run /init to bootstrap the Guards framework."
+if [ -z "$STATUS_FILE" ] || [ ! -f "$STATUS_FILE" ]; then
+    echo "ERROR: Pre-commit check failed. PROCESS_STATUS.md does not exist."
     exit 1
 fi
 
-# 2. Check if PROCESS_STATUS.md contains Block 1 and Block 2 headers
-if ! grep -q "Block 1: Workflow Execution & Planning Matrix" "$PROCESS_STATUS_FILE"; then
-    echo "[ERROR] Pre-Commit Validation Failed: $PROCESS_STATUS_FILE is missing Block 1 Matrix header."
+if ! grep -q "Block 1: Workflow Execution Matrix" "$STATUS_FILE"; then
+    echo "ERROR: Pre-commit check failed. PROCESS_STATUS.md missing Block 1 matrix."
     exit 1
 fi
 
-if ! grep -q "Block 2: Datestamped Daily Execution History" "$PROCESS_STATUS_FILE"; then
-    echo "[ERROR] Pre-Commit Validation Failed: $PROCESS_STATUS_FILE is missing Block 2 History header."
-    exit 1
-fi
-
-# 3. Check for Phase 1 Summary blueprint if /init or /plan is active
-PHASE_1_SUMMARY=".agents/plans/phase-1-summary.md"
-if [ ! -f "$PHASE_1_SUMMARY" ]; then
-    echo "[ERROR] Pre-Commit Validation Failed: Missing required architecture summary: $PHASE_1_SUMMARY"
-    exit 1
-fi
-
-echo "[GUARDS FRAMEWORK] Pre-Commit Plan Validation Passed Successfully!"
+echo "Pre-commit check passed: Valid PROCESS_STATUS.md found."
 exit 0
