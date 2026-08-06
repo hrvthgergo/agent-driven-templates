@@ -140,9 +140,11 @@ graph TD
         *   [process_history_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/process_history_questions.md) (Scans and Q&A Grill schema)
         *   [antigravity/process_history_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/antigravity/process_history_implementation_map.md) (Antigravity guard execution roadmap)
         *   [antigravity/process_history_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/antigravity/process_history_tests.md) (Brownfield verification test specification)
-3.  **Interactive Planning (/plan)**
+3.  **[Interactive Planning (/plan)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/plan_workflow.md)**
     *   *Path*: `fullstack_software_dev/plan/`
     *   *Purpose*: Leads the user through the creation of the 5-phase blueprint plans tracking status in `PROCESS_STATUS.md`.
+    *   *Key Files*:
+        *   [plan_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/plan_workflow.md) (Detailed specifications)
 4.  **Action Implementation (/implement)**
     *   *Path*: `fullstack_software_dev/implement/`
     *   *Purpose*: Scaffolds layout and logic components in increments after approval of a specific `implementation-map.md`.
