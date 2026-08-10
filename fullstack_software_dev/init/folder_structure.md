@@ -19,17 +19,19 @@ This document defines the generic directory layout scaffolded, mapped, and enfor
 │   │   ├── initial/             # Planning scope for initial baseline branch ('initial')
 │   │   │   ├── GRILL_STATUS.md  # Q&A audit log for initial setup
 │   │   │   ├── PROCESS_STATUS.md # Process matrix & daily execution log for initial setup
-│   │   │   └── phase-1-summary.md # Phase 1: High-level architectural summary
+│   │   │   ├── phase-1-summary.md # Phase 1: High-level architectural summary
+│   │   │   └── resource/        # Staging folder for non-code legacy docs & supplementary assets
 │   │   └── <feature_name>/      # Planning scope for feature branch (e.g. 'feature/checkout-api')
 │   │       ├── GRILL_STATUS.md  # Q&A audit log for feature branch
 │   │       ├── PROCESS_STATUS.md # Feature-bound process & daily execution matrix
-│   │       ├── phase-1-summary.md # Phase 1: High-level summary & feature scope
-│   │       ├── phase-2-layout.md # Phase 2: Design system & styling laws
-│   │       ├── phase-3-engine.md # Phase 3: Engine logic & mappers (DTOs)
-│   │       ├── phase-4-verification.md # Phase 4: Test specs & assertions
-│   │       └── phase-5-operation.md # Phase 5: Dockerfiles, compose, CI/CD
+│   │       ├── phase-1-summary.md # Phase 1: High-level summary & feature scope (Selective based on relevance)
+│   │       ├── phase-2-layout.md # Phase 2: Design system & styling laws (Selective based on relevance)
+│   │       ├── phase-3-engine.md # Phase 3: Engine logic & mappers DTOs (Selective based on relevance)
+│   │       ├── phase-4-verification.md # Phase 4: Test specs & assertions (Selective based on relevance)
+│   │       ├── phase-5-operation.md # Phase 5: Dockerfiles, compose, CI/CD (Selective based on relevance)
+│   │       └── resource/        # Staging folder for non-code legacy docs, schemas & assets
 │   │
-│   ├── docs/                    # Global human-facing documentation
+│   ├── docs/                    # Global human-facing documentation (Implemented capabilities)
 │   │
 │   └── src/                     # Source Code Entry Points & Agentic Layer Graphs
 │       ├── devops/              # [SYMLINK] Points to ../codebase-devops/src/ (DevOps/Infra entry point)
@@ -74,6 +76,10 @@ This document defines the generic directory layout scaffolded, mapped, and enfor
 ```
 
 *Note: Production `codebase-*` sub-repositories contain strictly implementation source code, test suites, and build specs required to build/run the service. `agent-workspace` serves strictly as the Control Plane & Knowledge Hub (`.agents/`, `plans/`, `docs/`, `src/`). Every entry point inside `agent-workspace/src/` is strictly a relative symlink pointing to an underlying `codebase-*` sub-repository.*
+
+*Feature Resource Folder & Global Docs Policy: Non-code legacy documentation, supplementary assets, schemas, and diagrams discovered during `/process-history` are staged inside `plans/<feature_name>/resource/` as reference knowledge for the active feature. Global `docs/` contains knowledge of already implemented system capabilities. Staging legacy docs in `plans/<feature-name>/resource/` keeps active feature planning decoupled; later, during the `/implement` workflow, after the feature is implemented, relevant documentation will be linked/promoted into global `docs/`.*
+
+*Selective Phase Blueprint Rule: Filling out phase blueprint documents (`phase-1-summary.md` through `phase-5-operation.md` in `plans/<feature_name>/`) is optional and strictly based on relevance of identified legacy content.*
 
 *Lifecycle Layer Expansion: If a project begins as single-layer (e.g., `codebase-engine`) and later requires an additional layer (e.g., adding `codebase-layout` or `codebase-worker`), the framework introduces the new layer skeleton under the same `codebase-<new_layer>` pattern, registers a new symlink under `src/<new_layer>`, updates `codebase-devops/docker/docker-compose.yml`, and preserves complete structural consistency across the repository lifecycle.*
 

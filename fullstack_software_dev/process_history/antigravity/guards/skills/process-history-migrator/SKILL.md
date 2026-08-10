@@ -18,8 +18,9 @@ When executing legacy codebase restructuring, the agent MUST adhere to the follo
    - Record MD5 checksums of legacy source files prior to migration operations.
    - Zero file deletions, moves, overwrites, or refactoring are permitted within original legacy directories.
 
-2. **As-Is File Copying**:
+2. **As-Is File Copying & Non-Code Docs Staging**:
    - Copy source code intact from linked legacy source directories into target sub-repository destinations (`codebase-layout/src/`, `codebase-engine/src/`).
+   - Copy non-code legacy documentation, supplementary assets, schemas, and diagrams into **`.agents/plans/<feature-name>/resource/`** (or `.agents/plans/resource/`) as feature reference knowledge. (Global `docs/` is reserved for already implemented system capabilities; relevant docs will be linked/promoted into `docs/` later during `/implement`).
    - Preserve original directory structures, package layouts, and asset paths during copy operations.
    - **Strict Non-Rewriting Rule**: Do NOT modify, refactor, or rewrite source code logic, variable names, or syntax.
 
@@ -41,14 +42,11 @@ To keep production `codebase-*` sub-repositories clean of documentation overhead
 
 ---
 
-## Procedure 3: 5-Phase Blueprints Population & Status Update
+## Procedure 3: Selective Blueprints Population & Status Update
 
-1. **Synthesize Legacy Domain Knowledge into `.agents/plans/`**:
-   - Populate `.agents/plans/phase-1-summary.md` (Project purpose, vision, architecture, linked folders, remotes).
-   - Populate `.agents/plans/phase-2-layout.md` (Presentation views, component hierarchy, styling system).
-   - Populate `.agents/plans/phase-3-engine.md` (Domain logic, API contracts, DTO schemas, DB models).
-   - Populate `.agents/plans/phase-4-verification.md` (Test specifications, test runner configs, assertion matrices).
-   - Populate `.agents/plans/phase-5-operation.md` (Docker specs, compose setups, CI/CD pipelines, ops notes).
+1. **Synthesize Identified Domain Knowledge into `.agents/plans/<feature-name>/`**:
+   - Selectively populate relevant phase blueprint documents in `.agents/plans/<feature-name>/` (`phase-1-summary.md` through `phase-5-operation.md`).
+   - *Selective Rule*: Populate ONLY those phase blueprint documents where relevant information was identified in the legacy sources. Filling out all 5 phase documents is optional and not mandatory.
 
 2. **Update Process Status**:
    - Deploy/update `.agents/plans/PROCESS_STATUS.md`. Update Block 1 matrix marking Row 2.0 (`/process-history`) as `Completed` and record a datestamped summary entry in Block 2.

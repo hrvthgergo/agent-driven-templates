@@ -104,26 +104,28 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 
 ### Q3: Legacy Source-to-Layer Mapping Strategy
 * **Target Environment**: Folder & Software Environment
-* **Goal**: Determine how existing legacy source files and directories should be grouped and mapped into the `codebase-*` sub-repository skeletons (`codebase-layout`, `codebase-engine`, `codebase-docs`, `codebase-tests`).
+* **Goal**: Determine how existing legacy source files and non-code documentation should be grouped and mapped:
+  * **Source Code**: Mapped into `codebase-*` sub-repository skeletons (`codebase-layout/src/`, `codebase-engine/src/`).
+  * **Non-Code Documentation & Assets**: Staged in **`.agents/plans/<feature-name>/resource/`** (or `.agents/plans/resource/`) as feature reference knowledge. (Global `docs/` is reserved for already implemented capabilities and will be updated later during `/implement`).
 * **Auto-Detection Scanning Rule**:
   * Inspect file trees across linked legacy directories.
   * Auto-classify files by type and pattern:
-    * UI / Views / Styles / Templates $\rightarrow$ `codebase-layout`
-    * Domain Logic / Models / Controllers / APIs / Services $\rightarrow$ `codebase-engine`
-    * Tests / Mocks / Fixtures $\rightarrow$ `codebase-tests` (or internal test folders)
-    * Specs / Architecture Docs / Manuals $\rightarrow$ `codebase-docs`
+    * UI / Views / Styles / Templates $\rightarrow$ `codebase-layout/src/`
+    * Domain Logic / Models / Controllers / APIs / Services $\rightarrow$ `codebase-engine/src/`
+    * Tests / Mocks / Fixtures $\rightarrow$ `codebase-tests/` (or layer internal test folders)
+    * Specs / Architecture Docs / Manuals / Schemas / PDFs $\rightarrow$ `.agents/plans/<feature-name>/resource/`
 * **Reframed Grill Prompt**:
-  > **Based on file tree analysis, here is the proposed mapping of your legacy source code into the new sub-repository structure:**
+  > **Based on file tree analysis, here is the proposed mapping of your legacy source code and documentation:**
   >
-  > | Legacy Source Path | Classification | Target Sub-Repository |
+  > | Legacy Source Path | Classification | Target Destination |
   > | :--- | :--- | :--- |
   > | `[legacy_src/ui/...]` | UI / Presentation | `codebase-layout/src/` |
   > | `[legacy_src/core/...]` | Core Business Logic | `codebase-engine/src/` |
-  > | `[legacy_docs/...]` | Documentation | `.agents/plans/` & `codebase-docs/` |
+  > | `[legacy_docs/...]` | Non-Code Docs & Assets | `.agents/plans/<feature-name>/resource/` |
   >
-  > **How would you like to handle the legacy source mapping into `codebase-*` layers?**
-  > 1. Accept proposed automatic file classification & mapping
-  > 2. Custom layer mapping (Specify which folders map to layout vs engine vs docs)
+  > **How would you like to handle the legacy source and documentation mapping?**
+  > 1. Accept proposed automatic classification & mapping (code to codebase-*, non-code docs to .agents/plans/<feature-name>/resource/)
+  > 2. Custom layer mapping (Specify custom destination paths for code and docs)
   > 3. Keep all source code in a single sub-repository (`codebase-engine`)
   > 4. Other / Free-text (Provide custom file/directory mapping instructions)
 
@@ -131,12 +133,13 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 
 ### Q4: Legacy Documentation, Workspace Code Graphs, & Blueprint Extraction Strategy
 * **Target Environment**: Agentic Environment
-* **Goal**: Define how legacy documentation, specifications, API schemas, and architecture notes should be extracted to populate the 5-phase agentic blueprints (`phase-1-summary.md` through `phase-5-operation.md`) and generate **Workspace Code Graph Subfolders** (`antigravity-workspace/src/<layer>/code_graph/`).
+* **Goal**: Define how legacy documentation, specifications, API schemas, and architecture notes should be extracted to populate relevant phase blueprints (`phase-1-summary.md` through `phase-5-operation.md` in `.agents/plans/<feature-name>/`) and generate **Workspace Code Graph Subfolders** (`antigravity-workspace/src/<layer>/code_graph/`).
+* **Selective Blueprint Rule**: Phase blueprint documents are populated **selectively based on relevance** of identified content. Filling out all 5 phase documents is **not mandatory**.
 * **Auto-Detection Scanning Rule**:
   * Scan linked legacy folders for markdown docs (`*.md`), OpenAPI/Swagger specs (`.yaml`, `.json`), database schemas (`.sql`, ORM models), and source code structural elements (interfaces, classes, functions, entities).
 * **Reframed Grill Prompt**:
-  > **How should legacy documentation and architectural specs be processed into `.agents/plans/` blueprints and workspace Code Graph subfolders?**
-  > 1. Full Extraction & Workspace Code Graphs: Parse legacy docs/code, generate `antigravity-workspace/src/<layer>/code_graph/` subfolders (with `graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`) keeping `codebase-*` repos clean, and populate all 5 phase blueprints in `.agents/plans/`
+  > **How should legacy documentation and architectural specs be processed into `.agents/plans/<feature-name>/` blueprints and workspace Code Graph subfolders?**
+  > 1. Full Extraction & Workspace Code Graphs: Parse legacy docs/code, stage non-code docs in `.agents/plans/<feature-name>/resource/`, generate `antigravity-workspace/src/<layer>/code_graph/` subfolders (with `graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`), and selectively populate relevant phase blueprints
   > 2. API & Data Schema Focus: Extract API endpoints and DB models into Phase 3 (`phase-3-engine.md`) and generate Code Graphs for backend services
   > 3. High-Level Summary Only: Extract core goals into Phase 1 (`phase-1-summary.md`) without deep documentation restructuring
   > 4. Other / Free-text (Specify custom documentation extraction guidelines)
