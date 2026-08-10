@@ -13,10 +13,10 @@ This document defines the test scenario, mock execution sequence, real-world leg
 *   **Primary Objective**: Validate end-to-end execution of the `/process-history` workflow state machine (Nodes S0 $\rightarrow$ S7) using `ai-chronicle-hub` as test data, asserting:
     1. **Prerequisite Check (Step 0)**: Halts execution if `/init` has not been completed.
     2. **Read-Only Legacy Source Policy**: The cloned `ai-chronicle-hub` repository remains 100% untouched and unedited.
-    3. **As-Is File Migration**: Source code from `ai-chronicle-hub` is copied intact into target `codebase-*` sub-repositories without code modifications.
+    3. **As-Is File Migration & Non-Code Docs Staging**: Source code from `ai-chronicle-hub` is copied intact into target `codebase-*` sub-repositories without code modifications, while non-code documentation and assets are staged inside `.agents/plans/<feature-name>/resource/`.
     4. **Dual Execution Options**: Validates both Plan-First (`--plan`) and Immediate Execution (`--auto`) modes.
     5. **Workspace Code Graph Subfolders**: Scoped code graph folders created inside `antigravity-workspace/src/<layer>/code_graph/` containing `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md` (keeping `codebase-*` repos clean of doc overhead, no symlinks required).
-    6. **Blueprint & Status Synthesis**: Populates `.agents/plans/phase-1-summary.md` through `phase-5-operation.md` with domain knowledge extracted from `ai-chronicle-hub` and updates `PROCESS_STATUS.md` Row 2.0 to `Completed`.
+    6. **Selective Blueprint & Status Synthesis**: Selectively populates relevant phase blueprints in `.agents/plans/<feature-name>/` based on identified domain knowledge (filling out all 5 is optional) and updates `PROCESS_STATUS.md` Row 2.0 to `Completed`.
 
 ---
 
@@ -66,9 +66,9 @@ Upon completion of Node S7, the test harness executes automated verification che
 | **S0** | Prerequisite Gate | `.agents/plans/PROCESS_STATUS.md` | Row 1.0 (`/init`) verified as `Completed`. (If missing, execution halts). |
 | **S1–S7** | Read-Only Integrity | `/tmp/test-process-history/ai-chronicle-hub/` | Original `ai-chronicle-hub` files 100% untouched. MD5 checksums match pre-test baseline. |
 | **S4** | Migration Proposal | `.agents/plans/restructure-proposal.md` | File exists. Documents source mapping from `ai-chronicle-hub` to `codebase-*` sub-repos. |
-| **S6** | As-Is File Migration | `codebase-layout/src/`<br/>`codebase-engine/src/` | Files from `ai-chronicle-hub` copied intact into target layer sub-repositories. Zero code modifications. |
+| **S6** | As-Is File Migration & Resource Staging | `codebase-layout/src/`<br/>`codebase-engine/src/`<br/>`.agents/plans/<feature-name>/resource/` | Source code copied intact into `codebase-*` layers. Non-code legacy documentation and assets staged in `.agents/plans/<feature-name>/resource/`. |
 | **S7** | Workspace Code Graphs | `antigravity-workspace/src/layout/code_graph/`<br/>`antigravity-workspace/src/engine/code_graph/` | Subfolders exist inside `src/<layer>/`. Each contains `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md`. Production `codebase-*` repos clean of doc overhead. |
-| **S7** | Phase Blueprints | `.agents/plans/phase-1-summary.md`<br/>through `phase-5-operation.md` | All 5 phase blueprint documents populated with synthesized domain knowledge extracted from `ai-chronicle-hub`. |
+| **S7** | Phase Blueprints | `.agents/plans/<feature-name>/phase-*.md` | Relevant phase blueprint documents populated with synthesized domain knowledge extracted from `ai-chronicle-hub` (filling out blueprints is selective/relevance-based). |
 | **S7** | Guard Process Status | `.agents/plans/PROCESS_STATUS.md` | Block 1 matrix contains Row 2.0 (`/process-history`) marked `Completed`. Block 2 daily history updated. |
 
 ---

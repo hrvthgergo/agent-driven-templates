@@ -17,13 +17,13 @@ This restructuring proposal maps source files and documentation from linked brow
 
 ## 2. Source-to-Layer Migration Mapping
 
-The table below outlines the proposed intact file copy operations:
+The table below outlines the proposed intact file copy and documentation staging operations:
 
-| Legacy Source Directory | Classification | Target Sub-Repository Destination |
+| Legacy Source Directory | Classification | Target Destination |
 | :--- | :--- | :--- |
 | `[legacy_path/ui/...]` | UI / Presentation | `codebase-layout/src/` |
 | `[legacy_path/server/...]` | Domain Engine Logic | `codebase-engine/src/` |
-| `[legacy_path/docs/...]` | Documentation | `.agents/plans/` & `codebase-docs/` |
+| `[legacy_path/docs/...]` | Non-Code Docs & Assets | `.agents/plans/<feature-name>/resource/` |
 
 ---
 
@@ -44,11 +44,11 @@ The following layer-scoped Code Graph subfolders will be generated inside **`ant
 
 ---
 
-## 4. 5-Phase Blueprints Synthesis Plan
+## 4. Selective Blueprints Synthesis Plan
 
-The following planning phase documents in `.agents/plans/` will be populated with domain knowledge extracted from the legacy codebase:
-- `.agents/plans/phase-1-summary.md` (Project vision, boundaries, remotes, linked folders)
-- `.agents/plans/phase-2-layout.md` (UI layouts, view layers, component trees)
-- `.agents/plans/phase-3-engine.md` (Domain logic, API contracts, DB models, schemas)
-- `.agents/plans/phase-4-verification.md` (Test suites, mocks, verification specs)
-- `.agents/plans/phase-5-operation.md` (Docker specs, deployment pipelines, ops notes)
+The following planning phase documents in `.agents/plans/<feature-name>/` will be selectively populated with domain knowledge extracted from the legacy codebase (*filling out blueprints is optional and strictly based on relevance*):
+- `.agents/plans/<feature-name>/phase-1-summary.md` (Project vision, boundaries, remotes, linked folders)
+- `.agents/plans/<feature-name>/phase-2-layout.md` (Presentation views, component hierarchy, styling system)
+- `.agents/plans/<feature-name>/phase-3-engine.md` (Domain logic, API contracts, DTO schemas, DB models)
+- `.agents/plans/<feature-name>/phase-4-verification.md` (Test specifications, test runner configs, assertion matrices)
+- `.agents/plans/<feature-name>/phase-5-operation.md` (Docker specs, deployment pipelines, ops notes)

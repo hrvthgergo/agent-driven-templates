@@ -117,8 +117,9 @@ graph TD
 1. **Invoke Migration Skill**:
    - Execute `skills/process-history-migrator/SKILL.md`.
 
-2. **As-Is Copy Operations**:
+2. **As-Is Copy Operations & Non-Code Docs Staging**:
    - Copy legacy source code intact from linked legacy folders into target `codebase-*` layer sub-repositories (`codebase-layout/src/`, `codebase-engine/src/`).
+   - **Non-Code Documentation Staging**: Copy non-code legacy documentation, supplementary assets, schemas, and diagrams into **`.agents/plans/<feature-name>/resource/`** (or `.agents/plans/resource/`) as feature reference knowledge. (Global `docs/` is reserved for already implemented system capabilities; relevant docs will be linked/promoted into `docs/` later during `/implement`).
    - **Strict Non-Rewriting Rule**: Do NOT modify, rewrite, or refactor code logic or file contents.
 
 3. **Read-Only Verification Check**:
@@ -136,8 +137,9 @@ graph TD
      * `data_flow.md`: Data sources (user provided, configs, APIs, DB, hardcoded) & datastream transformations.
      * `risk_analysis.md`: Coupling metrics (fan-in/fan-out), critical code nodes, & test coverage maps.
 
-2. **Populate 5-Phase Blueprints**:
-   - Synthesize legacy domain knowledge into `.agents/plans/phase-1-summary.md` through `phase-5-operation.md`.
+2. **Selective Blueprints Population**:
+   - Synthesize identified legacy domain knowledge into relevant phase blueprint documents in `.agents/plans/<feature-name>/` (`phase-1-summary.md` through `phase-5-operation.md`).
+   - *Selective Rule*: Populate ONLY the blueprints for which relevant information was identified. Filling out all 5 phase documents is optional and not mandatory.
 
 3. **Update Process Status**:
    - Deploy/update `.agents/plans/PROCESS_STATUS.md`. Mark Row 2.0 (`/process-history`) as `Completed` in Block 1 and append datestamped entry in Block 2.
