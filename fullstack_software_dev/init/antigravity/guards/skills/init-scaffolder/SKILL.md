@@ -1,96 +1,42 @@
 ---
 name: init-scaffolder
-description: Antigravity skill instructing the agent on workspace directory scaffolding, universal .gitkeep provisioning, relative symbolic linking with 3-part verification, and Hybrid Docker generation.
+description: Antigravity skill for workspace scaffolding, relative symlinking, and Docker provisioning
 ---
 
-# Action Skill: Workspace Scaffolding & Multi-Repo Provisioning (`init-scaffolder`)
+# `init-scaffolder` Skill Procedure
 
-This skill package defines the exact procedural instructions for scaffolding repository structures, provisioning `.gitkeep` files, creating relative symbolic links with a 3-part verification check, and generating Hybrid Docker files during the `/init` workflow in Google Antigravity.
-
----
-
-## Procedure 1: Directory Scaffolding & Universal `.gitkeep` Provisioning
-
-When creating workspace structures, the agent MUST execute the following steps:
-
-1. **Scaffold Control Directory Layout**:
-   - Create `antigravity-workspace/` and `.agents/` (`rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`, `plans/`).
-   - Create `antigravity-workspace/docker/`, `antigravity-workspace/docs/`, and `antigravity-workspace/src/`.
-
-2. **Scaffold Sub-repository Skeletons**:
-   - For each layer identified in Q7 (e.g. `codebase-layout`, `codebase-engine`), create:
-     - `codebase-<layer_name>/src/`
-     - `codebase-<layer_name>/config/`
-     - `codebase-<layer_name>/tests/`
-     - `codebase-<layer_name>/.github/workflows/`
-
-3. **Provision Universal `.gitkeep` Files**:
-   - Touch `.gitkeep` inside **every created directory node** (`.agents/rules/.gitkeep`, `.agents/skills/.gitkeep`, `.agents/hooks/.gitkeep`, `.agents/sidecars/.gitkeep`, `.agents/plans/.gitkeep`, `codebase-<layer_name>/src/.gitkeep`, `codebase-<layer_name>/config/.gitkeep`, `codebase-<layer_name>/tests/.gitkeep`, etc.).
-   - *Rationale*: Git tracks files rather than empty directory paths. Provisioning `.gitkeep` across all folders ensures that empty placeholder folders and sub-repo layouts are fully tracked, preserved, and synchronized on remote Git origins immediately after `/init` runs.
+This skill provides step-by-step procedures for scaffolding directories, provisioning `.gitkeep` files, creating relative symbolic links, and generating Docker orchestration configurations.
 
 ---
 
-## Procedure 2: Relative Symbolic Linking & 3-Part Verification
+## 1. Directory Tree Scaffolding & `.gitkeep` Provisioning
 
-1. **Create Relative Symlinks**:
-   - Navigate to `antigravity-workspace/src/`.
-   - Create relative symbolic link pointing to the corresponding sub-repository source directory:
-     ```bash
-     ln -s ../../codebase-<layer_name>/src <layer_alias>
-     ```
-
-2. **Execute Mandatory 3-Part Verification Check**:
-   - For every created symlink, run the 3-part verification test:
-     1. **Attribute Assertion**: Check that the link attribute exists:
-        ```bash
-        test -L antigravity-workspace/src/<layer_alias>
-        ```
-     2. **Active Target Resolution**: Confirm that the symlink target resolves to an active, valid directory (catching dangling links):
-        ```bash
-        test -d antigravity-workspace/src/<layer_alias>
-        ```
-     3. **Relative Path Assertion**: Assert that the link target uses relative rather than absolute pathing for cross-machine and CI/CD portability:
-        ```bash
-        TARGET=$(readlink antigravity-workspace/src/<layer_alias>)
-        [[ "$TARGET" != /* ]] || { echo "[ERROR] Symlink is absolute!"; exit 1; }
-        ```
+1.  Create control directory: `agent-workspace/.agents/` with subfolders: `rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`.
+2.  Create feature/branch planning directory: `agent-workspace/plans/<branch_name>/`.
+3.  Create human documentation directory: `agent-workspace/docs/`.
+4.  Create source entry point directory: `agent-workspace/src/`.
+5.  Create infrastructure sub-repository: `codebase-devops/` with subfolders: `.github/workflows/`, `docker/`, `config/`, `src/`, `tests/`.
+6.  Create layer sub-repositories: `codebase-layout/` and `codebase-engine/` with subfolders: `src/`, `config/`, `tests/`, `.github/workflows/`.
+7.  **Provision `.gitkeep`**: Touch a `.gitkeep` file inside **every scaffolded directory node** across `agent-workspace/` and all `codebase-*` sub-repositories to ensure empty directories are tracked in Git.
 
 ---
 
-## Procedure 3: Hybrid Docker Provisioning
+## 2. Relative Symbolic Linking & 3-Part Verification
 
-1. **Scaffold Orchestrator Sandbox (`antigravity-workspace/docker/dev.Dockerfile`)**:
-   - Create multi-stage development container spec for agent execution.
-
-2. **Scaffold Orchestrator Compose (`antigravity-workspace/docker/docker-compose.yml`)**:
-   - Create docker-compose configuration linking sub-repository services and volume mounts:
-     ```yaml
-     version: '3.8'
-     services:
-       dev-sandbox:
-         build:
-           context: .
-           dockerfile: dev.Dockerfile
-         volumes:
-           - ../../:/workspace
-       layer-layout:
-         build:
-           context: ../../codebase-layout
-           dockerfile: Dockerfile
-       layer-engine:
-         build:
-           context: ../../codebase-engine
-           dockerfile: Dockerfile
-     ```
-
-3. **Scaffold Standalone Layer Dockerfiles**:
-   - Provision standalone `Dockerfile` inside each `codebase-<layer_name>` sub-repository root.
+1.  Create relative symbolic links inside `agent-workspace/src/`:
+    *   `cd agent-workspace/src && ln -s ../../codebase-devops/src devops`
+    *   `cd agent-workspace/src && ln -s ../../codebase-layout/src layout`
+    *   `cd agent-workspace/src && ln -s ../../codebase-engine/src engine`
+2.  **Symlink Purity**: Assert that every item inside `agent-workspace/src/` is strictly a relative symlink pointing to an underlying `codebase-*` directory.
+3.  **3-Part Verification Check**:
+    *   Part 1: Verify link attribute (`test -L agent-workspace/src/<layer>`).
+    *   Part 2: Verify active target resolution (`test -d agent-workspace/src/<layer>`).
+    *   Part 3: Assert relative path format (`readlink agent-workspace/src/<layer>` starts with `../../`).
 
 ---
 
-## Procedure 4: Brownfield Folder Linking (No Code Restructuring)
+## 3. Hybrid Docker Scaffolding
 
-1. **Surface Folder Linking**:
-   - For brownfield projects with pre-existing source code or documentation folders, create relative symlinks under `antigravity-workspace/src/` or `antigravity-workspace/docs/` pointing to existing folders.
-2. **Strict Non-Interference Constraint**:
-   - **DO NOT perform deep code analysis, refactoring, or file moving during `/init`**. All codebase restructuring is strictly decoupled into `/process-history`.
+1.  Scaffold `codebase-devops/docker/dev.Dockerfile` (agent sandbox container environment).
+2.  Scaffold `codebase-devops/docker/docker-compose.yml` (multi-service local orchestrator linking `codebase-layout` and `codebase-engine`).
+3.  Scaffold standalone production `Dockerfile` in `codebase-layout/Dockerfile` and `codebase-engine/Dockerfile`.

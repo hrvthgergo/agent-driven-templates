@@ -1,151 +1,69 @@
 ---
 name: init
-description: Stateful execution playbook for bootstrapping the Guards framework workspace, Q&A interview, Execution Acceptance gate, relative symlinks, Hybrid Docker setup, and pre-commit hooks in Google Antigravity.
+description: Bootstrapping workflow for Guards framework in Antigravity
 ---
 
-# Stateful Execution Playbook: `/init`
+# `/init` Workflow Execution Playbook
 
-This playbook governs the step-by-step execution of the `/init` workflow within Google Antigravity. It transitions through nodes **S1** to **S7**, enforcing environmental assertions, Q&A interview gating, Execution Acceptance summary prompts, workspace scaffolding, relative symlinking, Hybrid Docker file generation, process status initialization, and Git safety hook registration.
-
----
-
-## Command Flags & Parameters
-
-The `/init` workflow accepts the following CLI flags:
-
-- `/init`: Default interactive execution. Runs environment check, Q&A Grill gate, lightweight scan, displays Execution Acceptance summary (Node S4) for user approval, scaffolds `.agents/` structures, and links existing source folders.
-- `--auto`: Automatic execution mode. Bypasses the interactive Execution Acceptance prompt (Node S4) and executes all planned workspace scaffolding and Git hook registration tasks automatically.
-- `--release <version>`: Initializes workspace bound to a target release branch `release/<version>`. Updates `PROCESS_STATUS.md` header and branch tracking.
-- `--feature <feature_name>`: Initializes workspace bound to an isolated feature branch `feature/<feature_name>`. Updates `PROCESS_STATUS.md` header.
-- `--add-layer <layer_name>`: Dynamically expands an existing workspace by scaffolding a new sub-repository skeleton `codebase-<layer_name>`, registering a relative symlink `src/<layer_name>`, provisioning a standalone `Dockerfile`, and updating `docker-compose.yml`.
-- `--dry-run`: Executes the workflow in preview mode. Outputs all proposed directories, files, symlinks, Docker configs, and `PROCESS_STATUS.md` content without writing any changes to disk.
-- `--force`: Overwrites existing `.agents/` workflows and rules while strictly preserving custom phase blueprints (`PROCESS_STATUS.md`, `phase-1-summary.md`).
+This stateful execution playbook defines the 7-node state machine governing project initialization and scaffolding within Google Antigravity.
 
 ---
 
-## State Machine Execution Flow
+## 1. Parameters & Operational Rules of Thumb
 
-```mermaid
-graph TD
-    S1[Node S1: Check Environment] -->|Docker Verified| S2[Node S2: Q&A Grill Gate]
-    S2 -->|Q1-Q10 Verified & GRILL_STATUS.md Written| S3[Node S3: Layer Scan & Linking]
-    S3 -->|Scan Complete| S4[Node S4: Execution Acceptance Gate]
-    S4 -->|Approved / --auto| S5[Node S5: Scaffolding Workspace & PROCESS_STATUS.md]
-    S5 -->|Files, Symlinks & .gitkeep Provisioned| S6[Node S6: Git Hook Registration & Remote Setup]
-    S6 -->|Pre-Commit Hook Installed| S7[Node S7: Initialization Done]
-```
-
----
-
-### Node S1: Check Environment
-
-1. **Docker Engine Assertion**:
-   - Execute `docker info` to verify that the Docker daemon is active and accessible.
-   - If `docker info` fails (exit code $\neq 0$), halt execution immediately with error:
-     > `[ERROR] Docker engine is unreachable. Docker daemon must be running to support Baseline 1 (Hybrid Docker Handling Strategy).`
-
-2. **Git Context Assertion**:
-   - Check if the current workspace root is a Git repository. If `.git/` is missing, initialize Git context (`git init`).
-
-3. **Flag Evaluation**:
-   - Parse flags (`--auto`, `--release`, `--feature`, `--add-layer`, `--dry-run`, `--force`).
-   - If `--dry-run` is active, print `[DRY-RUN MODE ACTIVATED: No disk modifications will be made.]`.
+### CLI Parameter Handling
+*   `/init`: Default interactive execution.
+    *   **Greenfield run** (uninitialized workspace): Scaffolds base framework and creates Git branch `initial`.
+    *   **Re-run** (initialized workspace without options): Treated as a **New Feature Initialization**, prompting for a feature name and creating Git branch `feature/<feature_name>`.
+*   `/init --auto`: Non-interactive execution mode. Bypasses the Node S4 Execution Acceptance prompt and automatically executes all planned scaffolding tasks.
+*   `/init --feature <feature_name>`: Explicitly initializes a new feature scope on Git branch `feature/<feature_name>` and creates plan subfolder `agent-workspace/plans/<feature_name>/`.
+*   `/init --add-layer <layer_name>`: Introduces a new layer skeleton `codebase-<layer_name>`, registers its relative symlink under `agent-workspace/src/<layer_name>`, provisions its standalone `Dockerfile`, and updates `codebase-devops/docker/docker-compose.yml`.
+*   `/init --dry-run`: Simulates the initialization sequence, previewing proposed folder structures, relative symlinks, Docker files, and plan sheets without writing changes to disk.
+*   `/init --force`: Overwrites default `.agents/` control rules and workflows while preserving user custom phase blueprints.
 
 ---
+
+## 2. Execution State Machine Nodes (S1 – S7)
+
+### Node S1: Check Environment & Branch Initialization
+1.  **Docker Healthcheck**: Execute `docker info` to verify that Docker daemon is running and accessible.
+2.  **Git Context Verification**: Verify Git installation and workspace root `.git` state.
+3.  **Branch Creation**:
+    *   If workspace is uninitialized (greenfield): Create and check out the baseline Git branch: `git checkout -b initial`.
+    *   If workspace is already initialized: Create and check out feature Git branch: `git checkout -b feature/<feature_name>`.
 
 ### Node S2: Q&A Grill Gate
-
-1. **Invoke Rule Guard**:
-   - Load and execute `rules/init-grill.md`.
-
-2. **Baseline Application (Zero Questions Asked)**:
-   - Apply **Baseline 1**: The Hybrid Docker Handling Strategy.
-   - Apply **Baseline 2**: Standard Guards Folder Layout.
-
-3. **Sequential Q1–Q10 Interview Execution**:
-   - Prompt user sequentially through Q1 (Purpose), Q2 (Local System Folders with Q2.a path listing & remote auto-detection), Q3 (Cloud Docs with scan failure clarification), Q4 (Additional Remotes), Q5 (Cloud Provider), Q6 (Architecture Pattern), Q7 (Layer Scope), Q8 (Tech Stack), Q9 (Agent Guiders), and Q10 (Summary Verification & Reflection).
-   - Enforce **Neutral Prompting Law**: List options neutrally with zero `[Recommended]` tags and a mandatory final `Other / Free-text (...)` option.
-
-4. **Permanent Audit Log Persistence**:
-   - Write full transcript of Q1–Q10 questions, choices, and text inputs to `.agents/plans/GRILL_STATUS.md`.
-
-5. **User Approval Gate**:
-   - If user rejects Q10 summary reflection, halt workflow and allow answer modifications before proceeding to S3.
-
----
+1.  Invoke the neutral interview engine enforcing `rules/init-grill.md`.
+2.  Sequential prompts Q1 to Q10 are executed neutrally without `[Recommended]` bias labels.
+3.  Persist all questions, options, and user choices permanently into `agent-workspace/plans/<branch_name>/GRILL_STATUS.md`.
 
 ### Node S3: Lightweight Layer Scan & Linking
-
-1. **Surface Directory Scan**:
-   - Scan workspace for existing `codebase-*` directories or brownfield source/documentation folders.
-
-2. **Remote Origin Auto-Detection**:
-   - Read `.git/config` to auto-detect existing Git remote origins.
-
-3. **Decoupled Brownfield Constraint**:
-   - **No codebase restructuring, deep historical code analysis, or refactoring is permitted during `/init`**.
-   - Decouple all legacy code analysis and restructuring to the `/process-history` workflow.
-
----
+1.  Perform surface-level directory inspection to detect existing source or document folders.
+2.  Auto-detect Git remote origin URLs from `.git/config` if present.
+3.  Strictly preserve brownfield code—do NOT perform any codebase restructuring or file relocation.
 
 ### Node S4: Execution Acceptance Gate
-
-1. **Information Synthesis & Summary Presentation**:
-   - Synthesize all collected answers from Nodes S2 and S3 (vision, scope, layer skeletons, tech stack, Docker strategy, remotes).
-   - Format and display the **Initialization Understanding Summary** and list all planned execution steps (directory creation, `.gitkeep` provisioning, relative symlinking, Hybrid Docker setup, status sheets deployment, Git hook registration).
-
-2. **Dual Execution Mode Evaluation**:
-   - **Default / Interactive Mode**: Prompt user for explicit acceptance:
-     > `Do you approve the execution of these initialization steps?`
-     > `1. Proceed with execution`
-     > `2. Modify parameters`
-     - If approved, proceed to Node S5. If rejected, halt execution to allow parameter adjustments.
-   - **Automated Mode (`--auto`)**:
-     - Log summary and step list to `.agents/plans/GRILL_STATUS.md` and proceed immediately to Node S5 without pausing for user prompt.
-
----
+1.  Synthesize gathered information into an understanding summary and list planned scaffolding tasks.
+2.  **User Acceptance Prompt**:
+    *   If `--auto` flag is present: Log automatic bypass and proceed to Node S5.
+    *   If interactive mode: Present understanding summary and prompt user for explicit approval (*"Proceed with execution?"*).
+3.  Log acceptance decision into `agent-workspace/plans/<branch_name>/GRILL_STATUS.md`.
 
 ### Node S5: Scaffolding Workspace & `PROCESS_STATUS.md`
-
-1. **Invoke Scaffolding Skill**:
-   - Execute `skills/init-scaffolder/SKILL.md`.
-
-2. **Directory & `.gitkeep` Provisioning**:
-   - Scaffold `antigravity-workspace/` and `.agents/` (`rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`, `plans/`).
-   - Scaffold `codebase-<layer_name>` sub-repositories (`src/`, `config/`, `tests/`, `.github/workflows/`).
-   - Provision a `.gitkeep` file inside **every created directory node** to guarantee remote Git tracking.
-
-3. **Relative Symlinks & 3-Part Verification**:
-   - Create relative symbolic links under `antigravity-workspace/src/` (e.g. `ln -s ../../codebase-layout/src src/layout`).
-   - Run 3-part verification check: (1) verify symlink attribute, (2) confirm target resolves to active directory, (3) assert relative pathing.
-
-4. **Hybrid Docker Provisioning**:
-   - Scaffold `antigravity-workspace/docker/dev.Dockerfile` (sandbox) and `antigravity-workspace/docker/docker-compose.yml` (orchestrator).
-   - Scaffold standalone `Dockerfile` specs in each `codebase-<layer_name>` sub-repo.
-
-5. **Process Status & Summary Scaffolding**:
-   - Deploy `.agents/plans/PROCESS_STATUS.md` from `templates/PROCESS_STATUS.md`. Update Block 1 matrix (`/init` $\rightarrow$ `Completed`, 5 planning sub-rows present) and Block 2 daily log.
-   - Deploy `.agents/plans/phase-1-summary.md` from `templates/phase-1-summary.md`. Fill architecture metadata from Q1–Q10.
-
----
+1.  Invoke `skills/init-scaffolder/SKILL.md`.
+2.  Scaffold `agent-workspace/` control structures (`.agents/rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`).
+3.  Create feature/branch planning directory: `agent-workspace/plans/<branch_name>/`.
+4.  Scaffold `codebase-devops/` sub-repository (`.github/workflows/ci.yml`, `docker/dev.Dockerfile`, `docker/docker-compose.yml`, `config/`, `Dockerfile`, `src/`, `tests/`).
+5.  Scaffold layer skeletons `codebase-<layer_name>` (`src/`, `config/`, `tests/`, `Dockerfile`, `.github/workflows/`).
+6.  Provision a `.gitkeep` file inside **every scaffolded directory node**.
+7.  Create relative symbolic links under `agent-workspace/src/` (`devops`, `layout`, `engine` $\rightarrow$ `../../codebase-X/src`). Enforce symlink purity (zero non-symlink folders in `agent-workspace/src/`). Perform 3-part verification check.
+8.  Deploy starter templates: `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md` to `agent-workspace/plans/<branch_name>/`.
 
 ### Node S6: Git Hook Registration & Remote Setup
-
-1. **Git Remote Configuration**:
-   - Register remote origin URLs for single-repo or multi-repo setups based on Q4/Q5 choices (`git remote add origin <url>`).
-
-2. **Pre-Commit Hook Installation**:
-   - Copy `hooks/pre-commit-plan-validator.sh` to `.git/hooks/pre-commit`.
-   - Set executable permissions: `chmod +x .git/hooks/pre-commit`.
-
----
+1.  Register Git remotes based on Q4/Q5 selections.
+2.  Install `hooks/pre-commit-plan-validator.sh` into `.git/hooks/pre-commit` and grant execution permissions (`chmod +x`).
 
 ### Node S7: Initialization Done
-
-1. **Finalize State Machine**:
-   - Assert all physical resources, `.gitkeep` files, symlinks, Docker configs, status sheets, and hooks exist.
-
-2. **Summary Report & Next Command Recommendation**:
-   - Output initialization completion summary report.
-   - Recommend next workflow execution command:
-     > `[SUCCESS] Workspace initialization completed. Recommended next command: /plan or /process-history`
+1.  Mark `/init` step as `Completed` in `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` Block 1 matrix.
+2.  Record datestamped entry in Block 2 daily history.
+3.  Output initialization summary and recommend next command (`/plan` or `/process-history`).

@@ -1,61 +1,30 @@
-# Phase 1: High-Level Architecture & Vision Summary (`phase-1-summary.md`)
+# Phase 1 Summary Blueprint: Architectural Overview
 
-- **Project Name**: `[Project Name]`
-- **Target Branch**: `[main / release-vX.Y / feature-name]`
-- **Initialization Date**: `[YYYY-MM-DD]`
-
----
-
-## 1. Project Purpose & High-Level Scope
-
-### Purpose & Vision
-`[High-level purpose gathered from Q1 Grill session]`
-
-### Key Milestones & Target Deliverables
-- **Milestone 1**: Initial workspace setup and `.agents/` guard deployment (`/init`).
-- **Milestone 2**: 5-Phase planning blueprint creation (`/plan`).
-- **Milestone 3**: Feature slice implementation and verification (`/implement` & `/verify`).
-- **Milestone 4**: Release packaging and evolution (`/release`).
+**Project Name**: {{PROJECT_NAME}}  
+**Branch**: {{GIT_BRANCH}}  
+**Date**: {{DATE}}  
 
 ---
 
-## 2. Documentation & Remote Repositories
+## 1. Executive Summary & Business Goals
 
-- **Cloud Documentation Repository**: `[URL from Q3 or None]`
-- **Primary Git Remote Origin**: `[Git Remote URL from Q2/Q5]`
-- **Additional Git Remotes**: `[Additional Remote URLs from Q4 or None]`
+{{PROJECT_VISION}}
 
 ---
 
-## 3. Software Architecture & Technology Stack
+## 2. Architecture & Tech Stack
 
-- **Architecture Design Pattern**: `[Pattern from Q6, e.g. Modular Monolith / Layered Architecture]`
-- **Software Stack & Frameworks**: `[Tech stack details from Q8 per layer]`
-- **Containerization Strategy**: The Hybrid Docker Handling Strategy (`dev.Dockerfile` + `docker-compose.yml` orchestrator + layer `Dockerfile` specs).
+*   **Architecture Pattern**: {{ARCHITECTURE_PATTERN}}
+*   **Layer Skeletons**:
+    *   `codebase-devops`: DevOps & Container Orchestration (`.github/workflows/`, `docker/`)
+    *   `codebase-layout`: UI / Frontend Layer
+    *   `codebase-engine`: Backend Engine / API Layer
+*   **Tech Stack**: {{TECH_STACK}}
 
 ---
 
-## 4. Workspace Directory Map & Sub-repository Scope
+## 3. Directory & Symlink Mapping
 
-```text
-[Local Workspace Root]
-├── antigravity-workspace/       # Main Orchestrator Workspace
-│   ├── .agents/                 # Control Directory (Guards)
-│   ├── docker/                  # Local Multi-Service Orchestrator & Sandbox
-│   ├── docs/                    # Global Documentation
-│   └── src/                     # Relative Symlink Entry Points
-│       ├── layout/              # [SYMLINK] -> ../codebase-layout/src/
-│       └── engine/              # [SYMLINK] -> ../codebase-engine/src/
-│
-├── codebase-layout/             # UI / Frontend Sub-repository
-│   ├── config/
-│   ├── Dockerfile
-│   ├── src/
-│   └── tests/
-│
-└── codebase-engine/             # Backend Engine Sub-repository
-    ├── config/
-    ├── Dockerfile
-    ├── src/
-    └── tests/
-```
+*   `agent-workspace/src/devops` $\rightarrow$ `../../codebase-devops/src`
+*   `agent-workspace/src/layout` $\rightarrow$ `../../codebase-layout/src`
+*   `agent-workspace/src/engine` $\rightarrow$ `../../codebase-engine/src`
