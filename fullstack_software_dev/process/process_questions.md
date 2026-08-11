@@ -1,22 +1,22 @@
-# Grill Schema: Legacy Code & Docs Processing Questions (/process-history)
+# Grill Schema: Legacy Code & Docs Processing Questions (/process)
 
-This document defines the Q&A interview schema, auto-detection rules, unchangeable baselines, and structured prompts used by the `/process-history` workflow's Grill Engine.
+This document defines the Q&A interview schema, auto-detection rules, unchangeable baselines, and structured prompts used by the `/process` workflow's Grill Engine.
 
-The primary objective of the `/process-history` workflow is to synthesize **three core knowledge sources**:
+The primary objective of the `/process` workflow is to synthesize **three core knowledge sources**:
 1. **`/init` Baseline Knowledge**: Metadata, linked folder paths, technology stack, and layer configurations collected during `/init`.
 2. **Interactive Grill-Me Knowledge**: Developer choices gathered during this Q&A interview (execution options, layer mappings, import refactoring rules).
 3. **Existing Codebase & Documentation Knowledge**: Deep code structures, module dependencies, API endpoints, database schemas, and specs extracted from legacy folders.
 
-Based on these sources, `/process-history` **adds and restructures** previous implementations into the new `codebase-*` sub-repository layout created during `/init`, while **linking all previous remote origins, submodules, and documentation sources** to the workspace.
+Based on these sources, `/process` **adds and restructures** previous implementations into the new `codebase-*` sub-repository layout created during `/init`, while **linking all previous remote origins, submodules, and documentation sources** to the workspace.
 
 ---
 
 ## 1. Unchangeable Baselines (No Questions Asked)
 
-To ensure operational safety, non-destructive file processing, and structural consistency, the following baselines are solid and non-negotiable. **Zero questions are asked about these baselines during the `/process-history` interview**:
+To ensure operational safety, non-destructive file processing, and structural consistency, the following baselines are solid and non-negotiable. **Zero questions are asked about these baselines during the `/process` interview**:
 
 ### Baseline 1: Read-Only Legacy Source Rule & Isolated Destination Execution
-* **Specification**: Original legacy code repositories and external source folders MUST remain 100% untouched and read-only. `/process-history` is STRICTLY FORBIDDEN from performing in-place edits, file moves, overwrites, or deletions inside original legacy source directories.
+* **Specification**: Original legacy code repositories and external source folders MUST remain 100% untouched and read-only. `/process` is STRICTLY FORBIDDEN from performing in-place edits, file moves, overwrites, or deletions inside original legacy source directories.
 * **Enforced Action**: All file copying, code refactoring, relative import path rewriting, and blueprint synthesis MUST occur exclusively within the new folder structure created during `/init` (`antigravity-workspace/` and target `codebase-*` sub-repositories). Original legacy repos remain pristine reference sources.
 
 ### Baseline 2: Target Layout Alignment
@@ -28,7 +28,7 @@ To ensure operational safety, non-destructive file processing, and structural co
 
 ```
                       ┌──────────────────────────────────────┐
-                      │ Start /process-history Scan & Audit  │
+                      │    Start /process Scan & Audit       │
                       └──────────────────┬───────────────────┘
                                          │
                    Is /init completed in PROCESS_STATUS.md?
@@ -148,13 +148,13 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 
 ### Q5: Workflow Execution Mode & Consent Strategy
 * **Target Environment**: Software & Workflow Governance
-* **Goal**: Select the operational execution mode for `/process-history`:
-  * **Plan-First Mode (`/process-history` or `/process-history --plan`)**: Generate execution plan (`restructure-proposal.md`), pause execution, wait for developer review and explicit approval before modifying code.
-  * **Immediate Execution Mode (`/process-history --auto` or `/process-history --apply`)**: Copy/move files into `codebase-*` structures immediately without pausing for approval, while recording `.agents/plans/restructure-proposal.md` as an audit log.
+* **Goal**: Select the operational execution mode for `/process`:
+  * **Plan-First Mode (`/process` or `/process --plan`)**: Generate execution plan (`restructure-proposal.md`), pause execution, wait for developer review and explicit approval before modifying code.
+  * **Immediate Execution Mode (`/process --auto` or `/process --apply`)**: Copy/move files into `codebase-*` structures immediately without pausing for approval, while recording `.agents/plans/restructure-proposal.md` as an audit log.
 * **Reframed Grill Prompt**:
   > **Which execution option would you like to use for processing your legacy codebase?**
-  > 1. **Plan-First Mode (`/process-history --plan`)**: Create detailed `.agents/plans/restructure-proposal.md` and pause for review & approval before modifying any files.
-  > 2. **Immediate Execution Mode (`/process-history --auto`)**: Authorize immediate copying/moving of legacy files into `codebase-*` layers without stopping, recording the execution log automatically.
+  > 1. **Plan-First Mode (`/process --plan`)**: Create detailed `.agents/plans/restructure-proposal.md` and pause for review & approval before modifying any files.
+  > 2. **Immediate Execution Mode (`/process --auto`)**: Authorize immediate copying/moving of legacy files into `codebase-*` layers without stopping, recording the execution log automatically.
   > 3. Other / Free-text (Specify custom execution or dry-run preferences)
 
 ---
@@ -162,7 +162,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 ### Q6: As-Is Code Migration & Path Linking Strategy
 * **Target Environment**: Software & Folder Environment
 * **Goal**: Confirm that source files are copied intact without code modification, and determine path linking / alias configuration for workspace resolution.
-* **Non-Rewriting Rule**: Source code logic and file contents MUST NOT be edited, rewritten, or refactored during `/process-history`. All files are copied intact.
+* **Non-Rewriting Rule**: Source code logic and file contents MUST NOT be edited, rewritten, or refactored during `/process`. All files are copied intact.
 * **Reframed Grill Prompt**:
   > **Legacy source code will be copied intact into the designed `codebase-*` sub-repositories without modifying or rewriting code. How should module resolution and path linking be configured in the workspace?**
   > 1. Use standard workspace symbolic links (`antigravity-workspace/src/<layer>` $\rightarrow$ `../codebase-<layer>/src/`)
@@ -173,12 +173,12 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 
 ### Q7: Q&A Summary Verification & Execution Confirmation
 * **Target Environment**: Cross-Environment Verification
-* **Goal**: Format a clean summary table of all answers gathered across Q1–Q6, confirm the execution option, and initiate the `/process-history` action.
+* **Goal**: Format a clean summary table of all answers gathered across Q1–Q6, confirm the execution option, and initiate the `/process` action.
 * **Execution Rule**:
   1. The Grill Engine MUST format and display a clean summary table of all answers gathered across Q1–Q6.
   2. The Grill Engine MUST prompt the user to confirm execution or edit answers.
 * **Reframed Grill Prompt**:
-  > **Summary of Answers Gathered During `/process-history` Session:**
+  > **Summary of Answers Gathered During `/process` Session:**
   >
   > | Environment | Question | Gathered Specification / Answer |
   > | :--- | :--- | :--- |
@@ -189,8 +189,8 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > | **Governance** | Q5 Execution Mode | *[Q5 Answer / Plan-First vs Immediate]* |
   > | **Software** | Q6 Path & Link Strategy | *[Q6 Answer / Symlink & path aliasing strategy]* |
   >
-  > **Reflecting on this summary, are you ready to execute the `/process-history` workflow?**
-  > 1. Everything is accurate $\rightarrow$ Execute `/process-history` action
+  > **Reflecting on this summary, are you ready to execute the `/process` workflow?**
+  > 1. Everything is accurate $\rightarrow$ Execute `/process` action
   > 2. Edit a specific answer (Specify question number to re-run)
   > 3. Other / Free-text (Add further instructions, constraints, or notes for execution)
-* **Resulting Action**: Saves answers to `.agents/plans/GRILL_STATUS.md`, copies legacy files intact to target `codebase-*` layers, generates modular `antigravity-workspace/src/<layer>/code_graph/` subfolders (containing `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md`) inside the workspace layer directory (no symlinks required), populates all 5 phase blueprints in `.agents/plans/` (`phase-1-summary.md` through `phase-5-operation.md`), and updates `.agents/plans/PROCESS_STATUS.md` to finalize `/process-history`.
+* **Resulting Action**: Saves answers to `.agents/plans/GRILL_STATUS.md`, copies legacy files intact to target `codebase-*` layers, generates modular `antigravity-workspace/src/<layer>/code_graph/` subfolders (containing `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md`) inside the workspace layer directory (no symlinks required), populates all 5 phase blueprints in `.agents/plans/` (`phase-1-summary.md` through `phase-5-operation.md`), and updates `.agents/plans/PROCESS_STATUS.md` to finalize `/process`.

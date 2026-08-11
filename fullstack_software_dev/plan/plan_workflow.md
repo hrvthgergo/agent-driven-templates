@@ -6,11 +6,11 @@ This document serves as the authoritative baseline specification for the `/plan`
 
 ## 1. General Introduction & Core Philosophy
 
-The `/plan` workflow is the architectural bridge between environment setup (`/init` / `/process-history`) and code implementation (`/implement`). It transforms raw ideas, feature requirements, and historical context into structured, unambiguous Phase Blueprints, research summaries, decision matrices, and technical specifications.
+The `/plan` workflow is the architectural bridge between environment setup (`/init` / `/process`) and code implementation (`/implement`). It transforms raw ideas, feature requirements, and historical context into structured, unambiguous Phase Blueprints, research summaries, decision matrices, and technical specifications.
 
 ```mermaid
 graph LR
-    Init["/init<br/>Environment Setup"] --> ProcHist["/process-history<br/>Legacy Resource Ingestion"]
+    Init["/init<br/>Environment Setup"] --> ProcHist["/process<br/>Legacy Resource Ingestion"]
     ProcHist --> Plan["/plan (Resource Usage & Knowledge Governance Rule)<br/>• Collect Knowledge & Research<br/>• Analyze System Impact (Partial vs. Full)<br/>• Design Feature Capabilities<br/>• Store All Artifacts in plans/<feature-name>/<br/>  to share context with downstream agents"]
     Init --> Plan
     Plan --> Implement["/implement<br/>Action Implementation"]
@@ -20,7 +20,7 @@ graph LR
 Fundamentally, **the `/plan` workflow is a governed rule for resource usage and knowledge collection**:
 - **Knowledge Collection & Analysis**: During `/plan`, the developer and AI agent collect research, analyze system impact, explore design alternatives, and capture strategic decisions for a new or modified system capability.
 - **Context Sharing for Downstream Agents**: The overarching goal of storing all blueprints, topic summaries, and ADRs strictly inside `.agents/plans/<feature-name>/` is **to share complete, unambiguous context with AI agents in downstream phases** (`/implement`, `/verify`, `/release`).
-- **Initial Feature Understanding Summary First**: Every `/plan` execution begins with the agent summarizing its initial understanding of the feature (synthesizing `/init`, `/process-history`, and user prompt context) before any questions are asked.
+- **Initial Feature Understanding Summary First**: Every `/plan` execution begins with the agent summarizing its initial understanding of the feature (synthesizing `/init`, `/process`, and user prompt context) before any questions are asked.
 - **Affected System & Blueprint Identification Q&A**: Following the summary, the interactive Q&A session starts. Its primary goal is to pinpoint **which parts of the system are affected** and determine **which specific `phase-*.md` documents must be created**.
 - **All Planning Artifacts Placed in `plans/<feature-name>/`**: **EVERY document created or modified during `/plan`**—including 5-phase blueprints, topic knowledge summaries, architecture decision records (ADRs), trade-off analyses, and decision matrices requested by the user—MUST be placed inside `.agents/plans/<feature-name>/`.
 - **Iterative & Elastic Character**: Accommodates evolving ideas, design alternatives, and strategic human decision turning points.
@@ -42,7 +42,7 @@ Fundamentally, **the `/plan` workflow is a governed rule for resource usage and 
 
 ### A. Workflow Preconditions & Pipeline Handoff
 1. **`/init` is Mandatory**: `/init` (or `/init --feature <name>` / `/init --release <v>`) **must** have been executed prior to running `/plan`. `/init` establishes Git branches, provisions root `.agents/` control structures, and scaffolds the initial architectural baseline (`phase-1-summary.md`).
-2. **`/process-history` is Optional**: For brownfield codebases, `/process-history` ingests legacy documentation and code history, drafting `restructure-proposal.md`. When present, `/plan` reads and incorporates these findings into the feature blueprints.
+2. **`/process` is Optional**: For brownfield codebases, `/process` ingests legacy documentation and code history, drafting `restructure-proposal.md`. When present, `/plan` reads and incorporates these findings into the feature blueprints.
 
 ### B. Resource Usage Governance & Strict Feature Sandbox (`.agents/plans/<feature-name>/`)
 All creation, editing, research drafting, and decision documentation generated during `/plan` **MUST reside strictly inside `.agents/plans/<feature-name>/`** to serve as the single source of truth for downstream agents:
@@ -137,7 +137,7 @@ graph TD
 * **Storage Actions**: Reads `.agents/plans/PROCESS_STATUS.md` or git branch metadata.
 
 #### Step 2: Initial Feature Understanding Summary (Node S2)
-* **Description**: **As the very first action of `/plan`**, the agent synthesizes its initial understanding of the feature scope (from `/init` outputs, `/process-history` outputs, and initial user prompt) and presents an **Initial Feature Understanding Summary** to the developer.
+* **Description**: **As the very first action of `/plan`**, the agent synthesizes its initial understanding of the feature scope (from `/init` outputs, `/process` outputs, and initial user prompt) and presents an **Initial Feature Understanding Summary** to the developer.
 * **Reasoning**: Establishing a shared understanding up front aligns the developer and agent before asking detailed Q&A questions.
 * **Storage Actions**: Initializes `.agents/plans/<feature-name>/` directory structure and logs initial summary.
 
@@ -175,7 +175,7 @@ graph TD
 graph TD
     subgraph Phase1_Plan [/plan Workflow Sandbox]
         InitIn["/init Output<br/>(phase-1-summary.md)"] --> S2_Summary["Node S2: Initial Feature Understanding Summary"]
-        HistIn["/process-history Output<br/>(restructure-proposal.md)"] --> S2_Summary
+        HistIn["/process Output<br/>(restructure-proposal.md)"] --> S2_Summary
         S2_Summary --> S3_QA["Node S3: Q&A Session & Knowledge Governance"]
         S3_QA --> PlanOut[".agents/plans/<feature-name>/<br/>• PROCESS_STATUS.md<br/>• phase-1-summary.md<br/>• Selected phase-*.md set<br/>• knowledge/ & decisions/<br/>(Complete context repository for downstream agents)"]
     end

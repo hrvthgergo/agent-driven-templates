@@ -68,7 +68,7 @@ Upon completion of Node S7, the test harness executes automated verification che
 | **S5** | Layer Sub-Repos & `.gitkeep` | `codebase-layout/`, `codebase-engine/` | Sub-repository folders created. Each contains `src/`, `config/`, `tests/`, and standalone `Dockerfile`. **`.gitkeep` present inside every sub-repo folder node**. |
 | **S5** | Symlink Purity | `agent-workspace/src/devops`<br/>`agent-workspace/src/layout`<br/>`agent-workspace/src/engine` | Relative symlinks created pointing to `../../codebase-devops/src`, `../../codebase-layout/src`, and `../../codebase-engine/src`. Pass 3-part verification check. **Zero non-symlink folders inside `agent-workspace/src/`**. |
 | **S6** | Pre-Commit Safety Hook | `.git/hooks/pre-commit` | File installed, executable (`chmod +x`), intercepts commits missing valid `PROCESS_STATUS.md`. |
-| **S7** | Execution Output | Subprocess Stdout | Terminal prints completion summary report and recommended next workflow command (`/plan` or `/process-history`). |
+| **S7** | Execution Output | Subprocess Stdout | Terminal prints completion summary report and recommended next workflow command (`/plan` or `/process`). |
 
 ---
 

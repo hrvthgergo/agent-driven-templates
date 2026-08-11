@@ -25,7 +25,7 @@ When a project adopts the Guards framework, its entire development process is go
 - **Target Release / Feature**: `[e.g., release/v1.0.0 or feature/ui-dashboard]`
 - **Git Branch**: `[e.g., release/v1.0.0]`
 - **Initialization Date**: `YYYY-MM-DD`
-- **Active Workflow**: `[init | process-history | plan | implement | verify | release | idle]`
+- **Active Workflow**: `[init | process | plan | implement | verify | release | idle]`
 
 ---
 
@@ -36,7 +36,7 @@ This matrix tracks top-level workflows and focused sub-processes. The 5-Phase Pl
 | Workflow / Sub-Process | Status | Focus / Artifact | Last Updated |
 | :--- | :--- | :--- | :--- |
 | **1. /init** | `[x] Done` | Environment checks, layer symlinks, Git branch creation | YYYY-MM-DD |
-| **2. /process-history** | `[-] Not In Scope` | Legacy code & docs analysis (Brownfield only) | YYYY-MM-DD |
+| **2. /process** | `[-] Not In Scope` | Legacy code & docs analysis (Brownfield only) | YYYY-MM-DD |
 | **3. /plan** | `[>] In Progress` | 5-Phase Blueprinting Framework | YYYY-MM-DD |
 | ├── **3.1 Phase 1: Summary** | `[x] Done` | High-level summary & folder map (`phase-1-summary.md`) | YYYY-MM-DD |
 | ├── **3.2 Phase 2: Layout** | `[>] In Progress` | Design system & styling laws (`phase-2-layout.md`) | YYYY-MM-DD |
@@ -79,5 +79,5 @@ This section logs daily process initiations, completed milestones, and key decis
 1. **Release Isolation**: Every release milestone (e.g. `v1.0.0`, `v1.1.0`) or parallel feature branch (`feature/<name>`) MUST have its own independent `PROCESS_STATUS.md` state tracking document.
 2. **`/init` Branch Initialization**:
    - `/init --release <version>`: Creates a Git branch `release/<version>` from `main`/`master`, scaffolds `.agents/plans/PROCESS_STATUS_release_<version>.md` (or `PROCESS_STATUS.md`), and registers the initial status matrix.
-   - `/init --feature <feature-name>`: Creates a Git branch `feature/<feature-name>`, scaffolds `.agents/plans/PROCESS_STATUS_feature_<name>.md`, and initializes the workflow matrix with `process-history` marked as `[-] Not In Scope` by default for greenfield features.
+   - `/init --feature <feature-name>`: Creates a Git branch `feature/<feature-name>`, scaffolds `.agents/plans/PROCESS_STATUS_feature_<name>.md`, and initializes the workflow matrix with `process` marked as `[-] Not In Scope` by default for greenfield features.
 3. **Immutability of Closed Logs**: Past daily log entries in Block 2 must never be modified or overwritten; new events are strictly appended under the current date header.

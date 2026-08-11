@@ -85,7 +85,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
     *   **Q2.a (If folder exists)**:
         > **Please provide the folder location path(s).**
         > *(Note: If multiple folders exist, iterate through questioning paths or request a complete list of folder locations. Remote origins will be identified automatically by analyzing version control configurations like `.git/config` inside the provided software.)*
-        *   *Resulting Action*: Analyzes software version control configs inside provided paths to identify remote origins, and links existing source/doc folders into the workspace's 'Folders' map in `phase-1-summary.md` (reserving deep code analysis and refactoring for `/process-history`).
+        *   *Resulting Action*: Analyzes software version control configs inside provided paths to identify remote origins, and links existing source/doc folders into the workspace's 'Folders' map in `phase-1-summary.md` (reserving deep code analysis and refactoring for `/process`).
     *   **Q2.b (If no folder exists)**:
         > **Where on the system would you like to create the new project folder?**
         > 1. Current working directory

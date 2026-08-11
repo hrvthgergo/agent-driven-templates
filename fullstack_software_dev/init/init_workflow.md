@@ -25,7 +25,7 @@ To ensure the Guards Framework can be baselined and implemented consistently acr
     *   [antigravity/init_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/antigravity/init_tests.md): Test specification and scenario for verifying `/init` greenfield execution in Antigravity.
 
 ### Simplicity & Separation of Concerns Rule
-For brownfield projects with existing source code and documentation, `/init` performs **only high-level layer identification** to create `codebase-*` skeletons and link existing source folders. **No code restructuring, deep historical analysis, or refactoring is required or allowed during `/init`**. All historical code analysis and legacy codebase restructuring are decoupled into the dedicated `/process-history` workflow.
+For brownfield projects with existing source code and documentation, `/init` performs **only high-level layer identification** to create `codebase-*` skeletons and link existing source folders. **No code restructuring, deep historical analysis, or refactoring is required or allowed during `/init`**. All historical code analysis and legacy codebase restructuring are decoupled into the dedicated `/process` workflow.
 
 ### The Three Environments (Brief Overview)
 The initialization process establishes and connects three key environments:
@@ -126,7 +126,7 @@ graph TD
 #### Step 3: Lightweight Layer Scan & Linking (Node S3)
 *   **Description**: Performs a surface-level directory scan guided by Q2 (Local System Folders) and Q7 (Layer Scope) answers to identify existing layer directories (`frontend/`, `backend/`, `api/`) and confirm `codebase-*` sub-repository skeletons.
 *   **Architectural & Implementation Reasoning**:
-    *   *Simplicity & Non-Restructuring Rule*: `/init` strictly limits scanning to surface-level directory detection and folder linking into `phase-1-summary.md`. **Deep code parsing, historical analysis, file moves, and import rewrites are explicitly forbidden during `/init`** and decoupled into the standalone `/process-history` workflow.
+    *   *Simplicity & Non-Restructuring Rule*: `/init` strictly limits scanning to surface-level directory detection and folder linking into `phase-1-summary.md`. **Deep code parsing, historical analysis, file moves, and import rewrites are explicitly forbidden during `/init`** and decoupled into the standalone `/process` workflow.
 *   **State & Storage Processing**:
     *   Scans folder paths provided in Q2.a and analyzes version control configs (`.git/config`, etc.) to auto-detect remote origins. Maps discovered directories into the 'Folders' section of `.agents/plans/<branch_name>/phase-1-summary.md`.
 *   **Guard Elements Implementing S3**:
@@ -137,7 +137,7 @@ graph TD
 #### Step 4: Execution Acceptance Gate (Node S4)
 *   **Description**: Synthesizes all information collected during Nodes S2 and S3, presents a structured summary of the agent's understanding of the project, lists all planned execution steps to be taken, and requests explicit user acceptance before creating physical directories or files.
 *   **Architectural & Implementation Reasoning**:
-    *   *Why Execution Acceptance?*: Mirrors the execution acceptance gate pattern established in `/process-history`. Ensures total alignment between user intent and planned scaffolding operations before mutating filesystem state.
+    *   *Why Execution Acceptance?*: Mirrors the execution acceptance gate pattern established in `/process`. Ensures total alignment between user intent and planned scaffolding operations before mutating filesystem state.
     *   *Dual Execution Modes*:
         *   **Default / Interactive Mode**: Prompts the user with the summary and planned step list, waiting for explicit confirmation (`1. Proceed with execution` / `2. Modify parameters`) before proceeding to S5.
         *   **Automated Mode (`--auto`)**: When the `--auto` flag is passed, the agent logs the summary and planned action list for auditing and immediately transitions to Node S5 without pausing for user confirmation.
@@ -185,7 +185,7 @@ graph TD
 #### Step 7: Initialization Done (Node S7)
 *   **Description**: Finalizes state machine execution, updates `PROCESS_STATUS.md` Block 1 row 1 (`/init` $\rightarrow$ `Completed`), logs daily history in Block 2, and displays a summary of scaffolded assets and recommended next commands.
 *   **Architectural & Implementation Reasoning**:
-    *   *Operational Transition*: Formally marks `/init` completed and directs the user to the next logical workflow: `/process-history` (for legacy codebase restructuring) or `/plan` (for feature development).
+    *   *Operational Transition*: Formally marks `/init` completed and directs the user to the next logical workflow: `/process` (for legacy codebase restructuring) or `/plan` (for feature development).
 *   **State & Storage Processing**:
     *   Updates `.agents/plans/PROCESS_STATUS.md` Block 1 and appends `[YYYY-MM-DD] /init workflow completed` log entry to Block 2.
 *   **Guard Elements Implementing S7**:
@@ -207,11 +207,11 @@ The `/init` command is configured and run using the following operational rules 
 - `/init --dry-run`: Previews all proposed files, symlinks, Docker configs, and `PROCESS_STATUS.md` content without writing any changes to disk.
 - `/init --force`: Overwrites existing default rules and workflows in `.agents/rules/` and `.agents/workflows/` while strictly preserving custom phase blueprints (`phase-1-summary.md`, `PROCESS_STATUS.md`).
 
-*Historical Codebase Restructuring Note: Codebase restructuring, historical code analysis, and legacy migrations are explicitly decoupled from `/init` and managed by the separate `/process-history` workflow.*
+*Historical Codebase Restructuring Note: Codebase restructuring, historical code analysis, and legacy migrations are explicitly decoupled from `/init` and managed by the separate `/process` workflow.*
 
 ### Operational Rules of Thumb
 1.  **Branch Initialization Rule**:
     - **First-Time Run**: Scaffolds on a newly created `initial` branch.
     - **Re-running `/init`**: If the workspace is already initialized, calling `/init` without options automatically creates a new `feature/<feature_name>` branch.
-2.  **No-Restructuring Rule**: `/init` MUST NOT perform file moves, code refactoring, or import rewrites. If legacy codebase restructuring is required, the user is directed to call `/process-history`.
+2.  **No-Restructuring Rule**: `/init` MUST NOT perform file moves, code refactoring, or import rewrites. If legacy codebase restructuring is required, the user is directed to call `/process`.
 3.  **Idempotency Rule**: Running `/init` multiple times in an already initialized workspace will verify container status and restore missing default files without modifying active plans or custom project blueprints.

@@ -78,7 +78,7 @@ The implementation plan directly realizes the following design blueprints and `/
         *   **Node S4 (Execution Acceptance Gate)**: Synthesizes gathered info, displays understanding summary and planned steps, and requests user approval (or bypasses prompt in `--auto` mode).
         *   **Node S5 (Scaffolding Workspace & `PROCESS_STATUS.md`)**: Invokes `skills/init-scaffolder/SKILL.md` to deploy `agent-workspace/` control structures, `plans/<branch_name>/` subfolder, `codebase-devops` sub-repo (`.github/`, `docker/`), `codebase-*` sub-repo skeletons, relative symlinks, `.gitkeep` files, and initial status templates.
         *   **Node S6 (Git Hook Registration & Remote Setup)**: Registers remote origins and installs `hooks/pre-commit-plan-validator.sh`.
-        *   **Node S7 (Initialization Done)**: Reports initialization summary and available next commands (`/plan` or `/process-history`).
+        *   **Node S7 (Initialization Done)**: Reports initialization summary and available next commands (`/plan` or `/process`).
     4.  Implement CLI parameter handling:
         *   `/init`: Default interactive execution (creates `initial` branch on greenfield; creates `feature/<feature_name>` branch on re-runs).
         *   `/init --auto`: Automatic execution mode. Bypasses interactive Node S4 acceptance prompt and executes all planned scaffolding tasks.
@@ -119,7 +119,7 @@ The implementation plan directly realizes the following design blueprints and `/
 *   **List of Actions**:
     1.  Create `fullstack_software_dev/init/antigravity/guards/templates/PROCESS_STATUS.md`:
         *   Header with Target Release/Feature, Git Branch, Date, and Active Workflow.
-        *   **Block 1 (Workflow Execution Matrix)**: Status table tracking `/init`, `/process-history`, `/plan` (with sub-rows 3.1–3.5 for Phase 1 to Phase 5), `/implement`, `/verify`, and `/release`.
+        *   **Block 1 (Workflow Execution Matrix)**: Status table tracking `/init`, `/process`, `/plan` (with sub-rows 3.1–3.5 for Phase 1 to Phase 5), `/implement`, `/verify`, and `/release`.
         *   **Block 2 (Datestamped Daily Execution History)**: Immutable daily log format timestamped by `### [YYYY-MM-DD]`.
     2.  Create `fullstack_software_dev/init/antigravity/guards/templates/phase-1-summary.md`:
         *   Sections for Project Purpose, Scope, Key Milestones, Documentation URLs, Software Architecture Pattern, Tech Stack, and Workspace Folder Maps.

@@ -23,7 +23,7 @@ All active specifications and operational playbooks are maintained under `fullst
 - **[Guard Process Handling Spec (`PROCESS_STATUS.md`)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md)**: Release and feature governance with a concise 2-block status matrix and daily execution history log.
 - **[Multi-Repo & Docker Strategy Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md)**: Hybrid Docker containerization, symlink mapping, and dynamic layer expansion.
 - **[Initialization Workflow (/init)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md)**: Bootstrapping playbook, 3-block Q&A schema (`init_questions.md`), and repository directory layouts (`folder_structure.md`).
-- **[Legacy Code & Docs Processing (/process-history)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/process_history_workflow.md)**: Standalone workflow for deep historical code analysis, documentation review, and refactoring proposals.
+- **[Legacy Code & Docs Processing (/process)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/process_workflow.md)**: Standalone workflow for deep historical code analysis, documentation review, and refactoring proposals.
 - **[Grill Engine Gate](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md)**: Reusable Q&A engine design rules and state file formats (`GRILL_STATUS.md`).
 - **[Language-Specific Code Graph Taxonomy](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/code_graph_taxonomy.md)**: Universal node and connection rules for Python, Go, and JavaScript.
 
@@ -48,12 +48,12 @@ agent-driven-templates/
     │       ├── init_implementation_map.md # Antigravity execution map & decision links
     │       ├── init_tests.md          # Greenfield & brownfield verification test suite
     │       └── guards/                # Antigravity native primitives (rules, skills, hooks)
-    ├── process_history/               # [Tier 2] Legacy Processing Workflow Subfolder
-    │   ├── process_history_workflow.md# /process-history Brownfield workflow specification
-    │   ├── process_history_questions.md# /process-history Q&A Grill schema
+    ├── process/                       # [Tier 2] Legacy Processing Workflow Subfolder
+    │   ├── process_workflow.md        # /process Brownfield workflow specification
+    │   ├── process_questions.md       # /process Q&A Grill schema
     │   └── antigravity/               # [Tier 3] Antigravity reference implementation
-    │       ├── process_history_implementation_map.md
-    │       └── process_history_tests.md
+    │       ├── process_implementation_map.md
+    │       └── process_tests.md
     ├── plan/                          # Interactive Planning workflow (Planned)
     ├── implement/                     # Action Implementation workflow (Planned)
     ├── verify/                        # Automated Verification workflow (Planned)

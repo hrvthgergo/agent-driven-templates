@@ -1,6 +1,6 @@
 # Specification: Language-Specific Code Graph Node & Connection Taxonomy
 
-This specification defines the universal node types, connection relationships, and language-specific structural taxonomies for building and maintaining **Code Graphs** across the development lifecycle (initially generated during `/process-history` and continuously updated during `/implement`).
+This specification defines the universal node types, connection relationships, and language-specific structural taxonomies for building and maintaining **Code Graphs** across the development lifecycle (initially generated during `/process` and continuously updated during `/implement`).
 
 ---
 
@@ -8,7 +8,7 @@ This specification defines the universal node types, connection relationships, a
 
 The Code Graph is a general-purpose, evolving representation of a codebase's structural topology. It bridges historical code understanding with active code generation:
 
-*   **Lifecycle Phase 1 (`/process-history`)**: Analyzes legacy codebases and extracts structural nodes and connections to generate initial `antigravity-workspace/src/<layer>/code_graph/` subfolders (`graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`).
+*   **Lifecycle Phase 1 (`/process`)**: Analyzes legacy codebases and extracts structural nodes and connections to generate initial `antigravity-workspace/src/<layer>/code_graph/` subfolders (`graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`).
 *   **Lifecycle Phase 2 (`/implement`)**: Continuously updates and refines the code graph as new features, classes, functions, or interfaces are implemented, ensuring agents maintain an accurate map of element utilization.
 
 ---

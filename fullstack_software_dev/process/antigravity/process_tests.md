@@ -1,16 +1,16 @@
-# Verification & Test Specification: `/process-history` Workflow (Brownfield Scenario)
+# Verification & Test Specification: `/process` Workflow (Brownfield Scenario)
 
-This document defines the test scenario, mock execution sequence, real-world legacy test dataset integration, user input simulation, and verification assertions for testing the `/process-history` workflow within **Google Antigravity**.
+This document defines the test scenario, mock execution sequence, real-world legacy test dataset integration, user input simulation, and verification assertions for testing the `/process` workflow within **Google Antigravity**.
 
 ---
 
 ## 1. Test Overview & Objectives
 
-*   **Target Workflow**: `/process-history` (Brownfield Legacy Code & Docs Processing)
+*   **Target Workflow**: `/process` (Brownfield Legacy Code & Docs Processing)
 *   **Target Environment**: Google Antigravity Agent Execution Environment
 *   **Real-World Test Resource**: [ai-chronicle-hub](https://github.com/hrvthgergo/ai-chronicle-hub) (`https://github.com/hrvthgergo/ai-chronicle-hub.git`)
 *   **Test Scenario**: Real-World Brownfield Legacy Migration & Analysis (Cloning `ai-chronicle-hub`, analyzing legacy UI/backend components, generating workspace code graphs, and populating phase blueprints).
-*   **Primary Objective**: Validate end-to-end execution of the `/process-history` workflow state machine (Nodes S0 $\rightarrow$ S7) using `ai-chronicle-hub` as test data, asserting:
+*   **Primary Objective**: Validate end-to-end execution of the `/process` workflow state machine (Nodes S0 $\rightarrow$ S7) using `ai-chronicle-hub` as test data, asserting:
     1. **Prerequisite Check (Step 0)**: Halts execution if `/init` has not been completed.
     2. **Read-Only Legacy Source Policy**: The cloned `ai-chronicle-hub` repository remains 100% untouched and unedited.
     3. **As-Is File Migration & Non-Code Docs Staging**: Source code from `ai-chronicle-hub` is copied intact into target `codebase-*` sub-repositories without code modifications, while non-code documentation and assets are staged inside `.agents/plans/<feature-name>/resource/`.
@@ -24,13 +24,13 @@ This document defines the test scenario, mock execution sequence, real-world leg
 
 To ensure isolated, reproducible test runs, the test environment MUST execute the following setup sequence prior to workflow execution:
 
-1.  **Isolated Test Sandbox**: Create and enter an isolated test execution directory (`/tmp/test-process-history/`).
+1.  **Isolated Test Sandbox**: Create and enter an isolated test execution directory (`/tmp/test-process/`).
 2.  **Test Data Repository Fetching**: Clone the test dataset repository during the test cycle:
     ```bash
-    git clone https://github.com/hrvthgergo/ai-chronicle-hub.git /tmp/test-process-history/ai-chronicle-hub
+    git clone https://github.com/hrvthgergo/ai-chronicle-hub.git /tmp/test-process/ai-chronicle-hub
     ```
-3.  **Read-Only Integrity Check Baseline**: Calculate and record MD5 checksums for all source files in `/tmp/test-process-history/ai-chronicle-hub/` before running the workflow.
-4.  **Initialized Workspace Context**: Execute `/init` to bootstrap `antigravity-workspace/`, scaffold `codebase-*` layer skeletons, create `.agents/plans/PROCESS_STATUS.md` (Row 1.0 `/init` marked `Completed`), and register `/tmp/test-process-history/ai-chronicle-hub` as the linked legacy folder.
+3.  **Read-Only Integrity Check Baseline**: Calculate and record MD5 checksums for all source files in `/tmp/test-process/ai-chronicle-hub/` before running the workflow.
+4.  **Initialized Workspace Context**: Execute `/init` to bootstrap `antigravity-workspace/`, scaffold `codebase-*` layer skeletons, create `.agents/plans/PROCESS_STATUS.md` (Row 1.0 `/init` marked `Completed`), and register `/tmp/test-process/ai-chronicle-hub` as the linked legacy folder.
 
 ---
 
@@ -38,7 +38,7 @@ To ensure isolated, reproducible test runs, the test environment MUST execute th
 
 ### Command Invocation
 ```bash
-/process-history --plan
+/process --plan
 ```
 
 ### Mock User Input Sequence (Q1 to Q7 Prompts for `ai-chronicle-hub`)
@@ -53,7 +53,7 @@ The test harness simulates an interactive user session responding to the sequent
 | **Q4** | **Code Graph & Blueprint Scope** | Selected Option 1 (*Full Extraction & Workspace Code Graphs*). | Full 5-phase blueprint synthesis and `antigravity-workspace/src/<layer>/code_graph/` subfolder generation configured. |
 | **Q5** | **Execution Mode Selection** | Selected Option 1 (*Plan-First Mode --plan*). | `.agents/plans/restructure-proposal.md` drafted; consent gate triggered. |
 | **Q6** | **Path & Link Strategy** | Selected Option 1 (*Use standard workspace symbolic links*). | Workspace symlinks verified under `antigravity-workspace/src/`. |
-| **Q7** | **Summary Verification** | Displays Q1–Q6 recap matrix. Selected Option 1 (*Execute /process-history action*). | Execution authorized. Files copied intact from `ai-chronicle-hub` into `codebase-*` layers, Code Graphs generated, blueprints populated. |
+| **Q7** | **Summary Verification** | Displays Q1–Q6 recap matrix. Selected Option 1 (*Execute /process action*). | Execution authorized. Files copied intact from `ai-chronicle-hub` into `codebase-*` layers, Code Graphs generated, blueprints populated. |
 
 ---
 
@@ -64,12 +64,12 @@ Upon completion of Node S7, the test harness executes automated verification che
 | Node | Verification Target | Asserted Resource Path | Expected State / Content Assertion |
 | :--- | :--- | :--- | :--- |
 | **S0** | Prerequisite Gate | `.agents/plans/PROCESS_STATUS.md` | Row 1.0 (`/init`) verified as `Completed`. (If missing, execution halts). |
-| **S1–S7** | Read-Only Integrity | `/tmp/test-process-history/ai-chronicle-hub/` | Original `ai-chronicle-hub` files 100% untouched. MD5 checksums match pre-test baseline. |
+| **S1–S7** | Read-Only Integrity | `/tmp/test-process/ai-chronicle-hub/` | Original `ai-chronicle-hub` files 100% untouched. MD5 checksums match pre-test baseline. |
 | **S4** | Migration Proposal | `.agents/plans/restructure-proposal.md` | File exists. Documents source mapping from `ai-chronicle-hub` to `codebase-*` sub-repos. |
 | **S6** | As-Is File Migration & Resource Staging | `codebase-layout/src/`<br/>`codebase-engine/src/`<br/>`.agents/plans/<feature-name>/resource/` | Source code copied intact into `codebase-*` layers. Non-code legacy documentation and assets staged in `.agents/plans/<feature-name>/resource/`. |
 | **S7** | Workspace Code Graphs | `antigravity-workspace/src/layout/code_graph/`<br/>`antigravity-workspace/src/engine/code_graph/` | Subfolders exist inside `src/<layer>/`. Each contains `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md`. Production `codebase-*` repos clean of doc overhead. |
 | **S7** | Phase Blueprints | `.agents/plans/<feature-name>/phase-*.md` | Relevant phase blueprint documents populated with synthesized domain knowledge extracted from `ai-chronicle-hub` (filling out blueprints is selective/relevance-based). |
-| **S7** | Guard Process Status | `.agents/plans/PROCESS_STATUS.md` | Block 1 matrix contains Row 2.0 (`/process-history`) marked `Completed`. Block 2 daily history updated. |
+| **S7** | Guard Process Status | `.agents/plans/PROCESS_STATUS.md` | Block 1 matrix contains Row 2.0 (`/process`) marked `Completed`. Block 2 daily history updated. |
 
 ---
 
@@ -79,20 +79,20 @@ To execute this test scenario automatically in an Antigravity sandbox:
 
 ```bash
 # 1. Prepare clean test sandbox directory
-mkdir -p /tmp/test-process-history && cd /tmp/test-process-history
+mkdir -p /tmp/test-process && cd /tmp/test-process
 git init
 
 # 2. Clone test dataset repository (as part of test cycle setup)
-git clone https://github.com/hrvthgergo/ai-chronicle-hub.git /tmp/test-process-history/ai-chronicle-hub
+git clone https://github.com/hrvthgergo/ai-chronicle-hub.git /tmp/test-process/ai-chronicle-hub
 
 # 3. Calculate pre-test file checksums to assert read-only integrity
-find /tmp/test-process-history/ai-chronicle-hub -type f -exec md5sum {} + > /tmp/legacy-checksums.txt
+find /tmp/test-process/ai-chronicle-hub -type f -exec md5sum {} + > /tmp/legacy-checksums.txt
 
 # 4. Run /init first to satisfy prerequisite gate and link ai-chronicle-hub
 /init
 
-# 5. Execute /process-history workflow
-/process-history --plan
+# 5. Execute /process workflow
+/process --plan
 
 # 6. Run automated assertions
 test -f .agents/plans/restructure-proposal.md && echo "ASSERT PASS: restructure-proposal.md present"

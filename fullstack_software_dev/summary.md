@@ -40,9 +40,9 @@ fullstack_software_dev/
 │       ├── init_tests.md               # Greenfield & brownfield verification test suite
 │       └── guards/                     # Antigravity native primitives (rules, skills, hooks)
 │
-├── process_history/                    # [Tier 2] Legacy Processing Workflow Subfolder
-│   ├── process_history_workflow.md     # Detailed workflow specifications
-│   ├── process_history_implementation_map.md
+├── process/                            # [Tier 2] Legacy Processing Workflow Subfolder
+│   ├── process_workflow.md             # Detailed workflow specifications
+│   ├── process_implementation_map.md
 │   └── guards/                         # [Tier 3] Environment-Specific Guards
 │
 ├── plan/                               # [Tier 2] Interactive Planning Subfolder
@@ -73,7 +73,7 @@ fullstack_software_dev/
    - Defines overarching concepts, cross-cutting rules, and general-purpose specs (e.g., [Grill Engine](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md), [Multi-Repository Architecture Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md), and [Process Guard Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md)) applied across all workflow steps.
 
 2. **Step-Specific Workflow Subfolders & Implementation Maps**
-   - Subdirectories dedicated to each operational phase (e.g., `init/`, `process_history/`, `plan/`, `implement/`, `verify/`, `release/`).
+   - Subdirectories dedicated to each operational phase (e.g., `init/`, `process/`, `plan/`, `implement/`, `verify/`, `release/`).
    - Contain detailed step specifications and environment/time-bound `*_implementation_map.md` files (e.g., `init_implementation_map.md`). These provide step-by-step execution roadmaps for implementing a specific workflow phase in a given environment at a specific point in time (e.g., an Antigravity-based implementation snapshot).
 
 3. **Environment-Specific Guard Folders (`guards/`)**
@@ -102,7 +102,7 @@ graph TD
     
     Init --> CheckType{Project Type?}
     
-    CheckType -->|Brownfield / Legacy Code| ProcHist["/process-history (Legacy Processing)<br/>• Deep Historical Code/Docs Scan<br/>• Draft restructure-proposal.md<br/>• Refactor & Fix Relative Imports"]
+    CheckType -->|Brownfield / Legacy Code| ProcHist["/process (Legacy Processing)<br/>• Deep Historical Code/Docs Scan<br/>• Draft restructure-proposal.md<br/>• Refactor & Fix Relative Imports"]
     CheckType -->|Greenfield / New Feature| Plan["/plan (Interactive Planning)<br/>• Q&A Grill Gate (Max 2 questions/turn)<br/>• Generate Phase 1-5 Blueprints<br/>• Update PROCESS_STATUS.md"]
     
     ProcHist --> Plan
@@ -132,14 +132,14 @@ graph TD
         *   [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/folder_structure.md) (Desired repository directory layout)
         *   [antigravity/init_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/antigravity/init_implementation_map.md) (Antigravity guard execution roadmap)
         *   [antigravity/init_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/antigravity/init_tests.md) (Greenfield & brownfield verification test specification)
-2.  **[Legacy Code & Docs Processing (/process-history)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/process_history_workflow.md)**
-    *   *Path*: `fullstack_software_dev/process_history/`
+2.  **[Legacy Code & Docs Processing (/process)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/process_workflow.md)**
+    *   *Path*: `fullstack_software_dev/process/`
     *   *Purpose*: Handles deep historical code analysis, legacy documentation processing, refactoring proposals, and codebase restructuring for brownfield projects.
     *   *Key Files*:
-        *   [process_history_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/process_history_workflow.md) (Detailed specifications)
-        *   [process_history_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/process_history_questions.md) (Scans and Q&A Grill schema)
-        *   [antigravity/process_history_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/antigravity/process_history_implementation_map.md) (Antigravity guard execution roadmap)
-        *   [antigravity/process_history_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_history/antigravity/process_history_tests.md) (Brownfield verification test specification)
+        *   [process_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/process_workflow.md) (Detailed specifications)
+        *   [process_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/process_questions.md) (Scans and Q&A Grill schema)
+        *   [antigravity/process_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/antigravity/process_implementation_map.md) (Antigravity guard execution roadmap)
+        *   [antigravity/process_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/antigravity/process_tests.md) (Brownfield verification test specification)
 3.  **[Interactive Planning (/plan)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/plan_workflow.md)**
     *   *Path*: `fullstack_software_dev/plan/`
     *   *Purpose*: Leads the user through the creation of the 5-phase blueprint plans tracking status in `PROCESS_STATUS.md`.
