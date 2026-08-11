@@ -26,6 +26,7 @@ The project directory structure is designed in a 3-tier layout to maintain separ
 ```text
 fullstack_software_dev/
 ├── summary.md                          # Central Entry Point & Framework Summary
+├── user_guide.md                       # End-User Guide & Operational Manual
 ├── grill_engine.md                     # [Tier 1] General Q&A Engine Spec
 ├── multi_repo_architecture.md          # [Tier 1] Multi-Repo & Symlink Architecture Spec
 ├── process_handling.md                 # [Tier 1] Process Guard & Matrix Spec
@@ -70,7 +71,7 @@ fullstack_software_dev/
 
 1. **General Design Elements (Main Root Folder)**
    - Located directly in `fullstack_software_dev/`.
-   - Defines overarching concepts, cross-cutting rules, and general-purpose specs (e.g., [Grill Engine](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md), [Multi-Repository Architecture Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md), and [Process Guard Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md)) applied across all workflow steps.
+   - Defines overarching concepts, cross-cutting rules, user guides, and general-purpose specs (e.g., [End-User Guide](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/user_guide.md), [Grill Engine](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md), [Multi-Repository Architecture Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md), and [Process Guard Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md)) applied across all workflow steps.
 
 2. **Step-Specific Workflow Subfolders & Implementation Maps**
    - Subdirectories dedicated to each operational phase (e.g., `init/`, `process/`, `plan/`, `implement/`, `verify/`, `release/`).
@@ -86,6 +87,7 @@ fullstack_software_dev/
 
 The framework utilizes shared components and architectural blueprints that operate across all stages of the lifecycle:
 
+- **[End-User Guide & Operational Manual](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/user_guide.md)**: Conceptual summary, workflow principles, and operational manual for developers and AI agents.
 - **[Interactive Q&A Engine (Grill Engine)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md)**: A stateful, resume-ready interview module used to gather requirements and resolve architecture ambiguities before generating plans or code.
 - **[Multi-Repository Architecture Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md)**: Specifications mapping out directory separation, symbolic link mapping, config dependency policies (Rule of Dependency), and the Hybrid Docker handling strategy to isolate UI and Engine components.
 - **[Guard Process Handling Spec (Process Guard)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md)**: Specifications for release-governed process handling documents (`PROCESS_STATUS.md`), featuring a concise 2-block structure (Workflow Execution Matrix & Datestamped Daily History) and branch-based release initialization options.

@@ -20,6 +20,7 @@ The **Guards Framework** intentionally separates high-level architectural design
 All active specifications and operational playbooks are maintained under `fullstack_software_dev/`:
 
 - **[Summary & Operational Lifecycle](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/summary.md)**: Central entry point detailing the 3-tier structure, 6 development workflows, and lifecycle Mermaid diagram.
+- **[End-User Guide & Operational Manual](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/user_guide.md)**: Conceptual summary, workflow principles, and operational manual for developers and AI agents.
 - **[Guard Process Handling Spec (`PROCESS_STATUS.md`)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md)**: Release and feature governance with a concise 2-block status matrix and daily execution history log.
 - **[Multi-Repo & Docker Strategy Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md)**: Hybrid Docker containerization, symlink mapping, and dynamic layer expansion.
 - **[Initialization Workflow (/init)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md)**: Bootstrapping playbook, 3-block Q&A schema (`init_questions.md`), and repository directory layouts (`folder_structure.md`).
@@ -36,6 +37,7 @@ agent-driven-templates/
 ├── README.md                          # Repository overview & framework philosophy
 └── fullstack_software_dev/
     ├── summary.md                     # Central entry point, 3-tier structure & workflow sitemap
+    ├── user_guide.md                  # End-User Guide & Operational Manual
     ├── grill_engine.md                # Reusable Q&A Grill Engine specification
     ├── multi_repo_architecture.md     # Multi-repo symlinks & Hybrid Docker strategy
     ├── process_handling.md            # Guard Process Handling Spec (PROCESS_STATUS.md)
