@@ -66,4 +66,4 @@ This stateful execution playbook defines the 7-node state machine governing proj
 ### Node S7: Initialization Done
 1.  Mark `/init` step as `Completed` in `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` Block 1 matrix.
 2.  Record datestamped entry in Block 2 daily history.
-3.  Output initialization summary and recommend next command (`/plan` or `/process-history`).
+3.  Output initialization summary and recommend next command (`/plan` or `/process`).

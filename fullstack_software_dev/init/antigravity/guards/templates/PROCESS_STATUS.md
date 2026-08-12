@@ -12,7 +12,7 @@
 | Step | Workflow Stage | Status | Assigned Plan / Artifact | Next Action |
 | :--- | :--- | :--- | :--- | :--- |
 | **1** | `/init` | Completed | `agent-workspace/plans/{{GIT_BRANCH}}/GRILL_STATUS.md` | Proceed to `/plan` |
-| **2** | `/process-history` | Skipped | N/A (Greenfield setup) | N/A |
+| **2** | `/process` | Skipped | N/A (Greenfield setup) | N/A |
 | **3** | `/plan` | In Progress | `agent-workspace/plans/{{GIT_BRANCH}}/phase-1-summary.md` | Execute Phase 1 |
 | 3.1 | -- Phase 1: Summary | In Progress | `phase-1-summary.md` | Draft Scope & Goals |
 | 3.2 | -- Phase 2: Layout | Pending | `phase-2-layout.md` | Pending |
