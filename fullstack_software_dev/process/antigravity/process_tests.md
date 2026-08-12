@@ -9,14 +9,14 @@ This document defines the test scenario, mock execution sequence, real-world leg
 *   **Target Workflow**: `/process` (Brownfield Legacy Code & Docs Processing)
 *   **Target Environment**: Google Antigravity Agent Execution Environment
 *   **Real-World Test Resource**: [ai-chronicle-hub](https://github.com/hrvthgergo/ai-chronicle-hub) (`https://github.com/hrvthgergo/ai-chronicle-hub.git`)
-*   **Test Scenario**: Real-World Brownfield Legacy Migration & Analysis (Cloning `ai-chronicle-hub`, analyzing legacy UI/backend components, generating workspace code graphs, and populating phase blueprints).
+*   **Test Scenario**: Real-World Brownfield Legacy Migration & Analysis (Cloning `ai-chronicle-hub`, analyzing legacy UI/backend components, staging non-code docs in `agent-workspace/plans/initial/resource/`, generating workspace code graphs, and selectively populating phase blueprints).
 *   **Primary Objective**: Validate end-to-end execution of the `/process` workflow state machine (Nodes S0 $\rightarrow$ S7) using `ai-chronicle-hub` as test data, asserting:
     1. **Prerequisite Check (Step 0)**: Halts execution if `/init` has not been completed.
     2. **Read-Only Legacy Source Policy**: The cloned `ai-chronicle-hub` repository remains 100% untouched and unedited.
-    3. **As-Is File Migration & Non-Code Docs Staging**: Source code from `ai-chronicle-hub` is copied intact into target `codebase-*` sub-repositories without code modifications, while non-code documentation and assets are staged inside `.agents/plans/<feature-name>/resource/`.
+    3. **As-Is File Migration & Non-Code Docs Staging**: Source code from `ai-chronicle-hub` is copied intact into target `codebase-*` sub-repositories without code modifications, while non-code documentation and assets are staged inside `agent-workspace/plans/initial/resource/`.
     4. **Dual Execution Options**: Validates both Plan-First (`--plan`) and Immediate Execution (`--auto`) modes.
-    5. **Workspace Code Graph Subfolders**: Scoped code graph folders created inside `antigravity-workspace/src/<layer>/code_graph/` containing `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md` (keeping `codebase-*` repos clean of doc overhead, no symlinks required).
-    6. **Selective Blueprint & Status Synthesis**: Selectively populates relevant phase blueprints in `.agents/plans/<feature-name>/` based on identified domain knowledge (filling out all 5 is optional) and updates `PROCESS_STATUS.md` Row 2.0 to `Completed`.
+    5. **Workspace Code Graph Subfolders**: Scoped code graph folders created inside `agent-workspace/src/<layer>/code_graph/` containing `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md` (keeping `codebase-*` repos clean of doc overhead, no symlinks required).
+    6. **Selective Blueprint & Status Synthesis**: Selectively populates relevant phase blueprints in `agent-workspace/plans/initial/` based on identified domain knowledge (filling out all 5 is optional) and updates `PROCESS_STATUS.md` Row 2.0 to `Completed`.
 
 ---
 
@@ -30,7 +30,7 @@ To ensure isolated, reproducible test runs, the test environment MUST execute th
     git clone https://github.com/hrvthgergo/ai-chronicle-hub.git /tmp/test-process/ai-chronicle-hub
     ```
 3.  **Read-Only Integrity Check Baseline**: Calculate and record MD5 checksums for all source files in `/tmp/test-process/ai-chronicle-hub/` before running the workflow.
-4.  **Initialized Workspace Context**: Execute `/init` to bootstrap `antigravity-workspace/`, scaffold `codebase-*` layer skeletons, create `.agents/plans/PROCESS_STATUS.md` (Row 1.0 `/init` marked `Completed`), and register `/tmp/test-process/ai-chronicle-hub` as the linked legacy folder.
+4.  **Initialized Workspace Context**: Execute `/init` to bootstrap `agent-workspace/`, scaffold `codebase-devops`, `codebase-layout`, and `codebase-engine` layer skeletons, create `agent-workspace/plans/initial/PROCESS_STATUS.md` (Row 1.0 `/init` marked `Completed`), and register `/tmp/test-process/ai-chronicle-hub` as the linked legacy folder.
 
 ---
 
@@ -49,11 +49,11 @@ The test harness simulates an interactive user session responding to the sequent
 | :--- | :--- | :--- | :--- |
 | **Q1** | **`/init` Baseline Review** | Selected Option 1 (*Proceed with current baseline*). | Discovered legacy source folder (`ai-chronicle-hub`) confirmed. |
 | **Q2** | **Omitted Remote Sources Audit** | Selected Option 1 (*No additional remote sources*). | Remote Git origin (`https://github.com/hrvthgergo/ai-chronicle-hub.git`) acknowledged and registered. |
-| **Q3** | **Legacy Source Mapping** | Selected Option 1 (*Accept proposed automatic classification*). | UI/presentation components mapped to `codebase-layout`, core logic/services mapped to `codebase-engine`. |
-| **Q4** | **Code Graph & Blueprint Scope** | Selected Option 1 (*Full Extraction & Workspace Code Graphs*). | Full 5-phase blueprint synthesis and `antigravity-workspace/src/<layer>/code_graph/` subfolder generation configured. |
-| **Q5** | **Execution Mode Selection** | Selected Option 1 (*Plan-First Mode --plan*). | `.agents/plans/restructure-proposal.md` drafted; consent gate triggered. |
-| **Q6** | **Path & Link Strategy** | Selected Option 1 (*Use standard workspace symbolic links*). | Workspace symlinks verified under `antigravity-workspace/src/`. |
-| **Q7** | **Summary Verification** | Displays Q1–Q6 recap matrix. Selected Option 1 (*Execute /process action*). | Execution authorized. Files copied intact from `ai-chronicle-hub` into `codebase-*` layers, Code Graphs generated, blueprints populated. |
+| **Q3** | **Legacy Source & Non-Code Docs Mapping** | Selected Option 1 (*Accept proposed automatic classification*). | UI components mapped to `codebase-layout/src/`, backend logic to `codebase-engine/src/`, non-code docs to `agent-workspace/plans/initial/resource/`. |
+| **Q4** | **Code Graph & Blueprint Scope** | Selected Option 1 (*Full Extraction & Workspace Code Graphs*). | Selective blueprint synthesis and `agent-workspace/src/<layer>/code_graph/` subfolder generation configured. |
+| **Q5** | **Execution Mode Selection** | Selected Option 1 (*Plan-First Mode --plan*). | `agent-workspace/plans/initial/restructure-proposal.md` drafted; consent gate triggered. |
+| **Q6** | **Path & Link Strategy** | Selected Option 1 (*Use standard workspace symbolic links*). | Workspace symlinks verified under `agent-workspace/src/`. |
+| **Q7** | **Summary Verification** | Displays Q1–Q6 recap matrix. Selected Option 1 (*Execute /process action*). | Execution authorized. Source code copied intact into `codebase-*` layers, non-code docs staged in `resource/`, Code Graphs generated, blueprints populated. |
 
 ---
 
@@ -63,13 +63,13 @@ Upon completion of Node S7, the test harness executes automated verification che
 
 | Node | Verification Target | Asserted Resource Path | Expected State / Content Assertion |
 | :--- | :--- | :--- | :--- |
-| **S0** | Prerequisite Gate | `.agents/plans/PROCESS_STATUS.md` | Row 1.0 (`/init`) verified as `Completed`. (If missing, execution halts). |
+| **S0** | Prerequisite Gate | `agent-workspace/plans/initial/PROCESS_STATUS.md` | Row 1.0 (`/init`) verified as `Completed`. (If missing, execution halts). |
 | **S1–S7** | Read-Only Integrity | `/tmp/test-process/ai-chronicle-hub/` | Original `ai-chronicle-hub` files 100% untouched. MD5 checksums match pre-test baseline. |
-| **S4** | Migration Proposal | `.agents/plans/restructure-proposal.md` | File exists. Documents source mapping from `ai-chronicle-hub` to `codebase-*` sub-repos. |
-| **S6** | As-Is File Migration & Resource Staging | `codebase-layout/src/`<br/>`codebase-engine/src/`<br/>`.agents/plans/<feature-name>/resource/` | Source code copied intact into `codebase-*` layers. Non-code legacy documentation and assets staged in `.agents/plans/<feature-name>/resource/`. |
-| **S7** | Workspace Code Graphs | `antigravity-workspace/src/layout/code_graph/`<br/>`antigravity-workspace/src/engine/code_graph/` | Subfolders exist inside `src/<layer>/`. Each contains `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md`. Production `codebase-*` repos clean of doc overhead. |
-| **S7** | Phase Blueprints | `.agents/plans/<feature-name>/phase-*.md` | Relevant phase blueprint documents populated with synthesized domain knowledge extracted from `ai-chronicle-hub` (filling out blueprints is selective/relevance-based). |
-| **S7** | Guard Process Status | `.agents/plans/PROCESS_STATUS.md` | Block 1 matrix contains Row 2.0 (`/process`) marked `Completed`. Block 2 daily history updated. |
+| **S4** | Migration Proposal | `agent-workspace/plans/initial/restructure-proposal.md` | File exists. Documents source mapping from `ai-chronicle-hub` to `codebase-*` sub-repos and `resource/` staging. |
+| **S6** | As-Is File Migration & Resource Staging | `codebase-layout/src/`<br/>`codebase-engine/src/`<br/>`agent-workspace/plans/initial/resource/` | Source code copied intact into `codebase-*` layers. Non-code legacy documentation and assets staged in `agent-workspace/plans/initial/resource/`. |
+| **S7** | Workspace Code Graphs | `agent-workspace/src/layout/code_graph/`<br/>`agent-workspace/src/engine/code_graph/` | Subfolders exist inside `src/<layer>/`. Each contains `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md`. Production `codebase-*` repos clean of doc overhead. |
+| **S7** | Phase Blueprints | `agent-workspace/plans/initial/phase-*.md` | Relevant phase blueprint documents populated with synthesized domain knowledge extracted from `ai-chronicle-hub` (filling out blueprints is selective/relevance-based). |
+| **S7** | Guard Process Status | `agent-workspace/plans/initial/PROCESS_STATUS.md` | Block 1 matrix contains Row 2.0 (`/process`) marked `Completed`. Block 2 daily history updated. |
 
 ---
 
@@ -95,12 +95,12 @@ find /tmp/test-process/ai-chronicle-hub -type f -exec md5sum {} + > /tmp/legacy-
 /process --plan
 
 # 6. Run automated assertions
-test -f .agents/plans/restructure-proposal.md && echo "ASSERT PASS: restructure-proposal.md present"
+test -f agent-workspace/plans/initial/restructure-proposal.md && echo "ASSERT PASS: restructure-proposal.md present"
 test -d codebase-engine/src && echo "ASSERT PASS: As-is file migration present in codebase-engine"
-test -f antigravity-workspace/src/layout/code_graph/graph.md && echo "ASSERT PASS: Workspace code_graph/graph.md present"
-test -f antigravity-workspace/src/layout/code_graph/process_flow.md && echo "ASSERT PASS: Workspace code_graph/process_flow.md present"
-test -f antigravity-workspace/src/layout/code_graph/data_flow.md && echo "ASSERT PASS: Workspace code_graph/data_flow.md present"
-test -f antigravity-workspace/src/layout/code_graph/risk_analysis.md && echo "ASSERT PASS: Workspace code_graph/risk_analysis.md present"
+test -d agent-workspace/plans/initial/resource && echo "ASSERT PASS: Non-code docs resource staging folder present"
+test -f agent-workspace/src/layout/code_graph/graph.md && echo "ASSERT PASS: Workspace code_graph/graph.md present"
+test -f agent-workspace/src/layout/code_graph/process_flow.md && echo "ASSERT PASS: Workspace code_graph/process_flow.md present"
+test -f agent-workspace/src/layout/code_graph/data_flow.md && echo "ASSERT PASS: Workspace code_graph/data_flow.md present"
+test -f agent-workspace/src/layout/code_graph/risk_analysis.md && echo "ASSERT PASS: Workspace code_graph/risk_analysis.md present"
 md5sum -c /tmp/legacy-checksums.txt && echo "ASSERT PASS: Original ai-chronicle-hub repo 100% untouched"
 ```
-

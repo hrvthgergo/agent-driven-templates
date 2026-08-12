@@ -1,6 +1,6 @@
 # Structural Code Graph: `<layer_name>` Layer
 
-**Location**: `antigravity-workspace/src/<layer_name>/code_graph/graph.md`  
+**Location**: `agent-workspace/src/<layer_name>/code_graph/graph.md`  
 **Description**: Block 1 — Unordered structural dependency graph and element registry for the `<layer_name>` layer adhering to [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/code_graph_taxonomy.md).
 
 ---

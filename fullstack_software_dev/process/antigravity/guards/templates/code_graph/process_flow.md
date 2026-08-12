@@ -1,6 +1,6 @@
 # Process Flow Analysis: `<layer_name>` Layer
 
-**Location**: `antigravity-workspace/src/<layer_name>/code_graph/process_flow.md`  
+**Location**: `agent-workspace/src/<layer_name>/code_graph/process_flow.md`  
 **Description**: Block 2 (Perspective A) — Process entry points, execution triggers, and control flow initiation paths.
 
 ---

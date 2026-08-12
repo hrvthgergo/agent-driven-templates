@@ -1,6 +1,6 @@
 # Dependency Risk & Coupling Analysis: `<layer_name>` Layer
 
-**Location**: `antigravity-workspace/src/<layer_name>/code_graph/risk_analysis.md`  
+**Location**: `agent-workspace/src/<layer_name>/code_graph/risk_analysis.md`  
 **Description**: Block 2 (Perspective C) — Coupling metrics (fan-in / fan-out connection counts), critical code nodes, and test coverage maps.
 
 ---

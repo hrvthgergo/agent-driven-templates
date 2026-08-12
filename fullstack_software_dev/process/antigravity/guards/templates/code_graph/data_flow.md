@@ -1,6 +1,6 @@
 # Data Flow & Transformation Analysis: `<layer_name>` Layer
 
-**Location**: `antigravity-workspace/src/<layer_name>/code_graph/data_flow.md`  
+**Location**: `agent-workspace/src/<layer_name>/code_graph/data_flow.md`  
 **Description**: Block 2 (Perspective B) — Inventory of data sources (user provided, configs, external APIs, databases, hardcoded constants) and datastream transformations.
 
 ---
