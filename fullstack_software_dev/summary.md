@@ -31,6 +31,7 @@ fullstack_software_dev/
 ├── multi_repo_architecture.md          # [Tier 1] Multi-Repo & Symlink Architecture Spec
 ├── process_handling.md                 # [Tier 1] Process Guard & Matrix Spec
 ├── code_graph_taxonomy.md              # [Tier 1] Language-Specific Code Graph Taxonomy (Python, Go, JS)
+├── implementation_map_taxonomy.md      # [Tier 1] Implementation Map Taxonomy & Schema Spec
 │
 ├── init/                               # [Tier 2] Initialization Workflow Subfolder
 │   ├── init_workflow.md                # Detailed workflow specifications
@@ -91,6 +92,7 @@ The framework utilizes shared components and architectural blueprints that opera
 - **[Interactive Q&A Engine (Grill Engine)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md)**: A stateful, resume-ready interview module used to gather requirements and resolve architecture ambiguities before generating plans or code.
 - **[Multi-Repository Architecture Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md)**: Specifications mapping out directory separation, symbolic link mapping, config dependency policies (Rule of Dependency), and the Hybrid Docker handling strategy to isolate UI and Engine components.
 - **[Guard Process Handling Spec (Process Guard)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md)**: Specifications for release-governed process handling documents (`PROCESS_STATUS.md`), featuring a concise 2-block structure (Workflow Execution Matrix & Datestamped Daily History) and branch-based release initialization options.
+- **[Implementation Map Taxonomy Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implementation_map_taxonomy.md)**: Standardized schema and structure for `implementation_map.md` documents, guiding agent-driven code scaffolding, dependency sequences, and verification command execution.
 
 ---
 
