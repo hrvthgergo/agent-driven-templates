@@ -49,6 +49,7 @@ fullstack_software_dev/
 │
 ├── plan/                               # [Tier 2] Interactive Planning Subfolder
 │   ├── plan_workflow.md                # Detailed workflow specifications
+│   ├── plan_questions.md               # Planning Grill Engine questionnaire schema
 │   ├── plan_implementation_map.md
 │   └── guards/                         # [Tier 3] Environment-Specific Guards
 │

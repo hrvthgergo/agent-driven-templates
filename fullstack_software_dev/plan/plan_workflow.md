@@ -34,6 +34,7 @@ Fundamentally, **the `/plan` workflow is a governed rule for resource usage and 
   - [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/code_graph_taxonomy.md): Code graph structure and taxonomy specification.
   - [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implementation_map_taxonomy.md): Implementation map structure and schema specification.
   - [plan_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/plan_workflow.md) (*This Document*): Core `/plan` state machine design, boundary rules, and execution reasoning.
+  - [plan_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/plan_questions.md): Interactive planning questionnaire schema and scanning rules.
 - **Environment-Specific Execution Guidelines (Tier 3 - Antigravity)**:
   - `antigravity/plan_implementation_map.md`: Antigravity-specific execution roadmap using native primitives (**rules, skills, workflows, templates, hooks**).
   - `antigravity/plan_tests.md`: Verification test suite for `/plan` execution.
