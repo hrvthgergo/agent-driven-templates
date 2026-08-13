@@ -104,18 +104,18 @@ The Guards Framework strictly decouples theoretical design intent, system-wide f
 
 1. **`plans/<feature-name>/` (Feature Design, Knowledge & Impact Sandbox - Written during `/plan`)**:
    - Holds feature design blueprints with embedded decisions, System Impact Analysis, topic research reports, `phase_details/` sub-element design folders, and versioned implementation maps.
-2. **`docs/` (General System Documentation - Written during `/implement`)**:
+2. **`docs/` (General System Documentation - By-Request)**:
    - Contains general system-wide documentation describing all active features across the entire system.
-   - Maintained and updated during `/implement` when code changes are completed.
-3. **`codebase-*/code_graph/` or `src/*/code_graph/` (Inner Structural Code Maps - Written during `/implement`)**:
+   - Updated on-request via `--docs` flag during `/implement` (post new feature delivery) or `/process` (post legacy migration). Never generated automatically to preserve token efficiency.
+3. **`codebase-*/code_graph/` or `src/*/code_graph/` (Inner Structural Code Maps - By-Request)**:
    - Contains AST-level taxonomy, component call graphs, DTO schemas, and class/module dependency graphs detailing the inner structure of the source code.
-   - Built and maintained during `/implement` using [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/code_graph_taxonomy.md).
+   - Generated on-request via `--code-graph` flag during `/implement` (for newly written code) or `/process` (for legacy/brownfield code). Each generated file carries a **Version Stamp Header** (e.g., `<!-- Last Updated: v1.1.0 | <date> -->`) so readers can assess freshness without forcing regeneration.
 
 ### H. Filesystem Boundary Guard Rule
 The `/plan` workflow enforces a strict write sandbox:
 - **Allowed Workspace**: All write, edit, create, and delete actions are **strictly restricted to**:
   - **`agent-workspace/plans/<feature-name>/`** (and all its subfolders)
-- **Forbidden Actions**: `/plan` is **strictly prohibited** from modifying general system documentation in `docs/`, code graphs in `src/*/code_graph/`, or source code files (`src/`, `codebase-*/`). General system documentation updates and code graph generation are explicitly deferred to `/implement`.
+- **Forbidden Actions**: `/plan` is **strictly prohibited** from modifying general system documentation in `docs/`, code graphs in `src/*/code_graph/`, or source code files (`src/`, `codebase-*/`). Code Graph generation and System Documentation updates are strictly by-request operations, executed only via explicit `--code-graph` and `--docs` flags during `/implement` or `/process`.
 
 ---
 

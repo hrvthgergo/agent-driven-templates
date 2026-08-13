@@ -111,4 +111,5 @@ Explicit criteria required for completing the version implementation step.
 ## 3. Workflow Lifecycle Integration
 
 - **`/plan` Phase**: Drafts `implementation_map_v<version>.md` inside `.agents/plans/<feature-name>/implementation_maps/` when design blueprints are finalized. No source code editing is permitted during `/plan`.
-- **`/implement` Phase**: Consumes the version-named `implementation_map_v<version>.md` as its primary execution guide to scaffold code, run critical system and new feature solution tests, update general `docs/`, and generate `src/*/code_graph/` taxonomy maps.
+- **`/implement` Phase**: Consumes the version-named `implementation_map_v<version>.md` as its primary execution guide to scaffold code and run critical system and new feature solution tests. **By-request only**: `code_graph` generation (`--code-graph`) and system documentation updates (`--docs`) are strictly optional add-on operations, executed only when explicitly requested to preserve token efficiency.
+- **`/process` Phase**: Optionally generates `agent-workspace/src/<layer>/code_graph/` subfolders and updates `docs/` for legacy/brownfield codebases. **By-request only**: Both operations are invoked via `--code-graph` and `--docs` flags respectively, following the same Token Economy Guard as `/implement`.

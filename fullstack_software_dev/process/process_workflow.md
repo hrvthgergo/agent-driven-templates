@@ -105,13 +105,15 @@ Execution follows an 8-node state machine (Nodes S0 through S7), adhering to the
 *   **Step 6: Execute As-Is File Migration & Resource Staging (Node S6)**:
     *   Copies source files intact into target `codebase-*` sub-repositories without modifying source logic or code text.
     *   Copies non-code legacy documentation, supplementary assets, schemas, and diagrams into **`agent-workspace/plans/<feature-name>/resource/`** (or `agent-workspace/plans/resource/`) as reference knowledge for the feature being worked on. (Global `docs/` is reserved for already implemented system capabilities; relevant docs are linked/promoted into global `docs/` later during the `/implement` workflow).
-*   **Step 7: Generate Workspace Code Graph Subfolders & Populate Blueprints (Node S7)**:
-    *   Generates a dedicated `agent-workspace/src/<layer>/code_graph/` subfolder per layer (preventing documentation overhead inside production `codebase-*` repositories; no symlinks required) with 2 analytical blocks:
+*   **Step 7: Selective Blueprint Population & Optional Maintenance Operations (Node S7)**:
+    *   Selectively fills out relevant phase blueprint documents (`phase-1-summary.md` through `phase-6-operation.md` in `agent-workspace/plans/<feature-name>/`) based on identified legacy knowledge. *Filling out all 6 phase documents is optional and strictly based on relevance*.
+    *   **OPTIONAL — Code Graph Generation (`--code-graph`)**: Executed only when explicitly requested. Generates a dedicated `agent-workspace/src/<layer>/code_graph/` subfolder per layer (preventing documentation overhead inside production `codebase-*` repositories; no symlinks required) with 4 analytical files per layer:
         *   `graph.md`: Unordered dependency graph & structural node registry (interfaces, classes, functions, entities, services).
         *   `process_flow.md`: Process entry points & control flow initiation paths.
         *   `data_flow.md`: Data sources (user, configs, APIs, DB, hardcoded) & datastream transformations.
         *   `risk_analysis.md`: Coupling metrics (fan-in/fan-out), critical nodes, & test coverage maps.
-    *   Selectively fills out relevant phase blueprint documents (`phase-1-summary.md` through `phase-5-operation.md` in `agent-workspace/plans/<feature-name>/`) based on identified legacy knowledge. *Filling out all 5 phase documents is optional and strictly based on relevance*.
+        *   Each generated file carries a **Version Stamp Header** recording the software version and datestamp at generation time (e.g., `<!-- Last Updated: <branch_name> | <date> -->`), enabling future agents and humans to assess document freshness without regeneration.
+    *   **OPTIONAL — System Documentation Update (`--docs`)**: Executed only when explicitly requested. Synthesizes and promotes non-code legacy documentation from `agent-workspace/plans/<feature-name>/resource/` into `agent-workspace/docs/`. Each updated doc carries a Version Stamp Header.
     *   Updates `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` marking Row 2.0 (`/process`) as `Completed`.
 
 ---
@@ -122,4 +124,7 @@ Execution follows an 8-node state machine (Nodes S0 through S7), adhering to the
 - `/process` (or `/process --plan`): **Plan-First Mode** (Default). Runs Q&A grill, generates `agent-workspace/plans/<branch_name>/restructure-proposal.md`, and pauses for explicit developer review and consent before modifying code.
 - `/process --auto` (or `/process --apply`): **Immediate Execution Mode**. Runs Q&A grill, copies/moves code into `codebase-*` sub-repositories immediately, and records `agent-workspace/plans/<branch_name>/restructure-proposal.md` as an execution audit log.
 - `/process --dry-run`: Performs historical analysis and outputs the proposed migration report without moving any files.
-- `/process --docs-only`: Extracts documentation and synthesizes 5-phase blueprints without proposing physical file restructuring.
+- `/process --docs-only`: Extracts documentation and synthesizes 6-phase blueprints without proposing physical file restructuring.
+- `/process --code-graph`: **By-Request Code Graph Mode**. After core migration, parses legacy source code and generates `agent-workspace/src/<layer>/code_graph/` subfolders with Version Stamp Headers. Skipped by default to preserve token efficiency.
+- `/process --docs`: **By-Request Documentation Mode**. Promotes non-code legacy documentation from `resource/` into `agent-workspace/docs/` with Version Stamp Headers. Skipped by default to preserve token efficiency.
+- `/process --full-sync`: **Full Synchronization Mode**. Executes core migration AND generates Code Graphs AND updates system documentation in one pass.

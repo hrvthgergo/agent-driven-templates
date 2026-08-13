@@ -1,15 +1,15 @@
 # Specification: Language-Specific Code Graph Node & Connection Taxonomy
 
-This specification defines the universal node types, connection relationships, and language-specific structural taxonomies for building and maintaining **Code Graphs** across the development lifecycle (initially generated during `/process` and continuously updated during `/implement`).
+This specification defines the universal node types, connection relationships, and language-specific structural taxonomies for building and maintaining **Code Graphs** across the development lifecycle (generated on-request during `/process` and `/implement`, following the Token Economy Guard).
 
 ---
 
 ## 1. Core Architecture & Multi-Lifecycle Role
 
-The Code Graph is a general-purpose, evolving representation of a codebase's structural topology. It bridges historical code understanding with active code generation:
+The Code Graph is a general-purpose, evolving representation of a codebase's structural topology. It bridges historical code understanding with active code generation. **In both lifecycle phases, Code Graph generation is strictly a by-request operation** — never triggered automatically — to preserve token efficiency:
 
-*   **Lifecycle Phase 1 (`/process`)**: Analyzes legacy codebases and extracts structural nodes and connections to generate initial `agent-workspace/src/<layer>/code_graph/` subfolders (`graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`).
-*   **Lifecycle Phase 2 (`/implement`)**: Provides optional, on-demand code graph synchronization (`/implement --code-graph` or `/implement --full-sync`) as new features, classes, functions, or interfaces are implemented. By making code graph updates optional during routine code scaffolding, the framework prevents token bloat and reduces computational overhead.
+*   **Lifecycle Phase 1 (`/process --code-graph`)**: Analyzes legacy codebases and extracts structural nodes and connections to generate initial `agent-workspace/src/<layer>/code_graph/` subfolders (`graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`). Executed only when the `--code-graph` flag is explicitly provided.
+*   **Lifecycle Phase 2 (`/implement --code-graph`)**: Provides on-demand code graph synchronization as new features, classes, functions, or interfaces are implemented. Executed only when `--code-graph` or `--full-sync` is explicitly provided.
 
 ---
 

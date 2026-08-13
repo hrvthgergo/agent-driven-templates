@@ -15,7 +15,7 @@ This document defines the test scenario, mock execution sequence, real-world leg
     2. **Read-Only Legacy Source Policy**: The cloned `ai-chronicle-hub` repository remains 100% untouched and unedited.
     3. **As-Is File Migration & Non-Code Docs Staging**: Source code from `ai-chronicle-hub` is copied intact into target `codebase-*` sub-repositories without code modifications, while non-code documentation and assets are staged inside `agent-workspace/plans/initial/resource/`.
     4. **Dual Execution Options**: Validates both Plan-First (`--plan`) and Immediate Execution (`--auto`) modes.
-    5. **Workspace Code Graph Subfolders**: Scoped code graph folders created inside `agent-workspace/src/<layer>/code_graph/` containing `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md` (keeping `codebase-*` repos clean of doc overhead, no symlinks required).
+    5. **By-Request Code Graph Generation**: When `--code-graph` flag is used, scoped code graph folders are created inside `agent-workspace/src/<layer>/code_graph/` containing `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md` with Version Stamp Headers (keeping `codebase-*` repos clean of doc overhead, no symlinks required). Skipped by default without the flag.
     6. **Selective Blueprint & Status Synthesis**: Selectively populates relevant phase blueprints in `agent-workspace/plans/initial/` based on identified domain knowledge (filling out all 6 is optional) and updates `PROCESS_STATUS.md` Row 2.0 to `Completed`.
 
 ---
@@ -67,7 +67,8 @@ Upon completion of Node S7, the test harness executes automated verification che
 | **S1–S7** | Read-Only Integrity | `/tmp/test-process/ai-chronicle-hub/` | Original `ai-chronicle-hub` files 100% untouched. MD5 checksums match pre-test baseline. |
 | **S4** | Migration Proposal | `agent-workspace/plans/initial/restructure-proposal.md` | File exists. Documents source mapping from `ai-chronicle-hub` to `codebase-*` sub-repos and `resource/` staging. |
 | **S6** | As-Is File Migration & Resource Staging | `codebase-layout/src/`<br/>`codebase-engine/src/`<br/>`agent-workspace/plans/initial/resource/` | Source code copied intact into `codebase-*` layers. Non-code legacy documentation and assets staged in `agent-workspace/plans/initial/resource/`. |
-| **S7** | Workspace Code Graphs | `agent-workspace/src/layout/code_graph/`<br/>`agent-workspace/src/engine/code_graph/` | Subfolders exist inside `src/<layer>/`. Each contains `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md`. Production `codebase-*` repos clean of doc overhead. |
+| **S7** | By-Default (No `--code-graph` flag) | `agent-workspace/src/layout/code_graph/` | Subfolder does **NOT** exist. Code Graph skipped by default to preserve token efficiency. |
+| **S7** | By-Request (`--code-graph` flag) | `agent-workspace/src/layout/code_graph/`<br/>`agent-workspace/src/engine/code_graph/` | Subfolders exist inside `src/<layer>/`. Each contains `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md` with Version Stamp Headers. Production `codebase-*` repos clean of doc overhead. |
 | **S7** | Phase Blueprints | `agent-workspace/plans/initial/phase-*.md` | Relevant phase blueprint documents populated with synthesized domain knowledge extracted from `ai-chronicle-hub` (filling out blueprints is selective/relevance-based). |
 | **S7** | Guard Process Status | `agent-workspace/plans/initial/PROCESS_STATUS.md` | Block 1 matrix contains Row 2.0 (`/process`) marked `Completed`. Block 2 daily history updated. |
 
@@ -91,16 +92,17 @@ find /tmp/test-process/ai-chronicle-hub -type f -exec md5sum {} + > /tmp/legacy-
 # 4. Run /init first to satisfy prerequisite gate and link ai-chronicle-hub
 /init
 
-# 5. Execute /process workflow
+# 5. Execute /process workflow (default mode - no code graph generation)
 /process --plan
 
-# 6. Run automated assertions
-test -f agent-workspace/plans/initial/restructure-proposal.md && echo "ASSERT PASS: restructure-proposal.md present"
-test -d codebase-engine/src && echo "ASSERT PASS: As-is file migration present in codebase-engine"
-test -d agent-workspace/plans/initial/resource && echo "ASSERT PASS: Non-code docs resource staging folder present"
-test -f agent-workspace/src/layout/code_graph/graph.md && echo "ASSERT PASS: Workspace code_graph/graph.md present"
-test -f agent-workspace/src/layout/code_graph/process_flow.md && echo "ASSERT PASS: Workspace code_graph/process_flow.md present"
-test -f agent-workspace/src/layout/code_graph/data_flow.md && echo "ASSERT PASS: Workspace code_graph/data_flow.md present"
-test -f agent-workspace/src/layout/code_graph/risk_analysis.md && echo "ASSERT PASS: Workspace code_graph/risk_analysis.md present"
+# 6a. Assert default behavior: code_graph skipped without --code-graph flag
+test ! -d agent-workspace/src/layout/code_graph && echo "ASSERT PASS: code_graph skipped by default (token economy)"
+
+# 6b. Optionally: run with --code-graph flag to validate on-request generation
+/process --code-graph
+test -f agent-workspace/src/layout/code_graph/graph.md && echo "ASSERT PASS: Workspace code_graph/graph.md present (on-request)"
+test -f agent-workspace/src/layout/code_graph/process_flow.md && echo "ASSERT PASS: Workspace code_graph/process_flow.md present (on-request)"
+test -f agent-workspace/src/layout/code_graph/data_flow.md && echo "ASSERT PASS: Workspace code_graph/data_flow.md present (on-request)"
+test -f agent-workspace/src/layout/code_graph/risk_analysis.md && echo "ASSERT PASS: Workspace code_graph/risk_analysis.md present (on-request)"
 md5sum -c /tmp/legacy-checksums.txt && echo "ASSERT PASS: Original ai-chronicle-hub repo 100% untouched"
 ```

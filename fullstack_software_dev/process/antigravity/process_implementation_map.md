@@ -77,12 +77,15 @@ The implementation plan directly realizes the following design blueprints and al
         *   **Node S4 (Draft Restructuring Plan)**: Generates `agent-workspace/plans/<branch_name>/restructure-proposal.md`.
         *   **Node S5 (Consent Gate / Mode Check)**: Pauses for developer approval in Plan-First Mode (`--plan`); proceeds immediately in Immediate Execution Mode (`--auto`).
         *   **Node S6 (Execute As-Is File Copies & Resource Staging)**: Invokes `skills/process-migrator/SKILL.md` to copy legacy code intact to target `codebase-*` layers without code modifications, and stage non-code legacy documentation in `agent-workspace/plans/<branch_name>/resource/`.
-        *   **Node S7 (Generate Workspace Code Graphs & Selective Blueprint Population)**: Generates `agent-workspace/src/<layer>/code_graph/` subfolders (`graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`), selectively populates relevant phase blueprints in `agent-workspace/plans/<branch_name>/`, and updates `PROCESS_STATUS.md` Row 2.0 to `Completed`.
+        *   **Node S7 (Selective Blueprint Population & Optional Maintenance Operations)**: Selectively populates relevant phase blueprints in `agent-workspace/plans/<branch_name>/`. **By-request only**: Generates `agent-workspace/src/<layer>/code_graph/` subfolders with Version Stamp Headers when `--code-graph` is provided; promotes non-code docs to `agent-workspace/docs/` with Version Stamp Headers when `--docs` is provided. Updates `PROCESS_STATUS.md` Row 2.0 to `Completed`.
     4.  Implement CLI parameter handling:
         *   `/process` (or `--plan`): Plan-First Mode (default, pauses for developer approval).
         *   `/process --auto` (or `--apply`): Immediate Execution Mode (acts immediately and records plan artifact).
         *   `/process --dry-run`: Previews migration mapping without writing files to disk.
         *   `/process --docs-only`: Extracts documentation and populates blueprints without moving source files.
+        *   `/process --code-graph`: By-Request Code Graph Mode. After core migration, generates `agent-workspace/src/<layer>/code_graph/` subfolders with Version Stamp Headers. Skipped by default.
+        *   `/process --docs`: By-Request Documentation Mode. Promotes non-code legacy documentation from `resource/` into `agent-workspace/docs/` with Version Stamp Headers. Skipped by default.
+        *   `/process --full-sync`: Full Synchronization Mode. Executes core migration, Code Graph generation, and System Documentation updates in one pass.
 
 ---
 
