@@ -27,6 +27,7 @@ The project directory structure is designed in a 3-tier layout to maintain separ
 fullstack_software_dev/
 ├── summary.md                          # Central Entry Point & Framework Summary
 ├── user_guide.md                       # End-User Guide & Operational Manual
+├── folder_structure.md                 # [Tier 1] Standard Repository Directory Layout Spec
 ├── grill_engine.md                     # [Tier 1] General Q&A Engine Spec
 ├── multi_repo_architecture.md          # [Tier 1] Multi-Repo & Symlink Architecture Spec
 ├── process_handling.md                 # [Tier 1] Process Guard & Matrix Spec
@@ -36,7 +37,6 @@ fullstack_software_dev/
 ├── init/                               # [Tier 2] Initialization Workflow Subfolder
 │   ├── init_workflow.md                # Detailed workflow specifications
 │   ├── init_questions.md               # Scan & Q&A schemas
-│   ├── folder_structure.md             # Repository directory layout spec
 │   └── antigravity/                    # [Tier 3] Antigravity-specific resources & guards
 │       ├── init_implementation_map.md  # Antigravity execution map & decision links
 │       ├── init_tests.md               # Greenfield & brownfield verification test suite
@@ -92,6 +92,7 @@ The framework utilizes shared components and architectural blueprints that opera
 - **[End-User Guide & Operational Manual](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/user_guide.md)**: Conceptual summary, workflow principles, and operational manual for developers and AI agents.
 - **[Interactive Q&A Engine (Grill Engine)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md)**: A stateful, resume-ready interview module used to gather requirements and resolve architecture ambiguities before generating plans or code.
 - **[Multi-Repository Architecture Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md)**: Specifications mapping out directory separation, symbolic link mapping, config dependency policies (Rule of Dependency), and the Hybrid Docker handling strategy to isolate UI and Engine components.
+- **[Standard Folder Structure Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/folder_structure.md)**: Standard directory layout, pure control plane (`agent-workspace/`), and sub-repository symlink structure across the framework lifecycle.
 - **[Guard Process Handling Spec (Process Guard)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md)**: Specifications for release-governed process handling documents (`PROCESS_STATUS.md`), featuring a concise 2-block structure (Workflow Execution Matrix & Datestamped Daily History) and branch-based release initialization options.
 - **[Implementation Map Taxonomy Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implementation_map_taxonomy.md)**: Standardized schema and structure for `implementation_map.md` documents, guiding agent-driven code scaffolding, dependency sequences, and verification command execution.
 
@@ -134,7 +135,6 @@ graph TD
     *   *Key Files*:
         *   [init_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md) (Detailed specifications)
         *   [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md) (Scans and Q&A schema)
-        *   [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/folder_structure.md) (Desired repository directory layout)
         *   [antigravity/init_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/antigravity/init_implementation_map.md) (Antigravity guard execution roadmap)
         *   [antigravity/init_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/antigravity/init_tests.md) (Greenfield & brownfield verification test specification)
 2.  **[Legacy Code & Docs Processing (/process)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/process_workflow.md)**

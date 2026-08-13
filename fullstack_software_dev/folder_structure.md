@@ -30,7 +30,10 @@ This document defines the generic directory layout scaffolded, mapped, and enfor
 │   │       ├── phase-4-engine.md # Phase 4: Engine logic & mappers DTOs (Selective based on relevance)
 │   │       ├── phase-5-verification.md # Phase 5: Test specs & assertions (Selective based on relevance)
 │   │       ├── phase-6-operation.md # Phase 6: Dockerfiles, compose, CI/CD (Selective based on relevance)
-│   │       └── resource/        # Staging folder for non-code legacy docs, schemas & assets
+│   │       ├── resource/        # Staging folder for non-code legacy docs, schemas & assets
+│   │       ├── knowledge/       # Research reports & topic summaries (e.g. research_report_<topic>.md)
+│   │       ├── implementation_maps/ # Version-named implementation roadmaps (e.g. implementation_map_v1.0.0.md)
+│   │       └── phase_details/   # On-demand multi-layer sub-element blueprints (e.g. phase_details/<element_name>/)
 │   │
 │   ├── docs/                    # Global human-facing documentation (Implemented capabilities)
 │   │
