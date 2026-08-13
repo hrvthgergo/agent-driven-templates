@@ -43,7 +43,7 @@ To ensure isolated, reproducible test runs, the test environment MUST execute th
 
 ### Mock User Input Sequence (Q1 to Q7 Prompts for `ai-chronicle-hub`)
 
-The test harness simulates an interactive user session responding to the sequential Q1–Q7 interview prompts enforced by `rules/process-history-grill.md`:
+The test harness simulates an interactive user session responding to the sequential Q1–Q7 interview prompts enforced by `rules/process-grill.md`:
 
 | Step | Prompt Title | Mock User Selection / Input | Asserted Output & Action |
 | :--- | :--- | :--- | :--- |
