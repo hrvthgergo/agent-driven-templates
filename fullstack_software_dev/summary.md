@@ -50,8 +50,10 @@ fullstack_software_dev/
 ├── plan/                               # [Tier 2] Interactive Planning Subfolder
 │   ├── plan_workflow.md                # Detailed workflow specifications
 │   ├── plan_questions.md               # Planning Grill Engine questionnaire schema
-│   ├── plan_implementation_map.md
-│   └── guards/                         # [Tier 3] Environment-Specific Guards
+│   └── antigravity/                    # [Tier 3] Antigravity-specific resources & guards
+│       ├── plan_implementation_map.md  # Antigravity execution map & decision links
+│       ├── plan_tests.md               # Feature planning verification test suite
+│       └── guards/                     # Antigravity native primitives (rules, skills, hooks)
 │
 ├── implement/                          # [Tier 2] Action Implementation Subfolder
 │   ├── implement_workflow.md           # Detailed workflow specifications
@@ -150,6 +152,9 @@ graph TD
     *   *Purpose*: Leads the user through the creation of the 6-phase blueprint plans tracking status in `PROCESS_STATUS.md`.
     *   *Key Files*:
         *   [plan_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/plan_workflow.md) (Detailed specifications)
+        *   [plan_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/plan_questions.md) (Scans and Q&A Grill schema)
+        *   [antigravity/plan_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/antigravity/plan_implementation_map.md) (Antigravity guard execution roadmap)
+        *   [antigravity/plan_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/antigravity/plan_tests.md) (Feature planning verification test specification)
 4.  **Action Implementation (/implement)**
     *   *Path*: `fullstack_software_dev/implement/`
     *   *Purpose*: Scaffolds layout and logic components in increments after approval of a specific `implementation-map.md`.

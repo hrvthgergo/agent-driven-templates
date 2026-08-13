@@ -1,0 +1,110 @@
+# Verification & Test Specification: `/plan` Workflow (Feature Planning Scenario)
+
+This document defines the test scenario, mock execution sequence, user input simulation, and verification assertions for testing the `/plan` workflow within **Google Antigravity**.
+
+---
+
+## 1. Test Overview & Objectives
+
+*   **Target Workflow**: `/plan` (Interactive Planning workflow for 6-Phase Blueprints and Versioned Implementation Maps)
+*   **Target Environment**: Google Antigravity Agent Execution Environment
+*   **Test Scenario**: Feature Planning & Blueprint Generation Scenario (Fullstack Web App with Data Handling + Core Engine + Docker Ops)
+*   **Primary Objective**: Validate end-to-end execution of the `/plan` workflow state machine (Nodes S1 $\rightarrow$ S7), asserting that:
+    1. Node S2 presents an Initial Feature Understanding Summary prior to starting Q&A.
+    2. Q1–Q11 prompts generate neutral choices, persistent `GRILL_STATUS.md` audit logs, and Node S5 Execution Acceptance Gate prompts.
+    3. Scaffolding generates the active subset of 6-Phase Blueprints (`phase-1-summary.md` through `phase-6-operation.md`, including `phase-3-data.md`) inside `agent-workspace/plans/<feature-name>/`.
+    4. Complex multi-layer features scaffold `phase_details/<element_name>/` subfolders on-demand.
+    5. Research requests produce `knowledge/research_report_<topic>.md` reports linked directly in `phase-*.md` blueprints.
+    6. Architectural decisions are embedded directly inside `phase-*.md` blueprints (with NO separate decisions folder).
+    7. Node S5 offers an option to draft a software versioned implementation map (`implementation_map_v1.0.0.md`) adhering to `implementation_map_taxonomy.md` without executing source code modifications.
+    8. Write actions are strictly restricted to `agent-workspace/plans/<feature-name>/`.
+    9. `PROCESS_STATUS.md` matrix (sub-rows 3.1–3.6) is synchronized cleanly.
+
+---
+
+## 2. Test Setup & Pre-conditions
+
+To ensure isolated, reproducible test runs, the test environment MUST meet the following pre-conditions prior to command execution:
+
+1.  **Initialized Workspace**: An existing project workspace initialized via `/init` containing `agent-workspace/` control structures and `codebase-*` sub-repositories.
+2.  **Git Branch Context**: An active feature branch checked out (e.g. `feature/user-auth`).
+3.  **Docker Daemon Status**: Docker daemon active and accessible (`docker info` returns exit code `0`).
+
+---
+
+## 3. Simulated Execution Sequence & Mock Q&A
+
+### Command Invocation
+```bash
+/plan --feature user-auth
+```
+
+### Mock User Input Sequence (Nodes S1–S7 and Q1–Q11 Prompts)
+
+The test harness simulates an interactive user session responding to the sequential interview prompts enforced by `rules/plan-grill.md` and confirming Node S5 Execution Acceptance:
+
+| Step | Prompt Title | Mock User Selection / Input | Asserted Output & Action |
+| :--- | :--- | :--- | :--- |
+| **S1** | **Precondition & Branch Check** | System verifies `agent-workspace/` baseline and checks out `feature/user-auth`. | Environment verified. Branch confirmed (`feature/user-auth`). |
+| **S2** | **Initial Feature Understanding Summary** | Agent synthesizes initial understanding of user authentication feature and displays summary. | Initial Feature Summary printed to console *before* Q&A begins. |
+| **Q1** | **Feature Name & Initial Summary Verification** | Selected Option 1 (*Yes, summary and feature name are accurate*). | Feature name `user-auth` confirmed. Directory `agent-workspace/plans/user-auth/` initialized. |
+| **Q2** | **System Layer Impact & Affected Components** | Selected Option 6 (*Full System - All layers affected: UI, Data, Engine, Verification, Ops*). | System impact recorded in `phase-1-summary.md`. All 6 phase blueprints flagged for scaffolding. |
+| **Q3** | **Dynamic Phase Blueprint Subset Selection** | Selected Option 2 (*Complete 6-Phase Blueprint Set: Phase 1 through Phase 6*). | Scaffolds `phase-1-summary.md` through `phase-6-operation.md` (including `phase-3-data.md`). |
+| **Q4** | **Multi-Layer Sub-Element Architecture** | Selected Option 2 (*Yes - Create subfolders under phase_details/<element_name>/ for web_ui and auth_api*). | Subfolders `phase_details/web_ui/` and `phase_details/auth_api/` scaffolded. |
+| **Q5** | **Topic Research Reports** | Selected Option 2 (*Yes*) $\rightarrow$ Input: *"OAuth2 vs JWT token authentication security comparison"*. | Research report written to `agent-workspace/plans/user-auth/knowledge/research_report_oauth2_vs_jwt.md` and linked in `phase-1-summary.md`. |
+| **Q6** | **Phase 2 - UI Layout & View Design** | Selected Option 1 (*Vanilla CSS / Custom Design Tokens*). | Populates `agent-workspace/plans/user-auth/phase-2-layout.md` with UI view specs & decisions. |
+| **Q7** | **Phase 3 - Data Handling & Store Lifecycle** | Selected Option 1 (*Relational data model with SQL migrations and automated backup lifecycle*). | Populates `agent-workspace/plans/user-auth/phase-3-data.md` with user DB schemas & data store lifecycle decisions. |
+| **Q8** | **Phase 4 - Core Engine & API Contracts** | Selected Option 1 (*RESTful API contracts with JSON DTO mappers*). | Populates `agent-workspace/plans/user-auth/phase-4-engine.md` with auth endpoints, DTOs & engine decisions. |
+| **Q9** | **Phase 5 - Verification & Test Suites** | Selected Option 1 (*Unit & Integration test suite with mock API/DB contracts*). | Populates `agent-workspace/plans/user-auth/phase-5-verification.md` with test assertion specs. |
+| **Q10** | **Phase 6 - Docker & Operations Deployment** | Selected Option 1 (*Multi-container Compose orchestration*). | Populates `agent-workspace/plans/user-auth/phase-6-operation.md` with container profiles & ops decisions. |
+| **S5** | **Execution Acceptance Gate & Map Option** | Displays understanding recap. Selected Option 2 (*Draft Full Feature Release Map v1.0.0*). | User acceptance logged; drafts `agent-workspace/plans/user-auth/implementation_maps/implementation_map_v1.0.0.md` without code execution. |
+| **S6** | **PROCESS_STATUS.md Sync** | System synchronizes process status matrix sub-rows 3.1–3.6. | `PROCESS_STATUS.md` matrix updated to `Completed` for planning phase. |
+
+---
+
+## 4. Verification Assertions & Validation Matrix
+
+Upon completion of Node S7, the test harness executes automated verification checks asserting that all physical and logical resources were scaffolded exactly as designed:
+
+| Node | Verification Target | Asserted Resource Path | Expected State / Content Assertion |
+| :--- | :--- | :--- | :--- |
+| **S1** | Precondition & Branch Verification | Git Context & `agent-workspace/` | Verified `agent-workspace/` exists. Active branch confirmed as `feature/user-auth`. |
+| **S2** | Initial Feature Summary Mandate | Subprocess Stdout / Audit Log | Console output contains Initial Feature Understanding Summary prior to Q1 prompt. |
+| **S3** | Audit Log & Transcript | `agent-workspace/plans/user-auth/GRILL_STATUS.md` | File exists. Contains full Q1–Q10 transcript, question texts, selected options, and user inputs. |
+| **S4** | Master Governor Blueprint | `agent-workspace/plans/user-auth/phase-1-summary.md` | File exists. Contains vision, System Impact Analysis, and links to research reports. |
+| **S4** | 6-Phase Blueprints Set | `agent-workspace/plans/user-auth/` | All 6 files present: `phase-1-summary.md`, `phase-2-layout.md`, `phase-3-data.md`, `phase-4-engine.md`, `phase-5-verification.md`, `phase-6-operation.md`. |
+| **S4** | Phase Details Subfolders | `agent-workspace/plans/user-auth/phase_details/` | Subfolders present: `phase_details/web_ui/` and `phase_details/auth_api/`. Each contains sub-element phase specs. |
+| **S4** | Research Report Document | `agent-workspace/plans/user-auth/knowledge/` | File `knowledge/research_report_oauth2_vs_jwt.md` exists and is linked inside `phase-1-summary.md`. |
+| **S4** | Embedded Decision Verification | `agent-workspace/plans/user-auth/phase-*.md` | Decisions documented directly inside `phase-*.md` blueprints. **Zero `decisions/` subfolder created**. |
+| **S5** | Versioned Implementation Map | `agent-workspace/plans/user-auth/implementation_maps/` | File `implementation_maps/implementation_map_v1.0.0.md` exists, adhering to `implementation_map_taxonomy.md`. **Zero source code modified in `src/` or `codebase-*/`**. |
+| **S5** | Filesystem Sandbox Boundary | Workspace Root | All created/edited files are strictly confined to `agent-workspace/plans/user-auth/`. **Zero edits in `docs/` or `src/*/code_graph/`**. |
+| **S6** | Guard Process Status | `agent-workspace/plans/user-auth/PROCESS_STATUS.md` | Block 1 matrix contains planning sub-rows 3.1–3.6 marked `[x] Done`. Block 2 daily history updated. |
+| **S7** | Execution Completion Output | Subprocess Stdout | Terminal prints planning summary report and recommended next workflow command (`/implement`). |
+
+---
+
+## 5. Automated Execution Test Script
+
+To execute this test scenario automatically in an Antigravity sandbox:
+
+```bash
+# 1. Prepare workspace and check out feature branch
+git checkout -b feature/user-auth
+
+# 2. Run /plan workflow in dry-run mode first to verify output
+/plan --feature user-auth --dry-run
+
+# 3. Run full /plan workflow execution in interactive mode
+/plan --feature user-auth
+
+# 4. Run automated assertions
+test -f agent-workspace/plans/user-auth/GRILL_STATUS.md && echo "ASSERT PASS: GRILL_STATUS.md present in agent-workspace/plans/user-auth/"
+test -f agent-workspace/plans/user-auth/PROCESS_STATUS.md && echo "ASSERT PASS: PROCESS_STATUS.md present in agent-workspace/plans/user-auth/"
+test -f agent-workspace/plans/user-auth/phase-1-summary.md && echo "ASSERT PASS: phase-1-summary.md present"
+test -f agent-workspace/plans/user-auth/phase-3-data.md && echo "ASSERT PASS: phase-3-data.md present"
+test -f agent-workspace/plans/user-auth/phase-4-engine.md && echo "ASSERT PASS: phase-4-engine.md present"
+test -d agent-workspace/plans/user-auth/phase_details/web_ui && echo "ASSERT PASS: phase_details/web_ui present"
+test -f agent-workspace/plans/user-auth/knowledge/research_report_oauth2_vs_jwt.md && echo "ASSERT PASS: research report present in knowledge/"
+test -f agent-workspace/plans/user-auth/implementation_maps/implementation_map_v1.0.0.md && echo "ASSERT PASS: versioned implementation_map_v1.0.0.md present"
+test ! -d agent-workspace/plans/user-auth/decisions && echo "ASSERT PASS: no separate decisions folder created"
+```
