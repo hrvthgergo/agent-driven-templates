@@ -97,6 +97,7 @@ The framework utilizes shared components and architectural blueprints that opera
 - **[Standard Folder Structure Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/folder_structure.md)**: Standard directory layout, pure control plane (`agent-workspace/`), and sub-repository symlink structure across the framework lifecycle.
 - **[Guard Process Handling Spec (Process Guard)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md)**: Specifications for release-governed process handling documents (`PROCESS_STATUS.md`), featuring a concise 2-block structure (Workflow Execution Matrix & Datestamped Daily History) and branch-based release initialization options.
 - **[Implementation Map Taxonomy Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implementation_map_taxonomy.md)**: Standardized schema and structure for `implementation_map.md` documents, guiding agent-driven code scaffolding, dependency sequences, and verification command execution.
+- **Workflow Context Notification Law**: 3-layer notification standard (1-line turn headers, state node transition badges, and persistent disk header metadata) ensuring continuous developer awareness of active workflow state.
 
 ---
 

@@ -271,3 +271,4 @@ graph TD
 13. **System Impact Guard**: Enforces explicit documentation of feature aftermath/impact on existing system features.
 14. **Grill State Engine**: Governed by `grill_engine.md`, auto-saving interview progress into `agent-workspace/plans/<feature-name>/GRILL_STATUS.md`.
 15. **Process Guard**: Governed by `process_handling.md`, maintaining Block 1 matrix and Block 2 datestamped execution history in `PROCESS_STATUS.md`.
+16. **Workflow Context Notification Guard**: Enforces the 3-Layer Workflow Context Notification Law (1-line turn banners `> 📍 **Active Workflow**: /plan | **Scope**: <feature> | **Node**: <Node_ID>`, state node transition badges, and persistent disk header metadata).

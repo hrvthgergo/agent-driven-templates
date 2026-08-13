@@ -32,6 +32,7 @@ The implementation plan directly realizes the following design blueprints and al
 | **Dual Execution Modes (`--plan` vs `--auto`)** | [process_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/process_questions.md#L149-L159) | Workflow & Rule Primitives | `workflows/process.md` (Nodes S4–S5) & `rules/process-grill.md` (Q5) |
 | **Modular Workspace Code Graph Subfolders** | [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/folder_structure.md#L43-L53) | Skill & Template Primitives | `skills/process-migrator/SKILL.md` & `templates/code_graph/` |
 | **Selective Blueprints & Governance Synthesis** | [process_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/process_workflow.md#L101-L109) | Template & Workflow Primitives | `templates/restructure-proposal.md`, `agent-workspace/plans/<branch_name>/phase-*.md`, & `PROCESS_STATUS.md` |
+| **Workflow Context Notification Law** | [user_guide.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/user_guide.md#L53-L67) | Rule, Workflow & Template Primitives | `rules/process-grill.md`, `workflows/process.md` & `templates/PROCESS_STATUS.md` |
 
 ---
 

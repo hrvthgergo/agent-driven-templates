@@ -50,6 +50,21 @@ graph TD
 - **Agentic Context Creation**: During `/plan`, the developer and AI agent interactively define feature scope, analyze system impact, and generate structured 6-Phase Blueprints (`phase-1-summary.md` through `phase-6-operation.md`, including `phase-3-data.md` for data handling, capturing, storing mechanisms, and data store lifecycle management), topic knowledge summaries, and Architecture Decision Records (ADRs).
 - **Downstream Agent Guidance**: All planning artifacts are stored inside `.agents/plans/<feature-name>/` to share complete, unambiguous context with AI agents executing downstream implementation (`/implement`), testing (`/verify`), and deployment (`/release`).
 
+### Workflow Context Notification Law (Combined Multi-Layer Strategy)
+To ensure complete transparency and context awareness during pair programming sessions, the framework enforces a mandatory **3-Layer Workflow Context Notification Law**:
+
+1. **Layer 1: Turn-by-Turn Response Banner Header**: Every AI agent response during an active workflow MUST open with a 1-line markdown banner header before any regular text or tool output:
+   > 📍 **Active Workflow**: `/<workflow_name>` | **Scope**: `<branch_or_feature>` | **Node**: `<Node_ID> (<Node_Name>)`
+2. **Layer 2: State Machine Node Transition Badges**: Playbooks MUST print a stylized text/markdown box upon entering any new state machine node (e.g. Node S2 $\rightarrow$ Node S3):
+   ```text
+   ┌──────────────────────────────────────────────────────────────────────────────┐
+   │  WORKFLOW STEP TRANSITION: /process                                          │
+   │  Current Node: Node S3 - Q&A Grill Gate                                      │
+   │  Target Branch: feature/payment-gateway  | Status: In Progress               │
+   └──────────────────────────────────────────────────────────────────────────────┘
+   ```
+3. **Layer 3: Persistent Disk Header Metadata**: Status tracking sheets (`PROCESS_STATUS.md`, `GRILL_STATUS.md`, `restructure-proposal.md`, `phase-1-summary.md`) MUST contain top-level metadata recording active workflow state, current node, git branch/feature scope, and datestamp.
+
 ---
 
 ## 3. Overview of the Three Core Environments

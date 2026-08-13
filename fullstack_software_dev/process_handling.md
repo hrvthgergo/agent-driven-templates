@@ -79,6 +79,17 @@ This section logs daily process initiations, completed milestones, and key decis
 
 1. **Release Isolation**: Every release milestone (e.g. `v1.0.0`, `v1.1.0`) or parallel feature branch (`feature/<name>`) MUST have its own independent `PROCESS_STATUS.md` state tracking document.
 2. **`/init` Branch Initialization**:
-   - `/init --release <version>`: Creates a Git branch `release/<version>` from `main`/`master`, scaffolds `.agents/plans/PROCESS_STATUS_release_<version>.md` (or `PROCESS_STATUS.md`), and registers the initial status matrix.
-   - `/init --feature <feature-name>`: Creates a Git branch `feature/<feature-name>`, scaffolds `.agents/plans/PROCESS_STATUS_feature_<name>.md`, and initializes the workflow matrix with `process` marked as `[-] Not In Scope` by default for greenfield features.
+   - `/init --release <version>`: Creates a Git branch `release/<version>` from `main`/`master`, scaffolds `agent-workspace/plans/PROCESS_STATUS.md`, and registers the initial status matrix.
+   - `/init --feature <feature-name>`: Creates a Git branch `feature/<feature-name>`, scaffolds `agent-workspace/plans/<feature-name>/PROCESS_STATUS.md`, and initializes the workflow matrix with `process` marked as `[-] Not In Scope` by default for greenfield features.
 3. **Immutability of Closed Logs**: Past daily log entries in Block 2 must never be modified or overwritten; new events are strictly appended under the current date header.
+
+---
+
+## 4. Workflow Context Notification Law (Combined Multi-Layer Strategy)
+
+To maintain continuous context awareness during active development, all workflows and status sheet tools MUST enforce the 3-Layer Workflow Context Notification Law:
+
+1. **Layer 1 (Turn-by-Turn Response Banner Header)**: Every agent message during an active workflow begins with a 1-line quote header:
+   `> 📍 **Active Workflow**: /<workflow_name> | **Scope**: <branch_or_feature> | **Node**: <Node_ID> (<Node_Name>)`
+2. **Layer 2 (State Machine Node Transition Badges)**: Workflow playbooks print a stylized text transition box when moving between state machine steps (e.g. Node S2 $\rightarrow$ Node S3).
+3. **Layer 3 (Persistent Disk Header Metadata)**: `PROCESS_STATUS.md`, `GRILL_STATUS.md`, and `phase-1-summary.md` maintain top-level metadata (`Active Workflow`, `Git Branch`, `Active Node`, `Last Updated`) in their header block.

@@ -33,6 +33,7 @@ The implementation plan directly realizes the following design blueprints and `/
 | **Pure Relative Symlinks & 3-Part Check** | [multi_repo_architecture.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md#L7-L35) & `/grill-me` Q5 | Skill Primitive | `skills/init-scaffolder/SKILL.md` |
 | **Decoupled Brownfield Flow (No Restructuring)** | [init_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md#L126-L134) | Workflow & Skill Primitives | `workflows/init.md` & `skills/init-scaffolder/SKILL.md` |
 | **Pre-Commit Safety Interceptor** | [init_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md#L169-L179) & `/grill-me` Q2 | Hook Primitive | `hooks/pre-commit-plan-validator.sh` |
+| **Workflow Context Notification Law** | [user_guide.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/user_guide.md#L53-L67) | Rule, Workflow & Template Primitives | `rules/init-grill.md`, `workflows/init.md` & `templates/PROCESS_STATUS.md` |
 
 ---
 

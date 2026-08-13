@@ -86,7 +86,7 @@ graph TD
     S5 --> S6[Step 6: Execute As-Is File Copies to codebase-*]
 ## 3. Detailed Step-by-Step Workflow Design
 
-Execution follows an 8-node state machine (Nodes S0 through S7):
+Execution follows an 8-node state machine (Nodes S0 through S7), adhering to the **Workflow Context Notification Law (Combined Multi-Layer Strategy)** (prefixing every response turn with `> 📍 **Active Workflow**: /process | **Scope**: <branch> | **Node**: <Node_ID>`, printing node transition badges, and maintaining disk header metadata):
 
 *   **Step 0: Prerequisite `/init` Check (Node S0)**:
     *   Inspects `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md`. If missing or if `/init` is marked `Not Started`, halts execution and prompts the user to run `/init` first.
