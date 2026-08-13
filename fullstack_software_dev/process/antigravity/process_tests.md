@@ -16,7 +16,7 @@ This document defines the test scenario, mock execution sequence, real-world leg
     3. **As-Is File Migration & Non-Code Docs Staging**: Source code from `ai-chronicle-hub` is copied intact into target `codebase-*` sub-repositories without code modifications, while non-code documentation and assets are staged inside `agent-workspace/plans/initial/resource/`.
     4. **Dual Execution Options**: Validates both Plan-First (`--plan`) and Immediate Execution (`--auto`) modes.
     5. **Workspace Code Graph Subfolders**: Scoped code graph folders created inside `agent-workspace/src/<layer>/code_graph/` containing `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md` (keeping `codebase-*` repos clean of doc overhead, no symlinks required).
-    6. **Selective Blueprint & Status Synthesis**: Selectively populates relevant phase blueprints in `agent-workspace/plans/initial/` based on identified domain knowledge (filling out all 5 is optional) and updates `PROCESS_STATUS.md` Row 2.0 to `Completed`.
+    6. **Selective Blueprint & Status Synthesis**: Selectively populates relevant phase blueprints in `agent-workspace/plans/initial/` based on identified domain knowledge (filling out all 6 is optional) and updates `PROCESS_STATUS.md` Row 2.0 to `Completed`.
 
 ---
 

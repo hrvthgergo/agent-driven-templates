@@ -147,7 +147,7 @@ graph TD
         *   [antigravity/process_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/antigravity/process_tests.md) (Brownfield verification test specification)
 3.  **[Interactive Planning (/plan)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/plan_workflow.md)**
     *   *Path*: `fullstack_software_dev/plan/`
-    *   *Purpose*: Leads the user through the creation of the 5-phase blueprint plans tracking status in `PROCESS_STATUS.md`.
+    *   *Purpose*: Leads the user through the creation of the 6-phase blueprint plans tracking status in `PROCESS_STATUS.md`.
     *   *Key Files*:
         *   [plan_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/plan_workflow.md) (Detailed specifications)
 4.  **Action Implementation (/implement)**

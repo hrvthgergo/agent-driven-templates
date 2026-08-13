@@ -119,13 +119,13 @@ The implementation plan directly realizes the following design blueprints and `/
 *   **List of Actions**:
     1.  Create `fullstack_software_dev/init/antigravity/guards/templates/PROCESS_STATUS.md`:
         *   Header with Target Release/Feature, Git Branch, Date, and Active Workflow.
-        *   **Block 1 (Workflow Execution Matrix)**: Status table tracking `/init`, `/process`, `/plan` (with sub-rows 3.1–3.5 for Phase 1 to Phase 5), `/implement`, `/verify`, and `/release`.
+        *   **Block 1 (Workflow Execution Matrix)**: Status table tracking `/init`, `/process`, `/plan` (with sub-rows 3.1–3.6 for Phase 1 to Phase 6), `/implement`, `/verify`, and `/release`.
         *   **Block 2 (Datestamped Daily Execution History)**: Immutable daily log format timestamped by `### [YYYY-MM-DD]`.
     2.  Create `fullstack_software_dev/init/antigravity/guards/templates/phase-1-summary.md`:
         *   Sections for Project Purpose, Scope, Key Milestones, Documentation URLs, Software Architecture Pattern, Tech Stack, and Workspace Folder Maps.
 *   **Reasons & Design Decision Links**:
     *   *Process Guard*: Implements the 2-block release and feature lifecycle document documented in [process_handling.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md).
-    *   *Plan Status Consolidation*: Realizes the decision to consolidate 5-phase planning status into `PROCESS_STATUS.md` Block 1, removing `PLAN_STATUS.md`.
+    *   *Plan Status Consolidation*: Realizes the decision to consolidate 6-phase planning status into `PROCESS_STATUS.md` Block 1, removing `PLAN_STATUS.md`.
     *   *Phase 1 Blueprint*: Provides the initial architectural summary file scaffolded during Step 4 as specified in [init_workflow.md Node C1](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md#L67-L70).
 
 ---

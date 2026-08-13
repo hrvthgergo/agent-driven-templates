@@ -47,7 +47,7 @@ graph TD
 
 ### Phase 3: Structured Feature Planning (`/plan`)
 - **Architectural Bridge**: Once `/init` (and `/process`, if applicable) finishes successfully, the workspace is structured and ready for architectural design. This is where the `/plan` workflow begins.
-- **Agentic Context Creation**: During `/plan`, the developer and AI agent interactively define feature scope, analyze system impact, and generate structured Phase Blueprints (`phase-1-summary.md` through `phase-5-operation.md`), topic knowledge summaries, and Architecture Decision Records (ADRs).
+- **Agentic Context Creation**: During `/plan`, the developer and AI agent interactively define feature scope, analyze system impact, and generate structured 6-Phase Blueprints (`phase-1-summary.md` through `phase-6-operation.md`, including `phase-3-data.md` for data handling, capturing, storing mechanisms, and data store lifecycle management), topic knowledge summaries, and Architecture Decision Records (ADRs).
 - **Downstream Agent Guidance**: All planning artifacts are stored inside `.agents/plans/<feature-name>/` to share complete, unambiguous context with AI agents executing downstream implementation (`/implement`), testing (`/verify`), and deployment (`/release`).
 
 ---

@@ -6,7 +6,7 @@ This document defines the standardized, high-level structure, schema, and taxono
 
 ## 1. Overview & Core Philosophy
 
-An **Implementation Map** is the agent's authoritative, step-by-step execution roadmap during the `/implement` workflow. It translates theoretical 5-Phase Blueprints designed during `/plan` into structured, executable scaffolding tasks.
+An **Implementation Map** is the agent's authoritative, step-by-step execution roadmap during the `/implement` workflow. It translates theoretical 6-Phase Blueprints designed during `/plan` into structured, executable scaffolding tasks.
 
 ### Version-Based Naming Strategy
 Implementation map files are stored under `.agents/plans/<feature-name>/implementation_maps/` and are **named based on the software version** created from that map:

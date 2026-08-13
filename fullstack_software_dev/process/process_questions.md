@@ -133,14 +133,14 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 
 ### Q4: Legacy Documentation, Workspace Code Graphs, & Blueprint Extraction Strategy
 * **Target Environment**: Agentic Environment
-* **Goal**: Define how legacy documentation, specifications, API schemas, and architecture notes should be extracted to populate relevant phase blueprints (`phase-1-summary.md` through `phase-5-operation.md` in `.agents/plans/<feature-name>/`) and generate **Workspace Code Graph Subfolders** (`antigravity-workspace/src/<layer>/code_graph/`).
-* **Selective Blueprint Rule**: Phase blueprint documents are populated **selectively based on relevance** of identified content. Filling out all 5 phase documents is **not mandatory**.
+* **Goal**: Define how legacy documentation, specifications, API schemas, and architecture notes should be extracted to populate relevant phase blueprints (`phase-1-summary.md` through `phase-6-operation.md` in `.agents/plans/<feature-name>/`) and generate **Workspace Code Graph Subfolders** (`antigravity-workspace/src/<layer>/code_graph/`).
+* **Selective Blueprint Rule**: Phase blueprint documents are populated **selectively based on relevance** of identified content. Filling out all 6 phase documents is **not mandatory**.
 * **Auto-Detection Scanning Rule**:
   * Scan linked legacy folders for markdown docs (`*.md`), OpenAPI/Swagger specs (`.yaml`, `.json`), database schemas (`.sql`, ORM models), and source code structural elements (interfaces, classes, functions, entities).
 * **Reframed Grill Prompt**:
   > **How should legacy documentation and architectural specs be processed into `.agents/plans/<feature-name>/` blueprints and workspace Code Graph subfolders?**
   > 1. Full Extraction & Workspace Code Graphs: Parse legacy docs/code, stage non-code docs in `.agents/plans/<feature-name>/resource/`, generate `antigravity-workspace/src/<layer>/code_graph/` subfolders (with `graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`), and selectively populate relevant phase blueprints
-  > 2. API & Data Schema Focus: Extract API endpoints and DB models into Phase 3 (`phase-3-engine.md`) and generate Code Graphs for backend services
+  > 2. API & Data Schema Focus: Extract DB models/schemas into Phase 3 (`phase-3-data.md`) and API endpoints into Phase 4 (`phase-4-engine.md`), generating Code Graphs for backend services
   > 3. High-Level Summary Only: Extract core goals into Phase 1 (`phase-1-summary.md`) without deep documentation restructuring
   > 4. Other / Free-text (Specify custom documentation extraction guidelines)
 
@@ -193,4 +193,4 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > 1. Everything is accurate $\rightarrow$ Execute `/process` action
   > 2. Edit a specific answer (Specify question number to re-run)
   > 3. Other / Free-text (Add further instructions, constraints, or notes for execution)
-* **Resulting Action**: Saves answers to `.agents/plans/GRILL_STATUS.md`, copies legacy files intact to target `codebase-*` layers, generates modular `antigravity-workspace/src/<layer>/code_graph/` subfolders (containing `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md`) inside the workspace layer directory (no symlinks required), populates all 5 phase blueprints in `.agents/plans/` (`phase-1-summary.md` through `phase-5-operation.md`), and updates `.agents/plans/PROCESS_STATUS.md` to finalize `/process`.
+* **Resulting Action**: Saves answers to `.agents/plans/GRILL_STATUS.md`, copies legacy files intact to target `codebase-*` layers, generates modular `antigravity-workspace/src/<layer>/code_graph/` subfolders (containing `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md`) inside the workspace layer directory (no symlinks required), populates all 6 phase blueprints in `.agents/plans/` (`phase-1-summary.md` through `phase-6-operation.md`), and updates `.agents/plans/PROCESS_STATUS.md` to finalize `/process`.

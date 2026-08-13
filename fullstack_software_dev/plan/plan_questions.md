@@ -36,7 +36,7 @@ To ensure operational stability and system governance, the following five baseli
                                        │
                       Present Initial Feature Summary (S2)
                                        │
-                    For each question in Schema (Q1 - Q10):
+                    For each question in Schema (Q1 - Q11):
                                        │
                       Does Scan/Context auto-answer?
                       /                             \
@@ -49,7 +49,7 @@ To ensure operational stability and system governance, the following five baseli
 
 ---
 
-## 3. Sequential Question List (Execution Order: Q1 to Q10)
+## 3. Sequential Question List (Execution Order: Q1 to Q11)
 
 The Grill Engine MUST evaluate and ask questions in the strict sequential order listed below:
 
@@ -71,16 +71,17 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 ### Q2: System Layer Impact & Affected Components
 * **Goal**: Identify which layers and components of the system are affected by the proposed feature capability.
 * **Auto-Detection Scanning Rule**:
-  * Analyze prompt text and `/process` restructure proposal for keywords (`UI`, `frontend`, `engine`, `API`, `database`, `Docker`, `CI/CD`).
+  * Analyze prompt text and `/process` restructure proposal for keywords (`UI`, `frontend`, `data`, `store`, `database`, `engine`, `API`, `Docker`, `CI/CD`).
 * **Reframed Grill Prompt**:
   > **Which parts of the system are affected by this feature?**
   > *Select all system layers that require design changes or new components:*
   > 1. UI Layout & View Presentation Layer (Web, App, or UI components)
-  > 2. Core Engine, API Contracts & Backend Data Services Layer
-  > 3. Verification Specifications & Test Suites
-  > 4. Docker Containerization & Infrastructure Operations Layer
-  > 5. Full System (All layers affected)
-  > 6. Other / Free-text (Describe affected system components in detail)
+  > 2. Data Handling & Storing Layer (Data capturing, storing mechanisms, database models/schemas, persistence strategies, store lifecycle)
+  > 3. Core Engine, API Contracts & Backend Data Services Layer
+  > 4. Verification Specifications & Test Suites
+  > 5. Docker Containerization & Infrastructure Operations Layer
+  > 6. Full System (All layers affected)
+  > 7. Other / Free-text (Describe affected system components in detail)
 * **Resulting Action**: Determines which system layers require active documentation in `phase-1-summary.md` under **System Impact Analysis**.
 
 ---
@@ -88,13 +89,13 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 ### Q3: Dynamic Phase Blueprint Subset Selection (`phase-*.md`)
 * **Goal**: Determine the exact subset of `phase-*.md` blueprint documents to create for this feature.
 * **Auto-Detection Scanning Rule**:
-  * Map selected affected layers from Q2 directly to corresponding phase blueprints (`Phase 1` is mandatory baseline; `Phase 2` for UI; `Phase 3` for Engine/API/DB; `Phase 4` for Verification; `Phase 5` for Ops).
+  * Map selected affected layers from Q2 directly to corresponding phase blueprints (`Phase 1` is mandatory baseline; `Phase 2` for UI; `Phase 3` for Data; `Phase 4` for Engine/API; `Phase 5` for Verification; `Phase 6` for Ops).
 * **Reframed Grill Prompt**:
   > **Which phase blueprint documents should be scaffolded for this feature?**
   > *Note: Phase 1 (Architecture & Vision) is mandatory for all features.*
   > 1. Standard Flat Subset (Scaffold Phase 1 + Phase blueprints corresponding to affected system layers)
-  > 2. Complete 5-Phase Blueprint Set (Scaffold Phase 1 through Phase 5)
-  > 3. Custom Phase Selection (Select specific Phase 2 - Phase 5 documents below)
+  > 2. Complete 6-Phase Blueprint Set (Scaffold Phase 1 through Phase 6)
+  > 3. Custom Phase Selection (Select specific Phase 2 - Phase 6 documents below)
   > 4. Other / Free-text (Describe custom blueprint document requirements)
 * **Resulting Action**: Scaffolds active `phase-*.md` documents in `.agents/plans/<feature-name>/` and marks unneeded blueprints as `[-] Not In Scope` in `PROCESS_STATUS.md`.
 
@@ -138,40 +139,52 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 
 ---
 
-### Q7: Phase 3 - Core Engine, API Contracts & Data Flow (If Backend/API Affected)
-* **Goal**: Gather specifications for domain services, API endpoints, DTO mappers, database schemas, and architectural engine decisions.
+### Q7: Phase 3 - Data Handling, Storing & Store Lifecycle (If Data/Database Affected)
+* **Goal**: Gather specifications for data management, capturing mechanisms, storage engine models, database schemas, persistence policies, and data store lifecycle events (migrations, retention, backups, events).
 * **Reframed Grill Prompt**:
-  > **What are the backend core engine, API contract, and database schema requirements?**
-  > 1. RESTful API contracts with JSON DTO mappers and relational database models
-  > 2. Event-driven message processing with microservice engine handlers
-  > 3. Other / Free-text (Describe API endpoints, domain service logic, DTOs, and DB schemas)
-* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-3-engine.md` with backend specs and engine decisions.
+  > **What are the data handling, capturing, storing, and data store lifecycle requirements?**
+  > 1. Relational data model with SQL migration scripts, indexing, and automated backup lifecycle
+  > 2. Document/NoSQL key-value store with event stream capturing and TTL retention policies
+  > 3. Hybrid persistence model with caching, event logging, and automated lifecycle archiving
+  > 4. Other / Free-text (Describe data models, capture/storage mechanisms, and lifecycle events)
+* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-3-data.md` with data handling specs, storage schemas, and lifecycle decisions.
 
 ---
 
-### Q8: Phase 4 - Verification Specifications & Test Suites (If Executable Scope)
+### Q8: Phase 4 - Core Engine, API Contracts & Data Flow (If Backend/API Affected)
+* **Goal**: Gather specifications for domain services, API endpoints, DTO mappers, backend execution logic, and architectural engine decisions.
+* **Reframed Grill Prompt**:
+  > **What are the backend core engine, API contract, and service integration requirements?**
+  > 1. RESTful API contracts with JSON DTO mappers and core service routing
+  > 2. Event-driven message processing with microservice engine handlers
+  > 3. Other / Free-text (Describe API endpoints, domain service logic, and DTOs)
+* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-4-engine.md` with backend specs and engine decisions.
+
+---
+
+### Q9: Phase 5 - Verification Specifications & Test Suites (If Executable Scope)
 * **Goal**: Gather specifications for unit tests, integration test runners, E2E fixtures, and regression assertion criteria.
 * **Reframed Grill Prompt**:
   > **What verification test suites and test assertion specs should be created?**
   > 1. Unit & Integration test suite with mock API/DB contracts
   > 2. End-to-End (E2E) browser/API verification suite
   > 3. Other / Free-text (Describe test runners, assertion matrices, and test fixtures)
-* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-4-verification.md`.
+* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-5-verification.md`.
 
 ---
 
-### Q9: Phase 5 - Docker & Operations Deployment Impact (If Ops Affected)
+### Q10: Phase 6 - Docker & Operations Deployment Impact (If Ops Affected)
 * **Goal**: Gather container profiles, environment variable configurations, Compose orchestration details, and infrastructure deployment decisions.
 * **Reframed Grill Prompt**:
   > **What are the Docker containerization and operations deployment impact requirements?**
   > 1. Multi-container Compose orchestration with environment variable isolation
   > 2. Standalone container image build with CI/CD deployment pipeline integration
   > 3. Other / Free-text (Describe Dockerfiles, Compose profiles, and environment variables)
-* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-5-operation.md` with ops specs and infrastructure decisions.
+* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-6-operation.md` with ops specs and infrastructure decisions.
 
 ---
 
-### Q10: Versioned Implementation Map Drafting Gate (Node S5)
+### Q11: Versioned Implementation Map Drafting Gate (Node S5)
 * **Goal**: Determine if a versioned `implementation_map_v<version>.md` should be drafted at the end of `/plan` for target software releases.
 * **Reframed Grill Prompt**:
   > **Would you like to draft a version-linked Implementation Map for a target software release now?**

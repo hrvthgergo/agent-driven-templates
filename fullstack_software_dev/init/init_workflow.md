@@ -58,7 +58,7 @@ graph TD
 *   **Agentic Environment (Node A)**:
     Establishes the permanent constraints and tools governing agent behavior.
     *   **Rules & Workflows (Node A1)**: Scaffolds `.agents/rules/` and `.agents/workflows/`, deploying core files:
-        *   `rules/implementation-plan.md` (defining 5-phase plan structure).
+        *   `rules/implementation-plan.md` (defining 6-phase plan structure).
         *   `workflows/init.md` (defining initialization playbook).
     *   **Capabilities & Safety Triggers (Node A2)**: Creates placeholder directories for `skills/`, `hooks/`, and `sidecars/`.
 *   **Software-Based Environment (Node B)**:
@@ -67,7 +67,7 @@ graph TD
     *   **MCP Settings (Node B2)**: Generates basic configuration settings for Model Context Protocol integrations.
 *   **Folder-Based Environment (Node C)**:
     Organizes physical files, workspace boundaries, and existing source code links.
-    *   **Plans & Tracking (Node C1)**: Scaffolds `.agents/plans/` organized into feature/branch subdirectories (e.g., `.agents/plans/initial/` for initial setup, `.agents/plans/<feature_name>/` for feature branches) containing 5-phase blueprint templates, `GRILL_STATUS.md`, and `PROCESS_STATUS.md`.
+    *   **Plans & Tracking (Node C1)**: Scaffolds `.agents/plans/` organized into feature/branch subdirectories (e.g., `.agents/plans/initial/` for initial setup, `.agents/plans/<feature_name>/` for feature branches) containing 6-phase blueprint templates, `GRILL_STATUS.md`, and `PROCESS_STATUS.md`.
     *   **Decoupled Layout & Source Linking (Node C2)**: Maps `src/` symlinks to existing source folders or `codebase-<layer_name>` skeletons. For full details, refer to [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/folder_structure.md).
 
 ---
@@ -159,7 +159,7 @@ graph TD
         *   Creates relative symbolic links (e.g., `ln -s ../../codebase-layout/src src/layout`) to ensure cross-machine and CI/CD portability without hardcoding absolute paths.
         *   Executes a mandatory **3-part verification check**: (1) verify symlink attribute exists, (2) confirm link target resolves to an active directory catching dangling links, and (3) assert relative pathing.
     *   *Hybrid Docker Provisioning*: Scaffolds `antigravity-workspace/docker/dev.Dockerfile` (sandbox), `antigravity-workspace/docker/docker-compose.yml` (orchestrator), and standalone `Dockerfile` specs in each `codebase-<layer_name>` sub-repo.
-    *   *Process Guard Initialization*: Deploys `.agents/plans/<branch_name>/PROCESS_STATUS.md` containing **Block 1 (Workflow Execution Matrix)** with 5-phase planning sub-rows (3.1 to 3.5), and **Block 2 (Datestamped Daily History)** bound to the active branch (e.g. `initial` or `feature/<feature_name>`).
+    *   *Process Guard Initialization*: Deploys `.agents/plans/<branch_name>/PROCESS_STATUS.md` containing **Block 1 (Workflow Execution Matrix)** with 6-phase planning sub-rows (3.1 to 3.6), and **Block 2 (Datestamped Daily History)** bound to the active branch (e.g. `initial` or `feature/<feature_name>`).
 *   **State & Storage Processing**:
     *   Creates directory tree, provisions `.gitkeep` files in every created folder node, creates `.agents/plans/<branch_name>/` subfolder, and deploys starter templates `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md` into `.agents/plans/<branch_name>/`. Fills architecture metadata gathered from Q1–Q10.
 *   **Guard Elements Implementing S5**:

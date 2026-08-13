@@ -84,19 +84,26 @@ graph TD
     S3 --> S4[Step 4: Draft Restructuring & Migration Plan]
     S4 --> S5[Step 5: Consent Gate / Immediate Execution]
     S5 --> S6[Step 6: Execute As-Is File Copies to codebase-*]
-    S6 --> S7[Step 7: Generate Workspace Code Graph Subfolders & Populate Blueprints]
-```
+## 3. Detailed Step-by-Step Workflow Design
 
-### Connected Descriptions of the Step-by-Step Design:
-*   **Step 0: Prerequisite `/init` Execution Check (Node S0)**: Verifies that `.agents/plans/PROCESS_STATUS.md` exists and that Row 1.0 (`/init`) is marked as `Completed`.
-    *   *Enforcement Rule*: If `/init` has not been executed, `/process` MUST immediately halt and inform the user: *"The `/process` workflow requires a pre-initialized workspace. Please run `/init` first (or `/init --feature <name>`) to bootstrap workspace boundaries, layer skeletons, and process tracking before running `/process`."*
-*   **Step 1: Inspect `/init` Metadata (Node S1)**: Reads linked legacy folder paths and stack specifications registered during `/init` in `.agents/plans/phase-1-summary.md`.
-*   **Step 2: Audit Omitted Remotes & Submodules (Node S2)**: Scans `.git/config`, `.gitmodules`, and documentation links across legacy folders to catch any origins omitted during `/init`.
-*   **Step 3: Execute Q&A Grill Session (Node S3)**: Runs the sequential interview based on [process_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/process_questions.md).
-*   **Step 4: Draft Restructuring Plan (Node S4)**: Generates `.agents/plans/restructure-proposal.md` mapping legacy files into `codebase-*` sub-repository targets.
-*   **Step 5: Consent Gate / Execution Choice (Node S5)**: In Plan-First Mode, pauses for explicit developer approval. In Immediate Execution Mode, proceeds directly to file operations.
-*   **Step 6: Execute As-Is File Copies & Resource Staging (Node S6)**:
-    *   Copies legacy source code intact into target `codebase-*` sub-repositories without modifying code logic.
+Execution follows an 8-node state machine (Nodes S0 through S7):
+
+*   **Step 0: Prerequisite `/init` Check (Node S0)**:
+    *   Inspects `.agents/plans/PROCESS_STATUS.md`. If missing or if `/init` is marked `Not Started`, halts execution and prompts the user to run `/init` first.
+*   **Step 1: Inspect `/init` Metadata & Local Legacy Folders (Node S1)**:
+    *   Reads mapped local legacy folder paths, identified technology stack, and layer layout scope from `.agents/plans/phase-1-summary.md`.
+*   **Step 2: Audit Omitted Remotes & Submodules (Node S2)**:
+    *   Scans `.git/config` and `.gitmodules` across linked legacy folders (`git remote -v`, `git submodule status`), discovering remote Git origins, submodules, and external documentation URLs omitted during `/init`.
+*   **Step 3: Q&A Grill Gate (Node S3)**:
+    *   Invokes interactive Q&A interview governed by [process_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/process_questions.md).
+    *   Maintains **Read-Only Legacy Source & Isolated Destination Baselines** (zero in-place edits in original legacy directories).
+*   **Step 4: Draft Legacy Restructuring Plan (Node S4)**:
+    *   Generates `.agents/plans/restructure-proposal.md`, detailing source-to-layer file mapping, non-code doc staging in `.agents/plans/<feature-name>/resource/`, module path aliasing, and workspace symlink strategies.
+*   **Step 5: Consent Gate & Mode Check (Node S5)**:
+    *   **Plan-First Mode (`/process` or `/process --plan`)**: Displays summary of `restructure-proposal.md` and pauses execution, prompting developer for explicit acceptance before altering disk state.
+    *   **Immediate Execution Mode (`/process --auto`)**: Logs `restructure-proposal.md` for auditing and transitions immediately to Node S6.
+*   **Step 6: Execute As-Is File Migration & Resource Staging (Node S6)**:
+    *   Copies source files intact into target `codebase-*` sub-repositories without modifying source logic or code text.
     *   Copies non-code legacy documentation, supplementary assets, schemas, and diagrams into **`.agents/plans/<feature-name>/resource/`** (or `.agents/plans/resource/`) as reference knowledge for the feature being worked on. (Global `docs/` is reserved for already implemented system capabilities; relevant docs are linked/promoted into global `docs/` later during the `/implement` workflow).
 *   **Step 7: Generate Workspace Code Graph Subfolders & Populate Blueprints (Node S7)**:
     *   Generates a dedicated `antigravity-workspace/src/<layer>/code_graph/` subfolder per layer (preventing documentation overhead inside production `codebase-*` repositories; no symlinks required) with 2 analytical blocks:
@@ -104,7 +111,7 @@ graph TD
         *   `process_flow.md`: Process entry points & control flow initiation paths.
         *   `data_flow.md`: Data sources (user, configs, APIs, DB, hardcoded) & datastream transformations.
         *   `risk_analysis.md`: Coupling metrics (fan-in/fan-out), critical nodes, & test coverage maps.
-    *   Selectively fills out relevant phase blueprint documents (`phase-1-summary.md` through `phase-5-operation.md` in `.agents/plans/<feature-name>/`) based on identified legacy knowledge. *Filling out all 5 phase documents is optional and strictly based on relevance*.
+    *   Selectively fills out relevant phase blueprint documents (`phase-1-summary.md` through `phase-6-operation.md` in `.agents/plans/<feature-name>/`) based on identified legacy knowledge. *Filling out all 6 phase documents is optional and strictly based on relevance*.
     *   Updates `.agents/plans/PROCESS_STATUS.md` marking Row 2.0 (`/process`) as `Completed`.
 
 ---
@@ -115,4 +122,4 @@ graph TD
 - `/process` (or `/process --plan`): **Plan-First Mode** (Default). Runs Q&A grill, generates `.agents/plans/restructure-proposal.md`, and pauses for explicit developer review and consent before modifying code.
 - `/process --auto` (or `/process --apply`): **Immediate Execution Mode**. Runs Q&A grill, copies/moves code into `codebase-*` sub-repositories immediately, and records `.agents/plans/restructure-proposal.md` as an execution audit log.
 - `/process --dry-run`: Performs historical analysis and outputs the proposed migration report without moving any files.
-- `/process --docs-only`: Extracts documentation and synthesizes 5-phase blueprints without proposing physical file restructuring.
+- `/process --docs-only`: Extracts documentation and synthesizes 6-phase blueprints without proposing physical file restructuring.

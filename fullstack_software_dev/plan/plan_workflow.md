@@ -1,6 +1,6 @@
 # Guard Specification: Interactive Planning (/plan)
 
-This document serves as the authoritative baseline specification for the `/plan` workflow in the **Guards Framework**. It governs how AI agents interactively create, maintain, and structure token-optimized, agent-ready 5-phase blueprint documentation, research reports, and version-linked implementation maps before code execution begins.
+This document serves as the authoritative baseline specification for the `/plan` workflow in the **Guards Framework**. It governs how AI agents interactively create, maintain, and structure token-optimized, agent-ready 6-phase blueprint documentation, research reports, and version-linked implementation maps before code execution begins.
 
 ---
 
@@ -25,7 +25,7 @@ Fundamentally, **the `/plan` workflow is a governed rule for resource usage and 
 - **Decisions Embedded Directly in `phase-*.md`**: Decisions are documented **directly within the active `phase-*.md` documents** (and their sub-element blueprints inside `phase_details/`). There is no separate decisions folder.
 - **Research Reports Saved in `knowledge/` & Linked**: Whenever research is requested to evaluate options, the report is saved under `.agents/plans/<feature-name>/knowledge/research_report_<topic>.md` and linked directly inside the relevant `phase-*.md` files.
 - **Version-Based Implementation Maps**: Implementation maps drafted in `implementation_maps/` are named after the target software version created from that map (e.g. `implementation_map_v1.0.0.md`), naturally linking planning to implementation and release.
-- **All Planning Artifacts Placed in `plans/<feature-name>/`**: **EVERY document created or modified during `/plan`**—including 5-phase blueprints, research reports, and versioned implementation maps—MUST be placed inside `.agents/plans/<feature-name>/`.
+- **All Planning Artifacts Placed in `plans/<feature-name>/`**: **EVERY document created or modified during `/plan`**—including 6-phase blueprints, research reports, and versioned implementation maps—MUST be placed inside `.agents/plans/<feature-name>/`.
 - **Iterative & Elastic Character**: Accommodates evolving ideas, mid-planning sub-element discovery, design alternatives, and strategic human decision turning points.
 
 ### Universal Design vs. Environment Implementation
@@ -52,7 +52,7 @@ Fundamentally, **the `/plan` workflow is a governed rule for resource usage and 
 ### B. Resource Usage Governance & Strict Feature Sandbox (`.agents/plans/<feature-name>/`)
 All creation, editing, research drafting, and decision documentation generated during `/plan` **MUST reside strictly inside `.agents/plans/<feature-name>/`** to serve as the single source of truth for downstream agents:
 
-1. **5-Phase Blueprints with Embedded Decisions**: `phase-1-summary.md` through `phase-5-operation.md` (active subset). All architectural choices, ADRs, trade-off rationale, and design decisions are documented **directly inside the relevant `phase-*.md` documents**.
+1. **6-Phase Blueprints with Embedded Decisions**: `phase-1-summary.md` through `phase-6-operation.md` (active subset, including `phase-3-data.md` for data capturing, storing mechanisms, and data store lifecycle management). All architectural choices, ADRs, trade-off rationale, and design decisions are documented **directly inside the relevant `phase-*.md` documents**.
 2. **Process & Interview Trackers**: `PROCESS_STATUS.md` and `GRILL_STATUS.md`.
 3. **Research Reports & Topic Knowledge Summaries (`knowledge/`)**:
    - Whenever the user requests a research report or topic deep-dive to evaluate options during planning, the agent writes the document directly to `.agents/plans/<feature-name>/knowledge/research_report_<topic>.md` (or `knowledge_summary_<topic>.md`).
@@ -64,7 +64,7 @@ All creation, editing, research drafting, and decision documentation generated d
 ### C. Multi-Layer Sub-Element Architecture & On-Demand Subfolders Rule (`phase_details/`)
 Complex features may encompass multiple distinct layers (e.g. web UI + mobile app UI, multiple microservice APIs, or distinct databases). The Guards Framework manages this complexity through an **on-demand hierarchy**:
 
-1. **Default Simple Layout**: By default, features use the flat, simple 5 `phase-*.md` document structure directly inside `.agents/plans/<feature-name>/`. Subfolders are **not** created unless required.
+1. **Default Simple Layout**: By default, features use the flat, simple 6 `phase-*.md` document structure directly inside `.agents/plans/<feature-name>/`. Subfolders are **not** created unless required.
 2. **Phase Blueprints as Governors**: In complex multi-layer features:
    - Top-level `phase-*.md` documents act as **master governors / orchestrators** for the entire feature.
    - Subfolders are created under `.agents/plans/<feature-name>/phase_details/<element_name>/` (e.g. `phase_details/web_ui/`, `phase_details/mobile_app/`, `phase_details/payment_api/`).
@@ -95,8 +95,8 @@ When the option to create a versioned `implementation_map_v<version>.md` is sele
 Feature designs within `.agents/plans/<feature-name>/` can relate to **isolated parts of the system** or **the entire system**. Consequently, blueprint generation follows a dynamic, evolving method:
 
 1. **Start with Feature Understanding Summary**: The workflow starts by articulating a clear summary of the planned feature capabilities.
-2. **Identify Affected System Parts**: The Q&A session evaluates which system layers (Frontend, Engine, API, DB, Ops) are impacted and whether multi-layer subfolders (`phase_details/`) are needed.
-3. **Select Required `phase-*.md` Blueprint Set**: A feature may contain all 5 phase blueprint documents (`phase-1-summary.md` through `phase-5-operation.md`) or only a relevant subset.
+2. **Identify Affected System Parts**: The Q&A session evaluates which system layers (Frontend, Data, Engine, API, DB, Ops) are impacted and whether multi-layer subfolders (`phase_details/`) are needed.
+3. **Select Required `phase-*.md` Blueprint Set**: A feature may contain all 6 phase blueprint documents (`phase-1-summary.md` through `phase-6-operation.md`, including `phase-3-data.md`) or only a relevant subset.
 4. **Elastic Mid-Planning Scope Evolution**: **The number of active `phase-*.md` files, sub-element folders, and their defined scope can dynamically change and evolve *during* the planning phase**.
 
 ### G. System-Wide Documentation Taxonomy & Resource Separation
@@ -128,9 +128,10 @@ The `/plan` workflow enforces a strict write sandbox:
 ├── GRILL_STATUS.md                 # Stateful Q&A interview transcript log
 ├── phase-1-summary.md              # Phase 1: Architecture, System Coverage, Decisions & System Impact Analysis
 ├── phase-2-layout.md              # Phase 2: Design System, UI Layout & Component Decisions
-├── phase-3-engine.md              # Phase 3: Core Engine, API Contracts, Data Flow & DB Decisions
-├── phase-4-verification.md        # Phase 4: Test Specifications & Regression Assertions
-├── phase-5-operation.md           # Phase 5: Docker, Compose & Infrastructure Decisions
+├── phase-3-data.md                # Phase 3: Data Handling, Capturing, Storing Mechanisms & Data Store Lifecycle
+├── phase-4-engine.md              # Phase 4: Core Engine, API Contracts, Data Flow & DB Decisions
+├── phase-5-verification.md        # Phase 5: Test Specifications & Regression Assertions
+├── phase-6-operation.md           # Phase 6: Docker, Compose & Infrastructure Decisions
 ├── knowledge/                      # Topic Research Reports & Knowledge Summaries requested during /plan
 │   ├── research_report_<topic>.md    # Research report evaluating options requested by user
 │   └── knowledge_summary_<topic>.md   # Deep-dive topic overview
@@ -146,18 +147,19 @@ The `/plan` workflow enforces a strict write sandbox:
 ├── GRILL_STATUS.md                 # Stateful Q&A transcript
 ├── phase-1-summary.md              # Master Architecture & Vision Governor (with top-level decisions)
 ├── phase-2-layout.md              # Master Design System & UI Governor
-├── phase-3-engine.md              # Master Core Engine & API Contracts Governor
-├── phase-4-verification.md        # Master Test & Assertion Governor
-├── phase-5-operation.md           # Master Operations & Deployment Governor
+├── phase-3-data.md                # Master Data Handling & Lifecycle Governor
+├── phase-4-engine.md              # Master Core Engine & API Contracts Governor
+├── phase-5-verification.md        # Master Test & Assertion Governor
+├── phase-6-operation.md           # Master Operations & Deployment Governor
 ├── phase_details/                  # Detailed sub-element design folders (created on-demand)
 │   ├── web_ui/                     # Web interface layout & component specs
 │   │   └── phase-2-layout.md       # Sub-element UI layout spec & decisions
 │   ├── mobile_app/                 # App interface layout & view specs
 │   │   └── phase-2-layout.md       # Sub-element Mobile UI spec & decisions
 │   ├── auth_api/                   # Authentication API & DTO specs
-│   │   └── phase-3-engine.md       # Sub-element API contract spec & decisions
+│   │   └── phase-4-engine.md       # Sub-element API contract spec & decisions
 │   └── inventory_db/               # Inventory Database & Schema specs
-│       └── phase-3-engine.md       # Sub-element DB schema spec & decisions
+│       └── phase-3-data.md         # Sub-element DB schema & data store lifecycle spec
 ├── knowledge/                      # Research reports (linked directly into phase-*.md)
 │   └── research_report_<topic>.md
 └── implementation_maps/            # Version-named Implementation Maps
