@@ -50,11 +50,32 @@ To ensure operational consistency and structural stability, the following two ba
 
 ---
 
-## 3. Sequential Question List (Execution Order: Q1 to Q10)
+## 3. Sequential Question List (Execution Order: Q1 to Q11)
 
 The Grill Engine MUST evaluate and ask questions in the strict sequential order listed below:
 
-### Q1: Project Scope, Purpose, & Milestones
+### Q1: Modification Scope & Process Mode Selection
+*   **Target Environment**: Agentic & Folder Environment
+*   **Goal**: Determine whether the initialization run represents a **Quick & Simple Modification (Bugfix / Minor Enhancement)** or a **Major Feature / Greenfield Setup** to prevent unnecessary Q&A overhead.
+*   **Auto-Detection Scanning Rule**:
+    *   If current Git branch name starts with `bugfix/`, `fix/`, `hotfix/`, or `minor/`, pre-select **Quick & Simple Mode**.
+*   **Reframed Grill Prompt**:
+    > **What is the scope and majority of this modification?**
+    > 1. **Quick & Simple Mode (Bugfix / Minor Change)**: Fast-track initialization. Inherits existing workspace stack and container profiles, prompts for task summary and feature name, creates `agent-workspace/plans/<feature-name>/`, and skips deep-dive architecture questions.
+    > 2. **Major Feature / Greenfield Setup (Full Process)**: Complete architectural initialization. Executes full Q2–Q11 deep-dive interview to define layers, tech stacks, cloud docs, and container specs.
+    > 3. Other / Free-text (Describe custom modification scope)
+*   **Execution Flow & Resulting Action**:
+    *   **If Quick & Simple Mode selected**:
+        *   Prompt user for: (A) Brief Task/Bug Summary, (B) Feature/Branch Name.
+        *   Create Git branch (`bugfix/<name>` or `feature/<name>`) and scaffold plan folder `agent-workspace/plans/<feature-name>/` with starter governance files (`PROCESS_STATUS.md`, `GRILL_STATUS.md`, `phase-1-summary.md`).
+        *   Automatically inherit all stack, cloud provider, and Docker profiles from `agent-workspace/plans/initial/GRILL_STATUS.md`.
+        *   Bypass questions Q5–Q10 and jump directly to Node S3/S4 execution acceptance gate for rapid execution.
+    *   **If Major Feature / Full Process selected**:
+        *   Proceed sequentially through questions Q2 to Q11.
+
+---
+
+### Q2: Project Scope, Purpose, & Milestones
 *   **Target Environment**: Agentic Environment
 *   **Goal**: Define the project scope, high-level purpose, and key milestones for planning phase documentation.
 *   **Auto-Detection Scanning Rule**:
@@ -67,7 +88,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
     > 2. Standalone API engine / backend microservice
     > 3. User interface / presentation application
     > 4. Other / Free-text (Describe your project goals and milestones in detail)
-*   **Resulting Action**: Writes purpose and scope into `.agents/plans/phase-1-summary.md` and initializes the vision baseline.
+*   **Resulting Action**: Writes purpose and scope into `agent-workspace/plans/<branch_name>/phase-1-summary.md` and initializes the vision baseline.
 
 ---
 

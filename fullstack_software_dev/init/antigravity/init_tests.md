@@ -37,16 +37,17 @@ The test harness simulates an interactive user session responding to the sequent
 | Step | Prompt Title | Mock User Selection / Input | Asserted Output & Action |
 | :--- | :--- | :--- | :--- |
 | **S1** | **Environment & Branch Initialization** | System checks Docker status (`docker info`) and creates `initial` Git branch. | Checks out `initial` branch (`git branch --show-current`). |
-| **Q1** | **Project Scope, Purpose, & Milestones** | Selected Option 1 (*Fullstack web application*) + Custom text: *"A fullstack e-commerce engine with real-time inventory management targeting Q3 MVP release."* | Purpose and vision baseline recorded in `agent-workspace/plans/initial/phase-1-summary.md`. |
-| **Q2** | **Local System Folders** | Selected Option 2 (*No - Create a new project folder*) $\rightarrow$ **Q2.b**: Selected Option 1 (*Current working directory*). | Project root set to current working directory. |
-| **Q3** | **Cloud Documentation Repository** | Selected Option 4 (*No external documentation repository*). | Auto-detection scan failure statement acknowledged. External documentation URLs set to `None`. |
-| **Q4** | **Additional Remote Code Repos** | Selected Option 2 (*No - Single remote repository only*). | Secondary remotes set to `None`. |
-| **Q5** | **Cloud Git Provider** | Selected Option 1 (*GitHub*) $\rightarrow$ **Q5.a**: Selected Option 2 (*No pre-created project*). | Git provider set to GitHub. Origin URL configured. |
-| **Q6** | **Architecture Design Pattern** | Selected Option 1 (*Modular Monolith / Layered Architecture*). | Architectural rules recorded in `agent-workspace/plans/initial/phase-1-summary.md`. |
-| **Q7** | **Layer Scope & Sub-repos** | Selected Option 1 (*Fullstack - UI Layout + Backend Engine*). | Sub-repository skeletons registered: `codebase-devops`, `codebase-layout`, and `codebase-engine`. |
-| **Q8** | **Software Stack & Frameworks** | Selected Option 4 (*Other / Free-text*) $\rightarrow$ Inputs: *"Engine API in Go with PostgreSQL; UI Layout in Vanilla JS and Pure CSS."* | Package manifests (`go.mod`, `package.json`) generated inside respective sub-repositories. |
-| **Q9** | **Agent Guidance Rules & Tooling** | Selected Option 1 (*Standard Guards framework defaults*). | Core rules, skills, workflows deployed to `agent-workspace/.agents/`. |
-| **Q10** | **Summary Verification & Reflection** | Displays Q1–Q9 recap matrix. Selected Option 1 (*Everything is accurate $\rightarrow$ Proceed to finalize Q&A*). | Q&A finalized. Permanent audit log written to `agent-workspace/plans/initial/GRILL_STATUS.md`. |
+| **Q1** | **Modification Scope & Process Mode Selection** | Selected Option 2 (*Major Feature / Greenfield Setup (Full Process)*). | Directs Grill Engine to proceed through full sequential Q2–Q11 interview. |
+| **Q2** | **Project Scope, Purpose, & Milestones** | Selected Option 1 (*Fullstack web application*) + Custom text: *"A fullstack e-commerce engine with real-time inventory management targeting Q3 MVP release."* | Purpose and vision baseline recorded in `agent-workspace/plans/initial/phase-1-summary.md`. |
+| **Q3** | **Local System Folders** | Selected Option 2 (*No - Create a new project folder*) $\rightarrow$ **Q3.b**: Selected Option 1 (*Current working directory*). | Project root set to current working directory. |
+| **Q4** | **Cloud Documentation Repository** | Selected Option 4 (*No external documentation repository*). | Auto-detection scan failure statement acknowledged. External documentation URLs set to `None`. |
+| **Q5** | **Additional Remote Code Repos** | Selected Option 2 (*No - Single remote repository only*). | Secondary remotes set to `None`. |
+| **Q6** | **Cloud Git Provider** | Selected Option 1 (*GitHub*) $\rightarrow$ **Q6.a**: Selected Option 2 (*No pre-created project*). | Git provider set to GitHub. Origin URL configured. |
+| **Q7** | **Architecture Design Pattern** | Selected Option 1 (*Modular Monolith / Layered Architecture*). | Architectural rules recorded in `agent-workspace/plans/initial/phase-1-summary.md`. |
+| **Q8** | **Layer Scope & Sub-repos** | Selected Option 1 (*Fullstack - UI Layout + Backend Engine*). | Sub-repository skeletons registered: `codebase-devops`, `codebase-layout`, and `codebase-engine`. |
+| **Q9** | **Software Stack & Frameworks** | Selected Option 4 (*Other / Free-text*) $\rightarrow$ Inputs: *"Engine API in Go with PostgreSQL; UI Layout in Vanilla JS and Pure CSS."* | Package manifests (`go.mod`, `package.json`) generated inside respective sub-repositories. |
+| **Q10** | **Agent Guidance Rules & Tooling** | Selected Option 1 (*Standard Guards framework defaults*). | Core rules, skills, workflows deployed to `agent-workspace/.agents/`. |
+| **Q11** | **Summary Verification & Reflection** | Displays Q1–Q10 recap matrix. Selected Option 1 (*Everything is accurate $\rightarrow$ Proceed to finalize Q&A*). | Q&A finalized. Permanent audit log written to `agent-workspace/plans/initial/GRILL_STATUS.md`. |
 | **S4** | **Node S4 Execution Acceptance Gate** | Agent displays understanding summary & planned scaffolding steps. Selected Option 1 (*Proceed with execution*). | User acceptance logged; transitions to Node S5 workspace scaffolding. |
 
 ---

@@ -108,18 +108,21 @@ graph TD
 ---
 
 #### Step 2: Q&A Grill Gate (Node S2)
-*   **Description**: Runs the stateful, interactive interview loop across the three target environments (**Agentic Environment**, **Software Environment**, and **Folder Environment**).
+*   **Description**: Runs the stateful, interactive interview loop across the target environments (**Agentic Environment**, **Software Environment**, and **Folder Environment**).
 *   **Architectural & Implementation Reasoning**:
+    *   *Process Mode Decision Gate (Q1 Scope Selection)*:
+        *   **Quick & Simple Mode (Bugfix / Minor Change)**: Designed for bug fixes or small modifications. Fast-tracks initialization by inheriting existing workspace stack definitions, cloud provider configs, and container profiles from `agent-workspace/plans/initial/GRILL_STATUS.md`. Prompts only for task summary and feature name, creates `agent-workspace/plans/<feature_name>/`, and skips deep-dive questions (Q4–Q9).
+        *   **Major Feature / Greenfield Setup (Full Process)**: Designed for major architectural additions or greenfield setups. Runs the complete Q2–Q11 deep-dive interview sequence.
     *   *Unchangeable Baselines (No Questions Asked)*:
         *   **Baseline 1 (Software Environment)**: Enforces **The Hybrid Docker Handling Strategy** (`dev.Dockerfile` sandbox + `docker-compose.yml` orchestrator + layer `Dockerfile` specs) without asking container sandbox choices.
         *   **Baseline 2 (Folder Environment)**: Enforces the **Standard Guards Folder Layout** (`agent-workspace/`, `.agents/`, `src/`) without asking structural layout choices.
     *   *Neutral Choice & Free-Text Law*: All options are presented neutrally without `[Recommended]` labels to avoid biasing user decisions. Every multiple-choice prompt includes a mandatory final free-text choice (`Other / Free-text (...)`).
-    *   *Sequential Question Order*: Executes Q1 (Scope), Q2 (System Folders Q2.a path listing with version-control auto-detection for remotes, Q2.b folder creation), Q3 (Cloud Docs with scan failure statement), Q4 (Additional Remotes Q4.a), Q5 (Cloud Provider Q5.a), Q6 (Architecture Pattern), Q7 (Layer Scope), Q8 (Tech Stack), Q9 (Agent Guiders), and Q10 (Summary Verification & Reflection).
+    *   *Sequential Question Order*: Executes Q1 (Process Mode Selection), Q2 (Project Scope & Goals), Q3 (Local System Folders with auto-detection for remotes), Q4 (Cloud Docs), Q5 (Additional Remotes), Q6 (Cloud Provider), Q7 (Architecture Pattern), Q8 (Layer Scope), Q9 (Tech Stack), Q10 (Agent Guiders), and Q11 (Summary Verification & Reflection).
 *   **State & Storage Processing**:
     *   **Persistent Q&A Audit Log (`GRILL_STATUS.md`)**: As questions are answered, the agent records all prompts, options, and user inputs into `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` (e.g., `agent-workspace/plans/initial/GRILL_STATUS.md` or `agent-workspace/plans/<feature_name>/GRILL_STATUS.md`). This file is preserved permanently alongside `PROCESS_STATUS.md` as an immutable audit log.
-    *   **Q10 Reflection & Modification**: In Q10, the agent formats a clean recap table of all gathered Q1–Q9 answers. The user can choose to confirm, modify any specific answer by re-running its prompt, or add open-ended notes.
+    *   **Q11 Reflection & Modification**: In Q11, the agent formats a clean recap table of all gathered Q1–Q10 answers. The user can choose to confirm, modify any specific answer by re-running its prompt, or add open-ended notes.
 *   **Guard Elements Implementing S2**:
-    *   **Rule Guard**: Governed by `rules/init-grill.md` (Neutral prompts, 2 baselines, Q1–Q10 sequence).
+    *   **Rule Guard**: Governed by `rules/init-grill.md` (Neutral prompts, Process Mode Selection, 2 baselines, Q1–Q11 sequence).
     *   **State Engine**: Governed by `grill_engine.md` (Managing `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` state machine).
 
 ---
