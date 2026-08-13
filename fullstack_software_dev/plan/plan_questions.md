@@ -14,10 +14,10 @@ To ensure operational stability and system governance, the following five baseli
 * **Specification**: Every `/plan` session **MUST** open with the agent synthesizing its initial understanding of the feature (from `/init` outputs, `/process` outputs, and user prompt context) and presenting an **Initial Feature Understanding Summary** to the developer before any questions are asked.
 
 ### Baseline 2: Strict Feature Plan Sandbox (`.agents/plans/<feature-name>/`)
-* **Specification**: ALL files created or modified during `/plan`—including active phase blueprints, `knowledge/` research reports, `sub_elements/` folders, and versioned `implementation_maps/`—MUST reside strictly within `.agents/plans/<feature-name>/`.
+* **Specification**: ALL files created or modified during `/plan`—including active phase blueprints, `knowledge/` research reports, `phase_details/` folders, and versioned `implementation_maps/`—MUST reside strictly within `.agents/plans/<feature-name>/`.
 
 ### Baseline 3: Decisions Embedded Directly in `phase-*.md` (No Decisions Subfolder)
-* **Specification**: Architectural decisions, ADR trade-off rationale, and design choices MUST be documented **directly inside active `phase-*.md` documents** (and their sub-element blueprints inside `sub_elements/`). There is no separate decisions folder.
+* **Specification**: Architectural decisions, ADR trade-off rationale, and design choices MUST be documented **directly inside active `phase-*.md` documents** (and their sub-element blueprints inside `phase_details/`). There is no separate decisions folder.
 
 ### Baseline 4: Implementation Map Sandbox Guard (No Code Execution in `/plan`)
 * **Specification**: Creating or drafting a versioned `implementation_map_v<version>.md` inside `.agents/plans/<feature-name>/` is allowed, but **ZERO code scaffolding, file creation, or source code modification in `src/` or `codebase-*/` is permitted during `/plan`**. Source code implementation remains strictly reserved for `/implement`.
@@ -100,17 +100,17 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 
 ---
 
-### Q4: Multi-Layer Sub-Element Architecture & Subfolders (`sub_elements/`)
-* **Goal**: Evaluate whether the feature is complex and requires a multi-layer subfolder structure (e.g. web UI + mobile app UI, multiple APIs/DBs), using top-level phase docs as master governors.
+### Q4: Multi-Layer Sub-Element Architecture & Phase Details (`phase_details/`)
+* **Goal**: Evaluate whether the feature is complex and requires a multi-layer phase details subfolder structure (e.g. web UI + mobile app UI, multiple APIs/DBs), using top-level phase docs as master governors.
 * **Auto-Detection Scanning Rule**:
   * Check if Q2 identified multiple UIs (web and mobile app) or multiple distinct microservices/databases.
 * **Reframed Grill Prompt**:
-  > **Does this feature require multi-layer subfolders for distinct sub-elements?**
+  > **Does this feature require multi-layer phase details subfolders for distinct sub-elements?**
   > *By default, features use a simple flat folder layout. For complex multi-layer features, top-level phase docs act as master governors while subfolders govern individual sub-elements.*
   > 1. No (Use default simple flat layout with top-level phase-*.md blueprints)
-  > 2. Yes (Create subfolders under sub_elements/<element_name>/ for web UI, mobile app, or APIs)
-  > 3. Other / Free-text (Describe custom sub-element folder requirements)
-* **Resulting Action**: If Yes, provisions subfolders under `.agents/plans/<feature-name>/sub_elements/<element_name>/` and links them to the master governor phase blueprints.
+  > 2. Yes (Create subfolders under phase_details/<element_name>/ for web UI, mobile app, or APIs)
+  > 3. Other / Free-text (Describe custom phase details folder requirements)
+* **Resulting Action**: If Yes, provisions subfolders under `.agents/plans/<feature-name>/phase_details/<element_name>/` and links them to the master governor phase blueprints.
 
 ---
 

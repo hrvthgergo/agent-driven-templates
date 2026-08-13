@@ -11,7 +11,7 @@ The `/plan` workflow is the architectural bridge between environment setup (`/in
 ```mermaid
 graph LR
     Init["/init<br/>Environment Setup"] --> ProcHist["/process<br/>Legacy Resource Ingestion"]
-    ProcHist --> Plan["/plan (Resource Usage & Knowledge Governance Rule)<br/>• Collect Knowledge & Research<br/>• Analyze System Impact (Partial vs. Full)<br/>• Select Simple vs. Multi-Layer Subfolders<br/>• Design Feature Capabilities & Decisions in phase-*.md<br/>• Draft Versioned Implementation Maps (Optional)<br/>• Store All Artifacts in plans/<feature-name>/<br/>  to share context with downstream agents"]
+    ProcHist --> Plan["/plan (Resource Usage & Knowledge Governance Rule)<br/>• Collect Knowledge & Research<br/>• Analyze System Impact (Partial vs. Full)<br/>• Select Simple vs. Multi-Layer Phase Details<br/>• Design Feature Capabilities & Decisions in phase-*.md<br/>• Draft Versioned Implementation Maps (Optional)<br/>• Store All Artifacts in plans/<feature-name>/<br/>  to share context with downstream agents"]
     Init --> Plan
     Plan --> Implement["/implement<br/>Action Implementation<br/>(Guided by versioned implementation_map_v<version>.md)"]
 ```
@@ -21,8 +21,8 @@ Fundamentally, **the `/plan` workflow is a governed rule for resource usage and 
 - **Knowledge Collection & Analysis**: During `/plan`, the developer and AI agent collect research, analyze system impact, explore design alternatives, and capture strategic decisions for a new or modified system capability.
 - **Context Sharing for Downstream Agents**: The overarching goal of storing all blueprints, research reports, and implementation maps strictly inside `.agents/plans/<feature-name>/` is **to share complete, unambiguous context with AI agents in downstream phases** (`/implement`, `/verify`, `/release`).
 - **Initial Feature Understanding Summary First**: Every `/plan` execution begins with the agent summarizing its initial understanding of the feature (synthesizing `/init`, `/process`, and user prompt context) before any questions are asked.
-- **Affected System, Blueprint & Subfolder Identification Q&A**: Following the summary, the interactive Q&A session starts. Its primary goals are to pinpoint **which parts of the system are affected**, determine **which specific `phase-*.md` documents must be created**, and evaluate **whether a multi-layer subfolder structure is needed**.
-- **Decisions Embedded Directly in `phase-*.md`**: Decisions are documented **directly within the active `phase-*.md` documents** (and their sub-element blueprints inside `sub_elements/`). There is no separate decisions folder.
+- **Affected System, Blueprint & Subfolder Identification Q&A**: Following the summary, the interactive Q&A session starts. Its primary goals are to pinpoint **which parts of the system are affected**, determine **which specific `phase-*.md` documents must be created**, and evaluate **whether a multi-layer phase details subfolder structure is needed**.
+- **Decisions Embedded Directly in `phase-*.md`**: Decisions are documented **directly within the active `phase-*.md` documents** (and their sub-element blueprints inside `phase_details/`). There is no separate decisions folder.
 - **Research Reports Saved in `knowledge/` & Linked**: Whenever research is requested to evaluate options, the report is saved under `.agents/plans/<feature-name>/knowledge/research_report_<topic>.md` and linked directly inside the relevant `phase-*.md` files.
 - **Version-Based Implementation Maps**: Implementation maps drafted in `implementation_maps/` are named after the target software version created from that map (e.g. `implementation_map_v1.0.0.md`), naturally linking planning to implementation and release.
 - **All Planning Artifacts Placed in `plans/<feature-name>/`**: **EVERY document created or modified during `/plan`**—including 5-phase blueprints, research reports, and versioned implementation maps—MUST be placed inside `.agents/plans/<feature-name>/`.
@@ -61,17 +61,17 @@ All creation, editing, research drafting, and decision documentation generated d
    - Implementation maps are stored in `.agents/plans/<feature-name>/implementation_maps/` and are **named based on the software version** created from that map (e.g. `implementation_map_v1.0.0.md` or `implementation_map_v1.1.0_layout.md`).
    - This explicitly ties the implementation roadmap to the software version produced during `/implement` and `/release`.
 
-### C. Multi-Layer Sub-Element Architecture & On-Demand Subfolders Rule
+### C. Multi-Layer Sub-Element Architecture & On-Demand Subfolders Rule (`phase_details/`)
 Complex features may encompass multiple distinct layers (e.g. web UI + mobile app UI, multiple microservice APIs, or distinct databases). The Guards Framework manages this complexity through an **on-demand hierarchy**:
 
 1. **Default Simple Layout**: By default, features use the flat, simple 5 `phase-*.md` document structure directly inside `.agents/plans/<feature-name>/`. Subfolders are **not** created unless required.
 2. **Phase Blueprints as Governors**: In complex multi-layer features:
    - Top-level `phase-*.md` documents act as **master governors / orchestrators** for the entire feature.
-   - Subfolders are created under `.agents/plans/<feature-name>/sub_elements/<element_name>/` (e.g. `sub_elements/web_ui/`, `sub_elements/mobile_app/`, `sub_elements/payment_api/`).
+   - Subfolders are created under `.agents/plans/<feature-name>/phase_details/<element_name>/` (e.g. `phase_details/web_ui/`, `phase_details/mobile_app/`, `phase_details/payment_api/`).
    - Each subfolder contains sub-element design specs and phase blueprints governing that specific component.
 3. **Q&A Identification & Mid-Planning Discovery**:
    - The need for multi-layer subfolders is evaluated during the Node S3 Q&A session.
-   - If new sub-elements are discovered **mid-planning** as ideas evolve, the folder structure adapts dynamically to provision the necessary subfolders under `.agents/plans/<feature-name>/sub_elements/`.
+   - If new sub-elements are discovered **mid-planning** as ideas evolve, the folder structure adapts dynamically to provision the necessary subfolders under `.agents/plans/<feature-name>/phase_details/`.
 
 ### D. Versioned Implementation Map & Asynchronous Execution Rule
 System components can be implemented **in parallel, sequentially, or all at once**. Consequently, the workflow supports decoupled implementation planning guided by a **versioned implementation map**:
@@ -95,7 +95,7 @@ When the option to create a versioned `implementation_map_v<version>.md` is sele
 Feature designs within `.agents/plans/<feature-name>/` can relate to **isolated parts of the system** or **the entire system**. Consequently, blueprint generation follows a dynamic, evolving method:
 
 1. **Start with Feature Understanding Summary**: The workflow starts by articulating a clear summary of the planned feature capabilities.
-2. **Identify Affected System Parts**: The Q&A session evaluates which system layers (Frontend, Engine, API, DB, Ops) are impacted and whether multi-layer subfolders are needed.
+2. **Identify Affected System Parts**: The Q&A session evaluates which system layers (Frontend, Engine, API, DB, Ops) are impacted and whether multi-layer subfolders (`phase_details/`) are needed.
 3. **Select Required `phase-*.md` Blueprint Set**: A feature may contain all 5 phase blueprint documents (`phase-1-summary.md` through `phase-5-operation.md`) or only a relevant subset.
 4. **Elastic Mid-Planning Scope Evolution**: **The number of active `phase-*.md` files, sub-element folders, and their defined scope can dynamically change and evolve *during* the planning phase**.
 
@@ -103,7 +103,7 @@ Feature designs within `.agents/plans/<feature-name>/` can relate to **isolated 
 The Guards Framework strictly decouples theoretical design intent, system-wide feature summaries, and implementation-level structural code graphs:
 
 1. **`plans/<feature-name>/` (Feature Design, Knowledge & Impact Sandbox - Written during `/plan`)**:
-   - Holds feature design blueprints with embedded decisions, System Impact Analysis, topic research reports, sub-element design folders, and versioned implementation maps.
+   - Holds feature design blueprints with embedded decisions, System Impact Analysis, topic research reports, `phase_details/` sub-element design folders, and versioned implementation maps.
 2. **`docs/` (General System Documentation - Written during `/implement`)**:
    - Contains general system-wide documentation describing all active features across the entire system.
    - Maintained and updated during `/implement` when code changes are completed.
@@ -149,7 +149,7 @@ The `/plan` workflow enforces a strict write sandbox:
 ├── phase-3-engine.md              # Master Core Engine & API Contracts Governor
 ├── phase-4-verification.md        # Master Test & Assertion Governor
 ├── phase-5-operation.md           # Master Operations & Deployment Governor
-├── sub_elements/                   # Sub-element design folders (created on-demand)
+├── phase_details/                  # Detailed sub-element design folders (created on-demand)
 │   ├── web_ui/                     # Web interface layout & component specs
 │   │   └── phase-2-layout.md       # Sub-element UI layout spec & decisions
 │   ├── mobile_app/                 # App interface layout & view specs
@@ -158,7 +158,7 @@ The `/plan` workflow enforces a strict write sandbox:
 │   │   └── phase-3-engine.md       # Sub-element API contract spec & decisions
 │   └── inventory_db/               # Inventory Database & Schema specs
 │       └── phase-3-engine.md       # Sub-element DB schema spec & decisions
-├── knowledge/                      # Research reports (linked into phase-*.md)
+├── knowledge/                      # Research reports (linked directly into phase-*.md)
 │   └── research_report_<topic>.md
 └── implementation_maps/            # Version-named Implementation Maps
     └── implementation_map_v1.0.0.md
@@ -174,7 +174,7 @@ Execution of the `/plan` workflow follows a strict 7-node sequential state machi
 graph TD
     S1[Node S1: Check Environment & Preconditions] --> S2[Node S2: Initial Feature Understanding Summary]
     S2 --> S3[Node S3: Interactive Q&A Session<br/>Identify Affected System, phase-*.md Set & Subfolders]
-    S3 -->|Scope/Sub-Element Discovery or Research Request| S3_Docs[Draft Sub-Element Folders & Research Reports under knowledge/]
+    S3 -->|Scope/Sub-Element Discovery or Research Request| S3_Docs[Draft phase_details/ Folders & Research Reports under knowledge/]
     S3_Docs --> S3
     S3 -->|Affected System & Blueprint Structure Finalized| S4[Node S4: Dynamic Blueprint Scaffolding & Embedded Decision Drafting]
     S4 --> S5[Node S5: Execution Acceptance Gate & Implementation Map Option]
@@ -203,13 +203,13 @@ graph TD
 * **Primary Goals**:
   1. Identify **which parts of the system are affected** (Frontend, Engine, API, DB, Operations; partial sub-module vs. full system).
   2. Determine **which specific `phase-*.md` documents should be created** for this feature.
-  3. Evaluate **whether multi-layer subfolders (`sub_elements/`) are required** (for complex features with multiple UIs or APIs), or if the default simple layout is sufficient.
-  4. Support mid-planning discovery: if new sub-elements surface during Q&A, dynamically provision subfolders under `.agents/plans/<feature-name>/sub_elements/`.
+  3. Evaluate **whether multi-layer subfolders (`phase_details/`) are required** (for complex features with multiple UIs or APIs), or if the default simple layout is sufficient.
+  4. Support mid-planning discovery: if new sub-elements surface during Q&A, dynamically provision subfolders under `.agents/plans/<feature-name>/phase_details/`.
   5. Support developer requests for **research reports** (`knowledge/`), writing reports to `knowledge/research_report_<topic>.md` and linking them directly inside `phase-*.md`.
 * **Storage Actions**: Updates `.agents/plans/<feature-name>/GRILL_STATUS.md`.
 
 #### Step 4: Dynamic Blueprint Scaffolding & Impact Drafting (Node S4)
-* **Description**: Scaffolds the selected active phase blueprint documents (`phase-1-summary.md` plus identified `phase-*.md` set) and any required `sub_elements/` subfolder specs under `.agents/plans/<feature-name>/`, explicitly documenting feature design, master governors, embedded decisions, affected system parts, and system impact analysis.
+* **Description**: Scaffolds the selected active phase blueprint documents (`phase-1-summary.md` plus identified `phase-*.md` set) and any required `phase_details/` subfolder specs under `.agents/plans/<feature-name>/`, explicitly documenting feature design, master governors, embedded decisions, affected system parts, and system impact analysis.
 * **Rules**: Strictly respects the Workspace Boundary rule (writing ONLY to `.agents/plans/<feature-name>/`).
 * **Storage Actions**: Deploys/updates populated phase blueprint files and sub-element specs.
 
@@ -240,10 +240,10 @@ graph TD
         HistIn["/process Output<br/>(restructure-proposal.md)"] --> S2_Summary
         S2_Summary --> S3_QA["Node S3: Q&A Session<br/>Identify Affected System, phase-*.md Set & Subfolders"]
         S3_QA --> S5_MapOption["Node S5: Draft Versioned Implementation Map (Optional)"]
-        S5_MapOption --> PlanOut[".agents/plans/<feature-name>/<br/>• PROCESS_STATUS.md<br/>• phase-1-summary.md (Governor with Embedded Decisions)<br/>• Selected phase-*.md set<br/>• sub_elements/ (On-Demand Subfolders)<br/>• knowledge/ (Research Reports linked into phase-*.md)<br/>• implementation_maps/ (Version-linked maps: implementation_map_v1.0.0.md)<br/>(Structured context & map repository for downstream agents)"]
+        S5_MapOption --> PlanOut[".agents/plans/<feature-name>/<br/>• PROCESS_STATUS.md<br/>• phase-1-summary.md (Governor with Embedded Decisions)<br/>• Selected phase-*.md set<br/>• phase_details/ (On-Demand Subfolders)<br/>• knowledge/ (Research Reports linked into phase-*.md)<br/>• implementation_maps/ (Version-linked maps: implementation_map_v1.0.0.md)<br/>(Structured context & map repository for downstream agents)"]
     end
 
-    subgraph Phase2_Implement [/implement Workflow Sandbox]
+    subgraph Phase2_Implement [/implement Sandbox]
         PlanOut --> ImpExec["Code Scaffolding & Verification<br/>(Guided by version-linked implementation_map_v<version>.md schema)"]
         ImpExec --> DocsGen["General System Docs<br/>(docs/)"]
         ImpExec --> GraphGen["Inner Structural Code Graphs<br/>(src/*/code_graph/)"]
@@ -260,7 +260,7 @@ graph TD
 4. **Embedded Decisions Guard**: Prohibits creating a separate decisions subfolder; forces all architectural decisions and trade-off choices to be documented directly within active `phase-*.md` documents.
 5. **Research Report Linkage Guard**: Stores research reports in `knowledge/research_report_<topic>.md` and mandates direct markdown file links inside `phase-*.md` blueprints.
 6. **Version-Linked Implementation Map Guard**: Governs the creation of `implementation_map_v<version>.md` files named after the target software version, while strictly forbidding code execution during `/plan`.
-7. **Sub-Element Hierarchy Guard**: Maintains simple flat `phase-*.md` blueprints by default, while dynamically creating `sub_elements/` subfolders for multi-layer features using top-level phase docs as master governors.
+7. **Phase Details Hierarchy Guard**: Maintains simple flat `phase-*.md` blueprints by default, while dynamically creating `phase_details/` subfolders for multi-layer features using top-level phase docs as master governors.
 8. **All-Documents Sandbox Guard**: Enforces that **ALL** documents generated during `/plan` (blueprints, subfolders, research reports, implementation maps) reside strictly within `.agents/plans/<feature-name>/`.
 9. **System Identification & Blueprint Selection Guard**: Directs the Q&A session to identify affected system parts and select the exact subset of `phase-*.md` documents and subfolder structures to create.
 10. **Elastic Design Guard**: Governs iterative human decision turning points, design pivots, mid-planning sub-element discovery, and idea explorations during planning.
