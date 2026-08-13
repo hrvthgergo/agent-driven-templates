@@ -67,7 +67,7 @@ graph TD
     *   **MCP Settings (Node B2)**: Generates basic configuration settings for Model Context Protocol integrations.
 *   **Folder-Based Environment (Node C)**:
     Organizes physical files, workspace boundaries, and existing source code links.
-    *   **Plans & Tracking (Node C1)**: Scaffolds `.agents/plans/` organized into feature/branch subdirectories (e.g., `.agents/plans/initial/` for initial setup, `.agents/plans/<feature_name>/` for feature branches) containing 6-phase blueprint templates, `GRILL_STATUS.md`, and `PROCESS_STATUS.md`.
+    *   **Plans & Tracking (Node C1)**: Scaffolds `agent-workspace/plans/` organized into feature/branch subdirectories (e.g., `agent-workspace/plans/initial/` for initial setup, `agent-workspace/plans/<feature_name>/` for feature branches) containing 6-phase blueprint templates, `GRILL_STATUS.md`, and `PROCESS_STATUS.md`.
     *   **Decoupled Layout & Source Linking (Node C2)**: Maps `src/` symlinks to existing source folders or `codebase-<layer_name>` skeletons. For full details, refer to [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/folder_structure.md).
 
 ---
@@ -89,7 +89,7 @@ graph TD
 ### State Machine Execution & Transition Rules
 1.  **Sequential Execution Guarantee**: Step execution is strictly linear (S1 $\rightarrow$ S2 $\rightarrow$ S3 $\rightarrow$ S4 $\rightarrow$ S5 $\rightarrow$ S6 $\rightarrow$ S7). No step may be skipped, reordered, or executed out of sequence.
 2.  **Gate Validation Before Transition**: A step MUST complete its verification assertions before transitioning state to the next node. If any step fails (e.g. S1 Docker missing, S4 User Rejection, S5 symlink target invalid), execution halts immediately with a diagnostic report.
-3.  **Resume & Audit State**: If execution is interrupted, the state machine reads `.agents/plans/<branch_name>/GRILL_STATUS.md` and `.agents/plans/<branch_name>/PROCESS_STATUS.md` to resume from the last completed node without re-prompting previously answered questions.
+3.  **Resume & Audit State**: If execution is interrupted, the state machine reads `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` and `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` to resume from the last completed node without re-prompting previously answered questions.
 
 ---
 
@@ -111,15 +111,15 @@ graph TD
 *   **Architectural & Implementation Reasoning**:
     *   *Unchangeable Baselines (No Questions Asked)*:
         *   **Baseline 1 (Software Environment)**: Enforces **The Hybrid Docker Handling Strategy** (`dev.Dockerfile` sandbox + `docker-compose.yml` orchestrator + layer `Dockerfile` specs) without asking container sandbox choices.
-        *   **Baseline 2 (Folder Environment)**: Enforces the **Standard Guards Folder Layout** (`antigravity-workspace/`, `.agents/`, `src/`) without asking structural layout choices.
+        *   **Baseline 2 (Folder Environment)**: Enforces the **Standard Guards Folder Layout** (`agent-workspace/`, `.agents/`, `src/`) without asking structural layout choices.
     *   *Neutral Choice & Free-Text Law*: All options are presented neutrally without `[Recommended]` labels to avoid biasing user decisions. Every multiple-choice prompt includes a mandatory final free-text choice (`Other / Free-text (...)`).
     *   *Sequential Question Order*: Executes Q1 (Scope), Q2 (System Folders Q2.a path listing with version-control auto-detection for remotes, Q2.b folder creation), Q3 (Cloud Docs with scan failure statement), Q4 (Additional Remotes Q4.a), Q5 (Cloud Provider Q5.a), Q6 (Architecture Pattern), Q7 (Layer Scope), Q8 (Tech Stack), Q9 (Agent Guiders), and Q10 (Summary Verification & Reflection).
 *   **State & Storage Processing**:
-    *   **Persistent Q&A Audit Log (`GRILL_STATUS.md`)**: As questions are answered, the agent records all prompts, options, and user inputs into `.agents/plans/<branch_name>/GRILL_STATUS.md` (e.g., `.agents/plans/initial/GRILL_STATUS.md` or `.agents/plans/<feature_name>/GRILL_STATUS.md`). This file is preserved permanently alongside `PROCESS_STATUS.md` as an immutable audit log.
+    *   **Persistent Q&A Audit Log (`GRILL_STATUS.md`)**: As questions are answered, the agent records all prompts, options, and user inputs into `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` (e.g., `agent-workspace/plans/initial/GRILL_STATUS.md` or `agent-workspace/plans/<feature_name>/GRILL_STATUS.md`). This file is preserved permanently alongside `PROCESS_STATUS.md` as an immutable audit log.
     *   **Q10 Reflection & Modification**: In Q10, the agent formats a clean recap table of all gathered Q1–Q9 answers. The user can choose to confirm, modify any specific answer by re-running its prompt, or add open-ended notes.
 *   **Guard Elements Implementing S2**:
     *   **Rule Guard**: Governed by `rules/init-grill.md` (Neutral prompts, 2 baselines, Q1–Q10 sequence).
-    *   **State Engine**: Governed by `grill_engine.md` (Managing `.agents/plans/<branch_name>/GRILL_STATUS.md` state machine).
+    *   **State Engine**: Governed by `grill_engine.md` (Managing `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` state machine).
 
 ---
 
@@ -128,7 +128,7 @@ graph TD
 *   **Architectural & Implementation Reasoning**:
     *   *Simplicity & Non-Restructuring Rule*: `/init` strictly limits scanning to surface-level directory detection and folder linking into `phase-1-summary.md`. **Deep code parsing, historical analysis, file moves, and import rewrites are explicitly forbidden during `/init`** and decoupled into the standalone `/process` workflow.
 *   **State & Storage Processing**:
-    *   Scans folder paths provided in Q2.a and analyzes version control configs (`.git/config`, etc.) to auto-detect remote origins. Maps discovered directories into the 'Folders' section of `.agents/plans/<branch_name>/phase-1-summary.md`.
+    *   Scans folder paths provided in Q2.a and analyzes version control configs (`.git/config`, etc.) to auto-detect remote origins. Maps discovered directories into the 'Folders' section of `agent-workspace/plans/<branch_name>/phase-1-summary.md`.
 *   **Guard Elements Implementing S3**:
     *   **Action Skill**: Executed by `skills/init-scaffolder/SKILL.md` (Surface layer detection & brownfield folder linking).
 
@@ -142,26 +142,26 @@ graph TD
         *   **Default / Interactive Mode**: Prompts the user with the summary and planned step list, waiting for explicit confirmation (`1. Proceed with execution` / `2. Modify parameters`) before proceeding to S5.
         *   **Automated Mode (`--auto`)**: When the `--auto` flag is passed, the agent logs the summary and planned action list for auditing and immediately transitions to Node S5 without pausing for user confirmation.
 *   **State & Storage Processing**:
-    *   Appends the Execution Acceptance Summary and acceptance status to `.agents/plans/<branch_name>/GRILL_STATUS.md`.
+    *   Appends the Execution Acceptance Summary and acceptance status to `agent-workspace/plans/<branch_name>/GRILL_STATUS.md`.
 *   **Guard Elements Implementing S4**:
     *   **Workflow Playbook Guard**: Executed by `workflows/init.md` (Node S4 execution acceptance gate logic).
 
 ---
 
 #### Step 5: Scaffolding Workspace & `PROCESS_STATUS.md` (Node S5)
-*   **Description**: Creates physical workspace directories, scaffolds `.agents/` control structures, creates the feature/branch subfolder under `.agents/plans/<branch_name>/` (e.g. `.agents/plans/initial/` or `.agents/plans/<feature_name>/`), registers relative symbolic links under `src/`, provisions Hybrid Docker files, provisions `.gitkeep` files across all scaffolded directories, and initializes `.agents/plans/<branch_name>/PROCESS_STATUS.md` and `.agents/plans/<branch_name>/phase-1-summary.md`.
+*   **Description**: Creates physical workspace directories, scaffolds `.agents/` control structures, creates the feature/branch subfolder under `agent-workspace/plans/<branch_name>/` (e.g. `agent-workspace/plans/initial/` or `agent-workspace/plans/<feature_name>/`), registers relative symbolic links under `src/`, provisions Hybrid Docker files, provisions `.gitkeep` files across all scaffolded directories, and initializes `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` and `agent-workspace/plans/<branch_name>/phase-1-summary.md`.
 *   **Architectural & Implementation Reasoning**:
     *   *Feature-Bound Planning Organization*:
-        *   Because every `/init` execution runs on a specific Git branch (`initial` for greenfield setup; `feature/<feature_name>` for feature runs), all planning blueprints and status tracking sheets are organized into subfolders inside `.agents/plans/` matching the feature/branch scope (e.g. `.agents/plans/initial/` or `.agents/plans/<feature_name>/`).
+        *   Because every `/init` execution runs on a specific Git branch (`initial` for greenfield setup; `feature/<feature_name>` for feature runs), all planning blueprints and status tracking sheets are organized into subfolders inside `agent-workspace/plans/` matching the feature/branch scope (e.g. `agent-workspace/plans/initial/` or `agent-workspace/plans/<feature_name>/`).
     *   *Directory Preservation Policy (`.gitkeep` Rule)*:
-        *   Git natively tracks files rather than empty directory nodes. To ensure that every scaffolded directory path (both control folders under `.agents/` like `skills/`, `hooks/`, `sidecars/`, `plans/`, `rules/`, `workflows/` and codebase directories like `src/`, `config/`, `tests/`, `docs/`, `docker/`) is preserved and synchronized on remote Git origins, **the `/init` workflow automatically provisions a `.gitkeep` file inside every scaffolded directory node**.
+        *   Git natively tracks files rather than empty directory nodes. To ensure that every scaffolded directory path (both control folders under `.agents/` like `skills/`, `hooks/`, `sidecars/`, `rules/`, `workflows/`, plans subfolders under `agent-workspace/plans/`, and codebase directories like `src/`, `config/`, `tests/`, `docs/`, `docker/`) is preserved and synchronized on remote Git origins, **the `/init` workflow automatically provisions a `.gitkeep` file inside every scaffolded directory node**.
     *   *Multi-Repo Symlinking & 3-Part Verification*:
         *   Creates relative symbolic links (e.g., `ln -s ../../codebase-layout/src src/layout`) to ensure cross-machine and CI/CD portability without hardcoding absolute paths.
         *   Executes a mandatory **3-part verification check**: (1) verify symlink attribute exists, (2) confirm link target resolves to an active directory catching dangling links, and (3) assert relative pathing.
-    *   *Hybrid Docker Provisioning*: Scaffolds `antigravity-workspace/docker/dev.Dockerfile` (sandbox), `antigravity-workspace/docker/docker-compose.yml` (orchestrator), and standalone `Dockerfile` specs in each `codebase-<layer_name>` sub-repo.
-    *   *Process Guard Initialization*: Deploys `.agents/plans/<branch_name>/PROCESS_STATUS.md` containing **Block 1 (Workflow Execution Matrix)** with 6-phase planning sub-rows (3.1 to 3.6), and **Block 2 (Datestamped Daily History)** bound to the active branch (e.g. `initial` or `feature/<feature_name>`).
+    *   *Hybrid Docker Provisioning*: Scaffolds `codebase-devops/docker/dev.Dockerfile` (sandbox), `codebase-devops/docker/docker-compose.yml` (orchestrator), and standalone `Dockerfile` specs in each `codebase-<layer_name>` sub-repo.
+    *   *Process Guard Initialization*: Deploys `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` containing **Block 1 (Workflow Execution Matrix)** with 6-phase planning sub-rows (3.1 to 3.6), and **Block 2 (Datestamped Daily History)** bound to the active branch (e.g. `initial` or `feature/<feature_name>`).
 *   **State & Storage Processing**:
-    *   Creates directory tree, provisions `.gitkeep` files in every created folder node, creates `.agents/plans/<branch_name>/` subfolder, and deploys starter templates `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md` into `.agents/plans/<branch_name>/`. Fills architecture metadata gathered from Q1–Q10.
+    *   Creates directory tree, provisions `.gitkeep` files in every created folder node, creates `agent-workspace/plans/<branch_name>/` subfolder, and deploys starter templates `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md` into `agent-workspace/plans/<branch_name>/`. Fills architecture metadata gathered from Q1–Q10.
 *   **Guard Elements Implementing S5**:
     *   **Action Skill**: Executed by `skills/init-scaffolder/SKILL.md` (Directory scaffolding, `.gitkeep` provisioning, relative symlinks + 3-part check, Hybrid Docker files).
     *   **Templates**: Deploys `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md`.
@@ -172,9 +172,9 @@ graph TD
 *   **Description**: Configures Git repositories and remote origins on GitHub/GitLab/Bitbucket based on Q4, Q5, and Q5.a answers, and installs the `pre-commit-plan-validator.sh` safety hook into `.git/hooks/pre-commit`.
 *   **Architectural & Implementation Reasoning**:
     *   *Git & Remote Origin Setup*:
-        *   **Multi-Repo Setup (Separate Remotes for Docs vs. UI vs. Engine)**: Executes `git init` and registers remote origin URLs (`git remote add origin <url>`) inside `antigravity-workspace/`, `codebase-layout/`, and `codebase-engine/` independently. This ensures all three folders are initialized and tracked on their respective GitHub repositories.
-        *   **Umbrella Monorepo Setup (Single Remote)**: Initializes a single root Git repository at `[Local Workspace Root]` containing all three subfolders under one single GitHub remote origin URL.
-    *   *Why Safety Interception?*: To guarantee process compliance, code changes MUST NOT be committed if `PROCESS_STATUS.md` or required `.agents/plans/` status sheets are missing or corrupted.
+        *   **Multi-Repo Setup (Separate Remotes for Docs vs. UI vs. Engine)**: Executes `git init` and registers remote origin URLs (`git remote add origin <url>`) inside `agent-workspace/`, `codebase-devops/`, `codebase-layout/`, and `codebase-engine/` independently. This ensures all sub-repos are initialized and tracked on their respective GitHub repositories.
+        *   **Umbrella Monorepo Setup (Single Remote)**: Initializes a single root Git repository at `[Local Workspace Root]` containing all subfolders under one single GitHub remote origin URL.
+    *   *Why Safety Interception?*: To guarantee process compliance, code changes MUST NOT be committed if `PROCESS_STATUS.md` or required `agent-workspace/plans/` status sheets are missing or corrupted.
 *   **State & Storage Processing**:
     *   Initializes `.git` and configures remotes for target folders, then copies `hooks/pre-commit-plan-validator.sh` to `.git/hooks/pre-commit` and runs `chmod +x`.
 *   **Guard Elements Implementing S6**:
@@ -187,7 +187,7 @@ graph TD
 *   **Architectural & Implementation Reasoning**:
     *   *Operational Transition*: Formally marks `/init` completed and directs the user to the next logical workflow: `/process` (for legacy codebase restructuring) or `/plan` (for feature development).
 *   **State & Storage Processing**:
-    *   Updates `.agents/plans/PROCESS_STATUS.md` Block 1 and appends `[YYYY-MM-DD] /init workflow completed` log entry to Block 2.
+    *   Updates `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` Block 1 and appends `[YYYY-MM-DD] /init workflow completed` log entry to Block 2.
 *   **Guard Elements Implementing S7**:
     *   **Workflow Playbook Guard**: Executed by `workflows/init.md` (Node S7 finalization logic).
 

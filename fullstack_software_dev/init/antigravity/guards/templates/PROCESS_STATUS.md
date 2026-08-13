@@ -16,9 +16,10 @@
 | **3** | `/plan` | In Progress | `agent-workspace/plans/{{GIT_BRANCH}}/phase-1-summary.md` | Execute Phase 1 |
 | 3.1 | -- Phase 1: Summary | In Progress | `phase-1-summary.md` | Draft Scope & Goals |
 | 3.2 | -- Phase 2: Layout | Pending | `phase-2-layout.md` | Pending |
-| 3.3 | -- Phase 3: Engine | Pending | `phase-3-engine.md` | Pending |
-| 3.4 | -- Phase 4: Verification | Pending | `phase-4-verification.md` | Pending |
-| 3.5 | -- Phase 5: Operation | Pending | `phase-5-operation.md` | Pending |
+| 3.3 | -- Phase 3: Data | Pending | `phase-3-data.md` | Pending |
+| 3.4 | -- Phase 4: Engine | Pending | `phase-4-engine.md` | Pending |
+| 3.5 | -- Phase 5: Verification | Pending | `phase-5-verification.md` | Pending |
+| 3.6 | -- Phase 6: Operation | Pending | `phase-6-operation.md` | Pending |
 | **4** | `/implement` | Pending | Codebase Implementation | Pending |
 | **5** | `/verify` | Pending | Verification & Test Suite | Pending |
 | **6** | `/release` | Pending | Release Tag & Merge | Pending |

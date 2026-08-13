@@ -37,4 +37,4 @@ This rule guard governs the `/init` Grill-me Q&A interview engine, enforcing unc
 *   **Q7: Layer Scope & Sub-repos**: Select layer breakdown (Fullstack UI + Engine, UI-only, Engine-only).
 *   **Q8: Software Stack & Frameworks**: Select language and framework stack for each layer.
 *   **Q9: Agent Guidance Rules & Tooling**: Select agentic control defaults.
-*   **Q10: Summary Reflection & Verification**: Present recap matrix of Q1–Q9 choices for user verification.
+*   **Q10: Summary Verification & Reflection**: Present recap matrix of Q1–Q9 choices for user verification.

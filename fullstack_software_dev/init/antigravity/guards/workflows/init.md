@@ -57,7 +57,7 @@ This stateful execution playbook defines the 7-node state machine governing proj
 5.  Scaffold layer skeletons `codebase-<layer_name>` (`src/`, `config/`, `tests/`, `Dockerfile`, `.github/workflows/`).
 6.  Provision a `.gitkeep` file inside **every scaffolded directory node**.
 7.  Create relative symbolic links under `agent-workspace/src/` (`devops`, `layout`, `engine` $\rightarrow$ `../../codebase-X/src`). Enforce symlink purity (zero non-symlink folders in `agent-workspace/src/`). Perform 3-part verification check.
-8.  Deploy starter templates: `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md` to `agent-workspace/plans/<branch_name>/`.
+8.  Deploy starter templates: `templates/PROCESS_STATUS.md` (containing 6-phase planning sub-rows 3.1 to 3.6) and `templates/phase-1-summary.md` to `agent-workspace/plans/<branch_name>/`.
 
 ### Node S6: Git Hook Registration & Remote Setup
 1.  Register Git remotes based on Q4/Q5 selections.
