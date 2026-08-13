@@ -48,7 +48,57 @@ The `/implement` workflow is responsible for the **entire implementation of the 
 
 ---
 
-## 2. Core Architectural Principles & Boundary Rules
+## 2. Centrality & Structure of the Implementation Map (`implementation_map_v<version>.md`)
+
+The **Implementation Map** is the single most critical asset in the `/implement` workflow. It bridges conceptual blueprints and physical code scaffolding. To ensure absolute clarity and predictability during execution, every step in an implementation map MUST be rigorously structured.
+
+### A. Mandatory 4-Part Step Schema
+Every implementation step defined inside an `implementation_map_v<version>.md` MUST contain four mandatory structural sections:
+
+```markdown
+### Step X: [Step Name / Scope Summary]
+
+1. **Requirement Fulfilled**:
+   - Explicitly references the documentation requirement or design spec from `phase-*.md` that this step realizes (e.g., `phase-3-data.md Section 2.1` or `phase-4-engine.md API Endpoint /api/v1/auth`).
+
+2. **Prerequisites**:
+   - Lists pre-execution conditions, prior step dependencies, required base classes/contracts, or database migrations that must exist before starting this step.
+
+3. **Actions Taken**:
+   - Details exact physical file modifications (`[NEW]`, `[MODIFY]`, `[REFACTOR]`), target sub-repositories (`codebase-data`, `codebase-engine`, `codebase-ui`), classes, methods, DTOs, and functions created.
+
+4. **Verification Fulfilled**:
+   - Specifies exact unit tests, integration test suites, or system assertions that MUST pass to consider this step completed (e.g., `pytest tests/unit/test_auth.py` or `go test ./pkg/service/...`).
+```
+
+### B. Sequential vs. Parallel Step Execution Categorization
+Complex features consist of both dependent tasks and independent components. The implementation map MUST explicitly categorize all planned steps into **Sequential Execution Streams** and **Parallel Execution Streams**:
+
+* **Sequential Execution Steps**: Steps that possess hard linear dependencies (e.g., Data Layer Schema Migration → Repository Interface → Service Logic → API Controller). These MUST be executed in strict numerical sequence.
+* **Parallel Execution Steps**: Decoupled, independent steps that share no direct file dependencies (e.g., independent UI component views, standalone helper utilities, isolated DTO mappers). These MAY be executed in parallel or in flexible order.
+
+```mermaid
+graph TD
+    subgraph SequentialStream ["Sequential Execution Stream (Strict Linear Order)"]
+        Step1["Step 1: Database Schema & Entity Models<br/>• Requires: DB Config<br/>• Verifies: Migration Tests"]
+        --> Step2["Step 2: Core Domain Service & DTOs<br/>• Requires: Step 1 Entities<br/>• Verifies: Unit Tests"]
+        --> Step4["Step 4: REST API Controllers<br/>• Requires: Step 2 Service & Step 3 UI<br/>• Verifies: Integration Tests"]
+    end
+    
+    subgraph ParallelStream ["Parallel Execution Stream (Decoupled Tasks)"]
+        Step3A["Step 3.A: Web UI View Components<br/>• Requires: Design Tokens<br/>• Verifies: UI Component Tests"]
+        Step3B["Step 3.B: Mobile App Presenter Views<br/>• Requires: Presenter Specs<br/>• Verifies: Presenter Tests"]
+    end
+    
+    Step2 --> Step3A
+    Step2 --> Step3B
+    Step3A --> Step4
+    Step3B --> Step4
+```
+
+---
+
+## 3. Core Architectural Principles & Boundary Rules
 
 ### A. First-Action Verification & Dual Grounding Preconditions
 1. **First-Action Map Check**: Upon receiving an `/implement` request, the agent's very first action is inspecting `agent-workspace/plans/<feature-name>/implementation_maps/` to verify that the target `implementation_map_v<version>.md` exists and matches the user's requested release scope.
@@ -67,7 +117,7 @@ The `/implement` workflow governs multi-repository and layered project structure
 3. **Test-Code Co-location**: Test suites are placed alongside source files within `codebase-*` sub-repositories as specified in the test plan.
 
 ### D. Visible Step-by-Step Scaffolding & Direct Control (No Opaque Delegation)
-1. **Step-by-Step Granularity**: Scaffolding is broken into clear, discrete execution steps (e.g., Step 1: Data Models → Step 2: Service Contracts → Step 3: API Controllers → Step 4: UI Components).
+1. **Step-by-Step Granularity**: Scaffolding is broken into clear, discrete execution steps adhering to the 4-part step schema (Requirement, Prerequisites, Actions, Verification).
 2. **Visible Environment Tool Usage**: Uses platform primitives (e.g. Antigravity status notifications, interactive prompt tools, step-by-step diff previews) so that every disk action is explicitly visible to the developer.
 3. **Interruption & Clarification Checkpoints**: Between scaffolding steps, the agent maintains an open interaction window allowing the user to:
    - Ask clarifying questions about proposed code structures.
@@ -105,7 +155,7 @@ Upon completing feature implementation:
 
 ---
 
-## 3. Directory Layout & Workflow Scaffold
+## 4. Directory Layout & Workflow Scaffold
 
 ```text
 fullstack_software_dev/implement/
@@ -114,7 +164,7 @@ fullstack_software_dev/implement/
 
 ---
 
-## 4. Detailed Step-by-Step State Machine Design
+## 5. Detailed Step-by-Step State Machine Design
 
 Execution of the `/implement` workflow follows a strict 7-node sequential state machine starting with the mandatory immediate map & test plan verification, leading into visible step-by-step code scaffolding, solution testing, AST code graph generation, system documentation updates, and process status sync:
 
@@ -128,7 +178,7 @@ graph TD
     
     S2_Confirm --> S3
     
-    S3 --> S4[Node S4: Visible Step-by-Step Code Scaffolding & Solution Testing<br/>• Scaffold step-by-step in codebase-*<br/>• Execute critical system & new feature test suites<br/>• User Interruption & Clarification Checkpoints<br/>• Direct communication without opaque delegation]
+    S3 --> S4[Node S4: Visible Step-by-Step Code Scaffolding & Solution Testing<br/>• Execute Sequential & Parallel step streams<br/>• Follow 4-part step schema (Req, Prereq, Actions, Verification)<br/>• Execute critical system & new feature test suites<br/>• User Interruption & Clarification Checkpoints]
     
     S4 --> S5[Node S5: AST Code Graph Generation & Update<br/>Build/Update src/<layer>/code_graph/ Files]
     
@@ -150,11 +200,11 @@ graph TD
 * **Reasoning**: Ensures zero ambiguity about target version, release scope, critical system assertions, or verification contracts before a single line of code is written.
 
 #### Step 3: Micro-Architecture Alignment Gate (Node S3)
-* **Description**: Confirms starting entry-point `codebase-*` layer, incremental step boundaries, and language AST taxonomies.
+* **Description**: Confirms starting entry-point `codebase-*` layer, incremental step boundaries, sequential vs. parallel streams, and language AST taxonomies.
 * **Reasoning**: Establishes developer alignment on immediate implementation targets before modifying code.
 
 #### Step 4: Visible Step-by-Step Code Scaffolding & Solution Testing (Node S4)
-* **Description**: Executes code modifications step-by-step as outlined in the target `implementation_map_v<version>.md`. Uses visible environment tools (e.g. Antigravity status checks, progress updates, interactive prompts) to display code changes incrementally. Executes solution testing for both critical existing system features and new feature specifications.
+* **Description**: Executes code modifications step-by-step following the 4-part step schema (Requirement, Prerequisites, Actions, Verification) outlined in the target `implementation_map_v<version>.md`. Executes sequential steps in order and parallel steps flexibly. Displays changes incrementally with visible tools.
 * **User Interruption & Clarification**: Between scaffolding steps, the agent maintains an active communication window where the user can interrupt, ask questions, or request adjustments. No opaque background delegations are used.
 
 #### Step 5: AST Code Graph Generation & Update (Node S5)
@@ -168,11 +218,11 @@ graph TD
 
 ---
 
-## 5. Command Options & Execution Modes
+## 6. Command Options & Execution Modes
 
 | Command Variant | Execution Mode | Behavior & Description |
 | :--- | :--- | :--- |
-| `/implement` (or `/implement --plan`) | **Plan-First Step-by-Step Mode** (Default) | Verifies map & test plan first, runs visible step-by-step scaffolding across `codebase-*` projects with solution testing and user interruption & clarification checkpoints. |
+| `/implement` (or `/implement --plan`) | **Plan-First Step-by-Step Mode** (Default) | Verifies map & test plan first, runs visible step-by-step scaffolding across `codebase-*` projects following 4-part step schema with solution testing and user interruption checkpoints. |
 | `/implement --auto` (or `/implement --apply`) | **Continuous Scaffolding Mode** | Verifies map & test plan first, executes step-by-step scaffolding automatically while streaming progress log and updating code graphs and system docs. |
 | `/implement --version vX.Y.Z` | **Version Map Target** | Explicitly targets a specific implementation map version (e.g., `implementation_map_v1.0.0.md`). |
 | `/implement --dry-run` | **Preview Mode** | Simulates step-by-step code scaffolding, displays file diff previews, and verifies code graph updates without altering files. |
@@ -180,10 +230,12 @@ graph TD
 
 ---
 
-## 6. Summary Checklist for AI Agents Executing `/implement`
+## 7. Summary Checklist for AI Agents Executing `/implement`
 
 - [ ] **FIRST ACTION**: Check `implementation_map_v<version>.md` and verify execution is based on the RIGHT map and Test Plan (`phase-5-verification.md`).
 - [ ] Confirm target release version, scope, `codebase-*` layers, and critical system assertions.
+- [ ] Parse implementation map steps enforcing the mandatory 4-part step schema (Requirement, Prerequisites, Actions, Verification).
+- [ ] Identify Sequential vs. Parallel execution streams before scaffolding.
 - [ ] Execute visible step-by-step code scaffolding across target `codebase-*` projects in `src/`.
 - [ ] Run solution testing verifying critical system regression assertions AND new feature test specs.
 - [ ] Maintain direct interaction allowing user interruption, questions, and clarification at any step (no opaque subagent delegation).
