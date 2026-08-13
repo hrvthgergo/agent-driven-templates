@@ -2,25 +2,28 @@
 
 This document defines the Q&A interview questionnaire schema, auto-detection scanning rules, unchangeable baselines, and structured prompts used by the `/plan` workflow's Grill Engine session.
 
-The primary objective of the `/plan` Grill-Me session is to guide the developer and AI agent through the interactive design of a new or modified feature, identifying affected system parts, selecting active `phase-*.md` blueprint subsets, evaluating multi-layer subfolders, and capturing all knowledge and decisions inside `.agents/plans/<feature-name>/`.
+The primary objective of the `/plan` Grill-Me session is to guide the developer and AI agent through the interactive design of a new or modified feature, identifying affected system parts, selecting active `phase-*.md` blueprint subsets, evaluating multi-layer subfolders, capturing research reports, and linking version-based implementation maps inside `.agents/plans/<feature-name>/`.
 
 ---
 
 ## 1. Unchangeable Baselines (No Questions Asked)
 
-To ensure operational stability and system governance, the following four baselines are solid and non-negotiable. **Zero questions are asked about these baselines during the `/plan` interview**:
+To ensure operational stability and system governance, the following five baselines are solid and non-negotiable. **Zero questions are asked about these baselines during the `/plan` interview**:
 
 ### Baseline 1: Initial Feature Understanding Summary Mandate (Node S2)
 * **Specification**: Every `/plan` session **MUST** open with the agent synthesizing its initial understanding of the feature (from `/init` outputs, `/process` outputs, and user prompt context) and presenting an **Initial Feature Understanding Summary** to the developer before any questions are asked.
 
 ### Baseline 2: Strict Feature Plan Sandbox (`.agents/plans/<feature-name>/`)
-* **Specification**: ALL files created or modified during `/plan`—including active phase blueprints, `knowledge/` research notes, `decisions/` ADRs, `sub_elements/` folders, and `implementation_maps/`—MUST reside strictly within `.agents/plans/<feature-name>/`.
+* **Specification**: ALL files created or modified during `/plan`—including active phase blueprints, `knowledge/` research reports, `sub_elements/` folders, and versioned `implementation_maps/`—MUST reside strictly within `.agents/plans/<feature-name>/`.
 
-### Baseline 3: Implementation Map Sandbox Guard (No Code Execution in `/plan`)
-* **Specification**: Creating or drafting an `implementation_map.md` inside `.agents/plans/<feature-name>/` is allowed, but **ZERO code scaffolding, file creation, or source code modification in `src/` or `codebase-*/` is permitted during `/plan`**. Source code implementation remains strictly reserved for `/implement`.
+### Baseline 3: Decisions Embedded Directly in `phase-*.md` (No Decisions Subfolder)
+* **Specification**: Architectural decisions, ADR trade-off rationale, and design choices MUST be documented **directly inside active `phase-*.md` documents** (and their sub-element blueprints inside `sub_elements/`). There is no separate decisions folder.
 
-### Baseline 4: Structured Implementation Map Schema
-* **Specification**: All `implementation_map.md` documents drafted during `/plan` MUST adhere to the Tier 1 schema defined in [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implementation_map_taxonomy.md).
+### Baseline 4: Implementation Map Sandbox Guard (No Code Execution in `/plan`)
+* **Specification**: Creating or drafting a versioned `implementation_map_v<version>.md` inside `.agents/plans/<feature-name>/` is allowed, but **ZERO code scaffolding, file creation, or source code modification in `src/` or `codebase-*/` is permitted during `/plan`**. Source code implementation remains strictly reserved for `/implement`.
+
+### Baseline 5: Version-Based Implementation Map Naming & Schema
+* **Specification**: Implementation map documents MUST be named after the target software version created from that map (e.g. `implementation_map_v1.0.0.md` or `implementation_map_v1.1.0_layout.md`) and MUST adhere to the Tier 1 schema defined in [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implementation_map_taxonomy.md).
 
 ---
 
@@ -33,7 +36,7 @@ To ensure operational stability and system governance, the following four baseli
                                        │
                       Present Initial Feature Summary (S2)
                                        │
-                    For each question in Schema (Q1 - Q11):
+                    For each question in Schema (Q1 - Q10):
                                        │
                       Does Scan/Context auto-answer?
                       /                             \
@@ -46,7 +49,7 @@ To ensure operational stability and system governance, the following four baseli
 
 ---
 
-## 3. Sequential Question List (Execution Order: Q1 to Q11)
+## 3. Sequential Question List (Execution Order: Q1 to Q10)
 
 The Grill Engine MUST evaluate and ask questions in the strict sequential order listed below:
 
@@ -111,56 +114,43 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 
 ---
 
-### Q5: Topic Knowledge Summaries & Research Notes (`knowledge/`)
-* **Goal**: Determine if deep-dive topic research notes or knowledge summaries should be generated to support design decisions.
+### Q5: Topic Research Reports & Idea Explorations (`knowledge/`)
+* **Goal**: Determine if deep-dive research reports or idea explorations should be generated under `knowledge/` to evaluate options during planning.
 * **Auto-Detection Scanning Rule**:
   * Inspect prompt for topic research requests or legacy documentation analysis needs.
 * **Reframed Grill Prompt**:
-  > **Would you like to request any topic research notes or knowledge summaries for this feature?**
-  > 1. No research notes needed at this time
+  > **Would you like to request any research reports or topic evaluations for this feature?**
+  > 1. No research reports needed at this time
   > 2. Yes (Specify research topic, e.g. authentication protocol, DB migration strategy, API performance)
   > 3. Other / Free-text (Describe topic research requirements)
-* **Resulting Action**: Creates requested knowledge summaries inside `.agents/plans/<feature-name>/knowledge/knowledge_summary_<topic>.md`.
+* **Resulting Action**: Writes requested research report inside `.agents/plans/<feature-name>/knowledge/research_report_<topic>.md` and links it directly in the active `phase-*.md` documents.
 
 ---
 
-### Q6: Architecture Decision Records (ADRs) & Trade-Off Matrices (`decisions/`)
-* **Goal**: Determine if formal Architecture Decision Records (ADRs) or evaluation matrices are needed for key design choices.
-* **Auto-Detection Scanning Rule**:
-  * Check if architectural trade-offs (e.g., REST vs. gRPC, SQL vs. NoSQL) were identified.
-* **Reframed Grill Prompt**:
-  > **Should any formal Architecture Decision Records (ADRs) or trade-off matrices be created?**
-  > 1. No formal ADRs required
-  > 2. Yes (Specify architectural decision to record, e.g. technology selection, state management)
-  > 3. Other / Free-text (Describe architectural decision context)
-* **Resulting Action**: Creates ADRs inside `.agents/plans/<feature-name>/decisions/adr_<topic>.md`.
-
----
-
-### Q7: Phase 2 - UI Layout & View Design (If UI is Affected)
-* **Goal**: Gather technical specifications for UI views, component hierarchy, design system tokens, and responsive layout behavior.
+### Q6: Phase 2 - UI Layout & View Design (If UI is Affected)
+* **Goal**: Gather technical specifications for UI views, component hierarchy, design system tokens, and responsive layout decisions.
 * **Reframed Grill Prompt**:
   > **What are the key UI layout, styling, and view component requirements?**
   > 1. Vanilla CSS / Custom Design Tokens with responsive grid boundaries
   > 2. Framework component library integration (Specify framework below)
   > 3. Other / Free-text (Describe UI layout, component hierarchy, and design tokens)
-* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-2-layout.md`.
+* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-2-layout.md` with UI specs and layout decisions.
 
 ---
 
-### Q8: Phase 3 - Core Engine, API Contracts & Data Flow (If Backend/API Affected)
-* **Goal**: Gather specifications for domain services, API endpoints, DTO mappers, database schemas, and inter-feature data flow.
+### Q7: Phase 3 - Core Engine, API Contracts & Data Flow (If Backend/API Affected)
+* **Goal**: Gather specifications for domain services, API endpoints, DTO mappers, database schemas, and architectural engine decisions.
 * **Reframed Grill Prompt**:
   > **What are the backend core engine, API contract, and database schema requirements?**
   > 1. RESTful API contracts with JSON DTO mappers and relational database models
   > 2. Event-driven message processing with microservice engine handlers
   > 3. Other / Free-text (Describe API endpoints, domain service logic, DTOs, and DB schemas)
-* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-3-engine.md`.
+* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-3-engine.md` with backend specs and engine decisions.
 
 ---
 
-### Q9: Phase 4 - Verification Specifications & Test Suites (If Executable Scope)
-* **Goal**: Gather specifications for unit tests, integration test runners, E2E fixtures, and regression test suites.
+### Q8: Phase 4 - Verification Specifications & Test Suites (If Executable Scope)
+* **Goal**: Gather specifications for unit tests, integration test runners, E2E fixtures, and regression assertion criteria.
 * **Reframed Grill Prompt**:
   > **What verification test suites and test assertion specs should be created?**
   > 1. Unit & Integration test suite with mock API/DB contracts
@@ -170,24 +160,24 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 
 ---
 
-### Q10: Phase 5 - Docker & Operations Deployment Impact (If Ops Affected)
-* **Goal**: Gather container profiles, environment variable configurations, Compose orchestration details, and infrastructure impact.
+### Q9: Phase 5 - Docker & Operations Deployment Impact (If Ops Affected)
+* **Goal**: Gather container profiles, environment variable configurations, Compose orchestration details, and infrastructure deployment decisions.
 * **Reframed Grill Prompt**:
   > **What are the Docker containerization and operations deployment impact requirements?**
   > 1. Multi-container Compose orchestration with environment variable isolation
   > 2. Standalone container image build with CI/CD deployment pipeline integration
   > 3. Other / Free-text (Describe Dockerfiles, Compose profiles, and environment variables)
-* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-5-operation.md`.
+* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-5-operation.md` with ops specs and infrastructure decisions.
 
 ---
 
-### Q11: Optional Structured Implementation Map Drafting Gate (Node S5)
-* **Goal**: Determine if a structured `implementation_map_<scope>.md` should be drafted at the end of `/plan` for ready components.
+### Q10: Versioned Implementation Map Drafting Gate (Node S5)
+* **Goal**: Determine if a versioned `implementation_map_v<version>.md` should be drafted at the end of `/plan` for target software releases.
 * **Reframed Grill Prompt**:
-  > **Would you like to draft a structured Implementation Map for ready components now?**
-  > *Note: Implementation maps provide step-by-step guidance for /implement. Only document drafting is performed during /plan; zero code execution is allowed.*
+  > **Would you like to draft a version-linked Implementation Map for a target software release now?**
+  > *Note: Implementation maps are named after the target software version (e.g. implementation_map_v1.0.0.md) and provide step-by-step guidance for /implement. Only document drafting is performed during /plan; zero code execution is allowed.*
   > 1. Defer implementation map creation to the beginning of /implement
-  > 2. Draft Full Feature Implementation Map (`implementation_map_full.md`)
-  > 3. Draft Partial Implementation Map (e.g. `implementation_map_layout.md` or `implementation_map_engine.md`)
-  > 4. Other / Free-text (Describe custom implementation map scope)
-* **Resulting Action**: If option 2 or 3 selected, drafts `.agents/plans/<feature-name>/implementation_maps/implementation_map_<scope>.md` adhering to [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implementation_map_taxonomy.md).
+  > 2. Draft Full Feature Release Map (Specify target version, e.g. `implementation_map_v1.0.0.md`)
+  > 3. Draft Partial Scope Release Map (Specify target version and scope, e.g. `implementation_map_v1.1.0_layout.md`)
+  > 4. Other / Free-text (Describe custom versioned implementation map requirements)
+* **Resulting Action**: If option 2 or 3 selected, drafts `.agents/plans/<feature-name>/implementation_maps/implementation_map_v<version>.md` adhering to [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implementation_map_taxonomy.md).
