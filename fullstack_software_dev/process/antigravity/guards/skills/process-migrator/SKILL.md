@@ -18,9 +18,9 @@ When executing legacy codebase restructuring, the agent MUST adhere to the follo
    - Record MD5 checksums of legacy source files prior to migration operations.
    - Zero file deletions, moves, overwrites, or refactoring are permitted within original legacy directories.
 
-2. **As-Is File Copying & Non-Code Docs Staging**:
+2. **As-Is File Copying & Feature Plan Subfolders Staging**:
    - Copy source code intact from linked legacy source directories into target sub-repository destinations (`codebase-layout/src/`, `codebase-engine/src/`).
-   - Copy non-code legacy documentation, supplementary assets, schemas, and diagrams into **`agent-workspace/plans/<branch_name>/resource/`** as feature reference knowledge. (Global `docs/` is reserved for already implemented system capabilities; relevant docs will be linked/promoted into `docs/` later during `/implement`).
+   - Copy non-code legacy documentation, supplementary assets, schemas, and diagrams into **`agent-workspace/plans/<branch_name>/resource/`**, research reports into `knowledge/`, version-named implementation maps into `implementation_maps/`, and multi-layer sub-element blueprints into `phase_details/` as feature reference knowledge. (Global `docs/` is reserved for already implemented system capabilities; relevant docs will be linked/promoted into `docs/` later during `/implement`).
    - Preserve original directory structures, package layouts, and asset paths during copy operations.
    - **Strict Non-Rewriting Rule**: Do NOT modify, refactor, or rewrite source code logic, variable names, or syntax.
 

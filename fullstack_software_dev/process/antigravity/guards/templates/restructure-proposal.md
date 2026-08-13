@@ -24,6 +24,9 @@ The table below outlines the proposed intact file copy and documentation staging
 | `[legacy_path/ui/...]` | UI / Presentation | `codebase-layout/src/` |
 | `[legacy_path/server/...]` | Domain Engine Logic | `codebase-engine/src/` |
 | `[legacy_path/docs/...]` | Non-Code Docs & Assets | `agent-workspace/plans/<branch_name>/resource/` |
+| `[legacy_path/research/...]` | Topic Research & Summaries | `agent-workspace/plans/<branch_name>/knowledge/` |
+| `[legacy_path/plans/...]` | Implementation Roadmaps | `agent-workspace/plans/<branch_name>/implementation_maps/` |
+| `[legacy_path/details/...]` | Sub-Element Blueprints | `agent-workspace/plans/<branch_name>/phase_details/` |
 
 ---
 
