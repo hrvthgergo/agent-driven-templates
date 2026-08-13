@@ -52,9 +52,13 @@ All creation, editing, research drafting, and decision documentation generated d
 
 1. **5-Phase Blueprints**: `phase-1-summary.md` through `phase-5-operation.md` (active subset).
 2. **Process & Interview Trackers**: `PROCESS_STATUS.md` and `GRILL_STATUS.md`.
-3. **Knowledge Summaries**: Saved inside `.agents/plans/<feature-name>/knowledge/knowledge_summary_<topic>.md`.
-4. **Decision-Supporting Artifacts**: Stored in `.agents/plans/<feature-name>/decisions/adr_<topic>.md`.
-5. **Structured Implementation Maps**: Stored in `.agents/plans/<feature-name>/implementation_map.md` (or `.agents/plans/<feature-name>/implementation_maps/implementation_map_<scope>.md`).
+3. **Research Reports & Topic Knowledge Summaries (`knowledge/`)**:
+   - Whenever the user requests a research report, idea exploration, or topic deep-dive to evaluate options during planning, the agent writes the document directly to `.agents/plans/<feature-name>/knowledge/research_report_<topic>.md` (or `knowledge_summary_<topic>.md`).
+   - Keeps raw research, option analyses, and technology evaluations organized and isolated.
+4. **Decision-Supporting Artifacts & ADRs (`decisions/`)**:
+   - When a research report leads to a human decision or architectural choice between options, the resulting choice is recorded in `.agents/plans/<feature-name>/decisions/adr_<topic>.md` (or `tradeoff_matrix_<topic>.md`).
+   - Markdown links in `phase-1-summary.md` reference these research reports and ADRs to provide complete contextual lineage for downstream agents.
+5. **Structured Implementation Maps (`implementation_maps/`)**: Stored in `.agents/plans/<feature-name>/implementation_map.md` (or `.agents/plans/<feature-name>/implementation_maps/implementation_map_<scope>.md`).
 
 ### C. Multi-Layer Sub-Element Architecture & On-Demand Subfolders Rule
 Complex features may encompass multiple distinct layers (e.g. web UI + mobile app UI, multiple microservice APIs, or distinct databases). The Guards Framework manages this complexity through an **on-demand hierarchy**:
@@ -136,10 +140,12 @@ The `/plan` workflow enforces a strict write sandbox:
 ├── phase-3-engine.md              # Phase 3: Core Engine, API Contracts & Data Flow (dynamically created if engine is affected)
 ├── phase-4-verification.md        # Phase 4: Test Specifications & Regression Test Suite (dynamically created if in scope)
 ├── phase-5-operation.md           # Phase 5: Docker, Compose & CI/CD Operations (dynamically created if ops are affected)
-├── knowledge/                      # Topic Knowledge Summaries & Research Notes requested during /plan
-│   └── knowledge_summary_<topic>.md
+├── knowledge/                      # Topic Research Reports & Knowledge Summaries requested during /plan
+│   ├── research_report_<topic>.md    # Research report evaluating ideas/options requested by user
+│   └── knowledge_summary_<topic>.md   # Deep-dive topic overview
 ├── decisions/                      # Architecture Decision Records (ADRs) & Trade-off Matrices
-│   └── adr_<decision_name>.md
+│   ├── adr_<decision_name>.md         # Formal ADR for decisions made after research
+│   └── tradeoff_matrix_<topic>.md     # Comparative option evaluation matrix
 └── implementation_maps/            # Structured Implementation Maps drafted at end of /plan
     ├── implementation_map_layout.md   # Structured partial map for UI layout implementation
     └── implementation_map_full.md     # Structured full feature implementation map
