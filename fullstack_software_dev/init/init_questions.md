@@ -2,80 +2,130 @@
 
 This document defines the Q&A interview schema, auto-detection rules, unchangeable baselines, and structured prompts used by the `/init` workflow's Grill Engine.
 
-The primary objective of the `/init` Grill-Me session is to discover and initialize the dependencies of the three core project environments:
-1. **Agentic Environment**: Agent guiders (rules, skills, MCPs, hooks, sidecars), cloud Git origin providers, CI/CD pipelines, external documentation repositories, project scope, and vision goals.
-2. **Software Environment**: Solid containerization baselines, software architecture design patterns, programming languages, building blocks, and frameworks.
-3. **Folder Environment**: Solid directory layout baselines, local system folder locations, layer count/scope, and `codebase-*` sub-repository skeletons.
+The `/init` Grill-Me session operates in **two distinct modes**, selected by the user at the very start of the interview:
+
+1. **Quick & Simple Mode**: A fast-track 3-question interview for bug fixes, minor changes, and small enhancements within an already initialized workspace.
+2. **Major Feature / Greenfield Mode**: The complete deep-dive interview (Q1–Q10) for major architectural features or first-time greenfield workspace setup.
 
 ---
 
 ## 1. Unchangeable Baselines (No Questions Asked)
 
-To ensure operational consistency and structural stability, the following two baselines are solid and non-negotiable. **Zero questions are asked about these baselines during the `/init` interview**:
+To ensure operational consistency and structural stability, the following two baselines are solid and non-negotiable. **Zero questions are asked about these baselines during the `/init` interview** (regardless of mode):
 
 ### Baseline 1: Containerization Setup (Software Environment)
 *   **Specification**: The **Hybrid Docker Handling Strategy** MUST be used without exception.
 *   **Enforced Architecture**:
-    *   `antigravity-workspace/docker/dev.Dockerfile`: Isolated agent execution sandbox environment.
-    *   `antigravity-workspace/docker/docker-compose.yml`: Local multi-service orchestrator linking layer sub-repositories.
+    *   `codebase-devops/docker/dev.Dockerfile`: Isolated agent execution sandbox environment.
+    *   `codebase-devops/docker/docker-compose.yml`: Local multi-service orchestrator linking layer sub-repositories.
     *   `codebase-<layer_name>/Dockerfile`: Standalone production build specs inside each sub-repository.
 
 ### Baseline 2: Folder Environment Layout (Folder Environment)
 *   **Specification**: The physical directory structure of the workspace is solid and MUST follow the designed Guards layout.
 *   **Enforced Architecture**:
-    *   Root multi-repo layout: `antigravity-workspace/`, `codebase-<layer_a>/`, `codebase-<layer_b>/`.
-    *   `antigravity-workspace/.agents/`: Control directory (`rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`, `plans/PROCESS_STATUS.md`).
-    *   `antigravity-workspace/src/`: Symbolic links (`src/layout` $\rightarrow$ `../codebase-layout/src/`, `src/engine` $\rightarrow$ `../codebase-engine/src/`).
-    *   *Note*: While the **number and scope** of `codebase-*` layers are questioned (Q7), the internal directory structure follows the designed baseline unconditionally.
+    *   Root multi-repo layout: `agent-workspace/`, `codebase-devops/`, `codebase-<layer_a>/`, `codebase-<layer_b>/`.
+    *   `agent-workspace/.agents/`: Control directory (`rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`).
+    *   `agent-workspace/plans/`: Feature-bound planning blueprints organized by branch (`plans/initial/`, `plans/<feature_name>/`).
+    *   `agent-workspace/src/`: Pure relative symlinks (`src/devops` $\rightarrow$ `../../codebase-devops/src`, `src/layout` $\rightarrow$ `../../codebase-layout/src`, `src/engine` $\rightarrow$ `../../codebase-engine/src`).
+    *   *Note*: While the **number and scope** of `codebase-*` layers are questioned in Major Feature Mode (Q7), the internal directory structure follows the designed baseline unconditionally.
 
 ---
 
-## 2. Questions & Scanning Blueprint
+## 2. Process Mode Gate & Question Flow Diagram
 
 ```
                       ┌─────────────────────────────────┐
-                      │    Start /init Scan & Check     │
-                      └────────────────┬────────────────┘
+                      │    Start /init Scan & Check      │
+                      └────────────────┬─────────────────┘
                                        │
-                    For each question in Schema (Q1 - Q10):
-                                       │
-                      Does Scan detect files/configs?
-                      /                             \
-                   (Yes)                            (No)
-                   /                                   \
-        [Auto-answer Question]                 [Run Q&A Interview]
+                              ┌────────┴────────┐
+                              │  Q0: Mode Gate   │
+                              │  Quick or Major? │
+                              └───┬─────────┬────┘
+                                  │         │
+                        [Quick & Simple]  [Major Feature / Greenfield]
+                                  │         │
+                      ┌───────────┘         └───────────┐
+                      │                                 │
+              QS1 → QS2 → QS3                  Q1 → Q2 → ... → Q10
+              (3 Questions)                    (10 Questions with
+                      │                         Auto-Detection Scan)
+                      │                                 │
+                      └──────────┬──────────────────────┘
+                                 │
+                          [Node S3 → S7]
+                      (Shared Execution Path)
 ```
 
 *   **Prompting Law**: The Grill Engine MUST NOT mark any option as `[Recommended]`. Options must be listed neutrally. Every multiple-choice question MUST include a final free-text input option enabling the user to describe custom thoughts.
 
 ---
 
-## 3. Sequential Question List (Execution Order: Q1 to Q11)
+## 3. Process Mode Gate (Q0)
 
-The Grill Engine MUST evaluate and ask questions in the strict sequential order listed below:
-
-### Q1: Modification Scope & Process Mode Selection
-*   **Target Environment**: Agentic & Folder Environment
-*   **Goal**: Determine whether the initialization run represents a **Quick & Simple Modification (Bugfix / Minor Enhancement)** or a **Major Feature / Greenfield Setup** to prevent unnecessary Q&A overhead.
+### Q0: Initialization Mode Selection
+*   **Target Environment**: Cross-Environment (Mode Decision)
+*   **Goal**: Determine the scope and magnitude of the work to select the appropriate interview depth.
+*   **Precondition**: This question is ONLY presented when `/init` is executed in an **already initialized workspace** (i.e., `agent-workspace/plans/initial/` exists). For **greenfield first-time runs**, the system automatically selects **Major Feature / Greenfield Mode** and skips Q0.
 *   **Auto-Detection Scanning Rule**:
-    *   If current Git branch name starts with `bugfix/`, `fix/`, `hotfix/`, or `minor/`, pre-select **Quick & Simple Mode**.
+    *   If current Git branch name starts with `bugfix/`, `fix/`, `hotfix/`, or `patch/`, pre-select **Quick & Simple Mode**.
 *   **Reframed Grill Prompt**:
-    > **What is the scope and majority of this modification?**
-    > 1. **Quick & Simple Mode (Bugfix / Minor Change)**: Fast-track initialization. Inherits existing workspace stack and container profiles, prompts for task summary and feature name, creates `agent-workspace/plans/<feature-name>/`, and skips deep-dive architecture questions.
-    > 2. **Major Feature / Greenfield Setup (Full Process)**: Complete architectural initialization. Executes full Q2–Q11 deep-dive interview to define layers, tech stacks, cloud docs, and container specs.
-    > 3. Other / Free-text (Describe custom modification scope)
-*   **Execution Flow & Resulting Action**:
-    *   **If Quick & Simple Mode selected**:
-        *   Prompt user for: (A) Brief Task/Bug Summary, (B) Feature/Branch Name.
-        *   Create Git branch (`bugfix/<name>` or `feature/<name>`) and scaffold plan folder `agent-workspace/plans/<feature-name>/` with starter governance files (`PROCESS_STATUS.md`, `GRILL_STATUS.md`, `phase-1-summary.md`).
-        *   Automatically inherit all stack, cloud provider, and Docker profiles from `agent-workspace/plans/initial/GRILL_STATUS.md`.
-        *   Bypass questions Q5–Q10 and jump directly to Node S3/S4 execution acceptance gate for rapid execution.
-    *   **If Major Feature / Full Process selected**:
-        *   Proceed sequentially through questions Q2 to Q11.
+    > **What type of change are you initializing?**
+    > 1. **Quick & Simple (Bugfix / Minor Change)**: Fast-track setup for a bug fix, small UI tweak, or minor enhancement. Inherits existing workspace configuration. Only 3 focused questions.
+    > 2. **Major Feature / Full Architecture Setup**: Complete deep-dive interview for a significant new feature requiring architectural decisions, new layers, or stack changes. Full 10-question session.
+    > 3. Other / Free-text (Describe the scope of your change)
+*   **Resulting Action**:
+    *   **Quick & Simple selected**: Proceeds to Section 4 (QS1–QS3).
+    *   **Major Feature selected**: Proceeds to Section 5 (Q1–Q10).
 
 ---
 
-### Q2: Project Scope, Purpose, & Milestones
+## 4. Quick & Simple Mode Questions (QS1 – QS3)
+
+Quick & Simple Mode is designed for bug fixes, minor UI tweaks, and small enhancements. It inherits the existing workspace stack, architecture, cloud provider, and Docker profiles from `agent-workspace/plans/initial/GRILL_STATUS.md` and asks only 3 focused questions.
+
+### QS1: Aim & Reason of the Change
+*   **Target Environment**: Agentic Environment
+*   **Goal**: Capture the purpose and intended outcome of the bug fix or minor change.
+*   **Reframed Grill Prompt**:
+    > **What is the aim and reason for this change?**
+    > *Please provide a short summary describing the purpose, expected outcome, and affected area of the system (e.g., "Fix checkout button alignment on mobile view" or "Add loading spinner to dashboard API calls").*
+    >
+    > Additionally, provide the **feature/branch name** for this change:
+    > *Example: `fix-checkout-button`, `add-loading-spinner`, `update-inventory-validation`*
+*   **Resulting Action**: Records the aim/reason summary into `agent-workspace/plans/<feature_name>/phase-1-summary.md`. Creates Git branch (`bugfix/<name>` or `feature/<name>`).
+
+---
+
+### QS2: Issue & Bug Reference
+*   **Target Environment**: Agentic Environment
+*   **Goal**: Link or describe the specific issue, bug report, or ticket driving this change.
+*   **Reframed Grill Prompt**:
+    > **Is there a specific issue, bug report, or ticket linked to this change?**
+    > 1. Yes — Link issue (Provide URL or ticket ID, e.g. `#142`, `JIRA-1055`, or a GitHub Issues URL)
+    > 2. No formal ticket — Describe the bug or issue in your own words
+    > 3. Other / Free-text (Provide issue context, reproduction steps, or error logs)
+*   **Resulting Action**: Records issue reference or bug description into `agent-workspace/plans/<feature_name>/phase-1-summary.md` under the "Issue Reference" section.
+
+---
+
+### QS3: Pre-Planning Decisions & Constraints
+*   **Target Environment**: Cross-Environment (Final Gate)
+*   **Goal**: Capture any critical decisions, constraints, or dependencies that must be resolved before starting the planning and implementation phases.
+*   **Reframed Grill Prompt**:
+    > **Are there any major decisions, constraints, or dependencies to consider before we initialize this feature?**
+    > 1. No — Proceed with initialization (no blockers)
+    > 2. Yes — There are decisions to document (Describe constraints, breaking changes, affected dependencies, or team coordination needs)
+    > 3. Other / Free-text (Provide any additional context or notes for the planning phase)
+*   **Resulting Action**: Records decisions and constraints into `agent-workspace/plans/<feature_name>/phase-1-summary.md`. Writes permanent audit log into `agent-workspace/plans/<feature_name>/GRILL_STATUS.md` containing QS1–QS3 transcript. Transitions to **Node S4 (Execution Acceptance Gate)**.
+
+---
+
+## 5. Major Feature / Greenfield Mode Questions (Q1 – Q10)
+
+Major Feature Mode executes the complete deep-dive interview to discover and configure the three core project environments. This mode is used for greenfield setups, significant new features, new layer introductions, or architectural changes.
+
+### Q1: Project Scope, Purpose, & Milestones
 *   **Target Environment**: Agentic Environment
 *   **Goal**: Define the project scope, high-level purpose, and key milestones for planning phase documentation.
 *   **Auto-Detection Scanning Rule**:
@@ -128,7 +178,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
     > 3. GitHub / GitLab Wiki
     > 4. No external documentation repository
     > 5. Other / Free-text (Specify documentation repository URL and access details)
-*   **Resulting Action**: Registers documentation URLs in `.agents/plans/phase-1-summary.md` for agent reference.
+*   **Resulting Action**: Registers documentation URLs in `agent-workspace/plans/<branch_name>/phase-1-summary.md` for agent reference.
 
 ---
 
@@ -183,7 +233,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
     > 3. Domain-Driven Design (DDD)
     > 4. Event-Driven Architecture
     > 5. Other / Free-text (Describe architectural pattern and rules)
-*   **Resulting Action**: Records architectural laws in `.agents/plans/phase-1-summary.md` and enforces matching component boundary rules during planning.
+*   **Resulting Action**: Records architectural laws in `agent-workspace/plans/<branch_name>/phase-1-summary.md` and enforces matching component boundary rules during planning.
 
 ---
 
@@ -191,14 +241,14 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 *   **Target Environment**: Folder Environment
 *   **Goal**: Question the number and scope of `codebase-*` layers to design and implement for the project.
 *   **Auto-Detection Scanning Rule**:
-    *   Inspect parent directory for existing layer sub-repos (`codebase-layout`, `codebase-engine`, `codebase-api`, etc.).
+    *   Inspect parent directory for existing layer sub-repos (`codebase-devops`, `codebase-layout`, `codebase-engine`, `codebase-api`, etc.).
 *   **Reframed Grill Prompt**:
     > **Which architecture layers would you like to design and implement for this project?**
     > 1. Fullstack (UI Layout + Backend Engine) $\rightarrow$ Skeletons: `codebase-layout` & `codebase-engine`
     > 2. Pure Backend / Engine API project $\rightarrow$ Skeleton: `codebase-engine`
     > 3. Lightweight UI / Presentation project $\rightarrow$ Skeleton: `codebase-layout`
     > 4. Other / Free-text (Specify layer names, e.g. `codebase-api`, `codebase-worker`, `codebase-ui`)
-*   **Resulting Action**: Provisions defined `codebase-<layer_name>` layer skeletons, registers `src/<layer_name>` symbolic links under `antigravity-workspace/src/`, and provisions standalone `Dockerfile` specs per layer.
+*   **Resulting Action**: Provisions defined `codebase-<layer_name>` layer skeletons, registers `src/<layer_name>` symbolic links under `agent-workspace/src/`, and provisions standalone `Dockerfile` specs per layer.
 
 ---
 
@@ -239,7 +289,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
     2. The Grill Engine MUST prompt the user for open-ended reflections or additional instructions.
 *   **Reframed Grill Prompt**:
     > **Summary of Answers Gathered During /init Session:**
-    > 
+    >
     > | Environment | Question | Gathered Specification / Answer |
     > | :--- | :--- | :--- |
     > | **Agentic** | Q1 Purpose & Scope | *[Q1 Answer / Vision summary]* |
@@ -251,9 +301,9 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
     > | **Folder** | Q7 Layer Scope | *[Q7 Answer / Codebase Skeletons]* |
     > | **Software** | Q8 Tech Stack & Frameworks | *[Q8 Answer / Languages & Stack]* |
     > | **Agentic** | Q9 Agent Guiders & MCPs | *[Q9 Answer / Rules, Skills, Hooks]* |
-    > 
+    >
     > **Reflecting on this summary, is there anything else you would like to add, adjust, or clarify for the project initialization?**
     > 1. Everything is accurate $\rightarrow$ Proceed to finalize `/init`
     > 2. Edit a specific answer (Specify question number to re-run)
     > 3. Other / Free-text (Add further instructions, notes, or constraints for the agent)
-*   **Resulting Action**: Writes permanent audit log into `.agents/plans/GRILL_STATUS.md` and transitions to **Node S4 (Execution Acceptance Gate)** to present the understanding summary and planned scaffolding steps for user approval (or proceeds automatically if `/init --auto` is passed).
+*   **Resulting Action**: Writes permanent audit log into `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` and transitions to **Node S4 (Execution Acceptance Gate)**.

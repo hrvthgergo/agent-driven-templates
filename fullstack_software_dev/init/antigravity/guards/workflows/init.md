@@ -1,11 +1,11 @@
 ---
 name: init
-description: Bootstrapping workflow for Guards framework in Antigravity
+description: Dual-mode bootstrapping workflow for Guards framework in Antigravity
 ---
 
 # `/init` Workflow Execution Playbook
 
-This stateful execution playbook defines the 7-node state machine governing project initialization and scaffolding within Google Antigravity.
+This stateful execution playbook defines the dual-path state machine governing project initialization and scaffolding within Google Antigravity.
 
 ---
 
@@ -13,29 +13,62 @@ This stateful execution playbook defines the 7-node state machine governing proj
 
 ### CLI Parameter Handling
 *   `/init`: Default interactive execution.
-    *   **Greenfield run** (uninitialized workspace): Scaffolds base framework and creates Git branch `initial`.
-    *   **Re-run** (initialized workspace without options): Treated as a **New Feature Initialization**, prompting for a feature name and creating Git branch `feature/<feature_name>`.
+    *   **Greenfield run** (uninitialized workspace, no `agent-workspace/plans/initial/`): Scaffolds base framework and creates Git branch `initial`.
+    *   **Re-run** (initialized workspace without options): Presents Q0 Mode Gate (Quick & Simple vs. Major Feature) and scaffolds feature-bound plans under `agent-workspace/plans/<feature_name>/`.
 *   `/init --auto`: Non-interactive execution mode. Bypasses the Node S4 Execution Acceptance prompt and automatically executes all planned scaffolding tasks.
-*   `/init --feature <feature_name>`: Explicitly initializes a new feature scope on Git branch `feature/<feature_name>` and creates plan subfolder `agent-workspace/plans/<feature_name>/`.
+*   `/init --feature <feature_name>`: Explicitly initializes a feature development scope on Git branch `feature/<feature_name>` and creates `agent-workspace/plans/<feature_name>/`.
 *   `/init --add-layer <layer_name>`: Introduces a new layer skeleton `codebase-<layer_name>`, registers its relative symlink under `agent-workspace/src/<layer_name>`, provisions its standalone `Dockerfile`, and updates `codebase-devops/docker/docker-compose.yml`.
 *   `/init --dry-run`: Simulates the initialization sequence, previewing proposed folder structures, relative symlinks, Docker files, and plan sheets without writing changes to disk.
 *   `/init --force`: Overwrites default `.agents/` control rules and workflows while preserving user custom phase blueprints.
+
+### Workflow Context Notification Law
+Every turn during `/init` MUST:
+1. Open with a 1-line response banner quote:
+   `> 📍 **Active Workflow**: /init | **Scope**: <branch> | **Node**: <Node_ID>`
+2. Print a stylized transition badge when entering new nodes:
+   `=== [Node S<N>: <Node Name>] ===`
+3. Maintain header metadata (`Workflow`, `Branch`, `Date`) in `PROCESS_STATUS.md` and `GRILL_STATUS.md`.
 
 ---
 
 ## 2. Execution State Machine Nodes (S1 – S7)
 
+```mermaid
+graph TD
+    S1[Step 1: Check Environment] --> S2{Step 2: Mode Gate — Q0}
+    S2 -->|Quick & Simple| S2a[Step 2a: Quick Interview — QS1–QS3]
+    S2 -->|Major Feature / Greenfield| S2b[Step 2b: Full Deep-Dive — Q1–Q10]
+    S2a --> S3[Step 3: Lightweight Layer Scan & Linking]
+    S2b --> S3
+    S3 --> S4[Step 4: Execution Acceptance Gate]
+    S4 -->|Approved / --auto| S5[Step 5: Scaffolding Workspace & PROCESS_STATUS.md]
+    S5 --> S6[Step 6: Git Hook Registration & Remote Setup]
+    S6 --> S7[Step 7: Initialization Done]
+```
+
 ### Node S1: Check Environment & Branch Initialization
 1.  **Docker Healthcheck**: Execute `docker info` to verify that Docker daemon is running and accessible.
 2.  **Git Context Verification**: Verify Git installation and workspace root `.git` state.
-3.  **Branch Creation**:
-    *   If workspace is uninitialized (greenfield): Create and check out the baseline Git branch: `git checkout -b initial`.
-    *   If workspace is already initialized: Create and check out feature Git branch: `git checkout -b feature/<feature_name>`.
+3.  **Branch Check**:
+    *   If workspace is uninitialized (greenfield): Create and check out baseline Git branch: `git checkout -b initial`.
+    *   If workspace is already initialized: Preserve current branch or prepare for feature branch creation.
 
-### Node S2: Q&A Grill Gate
-1.  Invoke the neutral interview engine enforcing `rules/init-grill.md`.
-2.  Sequential prompts Q1 to Q10 are executed neutrally without `[Recommended]` bias labels.
-3.  Persist all questions, options, and user choices permanently into `agent-workspace/plans/<branch_name>/GRILL_STATUS.md`.
+### Node S2: Mode Gate (Q0)
+1.  **Greenfield Detection**: If `agent-workspace/plans/initial/` does NOT exist, auto-select **Major Feature / Greenfield Mode** and route to Node S2b.
+2.  **Initialized Workspace**: Present Q0 mode selection prompt adhering to `rules/init-grill.md`.
+    *   If Quick & Simple selected $\rightarrow$ Route to Node S2a.
+    *   If Major Feature selected $\rightarrow$ Route to Node S2b.
+
+### Node S2a: Quick & Simple Interview (QS1 – QS3)
+1.  Execute QS1 (Aim & Reason + Feature/Branch Name), QS2 (Issue/Bug Reference), QS3 (Pre-Planning Decisions & Constraints).
+2.  Inherit tech stack, architecture, cloud provider, and container profiles from `agent-workspace/plans/initial/GRILL_STATUS.md`.
+3.  Write Q&A audit log and inherited profile to `agent-workspace/plans/<feature_name>/GRILL_STATUS.md` with header `mode: quick_simple`.
+4.  Transition to Node S3.
+
+### Node S2b: Major Feature / Greenfield Deep-Dive (Q1 – Q10)
+1.  Execute sequential Q1 to Q10 interview prompts neutrally per `rules/init-grill.md`.
+2.  Write full Q&A audit log to `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` with header `mode: major_feature`.
+3.  Transition to Node S3.
 
 ### Node S3: Lightweight Layer Scan & Linking
 1.  Perform surface-level directory inspection to detect existing source or document folders.
@@ -51,19 +84,25 @@ This stateful execution playbook defines the 7-node state machine governing proj
 
 ### Node S5: Scaffolding Workspace & `PROCESS_STATUS.md`
 1.  Invoke `skills/init-scaffolder/SKILL.md`.
-2.  Scaffold `agent-workspace/` control structures (`.agents/rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`).
-3.  Create feature/branch planning directory: `agent-workspace/plans/<branch_name>/`.
-4.  Scaffold `codebase-devops/` sub-repository (`.github/workflows/ci.yml`, `docker/dev.Dockerfile`, `docker/docker-compose.yml`, `config/`, `Dockerfile`, `src/`, `tests/`).
-5.  Scaffold layer skeletons `codebase-<layer_name>` (`src/`, `config/`, `tests/`, `Dockerfile`, `.github/workflows/`).
-6.  Provision a `.gitkeep` file inside **every scaffolded directory node**.
-7.  Create relative symbolic links under `agent-workspace/src/` (`devops`, `layout`, `engine` $\rightarrow$ `../../codebase-X/src`). Enforce symlink purity (zero non-symlink folders in `agent-workspace/src/`). Perform 3-part verification check.
-8.  Deploy starter templates: `templates/PROCESS_STATUS.md` (containing 6-phase planning sub-rows 3.1 to 3.6) and `templates/phase-1-summary.md` to `agent-workspace/plans/<branch_name>/`.
+2.  **Quick & Simple Mode**:
+    *   Create `agent-workspace/plans/<feature_name>/`.
+    *   Create Git branch (`bugfix/<feature_name>` or `feature/<feature_name>`).
+    *   Deploy `PROCESS_STATUS.md` and `phase-1-summary.md` (populated with QS1–QS3 data).
+    *   Existing sub-repositories and relative symlinks remain untouched.
+3.  **Major Feature / Greenfield Mode**:
+    *   Scaffold `agent-workspace/` control structures (`.agents/rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`).
+    *   Create plan subfolder `agent-workspace/plans/<branch_name>/`.
+    *   Scaffold `codebase-devops/` sub-repository (`.github/workflows/ci.yml`, `docker/dev.Dockerfile`, `docker/docker-compose.yml`, `config/`, `Dockerfile`, `src/`, `tests/`).
+    *   Scaffold layer skeletons `codebase-<layer_name>` (`src/`, `config/`, `tests/`, `Dockerfile`, `.github/workflows/`).
+    *   Provision a `.gitkeep` file inside **every scaffolded directory node**.
+    *   Create pure relative symlinks under `agent-workspace/src/` (`devops`, `layout`, `engine` $\rightarrow$ `../../codebase-X/src`). Perform 3-part verification check.
+    *   Deploy starter templates: `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md` to `agent-workspace/plans/<branch_name>/`.
 
 ### Node S6: Git Hook Registration & Remote Setup
-1.  Register Git remotes based on Q4/Q5 selections.
+1.  Register Git remotes based on Q4/Q5 selections (or inherited provider configuration).
 2.  Install `hooks/pre-commit-plan-validator.sh` into `.git/hooks/pre-commit` and grant execution permissions (`chmod +x`).
 
 ### Node S7: Initialization Done
 1.  Mark `/init` step as `Completed` in `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` Block 1 matrix.
 2.  Record datestamped entry in Block 2 daily history.
-3.  Output initialization summary and recommend next command (`/plan` or `/process`).
+3.  Output initialization summary and recommend next workflow command (`/plan` or `/process`).

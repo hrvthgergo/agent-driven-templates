@@ -27,8 +27,9 @@ The implementation plan directly realizes the following design blueprints and `/
 | :--- | :--- | :--- | :--- |
 | **Hybrid Docker Strategy** | [multi_repo_architecture.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md#L71-L95) | Rule & Skill Primitives | `rules/init-grill.md` (Baseline 1) & `skills/init-scaffolder/SKILL.md` |
 | **Pure Control Plane (`agent-workspace/`) & Sub-Repo Layout** | [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/folder_structure.md) | Rule & Skill Primitives | `rules/init-grill.md` (Baseline 2) & `skills/init-scaffolder/SKILL.md` |
-| **Process Mode Selection (Quick & Simple vs. Full)** | [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md#L57-L75) | Rule & Workflow Primitives | `rules/init-grill.md` & `workflows/init.md` |
-| **Sequential Q1–Q11 Neutral Q&A Schema** | [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md#L51-L189) | Rule & Workflow Primitives | `rules/init-grill.md` & `workflows/init.md` |
+| **Q0 Mode Gate (Quick & Simple vs. Major Feature)** | [init_questions.md Section 3](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md) | Rule & Workflow Primitives | `rules/init-grill.md` & `workflows/init.md` |
+| **QS1–QS3 Quick & Simple Interview (3 Questions)** | [init_questions.md Section 4](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md) | Rule & Workflow Primitives | `rules/init-grill.md` & `workflows/init.md` |
+| **Q1–Q10 Major Feature Deep-Dive (10 Questions)** | [init_questions.md Section 5](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md) | Rule & Workflow Primitives | `rules/init-grill.md` & `workflows/init.md` |
 | **Permanent Q&A Audit Log (`GRILL_STATUS.md`)** | [grill_engine.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md) & `/grill-me` Q3 | Rule & Template Primitives | `rules/init-grill.md` & `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` |
 | **Branch Governance & Matrix (`PROCESS_STATUS.md`)** | [process_handling.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md) | Template & Workflow Primitives | `templates/PROCESS_STATUS.md` & `workflows/init.md` |
 | **Pure Relative Symlinks & 3-Part Check** | [multi_repo_architecture.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md#L7-L35) & `/grill-me` Q5 | Skill Primitive | `skills/init-scaffolder/SKILL.md` |
@@ -73,10 +74,12 @@ The implementation plan directly realizes the following design blueprints and `/
 *   **List of Actions**:
     1.  Create `fullstack_software_dev/init/antigravity/guards/workflows/init.md`.
     2.  Define YAML frontmatter (`name: init`, `description: Bootstrapping workflow for Guards framework in Antigravity`).
-    3.  Implement the 7-step state machine execution nodes using Antigravity workflow syntax:
+    3.  Implement the dual-path state machine execution nodes using Antigravity workflow syntax:
         *   **Node S1 (Check Environment & Branch Initialization)**: Executes `docker info` to verify Docker engine availability/privileges, initializes Git context, creates/checks out the `initial` branch for greenfield runs, or creates/checks out a `feature/<feature_name>` branch for re-runs in an already initialized workspace.
-        *   **Node S2 (Q&A Grill Gate)**: Invokes the interview engine adhering to `rules/init-grill.md`.
-        *   **Node S3 (Lightweight Layer Scan & Linking)**: Surface-level layer directory scanning without codebase restructuring.
+        *   **Node S2 (Mode Gate)**: Evaluates workspace state — auto-selects Major Feature Mode for greenfield (no `agent-workspace/plans/initial/`), or presents Q0 Mode Gate for initialized workspaces. Routes to S2a or S2b.
+        *   **Node S2a (Quick & Simple Interview)**: Runs QS1–QS3 focused interview (aim/reason, issue reference, pre-planning decisions). Inherits stack profile from `agent-workspace/plans/initial/GRILL_STATUS.md`.
+        *   **Node S2b (Major Feature Deep-Dive)**: Runs Q1–Q10 full deep-dive interview across all three environments.
+        *   **Node S3 (Lightweight Layer Scan & Linking)**: Surface-level layer directory scanning without codebase restructuring (shared by both paths).
         *   **Node S4 (Execution Acceptance Gate)**: Synthesizes gathered info, displays understanding summary and planned steps, and requests user approval (or bypasses prompt in `--auto` mode).
         *   **Node S5 (Scaffolding Workspace & `PROCESS_STATUS.md`)**: Invokes `skills/init-scaffolder/SKILL.md` to deploy `agent-workspace/` control structures, `plans/<branch_name>/` subfolder, `codebase-devops` sub-repo (`.github/`, `docker/`), `codebase-*` sub-repo skeletons, relative symlinks, `.gitkeep` files, and initial status templates.
         *   **Node S6 (Git Hook Registration & Remote Setup)**: Registers remote origins and installs `hooks/pre-commit-plan-validator.sh`.
@@ -105,13 +108,20 @@ The implementation plan directly realizes the following design blueprints and `/
     3.  Encode **Prompting Law**:
         *   Forbid all `[Recommended]` labels.
         *   Enforce neutral choice lists with a mandatory final free-text input option (`Other / Free-text (...)`).
-    4.  Encode **Sequential Q1 to Q10 Execution Prompts**:
+    4.  Encode **Q0 Mode Gate Logic**:
+        *   If workspace is uninitialized (greenfield): Auto-select Major Feature Mode, skip Q0.
+        *   If workspace is initialized: Present Q0 mode selection (Quick & Simple vs. Major Feature).
+        *   If branch name starts with `bugfix/`, `fix/`, `hotfix/`, or `patch/`: Pre-select Quick & Simple Mode.
+    5.  Encode **QS1–QS3 Quick & Simple Mode Prompts**:
+        *   QS1 (Aim & Reason + feature/branch name), QS2 (Issue & Bug Reference), QS3 (Pre-Planning Decisions & Constraints).
+        *   Enforce inheritance of stack profile from `agent-workspace/plans/initial/GRILL_STATUS.md`.
+    6.  Encode **Q1–Q10 Major Feature Mode Prompts**:
         *   Q1 (Scope & Purpose), Q2 (Local System Folders with Q2.a path listing & version-control auto-detection for remotes, Q2.b folder creation), Q3 (Cloud Docs with scan failure clarification), Q4 (Additional Remotes Q4.a), Q5 (Cloud Provider Q5.a), Q6 (Architecture Pattern), Q7 (Layer Scope), Q8 (Software Stack), Q9 (Agent Guiders), and Q10 (Summary Verification & Open Reflection).
-    5.  Encode **Audit Log Persistence**:
+    7.  Encode **Audit Log Persistence**:
         *   Maintain `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` permanently alongside `PROCESS_STATUS.md` as an audit log of all Q&A questions and answers.
 *   **Reasons & Design Decision Links**:
     *   *Baselines*: Implements unchangeable baselines documented in [init_questions.md Section 1](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md#L12-L30).
-    *   *Q1–Q10 Sequence & Neutral Law*: Implements the exact question list, neutral option formatting, Q2.a version-control auto-detection, Q3 scan clarification, and Q10 recap matrix documented in [init_questions.md Section 3](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md#L51-L189).
+    *   *Dual-Mode Q&A*: Implements the Q0 Mode Gate, QS1–QS3 Quick & Simple interview, and Q1–Q10 Major Feature deep-dive documented in [init_questions.md Sections 3–5](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md).
     *   *Audit Persistence*: Realizes the permanent audit log decision from `/grill-me` Question 3 alignment and [grill_engine.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md).
 
 ---
@@ -188,7 +198,7 @@ The implementation plan directly realizes the following design blueprints and `/
 
 *   **List of Actions**:
     1.  Execute the end-to-end greenfield test scenario collected and designed in [init_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/antigravity/init_tests.md) inside an isolated test sandbox (`/tmp/test-init-workspace`).
-    2.  Simulate `/init` command execution and prompt responses for Q1 through Q10.
+    2.  Simulate `/init` command execution and prompt responses for both Quick & Simple Mode (QS1–QS3) and Major Feature Mode (Q1–Q10).
     3.  Run and evaluate all automated validation assertions:
         *   Verify Docker engine status (`docker info`) and `initial` branch creation (`git branch --show-current`).
         *   Assert permanent audit log creation (`agent-workspace/plans/initial/GRILL_STATUS.md`).
@@ -209,12 +219,12 @@ The implementation plan directly realizes the following design blueprints and `/
 
 ## 4. Verification & Readiness Checklist
 
-- `[ ]` Step 1: Clean & Delete Existing Guard Assets (`fullstack_software_dev/init/antigravity/guards/`)
-- `[ ]` Step 2: Scaffold Antigravity Guard Master Directory Tree (`fullstack_software_dev/init/antigravity/guards/`)
-- `[ ]` Step 3: Implement Stateful Workflow Playbook (`workflows/init.md`)
-- `[ ]` Step 4: Implement Neutral Q&A Grill Rule (`rules/init-grill.md`)
-- `[ ]` Step 5: Implement Document Templates (`templates/PROCESS_STATUS.md` & `templates/phase-1-summary.md`)
-- `[ ]` Step 6: Implement Multi-Repo & Hybrid Docker Scaffolding Skill (`skills/init-scaffolder/SKILL.md`)
-- `[ ]` Step 7: Implement Pre-Commit Validator Hook (`hooks/pre-commit-plan-validator.sh`)
-- `[ ]` Step 8: Perform Syntax, Link, and Execution Verification
-- `[ ]` Step 9: Execute Workflow E2E Testing (`init_tests.md` final validation round)
+- `[x]` Step 1: Clean & Delete Existing Guard Assets (`fullstack_software_dev/init/antigravity/guards/`)
+- `[x]` Step 2: Scaffold Antigravity Guard Master Directory Tree (`fullstack_software_dev/init/antigravity/guards/`)
+- `[x]` Step 3: Implement Stateful Workflow Playbook (`workflows/init.md`)
+- `[x]` Step 4: Implement Neutral Q&A Grill Rule (`rules/init-grill.md`)
+- `[x]` Step 5: Implement Document Templates (`templates/PROCESS_STATUS.md` & `templates/phase-1-summary.md`)
+- `[x]` Step 6: Implement Multi-Repo & Hybrid Docker Scaffolding Skill (`skills/init-scaffolder/SKILL.md`)
+- `[x]` Step 7: Implement Pre-Commit Validator Hook (`hooks/pre-commit-plan-validator.sh`)
+- `[x]` Step 8: Perform Syntax, Link, and Execution Verification
+- `[x]` Step 9: Execute Workflow E2E Testing (`init_tests.md` final validation round)
