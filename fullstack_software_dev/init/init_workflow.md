@@ -18,7 +18,7 @@ To ensure the Guards Framework can be baselined and implemented consistently acr
     *   [summary.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/summary.md): Central framework sitemap and 6-stage operational lifecycle.
     *   [multi_repo_architecture.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md): Hybrid Multi-Repo structure, relative symlinks, Rule of Dependency config isolation, and Hybrid Docker handling strategy.
     *   [init_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md) (*This Document*): Core `/init` workflow state machine design, step-by-step reasoning, state storage mechanics, and guard element definitions.
-    *   [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md): 3-block Q&A interview schema, baselines, auto-detection rules, and Q1–Q10 questions.
+    *   [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md): Dual-mode Q&A interview schema — Q0 Mode Gate, QS1–QS3 Quick & Simple interview, Q1–Q10 Major Feature deep-dive, baselines, and auto-detection rules.
     *   [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/folder_structure.md): Standard workspace folder layout specifications.
 2.  **Environment-Specific Execution Guidelines**:
     *   [antigravity/init_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/antigravity/init_implementation_map.md): Specific execution guideline detailing how our agent implements these baselines within **Google Antigravity** using its native primitives (**rules, skills, workflows, hooks, sidecars, templates**) by scaffolding master guard files under `fullstack_software_dev/init/antigravity/guards/`.
@@ -72,14 +72,17 @@ graph TD
 
 ---
 
-## ### Step-by-Step Workflow Design & Implementation Reasoning
+## 3. Step-by-Step Workflow Design & Implementation Reasoning
 
-The execution of the `/init` workflow follows a strict, sequential 7-node state machine design:
+The execution of the `/init` workflow follows a dual-path state machine design. Node S2 acts as a **Mode Gate** that branches the interview flow into two paths — **Quick & Simple** (S2a, 3 questions) or **Major Feature** (S2b, 10 questions) — before converging back to the shared execution path (S3–S7):
 
 ```mermaid
 graph TD
-    S1[Step 1: Check Environment] --> S2[Step 2: Q&A Grill Gate]
-    S2 --> S3[Step 3: Lightweight Layer Scan & Linking]
+    S1[Step 1: Check Environment] --> S2{Step 2: Mode Gate — Q0}
+    S2 -->|Quick & Simple| S2a[Step 2a: Quick Interview — QS1–QS3]
+    S2 -->|Major Feature / Greenfield| S2b[Step 2b: Full Deep-Dive — Q1–Q10]
+    S2a --> S3[Step 3: Lightweight Layer Scan & Linking]
+    S2b --> S3
     S3 --> S4[Step 4: Execution Acceptance Gate]
     S4 -->|Approved / --auto| S5[Step 5: Scaffolding Workspace & PROCESS_STATUS.md]
     S5 --> S6[Step 6: Git Hook Registration & Remote Setup]
@@ -87,10 +90,11 @@ graph TD
 ```
 
 ### State Machine Execution & Transition Rules
-1.  **Sequential Execution Guarantee**: Step execution is strictly linear (S1 $\rightarrow$ S2 $\rightarrow$ S3 $\rightarrow$ S4 $\rightarrow$ S5 $\rightarrow$ S6 $\rightarrow$ S7). No step may be skipped, reordered, or executed out of sequence.
-2.  **Gate Validation Before Transition**: A step MUST complete its verification assertions before transitioning state to the next node. If any step fails (e.g. S1 Docker missing, S4 User Rejection, S5 symlink target invalid), execution halts immediately with a diagnostic report.
-3.  **Resume & Audit State**: If execution is interrupted, the state machine reads `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` and `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` to resume from the last completed node without re-prompting previously answered questions.
-4.  **Workflow Context Notification Law (Combined Multi-Layer Strategy)**: Every turn during `/init` MUST open with a 1-line response banner quote (`> 📍 **Active Workflow**: /init | **Scope**: <branch> | **Node**: <Node_ID>`), print a stylized transition box when entering new nodes, and maintain header metadata in `PROCESS_STATUS.md` and `GRILL_STATUS.md`.
+1.  **Dual-Path Execution Guarantee**: Execution is strictly linear within each path: S1 $\rightarrow$ S2 $\rightarrow$ S2a *or* S2b $\rightarrow$ S3 $\rightarrow$ S4 $\rightarrow$ S5 $\rightarrow$ S6 $\rightarrow$ S7. Once the mode is selected, the alternate branch is never entered. S3–S7 are shared by both paths.
+2.  **Mode Gate Selection Rule**: For **greenfield first-time runs** (no `agent-workspace/plans/initial/` exists), the system automatically selects **Major Feature / Greenfield Mode** and skips Q0. For **already initialized workspaces**, the Mode Gate (Q0) is always presented.
+3.  **Gate Validation Before Transition**: A step MUST complete its verification assertions before transitioning state to the next node. If any step fails (e.g. S1 Docker missing, S4 User Rejection, S5 symlink target invalid), execution halts immediately with a diagnostic report.
+4.  **Resume & Audit State**: If execution is interrupted, the state machine reads `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` and `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` to resume from the last completed node without re-prompting previously answered questions.
+5.  **Workflow Context Notification Law (Combined Multi-Layer Strategy)**: Every turn during `/init` MUST open with a 1-line response banner quote (`> 📍 **Active Workflow**: /init | **Scope**: <branch> | **Node**: <Node_ID>`), print a stylized transition box when entering new nodes, and maintain header metadata in `PROCESS_STATUS.md` and `GRILL_STATUS.md`.
 
 ---
 
@@ -107,18 +111,50 @@ graph TD
 
 ---
 
-#### Step 2: Q&A Grill Gate (Node S2)
-*   **Description**: Runs the stateful, interactive interview loop across the three target environments (**Agentic Environment**, **Software Environment**, and **Folder Environment**).
+#### Step 2: Mode Gate (Node S2)
+*   **Description**: Determines the scope and magnitude of the initialization to select the appropriate interview path. For greenfield first-time runs (no `agent-workspace/plans/initial/` exists), this node automatically selects **Major Feature / Greenfield Mode** and transitions to S2b. For already initialized workspaces, it presents Q0 to the user.
+*   **Architectural & Implementation Reasoning**:
+    *   *Why a Mode Gate?*: A single `/init` workflow must serve both major architectural setups and minor bug fixes. Forcing users through 10 deep-dive questions for a button-placement fix wastes time and erodes trust. The Mode Gate ensures the interview depth matches the task scope.
+    *   *Greenfield Auto-Selection*: First-time runs have no existing stack to inherit, so Q0 is skipped and the full deep-dive is mandatory.
+    *   *Branch Name Auto-Detection*: If the current Git branch starts with `bugfix/`, `fix/`, `hotfix/`, or `patch/`, Quick & Simple Mode is pre-selected (user can override).
+*   **State & Storage Processing**:
+    *   Records selected mode into `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` header metadata (`mode: quick_simple | major_feature`).
+*   **Guard Elements Implementing S2**:
+    *   **Workflow Playbook Guard**: Executed by `workflows/init.md` (Node S2 mode gate logic).
+
+---
+
+#### Step 2a: Quick & Simple Interview (Node S2a) — *Quick & Simple Mode Only*
+*   **Description**: Runs a focused 3-question interview (QS1–QS3) designed for bug fixes and minor changes. Inherits the existing workspace stack, architecture, cloud provider, and Docker profiles from `agent-workspace/plans/initial/GRILL_STATUS.md`.
+*   **Architectural & Implementation Reasoning**:
+    *   *Inheritance-First Design*: Quick & Simple Mode assumes the workspace was already fully initialized during a prior greenfield run. All tech stack, cloud provider, architecture, and container configuration are inherited from the initial `GRILL_STATUS.md` — no need to re-ask.
+    *   *3-Question Focus*:
+        *   **QS1 (Aim & Reason)**: Captures purpose, expected outcome, affected area, and feature/branch name.
+        *   **QS2 (Issue & Bug Reference)**: Links to a ticket/issue or captures a bug description.
+        *   **QS3 (Pre-Planning Decisions)**: Final gate for constraints, breaking changes, or dependencies that must be flagged before planning begins.
+    *   *Neutral Choice & Free-Text Law*: Same neutral prompting rules as the full interview — no `[Recommended]` labels, mandatory free-text option on every prompt.
+*   **State & Storage Processing**:
+    *   Records QS1–QS3 answers into `agent-workspace/plans/<feature_name>/GRILL_STATUS.md` as an immutable audit log.
+    *   Inherits and copies baseline stack profile from `agent-workspace/plans/initial/GRILL_STATUS.md` into the new feature's `GRILL_STATUS.md`.
+    *   Creates `agent-workspace/plans/<feature_name>/phase-1-summary.md` with aim, issue reference, and decisions.
+*   **Guard Elements Implementing S2a**:
+    *   **Rule Guard**: Governed by `rules/init-grill.md` (Neutral prompts, QS1–QS3 sequence, inheritance rules).
+    *   **State Engine**: Governed by `grill_engine.md` (Managing `agent-workspace/plans/<feature_name>/GRILL_STATUS.md`).
+
+---
+
+#### Step 2b: Major Feature / Greenfield Deep-Dive Interview (Node S2b) — *Major Feature Mode Only*
+*   **Description**: Runs the complete 10-question deep-dive interview (Q1–Q10) across all three target environments (**Agentic Environment**, **Software Environment**, and **Folder Environment**).
 *   **Architectural & Implementation Reasoning**:
     *   *Unchangeable Baselines (No Questions Asked)*:
         *   **Baseline 1 (Software Environment)**: Enforces **The Hybrid Docker Handling Strategy** (`dev.Dockerfile` sandbox + `docker-compose.yml` orchestrator + layer `Dockerfile` specs) without asking container sandbox choices.
         *   **Baseline 2 (Folder Environment)**: Enforces the **Standard Guards Folder Layout** (`agent-workspace/`, `.agents/`, `src/`) without asking structural layout choices.
-    *   *Neutral Choice & Free-Text Law*: All options are presented neutrally without `[Recommended]` labels to avoid biasing user decisions. Every multiple-choice prompt includes a mandatory final free-text choice (`Other / Free-text (...)`).
-    *   *Sequential Question Order*: Executes Q1 (Scope), Q2 (System Folders Q2.a path listing with version-control auto-detection for remotes, Q2.b folder creation), Q3 (Cloud Docs with scan failure statement), Q4 (Additional Remotes Q4.a), Q5 (Cloud Provider Q5.a), Q6 (Architecture Pattern), Q7 (Layer Scope), Q8 (Tech Stack), Q9 (Agent Guiders), and Q10 (Summary Verification & Reflection).
+    *   *Neutral Choice & Free-Text Law*: All options are presented neutrally without `[Recommended]` labels. Every multiple-choice prompt includes a mandatory final free-text choice (`Other / Free-text (...)`).
+    *   *Sequential Question Order*: Executes Q1 (Project Scope & Goals), Q2 (Local System Folders with auto-detection for remotes), Q3 (Cloud Docs), Q4 (Additional Remotes), Q5 (Cloud Provider), Q6 (Architecture Pattern), Q7 (Layer Scope), Q8 (Tech Stack), Q9 (Agent Guiders), and Q10 (Summary Verification & Reflection).
 *   **State & Storage Processing**:
     *   **Persistent Q&A Audit Log (`GRILL_STATUS.md`)**: As questions are answered, the agent records all prompts, options, and user inputs into `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` (e.g., `agent-workspace/plans/initial/GRILL_STATUS.md` or `agent-workspace/plans/<feature_name>/GRILL_STATUS.md`). This file is preserved permanently alongside `PROCESS_STATUS.md` as an immutable audit log.
     *   **Q10 Reflection & Modification**: In Q10, the agent formats a clean recap table of all gathered Q1–Q9 answers. The user can choose to confirm, modify any specific answer by re-running its prompt, or add open-ended notes.
-*   **Guard Elements Implementing S2**:
+*   **Guard Elements Implementing S2b**:
     *   **Rule Guard**: Governed by `rules/init-grill.md` (Neutral prompts, 2 baselines, Q1–Q10 sequence).
     *   **State Engine**: Governed by `grill_engine.md` (Managing `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` state machine).
 

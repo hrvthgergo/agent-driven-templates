@@ -1,14 +1,22 @@
 # Phase 1 Summary Blueprint: Architectural Overview
 
-**Project Name**: {{PROJECT_NAME}}  
+**Project / Feature Name**: {{PROJECT_NAME}}  
 **Branch**: {{GIT_BRANCH}}  
 **Date**: {{DATE}}  
+**Mode**: {{MODE}}  
 
 ---
 
-## 1. Executive Summary & Business Goals
+## 1. Executive Summary & Change Scope
 
-{{PROJECT_VISION}}
+### Aim & Purpose
+{{PROJECT_VISION_OR_AIM}}
+
+### Issue & Ticket Reference
+{{ISSUE_REFERENCE}}
+
+### Pre-Planning Decisions & Constraints
+{{PRE_PLANNING_DECISIONS}}
 
 ---
 
