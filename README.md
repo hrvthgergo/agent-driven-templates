@@ -57,9 +57,20 @@ agent-driven-templates/
     │   └── antigravity/               # [Tier 3] Antigravity reference implementation
     │       ├── process_implementation_map.md
     │       └── process_tests.md
-    ├── plan/                          # Interactive Planning workflow (Planned)
-    ├── implement/                     # Action Implementation workflow (Planned)
+    ├── plan/                          # [Tier 2] Interactive Planning Subfolder
+    │   ├── plan_workflow.md           # Detailed workflow specifications
+    │   ├── plan_questions.md          # 6-Block Q&A Grill schema
+    │   └── antigravity/               # [Tier 3] Antigravity reference implementation
+    │       ├── plan_implementation_map.md # Antigravity execution map & decision links
+    │       ├── plan_tests.md          # Feature planning verification test suite
+    │       └── guards/                # Antigravity native primitives (rules, skills, workflows, templates)
+    ├── implement/                     # [Tier 2] Action Implementation Subfolder
+    │   ├── implement_workflow.md      # Detailed workflow specifications
+    │   ├── implement_questions.md     # Micro-Architecture Q&A Grill schema
+    │   └── antigravity/               # [Tier 3] Antigravity reference implementation
+    │       ├── implement_implementation_map.md # Antigravity execution map & decision links
+    │       ├── implement_tests.md     # Action implementation verification test suite
+    │       └── guards/                # Antigravity native primitives (rules, skills, workflows, templates)
     ├── verify/                        # Automated Verification workflow (Planned)
     └── release/                       # Release & Operations workflow (Planned)
 ```
-

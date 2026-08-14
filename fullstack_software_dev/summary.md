@@ -57,8 +57,11 @@ fullstack_software_dev/
 │
 ├── implement/                          # [Tier 2] Action Implementation Subfolder
 │   ├── implement_workflow.md           # Detailed workflow specifications
-│   ├── implement_implementation_map.md
-│   └── guards/                         # [Tier 3] Environment-Specific Guards
+│   ├── implement_questions.md          # Micro-Architecture Q&A Grill schema
+│   └── antigravity/                    # [Tier 3] Antigravity-specific resources & guards
+│       ├── implement_implementation_map.md # Antigravity execution map & decision links
+│       ├── implement_tests.md          # Action implementation verification test suite
+│       └── guards/                     # Antigravity native primitives (rules, skills, workflows, templates)
 │
 ├── verify/                             # [Tier 2] Automated Verification Subfolder
 │   ├── verify_workflow.md              # Detailed workflow specifications
@@ -161,6 +164,9 @@ graph TD
     *   *Purpose*: The most complex workflow in the framework, responsible for entire feature code creation across `codebase-*` sub-repositories. Executes physical code scaffolding based on mandatory dual grounding (`implementation_map_v<version>.md` + `phase-5-verification.md` Test Plan), enforcing a 4-part step schema (Requirement, Prerequisites, Actions, Verification) and Sequential vs. Parallel stream execution. Guarantees visible step-by-step user interaction with interruption & clarification rights, optional token-optimized Code Graph (`src/<layer>/code_graph/`) and System Docs (`docs/`) updates (`--code-graph`, `--docs`), and mandatory synchronization between inner agent docs (Artifacts) and version-controlled files under `agent-workspace/plans/<feature-name>/`.
     *   *Key Files*:
         *   [implement_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implement/implement_workflow.md) (Universal Tier 2 baseline specification)
+        *   [implement_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implement/implement_questions.md) (Micro-Architecture Q&A Grill schema)
+        *   [antigravity/implement_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implement/antigravity/implement_implementation_map.md) (Antigravity guard execution roadmap)
+        *   [antigravity/implement_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implement/antigravity/implement_tests.md) (Action implementation verification test specification)
 5.  **Verification (/verify)**
     *   *Path*: `fullstack_software_dev/verify/`
     *   *Purpose*: Executes automated assertions, unit/integration/E2E test suites, and regression checks.
