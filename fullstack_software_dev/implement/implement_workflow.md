@@ -11,7 +11,7 @@ The `/implement` workflow is the execution engine of the **Guards Framework** an
 ```mermaid
 graph LR
     Plan["/plan<br/>Feature Planning & Design<br/>• phase-1-summary.md ... phase-6-operation.md<br/>• implementation_map_v<version>.md<br/>• phase-5-verification.md (Test Plan)"] 
-    --> Implement["/implement (Action Implementation - Highest Complexity)<br/>1. FIRST ACTION: Verify Right Map & Test Plan<br/>2. Physical Code Creation across codebase-* Projects<br/>3. Critical & New Feature Solution Testing<br/>4. OPTIONAL: AST Code Graph Updates (--code-graph)<br/>5. OPTIONAL: System Docs Updates (--docs)"]
+    --> Implement["/implement (Action Implementation - Highest Complexity)<br/>1. FIRST ACTION: Verify Right Map & Test Plan<br/>2. Sync Inner Agent Artifacts with Version-Controlled plans/<br/>3. Physical Code Creation across codebase-* Projects<br/>4. Critical & New Feature Solution Testing<br/>5. OPTIONAL: AST Code Graph Updates (--code-graph)<br/>6. OPTIONAL: System Docs Updates (--docs)"]
     --> Verify["/verify<br/>Automated Verification<br/>• Run Test Suites & System Assertions"]
 ```
 
@@ -23,6 +23,15 @@ The `/implement` workflow is responsible for the **entire implementation of the 
 3. **Solution Testing (Critical Features & New Feature Specifications)**: Scaffolding and executing test suites to guarantee BOTH that existing critical system features remain unbroken (regression protection) AND that new feature capabilities satisfy all test contracts in the Test Plan (`phase-5-verification.md`).
 4. **OPTIONAL: AST Code Graph Generation & Synchronization (`code_graph`)**: On-demand parsing of source code ASTs to build and maintain 2-block modular code graph subfolders (`agent-workspace/src/<layer>/code_graph/`) following [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/code_graph_taxonomy.md).
 5. **OPTIONAL: System Documentation Promotion (`docs/`)**: On-demand promotion of feature resources staged in `plans/<feature-name>/resource/` into global `agent-workspace/docs/` describing all active features across the entire system.
+
+### Decision Persistence & Inner Agent Artifact Alignment Mandate
+> [!IMPORTANT]
+> **Mandatory Sync between Inner Agent Artifacts & Version-Controlled `plans/` Docs**:
+> Each and every result, decision, architectural choice, trade-off rationale, edge-case clarification, or outcome resulting from conversation between the user and the agent **MUST BE PERMANENTLY DOCUMENTED inside the version-controlled `agent-workspace/plans/<feature-name>/` directory**.
+>
+> In AI agent environments (such as **Google Antigravity**), agents maintain transient internal docs known as **Inner Agent Artifacts** (e.g., `implementation_plan.md`, `walkthrough.md`, scratchpads stored inside agent app data or brain storage). These inner docs are agent-internal and are NOT automatically tracked by the version-controlled Git repository system.
+>
+> **CRITICAL ALIGNMENT RULE**: Inner Agent Artifacts and the version-controlled files under `agent-workspace/plans/<feature-name>/` (e.g. `phase-*.md`, `GRILL_STATUS.md`, `PROCESS_STATUS.md`, `implementation_map_v<version>.md`) **MUST BE 100% ALIGNED AND SYNCHRONIZED**. Whenever a decision or implementation outcome is recorded or modified during execution, the agent MUST immediately update and persist those exact decisions into the corresponding version-controlled files in `agent-workspace/plans/<feature-name>/`.
 
 ### Token Economy Guard: Optional Maintenance of Code Graphs & System Documentation
 > [!WARNING]
@@ -113,18 +122,22 @@ graph TD
 2. **First-Action Test Plan Check**: Simultaneously, the agent verifies `phase-5-verification.md` (or the feature test plan) to ensure all critical system feature assertions are present and linked to the implementation scope.
 3. **Precondition Resolution Gate**: If either the map or test plan is missing or ambiguous, the agent MUST immediately stop, present the situation to the user, and confirm the right map and test plan before proceeding.
 
-### B. Multi-Project `codebase-*` Sub-Repository Handling
+### B. Inner Agent Artifact & Version-Controlled `plans/` Synchronization Rule
+1. **Mandatory Document Sync**: Every conversation result, decision, design choice, or step outcome produced in an inner agent doc/Artifact (e.g. Antigravity internal `implementation_plan.md`, `walkthrough.md`) MUST be immediately written and synchronized into the corresponding version-controlled files inside `agent-workspace/plans/<feature-name>/`.
+2. **Single Source of Truth**: The version-controlled files under `agent-workspace/plans/<feature-name>/` remain the sole authoritative source of truth for the codebase across Git history, developers, and future agent sessions.
+
+### C. Multi-Project `codebase-*` Sub-Repository Handling
 The `/implement` workflow governs multi-repository and layered project structures:
 1. **Target Sub-Repositories**: Source code modifications are written to `codebase-ui/`, `codebase-engine/`, `codebase-data/`, or `codebase-ops/` (accessed through symlinks under `agent-workspace/src/<layer>/`).
 2. **Layer Boundary Enforcement**: Code in lower layers (e.g., `codebase-data`) MUST NOT import or depend on upper layers (e.g., `codebase-ui`), adhering strictly to the Rule of Dependency defined in [multi_repo_architecture.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md).
 3. **Symlink Resolution Check**: Prior to scaffolding, the agent asserts that relative symlinks in `agent-workspace/src/<layer>` resolve correctly to underlying sub-repositories.
 
-### C. Solution Testing (Critical System Features & New Feature Specs)
+### D. Solution Testing (Critical System Features & New Feature Specs)
 1. **Critical Feature Protection (Regression Assertions)**: Implementation MUST NOT break existing core capabilities. The agent inspects `phase-5-verification.md` for critical system assertions and executes baseline checks before and after code scaffolding.
 2. **New Feature Test Scaffolding**: Alongside production code, the agent scaffolds unit, integration, and contract tests corresponding to newly introduced interfaces, DTOs, and services.
 3. **Test-Code Co-location**: Test suites are placed alongside source files within `codebase-*` sub-repositories as specified in the test plan.
 
-### D. Visible Step-by-Step Scaffolding & Direct Control (No Opaque Delegation)
+### E. Visible Step-by-Step Scaffolding & Direct Control (No Opaque Delegation)
 1. **Step-by-Step Granularity**: Scaffolding is broken into clear, discrete execution steps adhering to the 4-part step schema (Requirement, Prerequisites, Actions, Verification).
 2. **Visible Environment Tool Usage**: Uses platform primitives (e.g. Antigravity status notifications, interactive prompt tools, step-by-step diff previews) so that every disk action is explicitly visible to the developer.
 3. **Interruption & Clarification Checkpoints**: Between scaffolding steps, the agent maintains an open interaction window allowing the user to:
@@ -133,7 +146,7 @@ The `/implement` workflow governs multi-repository and layered project structure
    - Pause or resume the implementation sequence at will.
 4. **No Opaque Delegation**: Implementation execution is performed directly by the agent in full view of the user, avoiding opaque subagent loops or background task delegations that obscure decision-making.
 
-### E. Strict Directory Write Boundaries & Resource Separation
+### F. Strict Directory Write Boundaries & Resource Separation
 The `/implement` workflow strictly enforces clear separation between source code, workspace control maps, AST code graphs, and system documentation:
 
 ```text
@@ -142,14 +155,14 @@ Target Repositories / Sub-Folders       Role & Write Governance during /implemen
 codebase-<layer>/  or  src/<layer>/    → Production Source Code & Test Specs (Physical Code Modifications)
 agent-workspace/src/<layer>/code_graph/→ Optional AST Code Graphs (Written only when --code-graph enabled)
 agent-workspace/docs/                  → Optional Global System Docs (Written only when --docs enabled)
-agent-workspace/plans/<feature-name>/  → Planning Artifacts & Feature Sandbox (Read-Only during /implement except PROCESS_STATUS.md)
+agent-workspace/plans/<feature-name>/  → Version-Controlled Planning Artifacts & Decision Registry (Updated & Synced during /implement)
 ```
 
-### F. Optional AST Code Graph Synchronization Rule (`--code-graph`)
+### G. Optional AST Code Graph Synchronization Rule (`--code-graph`)
 1. **Default State**: By default, `/implement` skips AST code graph updates to conserve token usage and minimize API overhead.
 2. **When Enabled (`--code-graph` or `--full-sync`)**: The agent parses newly created or modified source files for structural elements (`Module`, `Class`, `Struct`, `Interface`, `Function`) and updates `agent-workspace/src/<layer>/code_graph/` (`graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`) following [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/code_graph_taxonomy.md).
 
-### G. Optional System Documentation Promotion Rule (`--docs`)
+### H. Optional System Documentation Promotion Rule (`--docs`)
 1. **Default State**: By default, `/implement` skips general system documentation updates to avoid token bloat during active development.
 2. **When Enabled (`--docs` or `--full-sync`)**: Upon completing feature implementation, `/implement` inspects `plans/<feature-name>/resource/`, synthesizes non-code specs and API diagrams, and promotes them into global `agent-workspace/docs/`.
 
@@ -178,7 +191,7 @@ graph TD
     
     S2_Confirm --> S3
     
-    S3 --> S4[Node S4: Visible Step-by-Step Code Scaffolding & Solution Testing<br/>• Execute Sequential & Parallel step streams<br/>• Follow 4-part step schema (Req, Prereq, Actions, Verification)<br/>• Execute critical system & new feature test suites<br/>• User Interruption & Clarification Checkpoints]
+    S3 --> S4[Node S4: Visible Step-by-Step Code Scaffolding & Solution Testing<br/>• Execute Sequential & Parallel step streams<br/>• Follow 4-part step schema (Req, Prereq, Actions, Verification)<br/>• Execute critical system & new feature test suites<br/>• Sync Inner Agent Artifacts with Version-Controlled plans/<br/>• User Interruption & Clarification Checkpoints]
     
     S4 -->|--code-graph Enabled| S5[Node S5: OPTIONAL AST Code Graph Generation<br/>Build/Update src/<layer>/code_graph/ Files]
     S4 -->|--code-graph Disabled (Default)| S6
@@ -209,6 +222,7 @@ graph TD
 
 #### Step 4: Visible Step-by-Step Code Scaffolding & Solution Testing (Node S4)
 * **Description**: Executes code modifications step-by-step following the 4-part step schema (Requirement, Prerequisites, Actions, Verification) outlined in the target `implementation_map_v<version>.md`. Executes sequential steps in order and parallel steps flexibly. Displays changes incrementally with visible tools.
+* **Inner Artifact Alignment**: Immediately writes and synchronizes all decisions, plan updates, and step outcomes produced in inner agent docs/Artifacts to the corresponding version-controlled files under `agent-workspace/plans/<feature-name>/`.
 * **User Interruption & Clarification**: Between scaffolding steps, the agent maintains an active communication window where the user can interrupt, ask questions, or request adjustments. No opaque background delegations are used.
 
 #### Step 5: OPTIONAL AST Code Graph Generation & Update (Node S5)
@@ -228,11 +242,11 @@ graph TD
 
 | Command Variant | Execution Mode | Behavior & Description |
 | :--- | :--- | :--- |
-| `/implement` (or `/implement --plan`) | **Core Implementation Mode** (Default Baseline) | Verifies map & test plan first, executes visible step-by-step code scaffolding across `codebase-*` projects with solution testing. **Skipped by default**: Code Graph & System Docs updates (conserves token consumption). |
-| `/implement --code-graph` | **Implementation + AST Code Graph Mode** | Executes code scaffolding and solution testing, AND updates AST Code Graphs in `agent-workspace/src/<layer>/code_graph/`. |
-| `/implement --docs` | **Implementation + System Docs Mode** | Executes code scaffolding and solution testing, AND promotes feature resources to global `agent-workspace/docs/`. |
+| `/implement` (or `/implement --plan`) | **Core Implementation Mode** (Default Baseline) | Verifies map & test plan first, executes visible step-by-step code scaffolding across `codebase-*` projects with solution testing, syncing all outcomes to `plans/`. **Skipped by default**: Code Graph & System Docs updates (conserves token consumption). |
+| `/implement --code-graph` | **Implementation + AST Code Graph Mode** | Executes code scaffolding, solution testing, and artifact sync, AND updates AST Code Graphs in `agent-workspace/src/<layer>/code_graph/`. |
+| `/implement --docs` | **Implementation + System Docs Mode** | Executes code scaffolding, solution testing, and artifact sync, AND promotes feature resources to global `agent-workspace/docs/`. |
 | `/implement --full-sync` | **Full Synchronization Mode** | Executes code scaffolding, solution testing, AST Code Graph updates, AND System Documentation updates. |
-| `/implement --auto` (or `/implement --apply`) | **Continuous Scaffolding Mode** | Verifies map & test plan first, executes step-by-step scaffolding automatically while streaming progress log. |
+| `/implement --auto` (or `/implement --apply`) | **Continuous Scaffolding Mode** | Verifies map & test plan first, executes step-by-step scaffolding automatically while streaming progress log and syncing outcomes to `plans/`. |
 | `/implement --version vX.Y.Z` | **Version Map Target** | Explicitly targets a specific implementation map version (e.g., `implementation_map_v1.0.0.md`). |
 | `/implement --dry-run` | **Preview Mode** | Simulates step-by-step code scaffolding, displays file diff previews, and verifies code graph updates without altering files. |
 
@@ -246,6 +260,7 @@ graph TD
 - [ ] Identify Sequential vs. Parallel execution streams before scaffolding.
 - [ ] Execute visible step-by-step code scaffolding across target `codebase-*` projects in `src/`.
 - [ ] Run solution testing verifying critical system regression assertions AND new feature test specs.
+- [ ] **MANDATORY ARTIFACT SYNC**: Write and synchronize all decisions, plan updates, and conversation outcomes from inner agent docs (Artifacts) directly into version-controlled files under `agent-workspace/plans/<feature-name>/`.
 - [ ] Maintain direct interaction allowing user interruption, questions, and clarification at any step (no opaque subagent delegation).
 - [ ] **Token Economy Check**: Skip Code Graph (`src/<layer>/code_graph/`) and System Docs (`docs/`) updates by default unless `--code-graph`, `--docs`, or `--full-sync` flag is explicitly set.
 - [ ] Update `PROCESS_STATUS.md` Row 4 to `Completed` with datestamped log entry.

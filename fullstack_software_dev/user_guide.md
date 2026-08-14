@@ -47,8 +47,15 @@ graph TD
 
 ### Phase 3: Structured Feature Planning (`/plan`)
 - **Architectural Bridge**: Once `/init` (and `/process`, if applicable) finishes successfully, the workspace is structured and ready for architectural design. This is where the `/plan` workflow begins.
-- **Agentic Context Creation**: During `/plan`, the developer and AI agent interactively define feature scope, analyze system impact, and generate structured 6-Phase Blueprints (`phase-1-summary.md` through `phase-6-operation.md`, including `phase-3-data.md` for data handling, capturing, storing mechanisms, and data store lifecycle management), topic knowledge summaries, and Architecture Decision Records (ADRs).
 - **Downstream Agent Guidance**: All planning artifacts are stored inside `.agents/plans/<feature-name>/` to share complete, unambiguous context with AI agents executing downstream implementation (`/implement`), testing (`/verify`), and deployment (`/release`).
+
+### Phase 4: Action Implementation (`/implement`)
+- **Execution Engine & Highest Complexity**: `/implement` is the most complex workflow in the framework lifecycle, responsible for physical code creation across `codebase-*` sub-repositories.
+- **Mandatory Dual Grounding & First Action**: Every implementation MUST stand on both an `implementation_map_v<version>.md` AND a Test Plan (`phase-5-verification.md`). The very first action when `/implement` is invoked is verifying these two resources.
+- **Structured 4-Part Step Schema**: Scaffolding steps follow a strict 4-part structure (Requirement, Prerequisites, Actions, Verification) and are categorized into Sequential vs. Parallel execution streams.
+- **Visible Step-by-Step Execution**: Scaffolding runs in a transparent, followable loop where the user can interrupt, ask questions, or request clarification at any time (no opaque subagent delegation).
+- **Mandatory Inner Agent Artifact Synchronization**: All decisions, plan updates, and conversation outcomes recorded in inner agent docs (Artifacts) MUST be immediately synchronized and written into version-controlled files under `.agents/plans/<feature-name>/`.
+- **Token Economy Guard**: AST Code Graph (`src/<layer>/code_graph/`) and System Documentation (`docs/`) updates are optional add-ons (`--code-graph`, `--docs`) to prevent token bloat during routine code scaffolding.
 
 ### Workflow Context Notification Law (Combined Multi-Layer Strategy)
 To ensure complete transparency and context awareness during pair programming sessions, the framework enforces a mandatory **3-Layer Workflow Context Notification Law**:

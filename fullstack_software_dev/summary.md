@@ -156,9 +156,11 @@ graph TD
         *   [plan_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/plan_questions.md) (Scans and Q&A Grill schema)
         *   [antigravity/plan_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/antigravity/plan_implementation_map.md) (Antigravity guard execution roadmap)
         *   [antigravity/plan_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/antigravity/plan_tests.md) (Feature planning verification test specification)
-4.  **Action Implementation (/implement)**
+4.  **[Action Implementation (/implement)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implement/implement_workflow.md)**
     *   *Path*: `fullstack_software_dev/implement/`
-    *   *Purpose*: Scaffolds layout and logic components in increments after approval of a specific `implementation-map.md`.
+    *   *Purpose*: The most complex workflow in the framework, responsible for entire feature code creation across `codebase-*` sub-repositories. Executes physical code scaffolding based on mandatory dual grounding (`implementation_map_v<version>.md` + `phase-5-verification.md` Test Plan), enforcing a 4-part step schema (Requirement, Prerequisites, Actions, Verification) and Sequential vs. Parallel stream execution. Guarantees visible step-by-step user interaction with interruption & clarification rights, optional token-optimized Code Graph (`src/<layer>/code_graph/`) and System Docs (`docs/`) updates (`--code-graph`, `--docs`), and mandatory synchronization between inner agent docs (Artifacts) and version-controlled files under `agent-workspace/plans/<feature-name>/`.
+    *   *Key Files*:
+        *   [implement_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implement/implement_workflow.md) (Universal Tier 2 baseline specification)
 5.  **Verification (/verify)**
     *   *Path*: `fullstack_software_dev/verify/`
     *   *Purpose*: Executes automated assertions, unit/integration/E2E test suites, and regression checks.
