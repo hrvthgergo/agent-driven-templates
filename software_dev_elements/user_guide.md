@@ -57,7 +57,39 @@ graph TD
 - **Mandatory Inner Agent Artifact Synchronization**: All decisions, plan updates, and conversation outcomes recorded in inner agent docs (Artifacts) MUST be immediately synchronized and written into version-controlled files under `.agents/plans/<feature-name>/`.
 - **Token Economy Guard**: AST Code Graph (`src/<layer>/code_graph/`) and System Documentation (`docs/`) updates are optional add-ons (`--code-graph`, `--docs`) to prevent token bloat during routine code scaffolding.
 
-### Workflow Context Notification Law (Combined Multi-Layer Strategy)
+### Phase 5: Release Qualification (`/qualify`)
+- **Holistic Quality Assurance**: `/qualify` acts as the mandatory quality gate and defect attribution engine before any code can be packaged or deployed.
+- **Three-Pillar Testing Architecture**: Separates living test governance (`agent-workspace/tests/`), test execution code (`codebase-qualify/`), and environment orchestration (`codebase-devops/`).
+- **Comprehensive Lifecycle Supervision**: Supervises all testing tiers (layer unit tests, cross-layer contract suites, E2E browser flows, and regression catalogs), performs multi-layer defect attribution, and generates audit artifacts (`QUALIFICATION_REPORT.md` and `qualification_log.json`).
+
+### Phase 6: Release & Operations (`/release`)
+- **Production Packaging & Deployment**: Builds production-ready Docker containers, generates Git release tags, opens pull requests, produces walkthrough summaries, and coordinates deployment handoffs.
+
+---
+
+## 3. Workflow Mindsets & The Guiding Questions Model
+
+A cornerstone of the Guards Framework is that **every workflow answers a fundamentally different question and requires a distinct cognitive mindset**:
+
+| Workflow | The Guiding Question | Cognitive Mindset | Core Responsibility & Boundaries |
+| :--- | :--- | :--- | :--- |
+| **`/init`** | **"Where and how do we work?"** | **System Administrator** | Bootstraps environments, sandboxes, layer skeletons, and tracking sheets. Makes zero code edits. |
+| **`/process`** | **"What already exists?"** | **Archaeologist & Analyst** | Ingests brownfield legacy code intact, stages reference docs, and generates code graphs. |
+| **`/plan`** | **"What should the system do?"** | **Architect & Designer** | Designs blueprints across 6 phases (including `phase-5-test.md`), analyzes system impact, and drafts implementation maps. |
+| **`/implement`** | **"Does my code work?"** | **Software Engineer** | Scaffolds code layer-by-layer and writes unit tests in `codebase-*/tests/` to verify local logic in isolation. |
+| **`/qualify`** | **"Does the whole system work?"** | **Quality Engineer (QA)** | Runs cross-layer integration, E2E scenarios, and regression suites (`codebase-qualify/` & `tests/`), attributes defects, and gates release. |
+| **`/release`** | **"Is the system delivered?"** | **Release & DevOps Operator** | Builds production Docker images, tags release versions, generates audit walkthroughs, and creates pull requests. |
+
+### Clear Separation of Testing Concerns
+
+- **The Architect (`/plan`)** asks: *"What needs testing?"* $\rightarrow$ Defines requirements in `phase-5-test.md` and master scenarios in `agent-workspace/tests/`.
+- **The Developer (`/implement`)** asks: *"Does my code work?"* $\rightarrow$ Scaffolds unit tests co-located in `codebase-<layer>/tests/` to verify components in isolation.
+- **The Quality Engineer (`/qualify`)** asks: *"Does the whole system work?"* $\rightarrow$ Implements cross-layer harnesses in `codebase-qualify/`, boots environments, executes full matrices, isolates defect root causes, and certifies release readiness.
+
+---
+
+## 4. Workflow Context Notification Law (Combined Multi-Layer Strategy)
+
 To ensure complete transparency and context awareness during pair programming sessions, the framework enforces a mandatory **3-Layer Workflow Context Notification Law**:
 
 1. **Layer 1: Turn-by-Turn Response Banner Header**: Every AI agent response during an active workflow MUST open with a 1-line markdown banner header before any regular text or tool output:
@@ -74,7 +106,7 @@ To ensure complete transparency and context awareness during pair programming se
 
 ---
 
-## 3. Overview of the Three Core Environments
+## 5. Overview of the Three Core Environments
 
 The framework coordinates three distinct execution layers during initialization and planning:
 
@@ -86,7 +118,7 @@ The framework coordinates three distinct execution layers during initialization 
 
 ---
 
-## 4. Next Steps & Guide Extensions
+## 6. Next Steps & Guide Extensions
 
 This initial version of the User Guide establishes the core operational mental model and workflow sequencing. As feature development progresses, subsequent sections will expand to include:
 - Step-by-step CLI usage guides and flag reference tables (`--auto`, `--plan`, `--dry-run`, `--scope`, `--coverage`).

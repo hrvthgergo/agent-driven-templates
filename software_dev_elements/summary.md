@@ -81,7 +81,7 @@ software_dev_elements/
    - Defines overarching concepts, cross-cutting rules, user guides, and general-purpose specs (e.g., [End-User Guide](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/user_guide.md), [Grill Engine](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/grill_engine.md), [Multi-Repository Architecture Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/multi_repo_architecture.md), and [Process Guard Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process_handling.md)) applied across all workflow steps.
 
 2. **Step-Specific Workflow Subfolders & Implementation Maps**
-   - Subdirectories dedicated to each operational phase (e.g., `init/`, `process/`, `plan/`, `implement/`, `verify/`, `release/`).
+   - Subdirectories dedicated to each operational phase (e.g., `init/`, `process/`, `plan/`, `implement/`, `qualify/`, `release/`).
    - Contain detailed step specifications and environment/time-bound `*_implementation_map.md` files (e.g., `init_implementation_map.md`). These provide step-by-step execution roadmaps for implementing a specific workflow phase in a given environment at a specific point in time (e.g., an Antigravity-based implementation snapshot).
 
 3. **Environment-Specific Guard Folders (`guards/`)**
@@ -133,6 +133,19 @@ graph TD
     Evolve -->|New Feature| InitFeat["/init --feature feature-name"] --> Plan
 ```
 
+### Workflow Mindsets & The Guiding Questions Model
+
+Every workflow in the Guards Framework operates under a distinct mindset and answers a dedicated architectural question:
+
+| Workflow | The Guiding Question | Persona / Mindset | Core Purpose & Scope |
+| :--- | :--- | :--- | :--- |
+| **`/init`** | **"Where and how do we work?"** | **System Administrator** | Sets up environments, sandboxes, skeletons, and status tracking. |
+| **`/process`** | **"What already exists?"** | **Archaeologist & Analyst** | Ingests legacy code intact, stages docs, and builds code graphs. |
+| **`/plan`** | **"What should the system do?"** | **Architect & Designer** | Designs 6-phase blueprints (incl. `phase-5-test.md`) and implementation maps. |
+| **`/implement`** | **"Does my code work?"** | **Software Engineer** | Scaffolds code and layer unit tests (`codebase-*/tests/`) to verify local logic. |
+| **`/qualify`** | **"Does the whole system work?"** | **Quality Engineer (QA)** | Runs cross-layer suites (`codebase-qualify/`), isolates defects, and gates release. |
+| **`/release`** | **"Is the system delivered?"** | **Release & DevOps Operator** | Builds production Docker images, tags versions, and coordinates deployment. |
+
 ### Detailed Workflow Descriptions
 
 1.  **[Initialization (/init)](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_workflow.md)**
@@ -170,6 +183,8 @@ graph TD
 5.  **Release Qualification (`/qualify`)**
     *   *Path*: `software_dev_elements/qualify/`
     *   *Purpose*: Executes automated assertions, unit/integration/E2E test suites, regression checks, defect reporting, and issue tracking. Acts as the mandatory quality gate controlling release progression.
+    *   *Key Files*:
+        *   [qualify_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/qualify/qualify_workflow.md) (Universal Tier 2 baseline specification)
 6.  **Release & Operations (/release)**
     *   *Path*: `software_dev_elements/release/`
     *   *Purpose*: Manages Docker builds, operations deployment, walkthrough summaries, and pull requests.

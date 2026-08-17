@@ -56,6 +56,36 @@ This vocabulary is a one-time learning cost. After a single reading, the lifecyc
 
 ---
 
+## Workflow Mindsets & The Guiding Questions Model
+
+A central innovation of the Guards Framework is that **every workflow answers a fundamentally different question and operates with a distinct cognitive mindset**. 
+
+Rather than viewing the development lifecycle merely as a checklist of activities, the framework assigns each workflow a clear persona, an explicit scope boundary, and a guiding question:
+
+| Workflow | The Guiding Question | The Mindset / Persona | Operational Boundary & Scope |
+| :--- | :--- | :--- | :--- |
+| **`/init`** | **"Where and how do we work?"** | **System Administrator** | Bootstraps agentic, software, and directory environments; sets up repositories, sandboxes, branches, and tracking matrices without altering code logic. |
+| **`/process`** | **"What already exists?"** | **Archaeologist & Analyst** | Ingests brownfield legacy code and documentation intact, categorizing historical context into feature staging and generating topological code graphs. |
+| **`/plan`** | **"What should the system do?"** | **Architect & Designer** | Explores design alternatives, evaluates system impact, authors 6-phase blueprints (including `phase-5-test.md`), and drafts versioned implementation maps. |
+| **`/implement`** | **"Does my code work?"** | **Software Engineer** | Scaffolds production code layer-by-layer and writes unit tests in `codebase-*/tests/` to verify local code logic in isolation. |
+| **`/qualify`** | **"Does the whole system work?"** | **Quality Engineer (QA)** | Executes cross-layer integration, E2E browser flows, and regression catalogs (`codebase-qualify/` and `tests/`), diagnoses multi-layer defects, and certifies release readiness. |
+| **`/release`** | **"Is the system delivered?"** | **Release & DevOps Operator** | Builds production Docker images, tags versions, generates walkthrough audit summaries, creates Pull Requests, and coordinates deployment handoffs. |
+
+### The Separation of Testing Concerns
+
+Understanding these mindsets resolves the common confusion around where testing belongs:
+
+1. **The Architect (`/plan`) asks: *"What needs testing?"***
+   * Produces `phase-5-test.md` (the verification scope delta) and updates living test scenarios under `agent-workspace/tests/`. It defines *what* must be proven, not the code to prove it.
+2. **The Developer (`/implement`) asks: *"Does my code work?"***
+   * Scaffolds unit tests co-located inside `codebase-<layer>/tests/` alongside newly written code to verify components in isolation. It does not boot the whole system or run cross-layer suites.
+3. **The Quality Engineer (`/qualify`) asks: *"Does the system work?"***
+   * Implements cross-layer test harnesses in `codebase-qualify/`, boots multi-service environments via `codebase-devops/`, executes the entire test matrix, performs root-cause defect attribution across layers, and signs off on release readiness.
+
+This separation ensures that **the entity that writes the code is never the sole entity that certifies the system**, establishing true architectural rigor in autonomous agentic workflows.
+
+---
+
 ## Key Components
 
 The framework is organized into two primary structural pillars:
