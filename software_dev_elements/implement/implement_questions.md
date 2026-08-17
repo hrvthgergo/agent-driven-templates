@@ -11,7 +11,7 @@ The primary objective of the `/implement` Grill-Me session is to align the devel
 To ensure system stability, code quality, and process governance, six unchangeable baselines are strictly enforced. **Zero questions are asked about these baselines during the `/implement` interview**:
 
 ### Baseline 1: Mandatory Dual Grounding Mandate
-* **Specification**: Code implementation MUST stand firmly on BOTH a valid `implementation_map_v<version>.md` (located under `agent-workspace/plans/<feature-name>/implementation_maps/`) AND a Verification Scope (`phase-5-verification.md`). Source code modification without both prerequisites is strictly prohibited.
+* **Specification**: Code implementation MUST stand firmly on BOTH a valid `implementation_map_v<version>.md` (located under `agent-workspace/plans/<feature-name>/implementation_maps/`) AND a Verification Scope (`phase-5-test.md`). Source code modification without both prerequisites is strictly prohibited.
 
 ### Baseline 2: Strict Directory Separation & Production Cleanliness
 * **Specification**: Source code edits and unit test additions MUST take place inside `codebase-*` sub-repositories (or `src/`). Production source repositories must remain 100% clean of documentation maps; AST code graphs MUST be placed exclusively in `agent-workspace/src/<layer>/code_graph/`, and system documentation MUST be written to `agent-workspace/docs/`.
@@ -74,9 +74,9 @@ To ensure system stability, code quality, and process governance, six unchangeab
 ---
 
 ### Q2: Verification Test Plan & Critical Feature Assertions Alignment
-* **Goal**: Confirm alignment with test specifications in `phase-5-verification.md` and global test scenarios before code scaffolding.
+* **Goal**: Confirm alignment with test specifications in `phase-5-test.md` and global test scenarios before code scaffolding.
 * **Auto-Detection Scanning Rule**:
-  * Read `agent-workspace/plans/<feature-name>/phase-5-verification.md`. Check for verification scopes, updated test scenarios, and regression assertions.
+  * Read `agent-workspace/plans/<feature-name>/phase-5-test.md`. Check for verification scopes, updated test scenarios, and regression assertions.
 * **Reframed Grill Prompt**:
   > **How should unit and integration test specs from the Test Plan be scaffolded during implementation?**
   > 1. Scaffold unit test files alongside production code files per step
@@ -171,7 +171,7 @@ To ensure system stability, code quality, and process governance, six unchangeab
 * **Reframed Grill Prompt**:
   > **Review implementation configuration:**
   > * Target Map: `implementation_map_v<version>.md`
-  > * Verification Scope: `phase-5-verification.md`
+  > * Verification Scope: `phase-5-test.md`
   > * Execution Mode: `[Plan-First | Continuous | Dry-Run]`
   > * Code Graph Updates: `[Enabled | Skipped (Default)]`
   > * System Docs Updates: `[Enabled | Skipped (Default)]`

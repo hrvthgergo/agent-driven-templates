@@ -130,7 +130,7 @@ agent-workspace/plans/<feature-name>/
 ├── phase-2-layout.md              # Phase 2: Design System, UI Layout & Component Decisions
 ├── phase-3-data.md                # Phase 3: Data Handling, Capturing, Storing Mechanisms & Data Store Lifecycle
 ├── phase-4-engine.md              # Phase 4: Core Engine, API Contracts, Data Flow & DB Decisions
-├── phase-5-verification.md        # Phase 5: Feature Verification Scope & Test Delta
+├── phase-5-test.md                # Phase 5: Feature Verification Scope & Test Delta
 ├── phase-6-operation.md           # Phase 6: Docker, Compose & Infrastructure Decisions
 ├── knowledge/                      # Topic Research Reports & Knowledge Summaries requested during /plan
 │   ├── research_report_<topic>.md    # Research report evaluating options requested by user
@@ -149,7 +149,7 @@ agent-workspace/plans/<feature-name>/
 ├── phase-2-layout.md              # Master Design System & UI Governor
 ├── phase-3-data.md                # Master Data Handling & Lifecycle Governor
 ├── phase-4-engine.md              # Master Core Engine & API Contracts Governor
-├── phase-5-verification.md        # Master Verification Scope Governor (Delta to tests/)
+├── phase-5-test.md                # Master Verification Scope Governor (Delta to tests/)
 ├── phase-6-operation.md           # Master Operations & Deployment Governor
 ├── phase_details/                  # Detailed sub-element design folders (created on-demand)
 │   ├── web_ui/                     # Web interface layout & component specs

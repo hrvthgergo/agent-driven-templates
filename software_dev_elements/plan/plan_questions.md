@@ -169,7 +169,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > 1. Extend existing unit & integration test scenarios
   > 2. Create new End-to-End (E2E) feature verification flow
   > 3. Other / Free-text (Describe specific test deltas or coverage gaps)
-* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-5-verification.md` with the verification scope delta, and flags required updates to global `tests/`.
+* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-5-test.md` with the verification scope delta, and flags required updates to global `tests/`.
 
 ---
 

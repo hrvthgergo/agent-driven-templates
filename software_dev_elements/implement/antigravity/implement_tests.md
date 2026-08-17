@@ -10,7 +10,7 @@ This document defines the test scenario, mock execution sequence, user input sim
 * **Target Environment**: Google Antigravity Agent Execution Environment
 * **Test Scenario**: Fullstack Feature Implementation Scenario (`user-auth` feature spanning `codebase-data`, `codebase-engine`, and `codebase-ui`)
 * **Primary Objective**: Validate end-to-end execution of the `/implement` workflow state machine (Nodes S1 $\rightarrow$ S7), asserting that:
-  1. **FIRST ACTION Mandate**: Node S2 immediately checks and verifies `implementation_map_v1.0.0.md` AND `phase-5-verification.md` before touching code.
+  1. **FIRST ACTION Mandate**: Node S2 immediately checks and verifies `implementation_map_v1.0.0.md` AND `phase-5-test.md` before touching code.
   2. **Rejection Guards**: Agent strictly rejects code modification if the implementation map or test plan is missing.
   3. **4-Part Step Schema & Stream Categorization**: Scaffolding executes sequential steps in strict order and parallel steps flexibly, asserting Requirement, Prerequisites, Actions, and Verification for each step.
   4. **Visible Scaffolding & Interruption Checkpoints**: Scaffolding actions are visible and allow direct user interruption without opaque subagent delegation.
@@ -28,7 +28,7 @@ To ensure isolated, reproducible test runs, the test environment MUST meet the f
 1. **Initialized Workspace & Branch**: Existing workspace initialized via `/init` and `/plan` with active branch `feature/user-auth`.
 2. **Pre-scaffolded Planning Artifacts**: Directory `agent-workspace/plans/user-auth/` containing:
    - `phase-1-summary.md` through `phase-6-operation.md`
-   - `phase-5-verification.md` (Test Plan with critical regression assertions & unit test contracts)
+   - `phase-5-test.md` (Test Plan with critical regression assertions & unit test contracts)
    - `implementation_maps/implementation_map_v1.0.0.md` adhering to the 4-part step schema
    - `PROCESS_STATUS.md` with Rows 1–3 marked `Completed`
 3. **Sub-Repository Layer Symlinks**: Relative symlinks under `agent-workspace/src/` resolving to `codebase-data/`, `codebase-engine/`, and `codebase-ui/`.
@@ -60,7 +60,7 @@ To ensure isolated, reproducible test runs, the test environment MUST meet the f
 | Step | Prompt Title | Mock User Selection / Input | Asserted Output & Action |
 | :--- | :--- | :--- | :--- |
 | **S1** | **Workspace & Branch Verification** | System inspects `agent-workspace/` and verifies active branch `feature/user-auth`. | Environment verified. Branch confirmed (`feature/user-auth`). |
-| **S2** | **FIRST ACTION: Map & Test Plan Check** | System reads `implementation_map_v1.0.0.md` & `phase-5-verification.md`. | Verified right map & test plan. Displays confirmation summary. |
+| **S2** | **FIRST ACTION: Map & Test Plan Check** | System reads `implementation_map_v1.0.0.md` & `phase-5-test.md`. | Verified right map & test plan. Displays confirmation summary. |
 | **Q1** | **Implementation Map Selection** | Selected Option 1 (*Target full feature release map v1.0.0*). | `implementation_map_v1.0.0.md` confirmed as authoritative roadmap. |
 | **Q2** | **Test Plan & Critical Assertions** | Selected Option 1 (*Scaffold unit test files alongside production code per step*). | Test co-location strategy confirmed. |
 | **Q3** | **Starting Layer / Entry Point** | Selected Option 1 (*Data Layer & Persistence Models: codebase-data*). | Starting layer set to `codebase-data`. |
@@ -79,7 +79,7 @@ To ensure isolated, reproducible test runs, the test environment MUST meet the f
 
 | Node | Verification Target | Asserted Resource Path | Expected State / Content Assertion |
 | :--- | :--- | :--- | :--- |
-| **S2** | First Action Map & Test Plan Gate | `agent-workspace/plans/user-auth/` | `implementation_map_v1.0.0.md` and `phase-5-verification.md` exist and match scope. |
+| **S2** | First Action Map & Test Plan Gate | `agent-workspace/plans/user-auth/` | `implementation_map_v1.0.0.md` and `phase-5-test.md` exist and match scope. |
 | **S3** | Audit Log & Transcript | `agent-workspace/plans/user-auth/GRILL_STATUS.md` | Contains full Q1–Q9 prompt choices, selected options, and user inputs. |
 | **S4** | Data Layer Scaffolding | `codebase-data/src/models/user.py` | Entity class and database migration script created. |
 | **S4** | Engine Layer Scaffolding | `codebase-engine/src/services/auth.py` | `AuthService` logic and DTO mappers created. |
@@ -104,7 +104,7 @@ Below are the exact executable shell commands used by test harnesses and CI scri
 ```bash
 # Setup: Remove implementation map
 mkdir -p /tmp/test-implement-suite/agent-workspace/plans/user-auth/
-touch /tmp/test-implement-suite/agent-workspace/plans/user-auth/phase-5-verification.md
+touch /tmp/test-implement-suite/agent-workspace/plans/user-auth/phase-5-test.md
 rm -f /tmp/test-implement-suite/agent-workspace/plans/user-auth/implementation_maps/implementation_map_v1.0.0.md
 
 # Command: Run /implement
@@ -120,19 +120,19 @@ test ! -d /tmp/test-implement-suite/codebase-data/src && echo "PASS: Zero source
 # Setup: Create map but remove test plan
 mkdir -p /tmp/test-implement-suite/agent-workspace/plans/user-auth/implementation_maps/
 touch /tmp/test-implement-suite/agent-workspace/plans/user-auth/implementation_maps/implementation_map_v1.0.0.md
-rm -f /tmp/test-implement-suite/agent-workspace/plans/user-auth/phase-5-verification.md
+rm -f /tmp/test-implement-suite/agent-workspace/plans/user-auth/phase-5-test.md
 
 # Command: Run /implement
 cd /tmp/test-implement-suite && /implement --version v1.0.0
 
 # Assertion: Must exit with error code
-test $? -ne 0 && echo "PASS: /implement halted due to missing phase-5-verification.md"
+test $? -ne 0 && echo "PASS: /implement halted due to missing phase-5-test.md"
 ```
 
 #### Test 1.3: Ambiguous Version Map Resolution Check
 ```bash
 # Setup: Create multiple versioned maps
-touch /tmp/test-implement-suite/agent-workspace/plans/user-auth/phase-5-verification.md
+touch /tmp/test-implement-suite/agent-workspace/plans/user-auth/phase-5-test.md
 touch /tmp/test-implement-suite/agent-workspace/plans/user-auth/implementation_maps/implementation_map_v1.0.0.md
 touch /tmp/test-implement-suite/agent-workspace/plans/user-auth/implementation_maps/implementation_map_v1.1.0_layout.md
 

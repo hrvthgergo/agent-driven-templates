@@ -28,7 +28,7 @@ This document defines the generic directory layout scaffolded, mapped, and enfor
 │   │       ├── phase-2-layout.md # Phase 2: Design system & styling laws (Selective based on relevance)
 │   │       ├── phase-3-data.md   # Phase 3: Data handling, capturing & storing mechanisms (Selective based on relevance)
 │   │       ├── phase-4-engine.md # Phase 4: Engine logic & mappers DTOs (Selective based on relevance)
-│   │       ├── phase-5-verification.md # Phase 5: Feature Verification Scope / Test Delta (Selective)
+│   │       ├── phase-5-test.md   # Phase 5: Feature Verification Scope / Test Delta (Selective)
 │   │       ├── phase-6-operation.md # Phase 6: Dockerfiles, compose, CI/CD (Selective based on relevance)
 │   │       ├── resource/        # Staging folder for non-code legacy docs, schemas & assets
 │   │       ├── knowledge/       # Research reports & topic summaries (e.g. research_report_<topic>.md)
