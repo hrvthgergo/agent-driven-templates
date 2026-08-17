@@ -86,9 +86,67 @@ A cornerstone of the Guards Framework is that **every workflow answers a fundame
 - **The Developer (`/implement`)** asks: *"Does my code work?"* $\rightarrow$ Scaffolds unit tests co-located in `codebase-<layer>/tests/` to verify components in isolation.
 - **The Quality Engineer (`/qualify`)** asks: *"Does the whole system work?"* $\rightarrow$ Implements cross-layer harnesses in `codebase-qualify/`, boots environments, executes full matrices, isolates defect root causes, and certifies release readiness.
 
+### Progressive Test Lifecycle & Feedback Loops
+
+Testing in the Guards Framework evolves dynamically across three coordinated stages:
+
+1. **Upfront Minimum Test Contract (`/plan`)**: During feature design, `/plan` defines the verification scope (`phase-5-test.md`) and scaffolds initial scenarios in `agent-workspace/tests/`. This gives `/implement` clear boundaries and unit test criteria before code is written.
+2. **Local Component Construction (`/implement`)**: The developer builds the feature code and implements unit tests inside `codebase-<layer>/tests/` to satisfy the `/plan` contract in isolation.
+3. **Adaptive Qualification & Extension (`/qualify`)**: Prior to release, `/qualify` executes the full matrix. It has the authority to:
+   - **Extend Test Coverage**: Design new test phases (e.g. stress, edge-case, E2E browser flows) in `agent-workspace/tests/` and implement them in `codebase-qualify/`.
+   - **Trigger Correction Loops**: Route code bugs back to `/implement` or architectural gaps back to `/plan`.
+   - **Promote Regressions**: Automatically promote verified feature tests into the master `agent-workspace/tests/regression/` catalog upon release certification.
+
 ---
 
-## 4. Workflow Context Notification Law (Combined Multi-Layer Strategy)
+## 4. The Living Circular Ecosystem & Symbiotic Feedback Flywheel
+
+A core strength of the Guards Framework is that **workflows are not disposable, one-way waterfall stages**—they form a living, circular ecosystem that continuously informs, validates, and refines the software system:
+
+```mermaid
+graph TD
+    subgraph Flywheel["The Living Development Flywheel"]
+        Plan["<b>1. /plan (Architect)</b><br/>Designs Blueprints &<br/>Scaffolds Test Contracts"]
+        Implement["<b>2. /implement (Developer)</b><br/>Builds Code &<br/>Verifies Unit Isolation"]
+        Qualify["<b>3. /qualify (QA)</b><br/>Expands Test Suites,<br/>Audits & Gates System"]
+        Release["<b>4. /release (DevOps)</b><br/>Packages, Deploys &<br/>Surfaces Production Insights"]
+    end
+
+    Plan -->|Blueprint & Test Scope| Implement
+    Implement -->|Release Candidate & Unit Baseline| Qualify
+    Qualify -->|Certified Audit Report| Release
+    
+    %% Symbiotic Feedback Loops
+    Qualify -.->|<b>Code Defect Loop</b><br/>Targeted Layer Bug Fixes| Implement
+    Qualify -.->|<b>Design Gap Loop</b><br/>Blueprint & Scenario Revisions| Plan
+    Release -.->|<b>Evolution Loop</b><br/>Post-Release Feature Iterations| Plan
+    Release -.->|<b>Hotfix / Patch Loop</b><br/>Expedited Maintenance| Implement
+```
+
+### The Four Symbiotic Connections
+
+The workflows "live together" through four continuous feedback channels:
+
+1. **`/plan` $\longleftrightarrow$ `/implement` (The Scaffolding Dialogue)**
+   * `/plan` creates the design blueprints and `implementation_map_v1.md`.
+   * When `/implement` encounters unexpected technical constraints (library quirks, API limitations), it immediately synchronizes back to the plan (authoring `implementation_map_v2.md` or ADRs) to ensure documentation never drifts from code reality.
+
+2. **`/implement` $\longleftrightarrow$ `/qualify` (The Verification Dialogue)**
+   * `/implement` hands off built layers with passing local unit tests.
+   * When `/qualify` tests the full integrated system and discovers a defect, it isolates the responsible layer (Layout, Engine, Data) and loops back to `/implement` for a targeted patch before re-qualifying.
+
+3. **`/qualify` $\longleftrightarrow$ `/plan` (The Behavioral Dialogue)**
+   * `/qualify` runs real-world user flows and edge cases against a live environment.
+   * If `/qualify` identifies a major business logic flaw or missing requirement, it feeds that insight back to `/plan` to update blueprints and `phase-5-test.md`.
+   * Upon release certification, `/qualify` permanently promotes verified feature tests into `agent-workspace/tests/regression/`, enriching the baseline for all future `/plan` cycles.
+
+4. **`/release` $\longleftrightarrow$ `/plan` (The Evolution Dialogue)**
+   * `/release` delivers the validated system, tags the Git release version, and generates walkthrough audit summaries.
+   * Release is never a dead end: deployment metadata and user feedback directly seed the next iteration cycle (`/init --feature` or `/init --release`), launching a new `/plan` cycle with complete historical context.
+
+---
+
+## 5. Workflow Context Notification Law (Combined Multi-Layer Strategy)
 
 To ensure complete transparency and context awareness during pair programming sessions, the framework enforces a mandatory **3-Layer Workflow Context Notification Law**:
 
@@ -106,7 +164,7 @@ To ensure complete transparency and context awareness during pair programming se
 
 ---
 
-## 5. Overview of the Three Core Environments
+## 6. Overview of the Three Core Environments
 
 The framework coordinates three distinct execution layers during initialization and planning:
 
@@ -118,9 +176,10 @@ The framework coordinates three distinct execution layers during initialization 
 
 ---
 
-## 6. Next Steps & Guide Extensions
+## 7. Next Steps & Guide Extensions
 
 This initial version of the User Guide establishes the core operational mental model and workflow sequencing. As feature development progresses, subsequent sections will expand to include:
 - Step-by-step CLI usage guides and flag reference tables (`--auto`, `--plan`, `--dry-run`, `--scope`, `--coverage`).
 - Greenfield vs. Brownfield operational walkthroughs.
 - Detailed guidelines for downstream execution workflows (`/implement`, `/qualify`, `/release`).
+

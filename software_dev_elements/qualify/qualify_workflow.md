@@ -93,7 +93,55 @@ When spinning up an isolated environment from scratch:
 
 ---
 
-## 4. Directory Layout & Qualification Artifacts
+## 4. Progressive Qualification Lifecycle & Feedback Loops
+
+The qualification workflow bridges upfront architectural design with adaptive runtime quality assurance through a progressive 3-stage lifecycle and bidirectional feedback loops:
+
+```mermaid
+graph TD
+    subgraph S1["Stage 1: Upfront Scaffolding (/plan)"]
+        PlanScope["<b>1. Minimum Test Contract</b><br/>• phase-5-test.md defines required test tiers<br/>• Scaffolds initial scenarios in agent-workspace/tests/<br/>• Sets acceptance criteria for unit tests"]
+    end
+
+    subgraph S2["Stage 2: Layer Construction (/implement)"]
+        ImpCode["<b>2. Build & Unit Verify</b><br/>• Scaffolds production code layer-by-layer<br/>• Implements & verifies unit tests in codebase-*/tests/<br/>• Proves components work in isolation"]
+    end
+
+    subgraph S3["Stage 3: Adaptive Qualification & Feedback (/qualify)"]
+        QExec["<b>3. Execute, Extend & Implement</b><br/>• Runs multi-tier matrix (Unit, Integration, E2E)<br/>• Optionally adds new test phases & edge-case scenarios to tests/<br/>• Implements automated test code in codebase-qualify/"]
+        
+        QEval{Evaluation Result?}
+        
+        QPass["<b>Certify & Promote</b><br/>• Promote feature tests to tests/regression/<br/>• Generate QUALIFICATION_REPORT.md<br/>• Handoff to /release"]
+        
+        QCodeFix["<b>Code Correction Loop</b><br/>Trigger /implement to fix code defects"]
+        QDesignFix["<b>Design Correction Loop</b><br/>Trigger /plan to update blueprints"]
+    end
+
+    PlanScope --> ImpCode
+    ImpCode --> QExec
+    QExec --> QEval
+    
+    QEval -->|100% Pass| QPass
+    QEval -->|Layer Code Defect| QCodeFix --> ImpCode
+    QEval -->|Architectural Gap / Missing Spec| QDesignFix --> PlanScope
+```
+
+### Key Principles of the Progressive Model
+
+1. **Shift-Left Baseline (`/plan`)**: During feature planning, the agent does not need to over-engineer every edge-case test script. It establishes the **Minimum Test Contract** (`phase-5-test.md` + initial `tests/` scenarios) so that `/implement` knows what unit tests and component behaviors to verify.
+2. **Local Component Verification (`/implement`)**: Production code and unit tests are built against this baseline contract to ensure local component integrity.
+3. **Adaptive Test Extension (`/qualify`)**: Prior to release, `/qualify` is not limited to static verification. The Quality Engineer agent can:
+   - Extend test plans and introduce new test phases (e.g., performance checks, cross-browser flows, boundary stress cases) into `agent-workspace/tests/`.
+   - Implement the physical automation scripts for these new phases directly in `codebase-qualify/`.
+4. **Bidirectional Feedback & Correction Triggers**: If qualification exposes flaws or gaps:
+   - **Layer Code Defect**: `/qualify` isolates the responsible layer and triggers a targeted fix in `/implement`.
+   - **Architectural / Requirement Gap**: `/qualify` triggers a design revision in `/plan` to update blueprints before re-implementing.
+5. **Regression Catalog Promotion**: Upon 100% pass certification, newly authored test scenarios are automatically promoted into `agent-workspace/tests/regression/` to permanently safeguard future releases.
+
+---
+
+## 5. Directory Layout & Qualification Artifacts
 
 ```text
 agent-workspace/
@@ -124,7 +172,7 @@ codebase-qualify/                       # Pillar 2: Cross-Layer Test Implementat
 
 ---
 
-## 5. Detailed Step-by-Step State Machine Design
+## 6. Detailed Step-by-Step State Machine Design
 
 Execution of the `/qualify` workflow follows a strict 6-node state machine:
 
@@ -179,7 +227,7 @@ graph TD
 
 ---
 
-## 6. Command Options & Execution Modes
+## 7. Command Options & Execution Modes
 
 | Command Variant | Execution Scope | Description |
 | :--- | :--- | :--- |
@@ -193,7 +241,7 @@ graph TD
 
 ---
 
-## 7. Qualification Report Template (`QUALIFICATION_REPORT.md`)
+## 8. Qualification Report Template (`QUALIFICATION_REPORT.md`)
 
 ```markdown
 # Qualification Audit Report: [Feature Name] - [Version]
@@ -225,7 +273,7 @@ graph TD
 
 ---
 
-## 8. Summary Checklist for AI Agents Executing `/qualify`
+## 9. Summary Checklist for AI Agents Executing `/qualify`
 
 - [ ] **First Action**: Inspect `phase-5-test.md` and target `implementation_map_v<version>.md` for verification scope.
 - [ ] Resolve required test scenarios in `agent-workspace/tests/`.
