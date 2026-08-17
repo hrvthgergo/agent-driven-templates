@@ -17,17 +17,73 @@ The **Guards Framework** intentionally separates high-level architectural design
 
 ## Key Components
 
-All active specifications and operational playbooks are maintained under `software_dev_elements/`:
+The framework is organized into two primary structural pillars:
 
-- **[Summary & Operational Lifecycle](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/summary.md)**: Central entry point detailing the 3-tier structure, 6 development workflows, and lifecycle Mermaid diagram.
-- **[End-User Guide & Operational Manual](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/user_guide.md)**: Conceptual summary, workflow principles, and operational manual for developers and AI agents.
-- **[Guard Process Handling Spec (`PROCESS_STATUS.md`)](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process_handling.md)**: Release and feature governance with a concise 2-block status matrix and daily execution history log.
-- **[Multi-Repo & Docker Strategy Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/multi_repo_architecture.md)**: Hybrid Docker containerization, symlink mapping, and dynamic layer expansion.
-- **[Standard Folder Structure Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/folder_structure.md)**: Standard project folder layout, pure control plane architecture, and sub-repo symlink definitions.
-- **[Initialization Workflow (/init)](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_workflow.md)**: Bootstrapping playbook, 3-block Q&A schema (`init_questions.md`), and initialization execution maps.
-- **[Legacy Code & Docs Processing (/process)](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process/process_workflow.md)**: Standalone workflow for deep historical code analysis, documentation review, and refactoring proposals.
-- **[Grill Engine Gate](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/grill_engine.md)**: Reusable Q&A engine design rules and state file formats (`GRILL_STATUS.md`).
-- **[Language-Specific Code Graph Taxonomy](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/code_graph_taxonomy.md)**: Universal node and connection rules for Python, Go, and JavaScript.
+1. **[Playbooks](file:///Users/horvathgergo/Desktop/agent-driven-templates/playbooks/) (`playbooks/`)**: Composed end-to-end development lifecycles (Hotfix, Bugfix, Major Feature, Legacy Onboarding) that concatenate and chain atomic stages from `software_dev_elements/` for task-calibrated governance.
+2. **[Software Development Elements](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/summary.md) (`software_dev_elements/`)**: Universal specifications and operational playbooks for atomic development stages:
+   - **[Summary & Operational Lifecycle](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/summary.md)**: Central entry point detailing the 3-tier structure, 6 development workflows, and lifecycle Mermaid diagram.
+   - **[End-User Guide & Operational Manual](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/user_guide.md)**: Conceptual summary, workflow principles, and operational manual for developers and AI agents.
+   - **[Guard Process Handling Spec (`PROCESS_STATUS.md`)](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process_handling.md)**: Release and feature governance with a concise 2-block status matrix and daily execution history log.
+   - **[Multi-Repo & Docker Strategy Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/multi_repo_architecture.md)**: Hybrid Docker containerization, symlink mapping, and dynamic layer expansion.
+   - **[Standard Folder Structure Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/folder_structure.md)**: Standard project folder layout, pure control plane architecture, and sub-repo symlink definitions.
+   - **[Initialization Workflow (/init)](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_workflow.md)**: Bootstrapping playbook, 3-block Q&A schema (`init_questions.md`), and initialization execution maps.
+   - **[Legacy Code & Docs Processing (/process)](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process/process_workflow.md)**: Standalone workflow for deep historical code analysis, documentation review, and refactoring proposals.
+   - **[Grill Engine Gate](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/grill_engine.md)**: Reusable Q&A engine design rules and state file formats (`GRILL_STATUS.md`).
+   - **[Language-Specific Code Graph Taxonomy](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/code_graph_taxonomy.md)**: Universal node and connection rules for Python, Go, and JavaScript.
+
+---
+
+## Playbook Architecture: Composed Lifecycles
+
+While `software_dev_elements/` defines granular specifications for individual stages, **Playbooks** assemble these atomic elements into tailored execution chains to eliminate unnecessary friction for lightweight tasks:
+
+```mermaid
+graph TD
+    subgraph "Atomic Elements (software_dev_elements/)"
+        Init["/init<br/>(Environment Setup)"]
+        Process["/process<br/>(Legacy Processing)"]
+        Plan["/plan<br/>(6-Phase Blueprint Design)"]
+        Implement["/implement<br/>(Scaffolding & Testing)"]
+        Verify["/verify<br/>(Validation & Assertions)"]
+        Release["/release<br/>(Publish & Deployment)"]
+    end
+
+    subgraph "Composed Playbooks (playbooks/)"
+        Hotfix["<b>Hotfix Playbook</b><br/>Quick /init ➔ /implement ➔ Fast /verify ➔ Expedited /release"]
+        Bugfix["<b>Bugfix Playbook</b><br/>Quick /init ➔ Focused /plan ➔ /implement ➔ /verify"]
+        Feature["<b>Major Feature Playbook</b><br/>Full /init ➔ 6-Phase /plan ➔ /implement ➔ /verify ➔ /release"]
+        Legacy["<b>Legacy Onboarding Playbook</b><br/>Full /init ➔ /process ➔ Blueprint /plan"]
+    end
+
+    Init -.-> Hotfix
+    Implement -.-> Hotfix
+    Verify -.-> Hotfix
+    Release -.-> Hotfix
+
+    Init -.-> Bugfix
+    Plan -.-> Bugfix
+    Implement -.-> Bugfix
+    Verify -.-> Bugfix
+
+    Init -.-> Feature
+    Plan -.-> Feature
+    Implement -.-> Feature
+    Verify -.-> Feature
+    Release -.-> Feature
+
+    Init -.-> Legacy
+    Process -.-> Legacy
+    Plan -.-> Legacy
+```
+
+### Playbook Archetypes
+
+| Playbook | Target Scenario | Composed Workflow Sequence | Key Characteristics |
+| :--- | :--- | :--- | :--- |
+| **`hotfix`** | Production incidents & urgent hotfixes | Quick `/init` $\rightarrow$ `/implement` $\rightarrow$ Fast `/verify` $\rightarrow$ Expedited `/release` | Bypasses `/plan` and `/process`; inherits workspace environment configs; fast-tracks directly to execution. |
+| **`bugfix`** | Standard defect resolution | Quick `/init` $\rightarrow$ Focused `/plan` (Summary + Verification Plan) $\rightarrow$ `/implement` $\rightarrow$ `/verify` | Focuses planning strictly on root-cause analysis and regression test contract definition. |
+| **`feature`** | Major new features & greenfield modules | Full `/init` $\rightarrow$ 6-Phase `/plan` $\rightarrow$ `/implement` $\rightarrow$ `/verify` $\rightarrow$ `/release` | Full architectural governance, 6-phase blueprints, versioned implementation maps, and complete test suites. |
+| **`legacy_onboarding`** | Ingesting and restructuring existing code | Full `/init` $\rightarrow$ `/process` $\rightarrow$ Selective `/plan` | Read-only legacy analysis, layer restructuring, resource staging, and baseline blueprint population. |
 
 ---
 
@@ -35,7 +91,9 @@ All active specifications and operational playbooks are maintained under `softwa
 
 ```text
 agent-driven-templates/
-├── README.md                          # Repository overview & framework philosophy
+├── README.md                          # Single authoritative repository overview & architecture manual
+├── playbooks/                         # Composed end-to-end development lifecycles
+│   └── .gitkeep
 └── software_dev_elements/
     ├── summary.md                     # Central entry point, 3-tier structure & workflow sitemap
     ├── user_guide.md                  # End-User Guide & Operational Manual
