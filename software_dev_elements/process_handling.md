@@ -42,7 +42,7 @@ This matrix tracks top-level workflows and focused sub-processes. The 6-Phase Pl
 | ├── **3.2 Phase 2: Layout** | `[>] In Progress` | Design system & styling laws (`phase-2-layout.md`) | YYYY-MM-DD |
 | ├── **3.3 Phase 3: Data** | `[ ] Not Started` | Data capturing, storing mechanisms & lifecycle events (`phase-3-data.md`) | YYYY-MM-DD |
 | ├── **3.4 Phase 4: Engine** | `[ ] Not Started` | Core engine logic, DTO mappers & API services (`phase-4-engine.md`) | YYYY-MM-DD |
-| ├── **3.5 Phase 5: Verify** | `[ ] Not Started` | Test specs & assertions (`phase-5-verification.md`) | YYYY-MM-DD |
+| ├── **3.5 Phase 5: Verify** | `[ ] Not Started` | Verification Scope & Test Delta (`phase-5-verification.md`) | YYYY-MM-DD |
 | └── **3.6 Phase 6: Operations** | `[ ] Not Started` | Dockerfiles, Compose & CI/CD (`phase-6-operation.md`) | YYYY-MM-DD |
 | **4. /implement** | `[ ] Not Started` | Code scaffolding & layout implementation | YYYY-MM-DD |
 | **5. /qualify** | `[ ] Not Started` | Full-spectrum qualification & release gating | YYYY-MM-DD |

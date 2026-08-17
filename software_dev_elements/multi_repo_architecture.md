@@ -11,9 +11,10 @@ To prevent the master project workspace from becoming a heavy, congested monorep
 *   **Main Control Plane & Knowledge Hub (`agent-workspace`):** Handles agent control (`.agents/`), planning status & blueprints (`plans/`), and human-facing documentation (`docs/`). Serves as a 100% pure knowledge hub.
 *   **Infrastructure & Operations Sub-Repo (`codebase-devops`):** Standalone repository dedicated entirely to DevOps, container orchestrations (`docker/` with `dev.Dockerfile` and `docker-compose.yml`), and global CI/CD pipelines (`.github/`).
 *   **Layer Skeletons (`codebase-<layer_name>`):** Standalone repositories dedicated entirely to specific architectural layers (e.g., `codebase-layout` for UI/Views, `codebase-engine` for backend logic/APIs).
+*   **Test Implementation Repository (`codebase-qualify`):** Standalone repository dedicated to executable cross-layer test scripts, e2e scenarios, and fixtures. Tests are orchestrated by `devops` but implemented here.
 
 ### Local Development Integration (Symlinks)
-On local development environments (both macOS and Windows), symbolic links are placed inside the main workspace `src/` directory to map the active layer repositories into a single visual workspace (e.g., `src/devops` $\rightarrow$ `codebase-devops/src`, `src/layout` $\rightarrow$ `codebase-layout/src`, `src/engine` $\rightarrow$ `codebase-engine/src`). 
+On local development environments (both macOS and Windows), symbolic links are placed inside the main workspace `src/` directory to map the active layer repositories into a single visual workspace (e.g., `src/devops` $\rightarrow$ `codebase-devops/src`, `src/qualify` $\rightarrow$ `codebase-qualify/src`, `src/layout` $\rightarrow$ `codebase-layout/src`, `src/engine` $\rightarrow$ `codebase-engine/src`). 
 
 *Note: Projects can initially focus on a single layer (e.g. UI-only or Engine API-only), fullstack, or multi-layer. The initial layer scope and `codebase-*` skeleton count are defined during the `/init` Grill-me session, and can be expanded later via the dynamic layer expansion workflow.*
 
@@ -28,10 +29,11 @@ During the `/init` workflow, Git and GitHub remotes are initialized for target s
    - **`codebase-devops/`**: Initialized with its own `.git` repository and linked to the DevOps GitHub remote origin (e.g. `https://github.com/org/my-project-devops.git`). Tracks `.github/`, `docker/`, `src/`, `config/`, `tests/`, and standalone `Dockerfile`.
    - **`codebase-layout/`**: Initialized with its own `.git` repository and linked to the UI layer GitHub remote origin (e.g. `https://github.com/org/my-project-layout.git`). Tracks `src/`, `config/`, `tests/`, and standalone `Dockerfile`.
    - **`codebase-engine/`**: Initialized with its own `.git` repository and linked to the Engine layer GitHub remote origin (e.g. `https://github.com/org/my-project-engine.git`). Tracks `src/`, `config/`, `tests/`, and standalone `Dockerfile`.
+   - **`codebase-qualify/`**: Initialized with its own `.git` repository and linked to the Test layer GitHub remote origin (e.g. `https://github.com/org/my-project-qualify.git`). Tracks `src/`, `config/`, `tests/`, and qualification `Dockerfile`.
    - *Symlink Portability*: Because symlinks under `agent-workspace/src/` use relative paths (`../../codebase-<layer>/src`), `agent-workspace` can be committed and pushed to its own GitHub repository without embedding or duplicating sub-repo source code.
 
 2. **Option B: Umbrella Workspace Setup (Single GitHub Repository)**:
-   - If a single repository is selected in Q5, `/init` initializes one root `.git` repository at `[Local Workspace Root]` encompassing all subfolders (`agent-workspace/`, `codebase-devops/`, `codebase-layout/`, `codebase-engine/`) under a single GitHub remote origin URL.
+   - If a single repository is selected in Q5, `/init` initializes one root `.git` repository at `[Local Workspace Root]` encompassing all subfolders (`agent-workspace/`, `codebase-devops/`, `codebase-qualify/`, `codebase-layout/`, `codebase-engine/`) under a single GitHub remote origin URL.
 
 ---
 
@@ -59,12 +61,13 @@ To maintain absolute development autonomy for individual software layers while p
 
 ---
 
-## 3. CI/CD Pipeline Hierarchy (Micro vs. Macro Pipelines)
+## 3. CI/CD Pipeline Hierarchy (The 3-Tier Model)
 
-This structural segregation establishes an incredibly fast, dual-tier continuous integration workflow:
+This structural segregation establishes an incredibly fast, three-tier continuous integration workflow:
 
-*   **Layer-Specific Micro-pipelines (Autonomous):** Commits to individual `codebase-<layer>` repositories trigger layer-specific workflows defined in `codebase-<layer>/.github/workflows/` (linting, code formatting checks, unit tests, and standalone container image build checks). Frontend commits do not trigger backend unit tests, saving execution time.
-*   **Global Macro-pipelines (Orchestrated):** Commits to `codebase-devops` (or cross-layer releases) run global integration pipelines defined in `codebase-devops/.github/workflows/` (pulling latest layer images, spinning up multi-container docker-compose environments, and executing system-wide End-to-End (E2E) integration test suites).
+*   **Layer-Specific Micro-pipelines (Autonomous):** Commits to individual `codebase-<layer>` repositories trigger layer-specific workflows defined in `codebase-<layer>/.github/workflows/` (linting, code formatting checks, unit tests). Frontend commits do not trigger backend unit tests, saving execution time.
+*   **Qualification Pipelines (Cross-Layer Testing):** Housed in `codebase-qualify/.github/workflows/`. These run the integration, E2E, and business logic tests. They can be triggered manually, by cross-layer commits, or by the macro-pipeline.
+*   **Global Macro-pipelines (Orchestrated):** Commits to `codebase-devops` (or cross-layer releases) run global integration pipelines defined in `codebase-devops/.github/workflows/` (pulling latest layer images, spinning up multi-container docker-compose environments, and triggering the `codebase-qualify` pipelines).
 
 ---
 
@@ -85,11 +88,15 @@ codebase-layout/
 
 codebase-engine/
 └── Dockerfile               # Standalone production build spec for Engine/Backend
+
+codebase-qualify/
+└── Dockerfile               # Standalone qualification runner container
 ```
 
 ### Container Orchestration Rules
 *   **Layer Production Autonomy:** Each application sub-repository (`codebase-layout`, `codebase-engine`) maintains a standalone `Dockerfile` in its root. This enables each layer service to be built, tagged, and deployed to production environments independently.
-*   **Local Multi-Service Orchestration:** `codebase-devops/docker/docker-compose.yml` acts as the central orchestrator for local multi-service development and E2E testing. It links layer containers, injects runtime configurations, and provisions shared networking and database services.
+*   **Test Environment Autonomy:** `codebase-qualify` maintains its own `Dockerfile` to package the test runner (e.g., Playwright dependencies, testing SDKs) separately from production artifacts.
+*   **Local Multi-Service Orchestration:** `codebase-devops/docker/docker-compose.yml` acts as the central orchestrator for local multi-service development and E2E testing. It links layer containers, injects runtime configurations, provisions databases, and triggers the `qualify-runner`.
 *   **Agent Execution Sandbox:** `codebase-devops/docker/dev.Dockerfile` provisions the sandboxed container environment for agent-driven execution and verification.
 
 ---

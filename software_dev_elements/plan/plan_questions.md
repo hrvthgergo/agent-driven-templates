@@ -162,14 +162,14 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 
 ---
 
-### Q9: Phase 5 - Verification Specifications & Test Suites (If Executable Scope)
-* **Goal**: Gather specifications for unit tests, integration test runners, E2E fixtures, and regression assertion criteria.
+### Q9: Phase 5 - Feature Verification Scope (If Executable Scope)
+* **Goal**: Determine which global test scenarios in `agent-workspace/tests/` need to be modified, added, or executed for this specific feature delta.
 * **Reframed Grill Prompt**:
-  > **What verification test suites and test assertion specs should be created?**
-  > 1. Unit & Integration test suite with mock API/DB contracts
-  > 2. End-to-End (E2E) browser/API verification suite
-  > 3. Other / Free-text (Describe test runners, assertion matrices, and test fixtures)
-* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-5-verification.md`.
+  > **Which global test scenarios need to be updated or created to verify this feature?**
+  > 1. Extend existing unit & integration test scenarios
+  > 2. Create new End-to-End (E2E) feature verification flow
+  > 3. Other / Free-text (Describe specific test deltas or coverage gaps)
+* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-5-verification.md` with the verification scope delta, and flags required updates to global `tests/`.
 
 ---
 

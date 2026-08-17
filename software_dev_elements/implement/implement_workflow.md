@@ -10,7 +10,7 @@ The `/implement` workflow is the execution engine of the **Guards Framework** an
 
 ```mermaid
 graph LR
-    Plan["/plan<br/>Feature Planning & Design<br/>• phase-1-summary.md ... phase-6-operation.md<br/>• implementation_map_v<version>.md<br/>• phase-5-verification.md (Test Plan)"] 
+    Plan["/plan<br/>Feature Planning & Design<br/>• phase-1-summary.md ... phase-6-operation.md<br/>• implementation_map_v<version>.md<br/>• phase-5-verification.md (Verification Scope)"] 
     --> Implement["/implement (Action Implementation - Highest Complexity)<br/>1. FIRST ACTION: Verify Right Map & Test Plan<br/>2. Sync Inner Agent Artifacts with Version-Controlled plans/<br/>3. Physical Code Creation across codebase-* Projects<br/>4. Critical & New Feature Solution Testing<br/>5. OPTIONAL: AST Code Graph Updates (--code-graph)<br/>6. OPTIONAL: System Docs Updates (--docs)"]
     --> Qualify["/qualify<br/>Release Qualification<br/>• Run Test Suites & System Assertions"]
 ```
@@ -20,7 +20,7 @@ The `/implement` workflow is responsible for the **entire implementation of the 
 
 1. **Code Creation & Scaffolding**: Generating production-grade source code, DTO schemas, domain services, data persistence entities, and presentation components.
 2. **Multi-Project `codebase-*` Handling**: Managing multi-repository project layouts (`codebase-ui`, `codebase-engine`, `codebase-data`, `codebase-ops`) through workspace symlink layers (`agent-workspace/src/<layer>`), adhering strictly to layer boundaries and dependency policies.
-3. **Solution Testing (Critical Features & New Feature Specifications)**: Scaffolding and executing test suites to guarantee BOTH that existing critical system features remain unbroken (regression protection) AND that new feature capabilities satisfy all test contracts in the Test Plan (`phase-5-verification.md`).
+3. **Solution Testing (Critical Features & New Feature Specifications)**: Scaffolding and executing test suites to guarantee BOTH that existing critical system features remain unbroken (regression protection) AND that new feature capabilities satisfy all test contracts defined by the Verification Scope (`phase-5-verification.md`) and global `tests/`.
 4. **OPTIONAL: AST Code Graph Generation & Synchronization (`code_graph`)**: On-demand parsing of source code ASTs to build and maintain 2-block modular code graph subfolders (`agent-workspace/src/<layer>/code_graph/`) following [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/code_graph_taxonomy.md).
 5. **OPTIONAL: System Documentation Promotion (`docs/`)**: On-demand promotion of feature resources staged in `plans/<feature-name>/resource/` into global `agent-workspace/docs/` describing all active features across the entire system.
 
@@ -43,11 +43,11 @@ The `/implement` workflow is responsible for the **entire implementation of the 
 
 ### First Action Mandate: Immediate Map & Test Plan Verification
 > [!IMPORTANT]
-> **First Action Mandate**: When an implementation is requested by the user, **the VERY FIRST THING the agent MUST do** is check the `implementation_map` (`implementation_map_v<version>.md`) and verify that the implementation will be executed based on the **RIGHT implementation_map and test_plan** (`phase-5-verification.md` / critical feature test specifications).
+> **First Action Mandate**: When an implementation is requested by the user, **the VERY FIRST THING the agent MUST do** is check the `implementation_map` (`implementation_map_v<version>.md`) and verify that the implementation will be executed based on the **RIGHT implementation_map and verification_scope** (`phase-5-verification.md`).
 >
 > Before any code modification or scaffolding begins, the agent must validate:
 > 1. The target software version and scope defined in `implementation_map_v<version>.md`.
-> 2. The critical system feature assertions and test contracts defined in `phase-5-verification.md`.
+> 2. The critical system feature assertions and verification boundaries defined in `phase-5-verification.md`.
 > 3. That the selected map and test plan accurately align with the user's implementation request.
 
 ### Visible Step-by-Step Execution & User Interruption Rights
@@ -61,7 +61,7 @@ The `/implement` workflow is responsible for the **entire implementation of the 
 > [!IMPORTANT]
 > **Dual Grounding Mandate**: Any code implementation MUST stand firmly on two mandatory foundational resources created or confirmed prior to code modification:
 > 1. **An `implementation_map` (`implementation_map_v<version>.md`)**: The version-linked execution roadmap detailing step-by-step file scaffolding, dependencies, and modification scopes (adhering to [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/implementation_map_taxonomy.md)).
-> 2. **A Test Plan / Verification Specification (`phase-5-verification.md`)**: The testing specification defining critical feature assertions, unit/integration test contracts, edge cases, and verification criteria for the system capabilities being implemented.
+> 2. **A Verification Scope (`phase-5-verification.md`)**: The testing specification delta defining which global `tests/` must be updated, and which critical feature assertions must be verified.
 
 ---
 
@@ -119,7 +119,7 @@ graph TD
 
 ### A. First-Action Verification & Dual Grounding Preconditions
 1. **First-Action Map Check**: Upon receiving an `/implement` request, the agent's very first action is inspecting `agent-workspace/plans/<feature-name>/implementation_maps/` to verify that the target `implementation_map_v<version>.md` exists and matches the user's requested release scope.
-2. **First-Action Test Plan Check**: Simultaneously, the agent verifies `phase-5-verification.md` (or the feature test plan) to ensure all critical system feature assertions are present and linked to the implementation scope.
+2. **First-Action Verification Scope Check**: Simultaneously, the agent verifies `phase-5-verification.md` to ensure all critical system feature assertions are present and linked to the implementation scope.
 3. **Precondition Resolution Gate**: If either the map or test plan is missing or ambiguous, the agent MUST immediately stop, present the situation to the user, and confirm the right map and test plan before proceeding.
 
 ### B. Inner Agent Artifact & Version-Controlled `plans/` Synchronization Rule
@@ -184,7 +184,7 @@ Execution of the `/implement` workflow follows a strict 7-node sequential state 
 ```mermaid
 graph TD
     S1[Node S1: Environment & Workspace Check] 
-    --> S2[Node S2: FIRST ACTION - Map & Test Plan Verification<br/>Validate right implementation_map_v<version>.md & phase-5-verification.md]
+    --> S2[Node S2: FIRST ACTION - Map & Verification Scope Check<br/>Validate right implementation_map_v<version>.md & phase-5-verification.md]
     
     S2 -->|Missing or Ambiguous Map/Plan| S2_Confirm[Confirm / Select Right Map & Test Plan with User]
     S2 -->|Validated Right Map & Test Plan| S3[Node S3: Micro-Architecture Alignment Gate<br/>Confirm Starting codebase-* Layer & Step Boundaries]
@@ -212,8 +212,8 @@ graph TD
 * **Description**: Verifies workspace initialization (`.agents/` and active Git branch state). Asserts Docker engine status and active feature directory (`agent-workspace/plans/<feature-name>/`).
 * **Storage Actions**: Reads `agent-workspace/plans/<feature-name>/PROCESS_STATUS.md`. Verifies Row 3 (`/plan`) is marked `Completed` or `In Progress`.
 
-#### Step 2: FIRST ACTION - Map & Test Plan Verification (Node S2)
-* **Description**: **As the very first action**, the agent checks `agent-workspace/plans/<feature-name>/implementation_maps/` and verifies that the request will be executed based on the **RIGHT `implementation_map_v<version>.md` AND Test Plan (`phase-5-verification.md`)**.
+#### Step 2: FIRST ACTION - Map & Verification Scope Check (Node S2)
+* **Description**: **As the very first action**, the agent checks `agent-workspace/plans/<feature-name>/implementation_maps/` and verifies that the request will be executed based on the **RIGHT `implementation_map_v<version>.md` AND Verification Scope (`phase-5-verification.md`)**.
 * **Reasoning**: Ensures zero ambiguity about target version, release scope, critical system assertions, or verification contracts before a single line of code is written.
 
 #### Step 3: Micro-Architecture Alignment Gate (Node S3)
@@ -254,7 +254,7 @@ graph TD
 
 ## 7. Summary Checklist for AI Agents Executing `/implement`
 
-- [ ] **FIRST ACTION**: Check `implementation_map_v<version>.md` and verify execution is based on the RIGHT map and Test Plan (`phase-5-verification.md`).
+- [ ] **FIRST ACTION**: Check `implementation_map_v<version>.md` and verify execution is based on the RIGHT map and Verification Scope (`phase-5-verification.md`).
 - [ ] Confirm target release version, scope, `codebase-*` layers, and critical system assertions.
 - [ ] Parse implementation map steps enforcing the mandatory 4-part step schema (Requirement, Prerequisites, Actions, Verification).
 - [ ] Identify Sequential vs. Parallel execution streams before scaffolding.

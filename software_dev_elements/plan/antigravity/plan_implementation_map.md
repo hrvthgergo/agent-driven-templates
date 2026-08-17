@@ -116,7 +116,7 @@ The implementation plan directly realizes the following design blueprints and `/
         *   `phase-2-layout.md` (UI presentation & view specs)
         *   `phase-3-data.md` (Data handling, capturing, storing mechanisms & data store lifecycle)
         *   `phase-4-engine.md` (Core engine, API contracts & service routing)
-        *   `phase-5-verification.md` (Test suites & assertion matrices)
+        *   `phase-5-verification.md` (Verification Scope Delta)
         *   `phase-6-operation.md` (Docker & operations deployment impact)
     3. Define procedure for scaffolding `phase_details/<element_name>/` subfolders for complex multi-layer features.
     4. Define procedure for drafting `knowledge/research_report_<topic>.md` files and linking them inside `phase-*.md`.
