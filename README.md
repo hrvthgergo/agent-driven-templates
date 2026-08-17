@@ -15,6 +15,47 @@ The **Guards Framework** intentionally separates high-level architectural design
 
 ---
 
+## Workflow Vocabulary & Design Language
+
+The Guards Framework defines its own command vocabulary. This is intentional, and the reasoning behind it reflects a fundamental shift in how agentic software development works.
+
+### Workflow Commands Name Process Phases, Not Tools
+
+Every workflow command in the lifecycle describes **what the system is doing at a structural level** — not which binary gets invoked underneath:
+
+| Command | Names a… |
+| :--- | :--- |
+| `/init` | Environment bootstrap **process** |
+| `/process` | Legacy ingestion **process** |
+| `/plan` | Architectural design **process** |
+| `/implement` | Code execution **process** |
+| `/qualify` | Release qualification **process** |
+| `/release` | Deployment **process** |
+
+None of these map 1:1 to a tool. `/process` is not `grep`. `/plan` is not `jira`. `/implement` is not `vim`. `/qualify` is not `pytest`. Inserting a tool name — such as `/test` — into this sequence would mean describing one phase in the grammar of a different system entirely.
+
+### The Agentic Shift Changes Who Reads the Vocabulary
+
+In human-driven development, a command name needs to be **recalled from memory under time pressure**. Familiarity dominates. This is why legacy CLI tooling uses short, tool-referencing verbs: they optimize for human motor-pattern recall.
+
+In agent-driven development, the workflow command is **read from a specification document** by an entity with perfect recall. An AI agent executing `/qualify` does not benefit from the word "test" being common in npm documentation. It benefits from the command name **accurately scoping the full responsibility of the phase it is about to execute** — which includes test strategy negotiation, multi-layer test execution, scenario scaffolding, defect triage, and release gate control. The name `/qualify` encodes all of that. The name `/test` encodes only one part of it.
+
+### The Framework Speaks in Its Own Voice
+
+The Guards Framework has already established its own conceptual vocabulary:
+
+- **Guards** — not "rules" or "checks"
+- **Grill Engine** — not "questionnaire" or "wizard"
+- **Dual Grounding Mandate** — not "prerequisites"
+- **Token Economy Guard** — not "performance budget"
+- **Process Status Matrix** — not "kanban board" or "ticket tracker"
+
+These terms were not chosen because they were familiar. They were chosen because they precisely describe what the concepts *do inside this framework*. The workflow command vocabulary follows the same principle: each command name is chosen for what it means in this lifecycle, not for what it resembles in a different one.
+
+This vocabulary is a one-time learning cost. After a single reading, the lifecycle sequence becomes permanently self-documenting — because every command name already carries its full operational meaning.
+
+---
+
 ## Key Components
 
 The framework is organized into two primary structural pillars:
@@ -44,31 +85,31 @@ graph TD
         Process["/process<br/>(Legacy Processing)"]
         Plan["/plan<br/>(6-Phase Blueprint Design)"]
         Implement["/implement<br/>(Scaffolding & Testing)"]
-        Verify["/verify<br/>(Validation & Assertions)"]
+        Qualify["/qualify<br/>(Release Qualification)"]
         Release["/release<br/>(Publish & Deployment)"]
     end
 
     subgraph "Composed Playbooks (playbooks/)"
-        Hotfix["<b>Hotfix Playbook</b><br/>Quick /init ➔ /implement ➔ Fast /verify ➔ Expedited /release"]
-        Bugfix["<b>Bugfix Playbook</b><br/>Quick /init ➔ Focused /plan ➔ /implement ➔ /verify"]
-        Feature["<b>Major Feature Playbook</b><br/>Full /init ➔ 6-Phase /plan ➔ /implement ➔ /verify ➔ /release"]
+        Hotfix["<b>Hotfix Playbook</b><br/>Quick /init ➔ /implement ➔ Fast /qualify ➔ Expedited /release"]
+        Bugfix["<b>Bugfix Playbook</b><br/>Quick /init ➔ Focused /plan ➔ /implement ➔ /qualify"]
+        Feature["<b>Major Feature Playbook</b><br/>Full /init ➔ 6-Phase /plan ➔ /implement ➔ /qualify ➔ /release"]
         Legacy["<b>Legacy Onboarding Playbook</b><br/>Full /init ➔ /process ➔ Blueprint /plan"]
     end
 
     Init -.-> Hotfix
     Implement -.-> Hotfix
-    Verify -.-> Hotfix
+    Qualify -.-> Hotfix
     Release -.-> Hotfix
 
     Init -.-> Bugfix
     Plan -.-> Bugfix
     Implement -.-> Bugfix
-    Verify -.-> Bugfix
+    Qualify -.-> Bugfix
 
     Init -.-> Feature
     Plan -.-> Feature
     Implement -.-> Feature
-    Verify -.-> Feature
+    Qualify -.-> Feature
     Release -.-> Feature
 
     Init -.-> Legacy
@@ -80,9 +121,9 @@ graph TD
 
 | Playbook | Target Scenario | Composed Workflow Sequence | Key Characteristics |
 | :--- | :--- | :--- | :--- |
-| **`hotfix`** | Production incidents & urgent hotfixes | Quick `/init` $\rightarrow$ `/implement` $\rightarrow$ Fast `/verify` $\rightarrow$ Expedited `/release` | Bypasses `/plan` and `/process`; inherits workspace environment configs; fast-tracks directly to execution. |
-| **`bugfix`** | Standard defect resolution | Quick `/init` $\rightarrow$ Focused `/plan` (Summary + Verification Plan) $\rightarrow$ `/implement` $\rightarrow$ `/verify` | Focuses planning strictly on root-cause analysis and regression test contract definition. |
-| **`feature`** | Major new features & greenfield modules | Full `/init` $\rightarrow$ 6-Phase `/plan` $\rightarrow$ `/implement` $\rightarrow$ `/verify` $\rightarrow$ `/release` | Full architectural governance, 6-phase blueprints, versioned implementation maps, and complete test suites. |
+| **`hotfix`** | Production incidents & urgent hotfixes | Quick `/init` $\rightarrow$ `/implement` $\rightarrow$ Fast `/qualify` $\rightarrow$ Expedited `/release` | Bypasses `/plan` and `/process`; inherits workspace environment configs; fast-tracks directly to execution. |
+| **`bugfix`** | Standard defect resolution | Quick `/init` $\rightarrow$ Focused `/plan` (Summary + Qualification Plan) $\rightarrow$ `/implement` $\rightarrow$ `/qualify` | Focuses planning strictly on root-cause analysis and regression test contract definition. |
+| **`feature`** | Major new features & greenfield modules | Full `/init` $\rightarrow$ 6-Phase `/plan` $\rightarrow$ `/implement` $\rightarrow$ `/qualify` $\rightarrow$ `/release` | Full architectural governance, 6-phase blueprints, versioned implementation maps, and complete test suites. |
 | **`legacy_onboarding`** | Ingesting and restructuring existing code | Full `/init` $\rightarrow$ `/process` $\rightarrow$ Selective `/plan` | Read-only legacy analysis, layer restructuring, resource staging, and baseline blueprint population. |
 
 ---
@@ -129,6 +170,6 @@ agent-driven-templates/
     │       ├── implement_implementation_map.md # Antigravity execution map & decision links
     │       ├── implement_tests.md     # Action implementation verification test suite
     │       └── guards/                # Antigravity native primitives (rules, skills, workflows, templates)
-    ├── verify/                        # Automated Verification workflow (Planned)
+    ├── qualify/                       # Release Qualification workflow (Planned)
     └── release/                       # Release & Operations workflow (Planned)
 ```

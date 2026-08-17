@@ -25,7 +25,7 @@ When a project adopts the Guards framework, its entire development process is go
 - **Target Release / Feature**: `[e.g., release/v1.0.0 or feature/ui-dashboard]`
 - **Git Branch**: `[e.g., release/v1.0.0]`
 - **Initialization Date**: `YYYY-MM-DD`
-- **Active Workflow**: `[init | process | plan | implement | verify | release | idle]`
+- **Active Workflow**: `[init | process | plan | implement | qualify | release | idle]`
 
 ---
 
@@ -45,7 +45,7 @@ This matrix tracks top-level workflows and focused sub-processes. The 6-Phase Pl
 | ├── **3.5 Phase 5: Verify** | `[ ] Not Started` | Test specs & assertions (`phase-5-verification.md`) | YYYY-MM-DD |
 | └── **3.6 Phase 6: Operations** | `[ ] Not Started` | Dockerfiles, Compose & CI/CD (`phase-6-operation.md`) | YYYY-MM-DD |
 | **4. /implement** | `[ ] Not Started` | Code scaffolding & layout implementation | YYYY-MM-DD |
-| **5. /verify** | `[ ] Not Started` | Automated test suite execution & E2E checks | YYYY-MM-DD |
+| **5. /qualify** | `[ ] Not Started` | Full-spectrum qualification & release gating | YYYY-MM-DD |
 | **6. /release** | `[ ] Not Started` | Docker builds, PR creation & deployment | YYYY-MM-DD |
 
 ### Status Key:

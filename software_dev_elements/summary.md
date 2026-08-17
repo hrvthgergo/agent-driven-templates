@@ -63,10 +63,10 @@ software_dev_elements/
 │       ├── implement_tests.md          # Action implementation verification test suite
 │       └── guards/                     # Antigravity native primitives (rules, skills, workflows, templates)
 │
-├── verify/                             # [Tier 2] Automated Verification Subfolder
-│   ├── verify_workflow.md              # Detailed workflow specifications
-│   ├── verify_implementation_map.md
-│   └── guards/                         # [Tier 3] Environment-Specific Guards
+├── qualify/                             # [Tier 2] Release Qualification Subfolder
+│   ├── qualify_workflow.md              # Detailed workflow specifications
+│   ├── qualify_implementation_map.md
+│   └── guards/                          # [Tier 3] Environment-Specific Guards
 │
 └── release/                            # [Tier 2] Release & Operations Subfolder
     ├── release_workflow.md             # Detailed workflow specifications
@@ -121,11 +121,11 @@ graph TD
     
     Plan --> Implement["/implement (Action Implementation)<br/>• Draft implementation-map.md<br/>• Developer Consent Gate<br/>• Incremental Code Scaffolding"]
     
-    Implement --> Verify["/verify (Automated Verification)<br/>• Execute Unit, Integration & E2E Tests<br/>• Run System Assertions & Regression Checks"]
+    Implement --> Qualify["/qualify (Release Qualification)<br/>• Execute Unit, Integration & E2E Tests<br/>• Run System Assertions & Regression Checks"]
     
-    Verify --> TestCheck{All Tests Pass?}
+    Qualify --> TestCheck{All Tests Pass?}
     
-    TestCheck -->|No| Fix["Log Failures in verification_log.json<br/>Lock /release Command"] --> Implement
+    TestCheck -->|No| Fix["Log Failures in qualification_log.json<br/>Lock /release Command"] --> Implement
     TestCheck -->|Yes| Release["/release (Release & Operations)<br/>• Build Production Docker Images<br/>• Deploy & Create Pull Request<br/>• Generate Walkthrough Summary"]
     
     Release --> Evolve{Post-Release Evolution?}
@@ -167,9 +167,9 @@ graph TD
         *   [implement_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/implement/implement_questions.md) (Micro-Architecture Q&A Grill schema)
         *   [antigravity/implement_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/implement/antigravity/implement_implementation_map.md) (Antigravity guard execution roadmap)
         *   [antigravity/implement_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/implement/antigravity/implement_tests.md) (Action implementation verification test specification)
-5.  **Verification (/verify)**
-    *   *Path*: `software_dev_elements/verify/`
-    *   *Purpose*: Executes automated assertions, unit/integration/E2E test suites, and regression checks.
+5.  **Release Qualification (`/qualify`)**
+    *   *Path*: `software_dev_elements/qualify/`
+    *   *Purpose*: Executes automated assertions, unit/integration/E2E test suites, regression checks, defect reporting, and issue tracking. Acts as the mandatory quality gate controlling release progression.
 6.  **Release & Operations (/release)**
     *   *Path*: `software_dev_elements/release/`
     *   *Purpose*: Manages Docker builds, operations deployment, walkthrough summaries, and pull requests.

@@ -71,7 +71,7 @@ To ensure isolated, reproducible test runs, the test environment MUST meet the f
 | **Q8** | **Symlink Integrity Check** | Selected Option 1 (*Yes - Verify symlink resolution*). | Asserted symlinks in `agent-workspace/src/` are valid relative links. |
 | **Q9** | **Execution Start Confirmation** | Selected Option 1 (*Confirm and execute implementation*). | User approval logged; begins Node S4 code scaffolding loop. |
 | **S4** | **Step-by-Step Scaffolding & Solution Tests** | User confirms Step 1 (Data Models) $\rightarrow$ Step 2 (Engine Service) $\rightarrow$ Step 3.A/3.B (UI Presenters) $\rightarrow$ Step 4 (API Routes). | Scaffolds files, runs unit tests per step, syncs decisions to `plans/user-auth/`. |
-| **S7** | **PROCESS_STATUS.md Sync** | System synchronizes process status matrix. | Row 4 marked `Completed`. Next command recommended: `/verify`. |
+| **S7** | **PROCESS_STATUS.md Sync** | System synchronizes process status matrix. | Row 4 marked `Completed`. Next command recommended: `/qualify`. |
 
 ---
 

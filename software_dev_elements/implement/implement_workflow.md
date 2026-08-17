@@ -6,13 +6,13 @@ This document serves as the authoritative baseline specification for the `/imple
 
 ## 1. General Introduction & Core Philosophy
 
-The `/implement` workflow is the execution engine of the **Guards Framework** and is recognized as **the most complex workflow in the entire operational lifecycle**. It bridges feature planning (`/plan`) and automated verification (`/verify`) by executing the physical multi-project transformation of the codebase.
+The `/implement` workflow is the execution engine of the **Guards Framework** and is recognized as **the most complex workflow in the entire operational lifecycle**. It bridges feature planning (`/plan`) and release qualification (`/qualify`) by executing the physical multi-project transformation of the codebase.
 
 ```mermaid
 graph LR
     Plan["/plan<br/>Feature Planning & Design<br/>• phase-1-summary.md ... phase-6-operation.md<br/>• implementation_map_v<version>.md<br/>• phase-5-verification.md (Test Plan)"] 
     --> Implement["/implement (Action Implementation - Highest Complexity)<br/>1. FIRST ACTION: Verify Right Map & Test Plan<br/>2. Sync Inner Agent Artifacts with Version-Controlled plans/<br/>3. Physical Code Creation across codebase-* Projects<br/>4. Critical & New Feature Solution Testing<br/>5. OPTIONAL: AST Code Graph Updates (--code-graph)<br/>6. OPTIONAL: System Docs Updates (--docs)"]
-    --> Verify["/verify<br/>Automated Verification<br/>• Run Test Suites & System Assertions"]
+    --> Qualify["/qualify<br/>Release Qualification<br/>• Run Test Suites & System Assertions"]
 ```
 
 ### Core Purpose: Complete Feature Implementation & Complexity Scope
@@ -199,7 +199,7 @@ graph TD
     S5 --> S6
     
     S6 -->|--docs Enabled| S6_Exec[Node S6: OPTIONAL System Documentation Update<br/>Promote plans/<feature>/resource/ to global docs/]
-    S6 -->|--docs Disabled (Default)| S7[Node S7: PROCESS_STATUS.md Sync & Handoff to /verify]
+    S6 -->|--docs Disabled (Default)| S7[Node S7: PROCESS_STATUS.md Sync & Handoff to /qualify]
     
     S6_Exec --> S7
 ```
@@ -233,8 +233,8 @@ graph TD
 * **Description**: **Executed ONLY when `--docs` or `--full-sync` flag is present**. Synthesizes implemented code structures and feature reference materials from `agent-workspace/plans/<feature-name>/resource/`, updating general system documentation under `agent-workspace/docs/`.
 * **Token Economy Guard**: Skipped by default to prevent token bloat.
 
-#### Step 7: PROCESS_STATUS.md Sync & Handoff to `/verify` (Node S7)
-* **Description**: Updates `agent-workspace/plans/<feature-name>/PROCESS_STATUS.md`, marking Row 4 (`/implement`) as `Completed` with datestamped history log. Prepares handoff for `/verify`.
+#### Step 7: PROCESS_STATUS.md Sync & Handoff to `/qualify` (Node S7)
+* **Description**: Updates `agent-workspace/plans/<feature-name>/PROCESS_STATUS.md`, marking Row 4 (`/implement`) as `Completed` with datestamped history log. Prepares handoff for `/qualify`.
 
 ---
 

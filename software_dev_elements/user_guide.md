@@ -21,9 +21,9 @@ graph TD
     
     Plan --> Implement["4. Action Implementation (/implement)<br/>• Scaffolds code logic & UI components<br/>• Updates general system docs & code graphs"]
     
-    Implement --> Verify["5. Automated Verification (/verify)<br/>• Runs unit, integration, and E2E tests"]
+    Implement --> Qualify["5. Release Qualification (/qualify)<br/>• Runs unit, integration, and E2E tests"]
     
-    Verify --> Release["6. Release & Operations (/release)<br/>• Builds Docker images & creates PRs"]
+    Qualify --> Release["6. Release & Operations (/release)<br/>• Builds Docker images & creates PRs"]
 ```
 
 ---
@@ -47,7 +47,7 @@ graph TD
 
 ### Phase 3: Structured Feature Planning (`/plan`)
 - **Architectural Bridge**: Once `/init` (and `/process`, if applicable) finishes successfully, the workspace is structured and ready for architectural design. This is where the `/plan` workflow begins.
-- **Downstream Agent Guidance**: All planning artifacts are stored inside `.agents/plans/<feature-name>/` to share complete, unambiguous context with AI agents executing downstream implementation (`/implement`), testing (`/verify`), and deployment (`/release`).
+- **Downstream Agent Guidance**: All planning artifacts are stored inside `.agents/plans/<feature-name>/` to share complete, unambiguous context with AI agents executing downstream implementation (`/implement`), qualification (`/qualify`), and deployment (`/release`).
 
 ### Phase 4: Action Implementation (`/implement`)
 - **Execution Engine & Highest Complexity**: `/implement` is the most complex workflow in the framework lifecycle, responsible for physical code creation across `codebase-*` sub-repositories.
@@ -89,6 +89,6 @@ The framework coordinates three distinct execution layers during initialization 
 ## 4. Next Steps & Guide Extensions
 
 This initial version of the User Guide establishes the core operational mental model and workflow sequencing. As feature development progresses, subsequent sections will expand to include:
-- Step-by-step CLI usage guides and flag reference tables (`--auto`, `--plan`, `--dry-run`).
+- Step-by-step CLI usage guides and flag reference tables (`--auto`, `--plan`, `--dry-run`, `--scope`, `--coverage`).
 - Greenfield vs. Brownfield operational walkthroughs.
-- Detailed guidelines for downstream execution workflows (`/implement`, `/verify`, `/release`).
+- Detailed guidelines for downstream execution workflows (`/implement`, `/qualify`, `/release`).

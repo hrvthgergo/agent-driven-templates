@@ -131,7 +131,7 @@ The implementation plan directly realizes the following design blueprints and `/
 *   **List of Actions**:
     1.  Create `software_dev_elements/init/antigravity/guards/templates/PROCESS_STATUS.md`:
         *   Header with Target Release/Feature, Git Branch, Date, and Active Workflow.
-        *   **Block 1 (Workflow Execution Matrix)**: Status table tracking `/init`, `/process`, `/plan` (with sub-rows 3.1–3.6 for Phase 1 to Phase 6), `/implement`, `/verify`, and `/release`.
+        *   **Block 1 (Workflow Execution Matrix)**: Status table tracking `/init`, `/process`, `/plan` (with sub-rows 3.1–3.6 for Phase 1 to Phase 6), `/implement`, `/qualify`, and `/release`.
         *   **Block 2 (Datestamped Daily Execution History)**: Immutable daily log format timestamped by `### [YYYY-MM-DD]`.
     2.  Create `software_dev_elements/init/antigravity/guards/templates/phase-1-summary.md`:
         *   Sections for Project Purpose, Scope, Key Milestones, Documentation URLs, Software Architecture Pattern, Tech Stack, and Workspace Folder Maps.

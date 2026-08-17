@@ -81,7 +81,7 @@ To ensure system stability, code quality, and process governance, six unchangeab
   > **How should unit and integration test specs from the Test Plan be scaffolded during implementation?**
   > 1. Scaffold unit test files alongside production code files per step
   > 2. Scaffold production code first, then scaffold corresponding test suites in step finalization
-  > 3. Focus strictly on production code scaffolding (Defer test execution to `/verify`)
+  > 3. Focus strictly on production code scaffolding (Defer test execution to `/qualify`)
   > 4. Other / Free-text (Describe custom test scaffolding strategy)
 
 ---
