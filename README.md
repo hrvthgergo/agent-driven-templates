@@ -17,17 +17,17 @@ The **Guards Framework** intentionally separates high-level architectural design
 
 ## Key Components
 
-All active specifications and operational playbooks are maintained under `fullstack_software_dev/`:
+All active specifications and operational playbooks are maintained under `software_dev_elements/`:
 
-- **[Summary & Operational Lifecycle](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/summary.md)**: Central entry point detailing the 3-tier structure, 6 development workflows, and lifecycle Mermaid diagram.
-- **[End-User Guide & Operational Manual](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/user_guide.md)**: Conceptual summary, workflow principles, and operational manual for developers and AI agents.
-- **[Guard Process Handling Spec (`PROCESS_STATUS.md`)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md)**: Release and feature governance with a concise 2-block status matrix and daily execution history log.
-- **[Multi-Repo & Docker Strategy Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md)**: Hybrid Docker containerization, symlink mapping, and dynamic layer expansion.
-- **[Standard Folder Structure Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/folder_structure.md)**: Standard project folder layout, pure control plane architecture, and sub-repo symlink definitions.
-- **[Initialization Workflow (/init)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md)**: Bootstrapping playbook, 3-block Q&A schema (`init_questions.md`), and initialization execution maps.
-- **[Legacy Code & Docs Processing (/process)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/process_workflow.md)**: Standalone workflow for deep historical code analysis, documentation review, and refactoring proposals.
-- **[Grill Engine Gate](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md)**: Reusable Q&A engine design rules and state file formats (`GRILL_STATUS.md`).
-- **[Language-Specific Code Graph Taxonomy](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/code_graph_taxonomy.md)**: Universal node and connection rules for Python, Go, and JavaScript.
+- **[Summary & Operational Lifecycle](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/summary.md)**: Central entry point detailing the 3-tier structure, 6 development workflows, and lifecycle Mermaid diagram.
+- **[End-User Guide & Operational Manual](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/user_guide.md)**: Conceptual summary, workflow principles, and operational manual for developers and AI agents.
+- **[Guard Process Handling Spec (`PROCESS_STATUS.md`)](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process_handling.md)**: Release and feature governance with a concise 2-block status matrix and daily execution history log.
+- **[Multi-Repo & Docker Strategy Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/multi_repo_architecture.md)**: Hybrid Docker containerization, symlink mapping, and dynamic layer expansion.
+- **[Standard Folder Structure Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/folder_structure.md)**: Standard project folder layout, pure control plane architecture, and sub-repo symlink definitions.
+- **[Initialization Workflow (/init)](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_workflow.md)**: Bootstrapping playbook, 3-block Q&A schema (`init_questions.md`), and initialization execution maps.
+- **[Legacy Code & Docs Processing (/process)](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process/process_workflow.md)**: Standalone workflow for deep historical code analysis, documentation review, and refactoring proposals.
+- **[Grill Engine Gate](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/grill_engine.md)**: Reusable Q&A engine design rules and state file formats (`GRILL_STATUS.md`).
+- **[Language-Specific Code Graph Taxonomy](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/code_graph_taxonomy.md)**: Universal node and connection rules for Python, Go, and JavaScript.
 
 ---
 
@@ -36,7 +36,7 @@ All active specifications and operational playbooks are maintained under `fullst
 ```text
 agent-driven-templates/
 ├── README.md                          # Repository overview & framework philosophy
-└── fullstack_software_dev/
+└── software_dev_elements/
     ├── summary.md                     # Central entry point, 3-tier structure & workflow sitemap
     ├── user_guide.md                  # End-User Guide & Operational Manual
     ├── folder_structure.md            # Standard repository folder layout

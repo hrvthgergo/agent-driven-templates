@@ -138,7 +138,7 @@ Fullstack e-commerce engine with real-time inventory management.
 SUMMARY
 
 # Install Pre-commit Safety Hook
-cp /Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/antigravity/guards/hooks/pre-commit-plan-validator.sh .git/hooks/pre-commit
+cp /Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/antigravity/guards/hooks/pre-commit-plan-validator.sh .git/hooks/pre-commit
 chmod +x .git/hooks/pre-commit
 
 echo "--> Scenario A Scaffolding complete. Running Assertions..."

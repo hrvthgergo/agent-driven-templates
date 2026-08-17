@@ -6,10 +6,10 @@ This document defines the step-by-step implementation plan for creating the conc
 
 ## 1. Overview & Objectives
 
-The objective of this phase is to construct the environment-specific master guard assets for **Google Antigravity** under `fullstack_software_dev/init/antigravity/guards/`.
+The objective of this phase is to construct the environment-specific master guard assets for **Google Antigravity** under `software_dev_elements/init/antigravity/guards/`.
 
 ### Role of this Implementation Map vs. Universal Design Baselines
-*   **Universal Design & Architectural Baselines (Platform-Agnostic)**: [init_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md), [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md), [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/folder_structure.md), [summary.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/summary.md), and [multi_repo_architecture.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md) form the platform-agnostic design specification. These baselines define the theoretical workflows, baselines, and state machine rules so they can be implemented in any AI agent environment (e.g. OpenAI Codex, Claude Code, Cursor, or Antigravity).
+*   **Universal Design & Architectural Baselines (Platform-Agnostic)**: [init_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_workflow.md), [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_questions.md), [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/folder_structure.md), [summary.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/summary.md), and [multi_repo_architecture.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/multi_repo_architecture.md) form the platform-agnostic design specification. These baselines define the theoretical workflows, baselines, and state machine rules so they can be implemented in any AI agent environment (e.g. OpenAI Codex, Claude Code, Cursor, or Antigravity).
 *   **Antigravity Implementation Guideline**: This document (`init_implementation_map.md`) is the specific, concrete execution roadmap detailing how our agent implements those baselines within **Google Antigravity** using its native environment primitives:
     *   **Workflows (`workflows/`)**: Stateful execution playbooks defining multi-step state machine nodes (e.g. `init.md`).
     *   **Rules (`rules/`)**: Permanent constraint instructions enforcing baselines and prompting laws (e.g. `init-grill.md`).
@@ -25,17 +25,17 @@ The implementation plan directly realizes the following design blueprints and `/
 
 | Design Decision / Principle | Documented Source File | Antigravity Native Primitive | Applied Guard Path |
 | :--- | :--- | :--- | :--- |
-| **Hybrid Docker Strategy** | [multi_repo_architecture.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md#L71-L95) | Rule & Skill Primitives | `rules/init-grill.md` (Baseline 1) & `skills/init-scaffolder/SKILL.md` |
-| **Pure Control Plane (`agent-workspace/`) & Sub-Repo Layout** | [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/folder_structure.md) | Rule & Skill Primitives | `rules/init-grill.md` (Baseline 2) & `skills/init-scaffolder/SKILL.md` |
-| **Q0 Mode Gate (Quick & Simple vs. Major Feature)** | [init_questions.md Section 3](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md) | Rule & Workflow Primitives | `rules/init-grill.md` & `workflows/init.md` |
-| **QS1–QS3 Quick & Simple Interview (3 Questions)** | [init_questions.md Section 4](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md) | Rule & Workflow Primitives | `rules/init-grill.md` & `workflows/init.md` |
-| **Q1–Q10 Major Feature Deep-Dive (10 Questions)** | [init_questions.md Section 5](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md) | Rule & Workflow Primitives | `rules/init-grill.md` & `workflows/init.md` |
-| **Permanent Q&A Audit Log (`GRILL_STATUS.md`)** | [grill_engine.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md) & `/grill-me` Q3 | Rule & Template Primitives | `rules/init-grill.md` & `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` |
-| **Branch Governance & Matrix (`PROCESS_STATUS.md`)** | [process_handling.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md) | Template & Workflow Primitives | `templates/PROCESS_STATUS.md` & `workflows/init.md` |
-| **Pure Relative Symlinks & 3-Part Check** | [multi_repo_architecture.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md#L7-L35) & `/grill-me` Q5 | Skill Primitive | `skills/init-scaffolder/SKILL.md` |
-| **Decoupled Brownfield Flow (No Restructuring)** | [init_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md#L126-L134) | Workflow & Skill Primitives | `workflows/init.md` & `skills/init-scaffolder/SKILL.md` |
-| **Pre-Commit Safety Interceptor** | [init_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md#L169-L179) & `/grill-me` Q2 | Hook Primitive | `hooks/pre-commit-plan-validator.sh` |
-| **Workflow Context Notification Law** | [user_guide.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/user_guide.md#L53-L67) | Rule, Workflow & Template Primitives | `rules/init-grill.md`, `workflows/init.md` & `templates/PROCESS_STATUS.md` |
+| **Hybrid Docker Strategy** | [multi_repo_architecture.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/multi_repo_architecture.md#L71-L95) | Rule & Skill Primitives | `rules/init-grill.md` (Baseline 1) & `skills/init-scaffolder/SKILL.md` |
+| **Pure Control Plane (`agent-workspace/`) & Sub-Repo Layout** | [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/folder_structure.md) | Rule & Skill Primitives | `rules/init-grill.md` (Baseline 2) & `skills/init-scaffolder/SKILL.md` |
+| **Q0 Mode Gate (Quick & Simple vs. Major Feature)** | [init_questions.md Section 3](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_questions.md) | Rule & Workflow Primitives | `rules/init-grill.md` & `workflows/init.md` |
+| **QS1–QS3 Quick & Simple Interview (3 Questions)** | [init_questions.md Section 4](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_questions.md) | Rule & Workflow Primitives | `rules/init-grill.md` & `workflows/init.md` |
+| **Q1–Q10 Major Feature Deep-Dive (10 Questions)** | [init_questions.md Section 5](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_questions.md) | Rule & Workflow Primitives | `rules/init-grill.md` & `workflows/init.md` |
+| **Permanent Q&A Audit Log (`GRILL_STATUS.md`)** | [grill_engine.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/grill_engine.md) & `/grill-me` Q3 | Rule & Template Primitives | `rules/init-grill.md` & `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` |
+| **Branch Governance & Matrix (`PROCESS_STATUS.md`)** | [process_handling.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process_handling.md) | Template & Workflow Primitives | `templates/PROCESS_STATUS.md` & `workflows/init.md` |
+| **Pure Relative Symlinks & 3-Part Check** | [multi_repo_architecture.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/multi_repo_architecture.md#L7-L35) & `/grill-me` Q5 | Skill Primitive | `skills/init-scaffolder/SKILL.md` |
+| **Decoupled Brownfield Flow (No Restructuring)** | [init_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_workflow.md#L126-L134) | Workflow & Skill Primitives | `workflows/init.md` & `skills/init-scaffolder/SKILL.md` |
+| **Pre-Commit Safety Interceptor** | [init_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_workflow.md#L169-L179) & `/grill-me` Q2 | Hook Primitive | `hooks/pre-commit-plan-validator.sh` |
+| **Workflow Context Notification Law** | [user_guide.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/user_guide.md#L53-L67) | Rule, Workflow & Template Primitives | `rules/init-grill.md`, `workflows/init.md` & `templates/PROCESS_STATUS.md` |
 
 ---
 
@@ -46,8 +46,8 @@ The implementation plan directly realizes the following design blueprints and `/
 ### Step 1: Clean & Delete Existing Guard Assets
 
 *   **List of Actions**:
-    1.  Inspect directory `fullstack_software_dev/init/antigravity/guards/`.
-    2.  If `fullstack_software_dev/init/antigravity/guards/` exists and contains pre-existing guard files or subdirectories (`workflows/`, `rules/`, `templates/`, `skills/`, `hooks/`), remove all existing sources inside `fullstack_software_dev/init/antigravity/guards/`.
+    1.  Inspect directory `software_dev_elements/init/antigravity/guards/`.
+    2.  If `software_dev_elements/init/antigravity/guards/` exists and contains pre-existing guard files or subdirectories (`workflows/`, `rules/`, `templates/`, `skills/`, `hooks/`), remove all existing sources inside `software_dev_elements/init/antigravity/guards/`.
 *   **Reasons & Design Decision Links**:
     *   *Clean Slate & Idempotency Guarantee*: Ensures that prior, partial, or outdated guard files are completely purged before scaffolding new master guard assets, guaranteeing a clean, repeatable, and idempotent implementation run.
 
@@ -56,23 +56,23 @@ The implementation plan directly realizes the following design blueprints and `/
 ### Step 2: Scaffold Antigravity Guard Master Directory Tree
 
 *   **List of Actions**:
-    1.  Create Antigravity tier-3 guard root directory: `fullstack_software_dev/init/antigravity/guards/`.
+    1.  Create Antigravity tier-3 guard root directory: `software_dev_elements/init/antigravity/guards/`.
     2.  Create primitive subdirectories:
-        *   `fullstack_software_dev/init/antigravity/guards/workflows/`
-        *   `fullstack_software_dev/init/antigravity/guards/rules/`
-        *   `fullstack_software_dev/init/antigravity/guards/templates/`
-        *   `fullstack_software_dev/init/antigravity/guards/skills/init-scaffolder/`
-        *   `fullstack_software_dev/init/antigravity/guards/hooks/`
+        *   `software_dev_elements/init/antigravity/guards/workflows/`
+        *   `software_dev_elements/init/antigravity/guards/rules/`
+        *   `software_dev_elements/init/antigravity/guards/templates/`
+        *   `software_dev_elements/init/antigravity/guards/skills/init-scaffolder/`
+        *   `software_dev_elements/init/antigravity/guards/hooks/`
 *   **Reasons & Design Decision Links**:
-    *   *Master Location*: Implements the decision from `/grill-me` Question 1 alignment and `summary.md` 3-Tier scaffold rationale to maintain master Antigravity guard primitives under `fullstack_software_dev/init/antigravity/guards/` for central management before deploying into target project `.agents/` directories during `/init`.
-    *   *Folder Taxonomy*: Strictly mirrors the agentic control directory structure documented in [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/folder_structure.md#L9-L16).
+    *   *Master Location*: Implements the decision from `/grill-me` Question 1 alignment and `summary.md` 3-Tier scaffold rationale to maintain master Antigravity guard primitives under `software_dev_elements/init/antigravity/guards/` for central management before deploying into target project `.agents/` directories during `/init`.
+    *   *Folder Taxonomy*: Strictly mirrors the agentic control directory structure documented in [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/folder_structure.md#L9-L16).
 
 ---
 
 ### Step 3: Implement Stateful Workflow Playbook (`workflows/init.md`)
 
 *   **List of Actions**:
-    1.  Create `fullstack_software_dev/init/antigravity/guards/workflows/init.md`.
+    1.  Create `software_dev_elements/init/antigravity/guards/workflows/init.md`.
     2.  Define YAML frontmatter (`name: init`, `description: Bootstrapping workflow for Guards framework in Antigravity`).
     3.  Implement the dual-path state machine execution nodes using Antigravity workflow syntax:
         *   **Node S1 (Check Environment & Branch Initialization)**: Executes `docker info` to verify Docker engine availability/privileges, initializes Git context, creates/checks out the `initial` branch for greenfield runs, or creates/checks out a `feature/<feature_name>` branch for re-runs in an already initialized workspace.
@@ -92,16 +92,16 @@ The implementation plan directly realizes the following design blueprints and `/
         *   `/init --dry-run`: Previews proposed files, symlinks, Docker configs, and status sheets without writing to disk.
         *   `/init --force`: Overwrites default `.agents/` rules/workflows while preserving custom phase blueprints.
 *   **Reasons & Design Decision Links**:
-    *   *Step-by-Step Lifecycle*: Realizes the 7-node execution design documented in [init_workflow.md Section 3](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md#L75-L180).
-    *   *Parameter Behaviors*: Implements parameter rules documented in [init_workflow.md Section 4](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md#L194-L211) and `/grill-me` alignment.
-    *   *Decoupled Brownfield Rule*: Enforces the no-restructuring constraint during `/init`, referencing [init_workflow.md Section 1](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md#L26-L28).
+    *   *Step-by-Step Lifecycle*: Realizes the 7-node execution design documented in [init_workflow.md Section 3](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_workflow.md#L75-L180).
+    *   *Parameter Behaviors*: Implements parameter rules documented in [init_workflow.md Section 4](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_workflow.md#L194-L211) and `/grill-me` alignment.
+    *   *Decoupled Brownfield Rule*: Enforces the no-restructuring constraint during `/init`, referencing [init_workflow.md Section 1](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_workflow.md#L26-L28).
 
 ---
 
 ### Step 4: Implement Neutral Q&A Grill Rule Guard (`rules/init-grill.md`)
 
 *   **List of Actions**:
-    1.  Create `fullstack_software_dev/init/antigravity/guards/rules/init-grill.md`.
+    1.  Create `software_dev_elements/init/antigravity/guards/rules/init-grill.md`.
     2.  Encode **Unchangeable Baseline Enforcement**:
         *   *Baseline 1*: Hybrid Docker Handling Strategy (zero questions asked).
         *   *Baseline 2*: Pure Agent Control Plane & Sub-Repository Layout (zero questions asked).
@@ -120,32 +120,32 @@ The implementation plan directly realizes the following design blueprints and `/
     7.  Encode **Audit Log Persistence**:
         *   Maintain `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` permanently alongside `PROCESS_STATUS.md` as an audit log of all Q&A questions and answers.
 *   **Reasons & Design Decision Links**:
-    *   *Baselines*: Implements unchangeable baselines documented in [init_questions.md Section 1](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md#L12-L30).
-    *   *Dual-Mode Q&A*: Implements the Q0 Mode Gate, QS1–QS3 Quick & Simple interview, and Q1–Q10 Major Feature deep-dive documented in [init_questions.md Sections 3–5](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md).
-    *   *Audit Persistence*: Realizes the permanent audit log decision from `/grill-me` Question 3 alignment and [grill_engine.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md).
+    *   *Baselines*: Implements unchangeable baselines documented in [init_questions.md Section 1](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_questions.md#L12-L30).
+    *   *Dual-Mode Q&A*: Implements the Q0 Mode Gate, QS1–QS3 Quick & Simple interview, and Q1–Q10 Major Feature deep-dive documented in [init_questions.md Sections 3–5](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_questions.md).
+    *   *Audit Persistence*: Realizes the permanent audit log decision from `/grill-me` Question 3 alignment and [grill_engine.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/grill_engine.md).
 
 ---
 
 ### Step 5: Implement Document Templates (`templates/PROCESS_STATUS.md` & `templates/phase-1-summary.md`)
 
 *   **List of Actions**:
-    1.  Create `fullstack_software_dev/init/antigravity/guards/templates/PROCESS_STATUS.md`:
+    1.  Create `software_dev_elements/init/antigravity/guards/templates/PROCESS_STATUS.md`:
         *   Header with Target Release/Feature, Git Branch, Date, and Active Workflow.
         *   **Block 1 (Workflow Execution Matrix)**: Status table tracking `/init`, `/process`, `/plan` (with sub-rows 3.1–3.6 for Phase 1 to Phase 6), `/implement`, `/verify`, and `/release`.
         *   **Block 2 (Datestamped Daily Execution History)**: Immutable daily log format timestamped by `### [YYYY-MM-DD]`.
-    2.  Create `fullstack_software_dev/init/antigravity/guards/templates/phase-1-summary.md`:
+    2.  Create `software_dev_elements/init/antigravity/guards/templates/phase-1-summary.md`:
         *   Sections for Project Purpose, Scope, Key Milestones, Documentation URLs, Software Architecture Pattern, Tech Stack, and Workspace Folder Maps.
 *   **Reasons & Design Decision Links**:
-    *   *Process Guard*: Implements the 2-block release and feature lifecycle document documented in [process_handling.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md).
+    *   *Process Guard*: Implements the 2-block release and feature lifecycle document documented in [process_handling.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process_handling.md).
     *   *Plan Status Consolidation*: Realizes the decision to consolidate 6-phase planning status into `PROCESS_STATUS.md` Block 1, removing `PLAN_STATUS.md`.
-    *   *Phase 1 Blueprint*: Provides the initial architectural summary file scaffolded during Step 4 as specified in [init_workflow.md Node C1](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md#L67-L70).
+    *   *Phase 1 Blueprint*: Provides the initial architectural summary file scaffolded during Step 4 as specified in [init_workflow.md Node C1](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_workflow.md#L67-L70).
 
 ---
 
 ### Step 6: Implement Multi-Repo & Hybrid Docker Scaffolding Skill (`skills/init-scaffolder/SKILL.md`)
 
 *   **List of Actions**:
-    1.  Create `fullstack_software_dev/init/antigravity/guards/skills/init-scaffolder/SKILL.md` with YAML frontmatter (`name: init-scaffolder`, `description: Antigravity skill for workspace scaffolding, relative symlinking, and Docker provisioning`).
+    1.  Create `software_dev_elements/init/antigravity/guards/skills/init-scaffolder/SKILL.md` with YAML frontmatter (`name: init-scaffolder`, `description: Antigravity skill for workspace scaffolding, relative symlinking, and Docker provisioning`).
     2.  Define **Directory Scaffolding & `.gitkeep` Preservation Procedures**:
         *   Create `agent-workspace/` (`.agents/` with `rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`; `plans/<branch_name>/`; `docs/`; `src/`).
         *   Create `codebase-devops/` sub-repository (`.github/workflows/`, `docker/`, `config/`, `src/`, `tests/`).
@@ -161,16 +161,16 @@ The implementation plan directly realizes the following design blueprints and `/
     5.  Define **Brownfield Folder Linking Procedures**:
         *   Link existing source/doc folders into `phase-1-summary.md` without running any codebase restructuring.
 *   **Reasons & Design Decision Links**:
-    *   *Multi-Repo Symlinks & Verification*: Implements relative symlinking and the 3-part verification check established in [multi_repo_architecture.md Section 1](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md#L8-L34) and `/grill-me` Question 5 alignment.
-    *   *Hybrid Docker Handling Strategy*: Implements the containerization setup specified in [multi_repo_architecture.md Section 4](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md#L71-L95).
-    *   *Brownfield Decoupling*: Ensures `/init` links folders without refactoring, linking to [init_workflow.md Section 1](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md#L26-L28).
+    *   *Multi-Repo Symlinks & Verification*: Implements relative symlinking and the 3-part verification check established in [multi_repo_architecture.md Section 1](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/multi_repo_architecture.md#L8-L34) and `/grill-me` Question 5 alignment.
+    *   *Hybrid Docker Handling Strategy*: Implements the containerization setup specified in [multi_repo_architecture.md Section 4](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/multi_repo_architecture.md#L71-L95).
+    *   *Brownfield Decoupling*: Ensures `/init` links folders without refactoring, linking to [init_workflow.md Section 1](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_workflow.md#L26-L28).
 
 ---
 
 ### Step 7: Implement Pre-Commit Validator Safety Hook (`hooks/pre-commit-plan-validator.sh`)
 
 *   **List of Actions**:
-    1.  Create `fullstack_software_dev/init/antigravity/guards/hooks/pre-commit-plan-validator.sh`.
+    1.  Create `software_dev_elements/init/antigravity/guards/hooks/pre-commit-plan-validator.sh`.
     2.  Write bash validation logic:
         *   Check active Git branch and resolve corresponding plan path `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md`.
         *   Verify that `PROCESS_STATUS.md` contains Block 1 and Block 2 formatting.
@@ -178,17 +178,17 @@ The implementation plan directly realizes the following design blueprints and `/
         *   Exit with code `0` if valid; exit with code `1` and print error trace if validation fails.
     3.  Add installation instructions for Step 5 (S5) (`cp` to `.git/hooks/pre-commit` and `chmod +x`).
 *   **Reasons & Design Decision Links**:
-    *   *Safety Interceptor*: Implements the pre-commit validation hook specified in [init_workflow.md Node S6](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md#L169-L179) and `/grill-me` Question 2 alignment.
+    *   *Safety Interceptor*: Implements the pre-commit validation hook specified in [init_workflow.md Node S6](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_workflow.md#L169-L179) and `/grill-me` Question 2 alignment.
 
 ---
 
 ### Step 8: Verification & Testing
 
 *   **List of Actions**:
-    1.  Validate execution permissions on shell scripts (`chmod +x fullstack_software_dev/init/antigravity/guards/hooks/pre-commit-plan-validator.sh`).
+    1.  Validate execution permissions on shell scripts (`chmod +x software_dev_elements/init/antigravity/guards/hooks/pre-commit-plan-validator.sh`).
     2.  Verify YAML frontmatter in `workflows/init.md`, `rules/init-grill.md`, and `skills/init-scaffolder/SKILL.md`.
     3.  Verify all markdown links across created guard files to ensure no broken references exist.
-    4.  Verify full structural alignment with [summary.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/summary.md).
+    4.  Verify full structural alignment with [summary.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/summary.md).
 *   **Reasons & Design Decision Links**:
     *   *Quality Assurance*: Ensures all master guard artifacts are syntax-valid, executable, and fully ready for deployment during `/init`.
 
@@ -197,7 +197,7 @@ The implementation plan directly realizes the following design blueprints and `/
 ### Step 9: Workflow E2E Testing
 
 *   **List of Actions**:
-    1.  Execute the end-to-end greenfield test scenario collected and designed in [init_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/antigravity/init_tests.md) inside an isolated test sandbox (`/tmp/test-init-workspace`).
+    1.  Execute the end-to-end greenfield test scenario collected and designed in [init_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/antigravity/init_tests.md) inside an isolated test sandbox (`/tmp/test-init-workspace`).
     2.  Simulate `/init` command execution and prompt responses for both Quick & Simple Mode (QS1–QS3) and Major Feature Mode (Q1–Q10).
     3.  Run and evaluate all automated validation assertions:
         *   Verify Docker engine status (`docker info`) and `initial` branch creation (`git branch --show-current`).
@@ -213,14 +213,14 @@ The implementation plan directly realizes the following design blueprints and `/
         *   Assert pre-commit safety hook installation (`.git/hooks/pre-commit` executable check).
     4.  Evaluate test pass/fail metrics and record validation results.
 *   **Reasons & Design Decision Links**:
-    *   *Final Validation Round*: Serves as the final validation round to evaluate the operational behavior and complete integration of all created master guard primitives (`workflows/init.md`, `rules/init-grill.md`, `skills/init-scaffolder/SKILL.md`, `hooks/pre-commit-plan-validator.sh`, and templates) against the test scenario in [init_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/antigravity/init_tests.md).
+    *   *Final Validation Round*: Serves as the final validation round to evaluate the operational behavior and complete integration of all created master guard primitives (`workflows/init.md`, `rules/init-grill.md`, `skills/init-scaffolder/SKILL.md`, `hooks/pre-commit-plan-validator.sh`, and templates) against the test scenario in [init_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/antigravity/init_tests.md).
 
 ---
 
 ## 4. Verification & Readiness Checklist
 
-- `[x]` Step 1: Clean & Delete Existing Guard Assets (`fullstack_software_dev/init/antigravity/guards/`)
-- `[x]` Step 2: Scaffold Antigravity Guard Master Directory Tree (`fullstack_software_dev/init/antigravity/guards/`)
+- `[x]` Step 1: Clean & Delete Existing Guard Assets (`software_dev_elements/init/antigravity/guards/`)
+- `[x]` Step 2: Scaffold Antigravity Guard Master Directory Tree (`software_dev_elements/init/antigravity/guards/`)
 - `[x]` Step 3: Implement Stateful Workflow Playbook (`workflows/init.md`)
 - `[x]` Step 4: Implement Neutral Q&A Grill Rule (`rules/init-grill.md`)
 - `[x]` Step 5: Implement Document Templates (`templates/PROCESS_STATUS.md` & `templates/phase-1-summary.md`)

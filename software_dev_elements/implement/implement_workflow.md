@@ -21,7 +21,7 @@ The `/implement` workflow is responsible for the **entire implementation of the 
 1. **Code Creation & Scaffolding**: Generating production-grade source code, DTO schemas, domain services, data persistence entities, and presentation components.
 2. **Multi-Project `codebase-*` Handling**: Managing multi-repository project layouts (`codebase-ui`, `codebase-engine`, `codebase-data`, `codebase-ops`) through workspace symlink layers (`agent-workspace/src/<layer>`), adhering strictly to layer boundaries and dependency policies.
 3. **Solution Testing (Critical Features & New Feature Specifications)**: Scaffolding and executing test suites to guarantee BOTH that existing critical system features remain unbroken (regression protection) AND that new feature capabilities satisfy all test contracts in the Test Plan (`phase-5-verification.md`).
-4. **OPTIONAL: AST Code Graph Generation & Synchronization (`code_graph`)**: On-demand parsing of source code ASTs to build and maintain 2-block modular code graph subfolders (`agent-workspace/src/<layer>/code_graph/`) following [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/code_graph_taxonomy.md).
+4. **OPTIONAL: AST Code Graph Generation & Synchronization (`code_graph`)**: On-demand parsing of source code ASTs to build and maintain 2-block modular code graph subfolders (`agent-workspace/src/<layer>/code_graph/`) following [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/code_graph_taxonomy.md).
 5. **OPTIONAL: System Documentation Promotion (`docs/`)**: On-demand promotion of feature resources staged in `plans/<feature-name>/resource/` into global `agent-workspace/docs/` describing all active features across the entire system.
 
 ### Decision Persistence & Inner Agent Artifact Alignment Mandate
@@ -60,7 +60,7 @@ The `/implement` workflow is responsible for the **entire implementation of the 
 ### Mandatory Dual Grounding Principle
 > [!IMPORTANT]
 > **Dual Grounding Mandate**: Any code implementation MUST stand firmly on two mandatory foundational resources created or confirmed prior to code modification:
-> 1. **An `implementation_map` (`implementation_map_v<version>.md`)**: The version-linked execution roadmap detailing step-by-step file scaffolding, dependencies, and modification scopes (adhering to [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implementation_map_taxonomy.md)).
+> 1. **An `implementation_map` (`implementation_map_v<version>.md`)**: The version-linked execution roadmap detailing step-by-step file scaffolding, dependencies, and modification scopes (adhering to [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/implementation_map_taxonomy.md)).
 > 2. **A Test Plan / Verification Specification (`phase-5-verification.md`)**: The testing specification defining critical feature assertions, unit/integration test contracts, edge cases, and verification criteria for the system capabilities being implemented.
 
 ---
@@ -129,7 +129,7 @@ graph TD
 ### C. Multi-Project `codebase-*` Sub-Repository Handling
 The `/implement` workflow governs multi-repository and layered project structures:
 1. **Target Sub-Repositories**: Source code modifications are written to `codebase-ui/`, `codebase-engine/`, `codebase-data/`, or `codebase-ops/` (accessed through symlinks under `agent-workspace/src/<layer>/`).
-2. **Layer Boundary Enforcement**: Code in lower layers (e.g., `codebase-data`) MUST NOT import or depend on upper layers (e.g., `codebase-ui`), adhering strictly to the Rule of Dependency defined in [multi_repo_architecture.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md).
+2. **Layer Boundary Enforcement**: Code in lower layers (e.g., `codebase-data`) MUST NOT import or depend on upper layers (e.g., `codebase-ui`), adhering strictly to the Rule of Dependency defined in [multi_repo_architecture.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/multi_repo_architecture.md).
 3. **Symlink Resolution Check**: Prior to scaffolding, the agent asserts that relative symlinks in `agent-workspace/src/<layer>` resolve correctly to underlying sub-repositories.
 
 ### D. Solution Testing (Critical System Features & New Feature Specs)
@@ -160,7 +160,7 @@ agent-workspace/plans/<feature-name>/  → Version-Controlled Planning Artifacts
 
 ### G. Optional AST Code Graph Synchronization Rule (`--code-graph`)
 1. **Default State**: By default, `/implement` skips AST code graph updates to conserve token usage and minimize API overhead.
-2. **When Enabled (`--code-graph` or `--full-sync`)**: The agent parses newly created or modified source files for structural elements (`Module`, `Class`, `Struct`, `Interface`, `Function`) and updates `agent-workspace/src/<layer>/code_graph/` (`graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`) following [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/code_graph_taxonomy.md).
+2. **When Enabled (`--code-graph` or `--full-sync`)**: The agent parses newly created or modified source files for structural elements (`Module`, `Class`, `Struct`, `Interface`, `Function`) and updates `agent-workspace/src/<layer>/code_graph/` (`graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`) following [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/code_graph_taxonomy.md).
 
 ### H. Optional System Documentation Promotion Rule (`--docs`)
 1. **Default State**: By default, `/implement` skips general system documentation updates to avoid token bloat during active development.
@@ -171,7 +171,7 @@ agent-workspace/plans/<feature-name>/  → Version-Controlled Planning Artifacts
 ## 4. Directory Layout & Workflow Scaffold
 
 ```text
-fullstack_software_dev/implement/
+software_dev_elements/implement/
 └── implement_workflow.md               # Tier 2 Universal Specification (This Document)
 ```
 

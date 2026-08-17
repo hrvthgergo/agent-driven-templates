@@ -29,13 +29,13 @@ Based on these three knowledge sources, `/process` executes four primary operati
 - **Selective Blueprint Population & Workspace Code Graph Generation**: Fills out relevant phase blueprint documents in `agent-workspace/plans/<feature-name>/` (filling out all 5 is optional and strictly based on relevance of identified content) and generates a dedicated **Modular Code Graph Subfolder** (`agent-workspace/src/<layer>/code_graph/`) inside the workspace layer directory containing 2 distinct analytical blocks (Unordered Graph + Multi-Perspective Analysis).
 
 ### Key Features
-1. **Grill Engine Gate**: Uses a stateful, interactive interview based on [process_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/process_questions.md) to confirm legacy source mappings and execution strategies.
+1. **Grill Engine Gate**: Uses a stateful, interactive interview based on [process_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process/process_questions.md) to confirm legacy source mappings and execution strategies.
 2. **`/init` Knowledge Review**: Reads and summarizes metadata previously collected during `/init` (`agent-workspace/plans/<branch_name>/phase-1-summary.md` and `PROCESS_STATUS.md`).
 3. **Remote Sources & Submodules Audit**: Identifies remote code repositories, Git submodules, and external documentation sources connected to the legacy codebase that were omitted during `/init`.
 4. **Dual Execution Options**: Supports both **Plan-First Mode** (generating `agent-workspace/plans/<branch_name>/restructure-proposal.md` and waiting for developer approval) and **Immediate Execution Mode** (copying files into `codebase-*` layers immediately while recording the execution plan artifact).
 5. **Untouched Legacy Source & As-Is Migration Policy**: Original legacy repositories remain 100% untouched and read-only. Source code is migrated as-is into `codebase-*` sub-repositories without code modifications, while non-code documentation is staged inside `agent-workspace/plans/<feature-name>/resource/`.
 6. **Selective Phase Blueprint Population**: Phase blueprints (`phase-1-summary.md` through `phase-5-operation.md`) are populated **only if relevant information is identified** in the legacy sources. Filling out all 5 blueprints is not mandatory.
-7. **2-Block Modular Workspace Code Graph Subfolders**: To keep production `codebase-*` sub-repositories clean and free of documentation overhead, code graphs are built adhering to [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/code_graph_taxonomy.md) and placed exclusively inside **`agent-workspace/src/<layer>/code_graph/`** (no symlinks required), containing:
+7. **2-Block Modular Workspace Code Graph Subfolders**: To keep production `codebase-*` sub-repositories clean and free of documentation overhead, code graphs are built adhering to [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/code_graph_taxonomy.md) and placed exclusively inside **`agent-workspace/src/<layer>/code_graph/`** (no symlinks required), containing:
    * **Block 1**: `graph.md` (Unordered structural dependency graph & element registry based on language-specific nodes for Python, Go, and JS).
    * **Block 2 (Perspective A)**: `process_flow.md` (Process entry points & control flow initiation).
    * **Block 2 (Perspective B)**: `data_flow.md` (Data sources: user provided, configs, APIs, databases, hardcoded).
@@ -95,7 +95,7 @@ Execution follows an 8-node state machine (Nodes S0 through S7), adhering to the
 *   **Step 2: Audit Omitted Remotes & Submodules (Node S2)**:
     *   Scans `.git/config` and `.gitmodules` across linked legacy folders (`git remote -v`, `git submodule status`), discovering remote Git origins, submodules, and external documentation URLs omitted during `/init`.
 *   **Step 3: Q&A Grill Gate (Node S3)**:
-    *   Invokes interactive Q&A interview governed by [process_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/process_questions.md).
+    *   Invokes interactive Q&A interview governed by [process_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process/process_questions.md).
     *   Maintains **Read-Only Legacy Source & Isolated Destination Baselines** (zero in-place edits in original legacy directories).
 *   **Step 4: Draft Legacy Restructuring Plan (Node S4)**:
     *   Generates `agent-workspace/plans/<branch_name>/restructure-proposal.md`, detailing source-to-layer file mapping, non-code doc staging in `agent-workspace/plans/<feature-name>/resource/`, module path aliasing, and workspace symlink strategies.

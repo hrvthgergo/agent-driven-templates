@@ -23,7 +23,7 @@ To ensure operational stability and system governance, the following five baseli
 * **Specification**: Creating or drafting a versioned `implementation_map_v<version>.md` inside `.agents/plans/<feature-name>/` is allowed, but **ZERO code scaffolding, file creation, or source code modification in `src/` or `codebase-*/` is permitted during `/plan`**. Source code implementation remains strictly reserved for `/implement`.
 
 ### Baseline 5: Version-Based Implementation Map Naming & Schema
-* **Specification**: Implementation map documents MUST be named after the target software version created from that map (e.g. `implementation_map_v1.0.0.md` or `implementation_map_v1.1.0_layout.md`) and MUST adhere to the Tier 1 schema defined in [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implementation_map_taxonomy.md).
+* **Specification**: Implementation map documents MUST be named after the target software version created from that map (e.g. `implementation_map_v1.0.0.md` or `implementation_map_v1.1.0_layout.md`) and MUST adhere to the Tier 1 schema defined in [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/implementation_map_taxonomy.md).
 
 ---
 
@@ -193,4 +193,4 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > 2. Draft Full Feature Release Map (Specify target version, e.g. `implementation_map_v1.0.0.md`)
   > 3. Draft Partial Scope Release Map (Specify target version and scope, e.g. `implementation_map_v1.1.0_layout.md`)
   > 4. Other / Free-text (Describe custom versioned implementation map requirements)
-* **Resulting Action**: If option 2 or 3 selected, drafts `.agents/plans/<feature-name>/implementation_maps/implementation_map_v<version>.md` adhering to [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implementation_map_taxonomy.md).
+* **Resulting Action**: If option 2 or 3 selected, drafts `.agents/plans/<feature-name>/implementation_maps/implementation_map_v<version>.md` adhering to [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/implementation_map_taxonomy.md).

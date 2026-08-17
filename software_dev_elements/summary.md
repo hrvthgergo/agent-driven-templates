@@ -24,7 +24,7 @@ The project directory structure is designed in a 3-tier layout to maintain separ
 ### Directory Scaffold
 
 ```text
-fullstack_software_dev/
+software_dev_elements/
 ├── summary.md                          # Central Entry Point & Framework Summary
 ├── user_guide.md                       # End-User Guide & Operational Manual
 ├── folder_structure.md                 # [Tier 1] Standard Repository Directory Layout Spec
@@ -77,8 +77,8 @@ fullstack_software_dev/
 ### 3-Tier Structure Rationale
 
 1. **General Design Elements (Main Root Folder)**
-   - Located directly in `fullstack_software_dev/`.
-   - Defines overarching concepts, cross-cutting rules, user guides, and general-purpose specs (e.g., [End-User Guide](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/user_guide.md), [Grill Engine](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md), [Multi-Repository Architecture Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md), and [Process Guard Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md)) applied across all workflow steps.
+   - Located directly in `software_dev_elements/`.
+   - Defines overarching concepts, cross-cutting rules, user guides, and general-purpose specs (e.g., [End-User Guide](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/user_guide.md), [Grill Engine](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/grill_engine.md), [Multi-Repository Architecture Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/multi_repo_architecture.md), and [Process Guard Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process_handling.md)) applied across all workflow steps.
 
 2. **Step-Specific Workflow Subfolders & Implementation Maps**
    - Subdirectories dedicated to each operational phase (e.g., `init/`, `process/`, `plan/`, `implement/`, `verify/`, `release/`).
@@ -94,19 +94,19 @@ fullstack_software_dev/
 
 The framework utilizes shared components and architectural blueprints that operate across all stages of the lifecycle:
 
-- **[End-User Guide & Operational Manual](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/user_guide.md)**: Conceptual summary, workflow principles, and operational manual for developers and AI agents.
-- **[Interactive Q&A Engine (Grill Engine)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md)**: A stateful, resume-ready interview module used to gather requirements and resolve architecture ambiguities before generating plans or code.
-- **[Multi-Repository Architecture Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md)**: Specifications mapping out directory separation, symbolic link mapping, config dependency policies (Rule of Dependency), and the Hybrid Docker handling strategy to isolate UI and Engine components.
-- **[Standard Folder Structure Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/folder_structure.md)**: Standard directory layout, pure control plane (`agent-workspace/`), and sub-repository symlink structure across the framework lifecycle.
-- **[Guard Process Handling Spec (Process Guard)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md)**: Specifications for release-governed process handling documents (`PROCESS_STATUS.md`), featuring a concise 2-block structure (Workflow Execution Matrix & Datestamped Daily History) and branch-based release initialization options.
-- **[Implementation Map Taxonomy Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implementation_map_taxonomy.md)**: Standardized schema and structure for `implementation_map.md` documents, guiding agent-driven code scaffolding, dependency sequences, and verification command execution.
+- **[End-User Guide & Operational Manual](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/user_guide.md)**: Conceptual summary, workflow principles, and operational manual for developers and AI agents.
+- **[Interactive Q&A Engine (Grill Engine)](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/grill_engine.md)**: A stateful, resume-ready interview module used to gather requirements and resolve architecture ambiguities before generating plans or code.
+- **[Multi-Repository Architecture Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/multi_repo_architecture.md)**: Specifications mapping out directory separation, symbolic link mapping, config dependency policies (Rule of Dependency), and the Hybrid Docker handling strategy to isolate UI and Engine components.
+- **[Standard Folder Structure Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/folder_structure.md)**: Standard directory layout, pure control plane (`agent-workspace/`), and sub-repository symlink structure across the framework lifecycle.
+- **[Guard Process Handling Spec (Process Guard)](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process_handling.md)**: Specifications for release-governed process handling documents (`PROCESS_STATUS.md`), featuring a concise 2-block structure (Workflow Execution Matrix & Datestamped Daily History) and branch-based release initialization options.
+- **[Implementation Map Taxonomy Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/implementation_map_taxonomy.md)**: Standardized schema and structure for `implementation_map.md` documents, guiding agent-driven code scaffolding, dependency sequences, and verification command execution.
 - **Workflow Context Notification Law**: 3-layer notification standard (1-line turn headers, state node transition badges, and persistent disk header metadata) ensuring continuous developer awareness of active workflow state.
 
 ---
 
 ## 4. Planned Development Workflows
 
-The framework is organized into six development workflows, each with its dedicated subdirectory under `fullstack_software_dev/`. The following workflow diagram details the complete operational lifecycle from initialization to post-release evolution:
+The framework is organized into six development workflows, each with its dedicated subdirectory under `software_dev_elements/`. The following workflow diagram details the complete operational lifecycle from initialization to post-release evolution:
 
 ```mermaid
 graph TD
@@ -135,41 +135,41 @@ graph TD
 
 ### Detailed Workflow Descriptions
 
-1.  **[Initialization (/init)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md)**
-    *   *Path*: `fullstack_software_dev/init/`
+1.  **[Initialization (/init)](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_workflow.md)**
+    *   *Path*: `software_dev_elements/init/`
     *   *Purpose*: Bootstraps Docker setups, performs lightweight layer scanning to establish `codebase-*` sub-repository skeletons, links existing source folders into initial documentation, and configures Git origin.
     *   *Key Files*:
-        *   [init_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md) (Detailed specifications)
-        *   [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md) (Scans and Q&A schema)
-        *   [antigravity/init_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/antigravity/init_implementation_map.md) (Antigravity guard execution roadmap)
-        *   [antigravity/init_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/antigravity/init_tests.md) (Greenfield & brownfield verification test specification)
-2.  **[Legacy Code & Docs Processing (/process)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/process_workflow.md)**
-    *   *Path*: `fullstack_software_dev/process/`
+        *   [init_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_workflow.md) (Detailed specifications)
+        *   [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_questions.md) (Scans and Q&A schema)
+        *   [antigravity/init_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/antigravity/init_implementation_map.md) (Antigravity guard execution roadmap)
+        *   [antigravity/init_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/antigravity/init_tests.md) (Greenfield & brownfield verification test specification)
+2.  **[Legacy Code & Docs Processing (/process)](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process/process_workflow.md)**
+    *   *Path*: `software_dev_elements/process/`
     *   *Purpose*: Handles deep historical code analysis, legacy documentation processing, refactoring proposals, and codebase restructuring for brownfield projects.
     *   *Key Files*:
-        *   [process_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/process_workflow.md) (Detailed specifications)
-        *   [process_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/process_questions.md) (Scans and Q&A Grill schema)
-        *   [antigravity/process_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/antigravity/process_implementation_map.md) (Antigravity guard execution roadmap)
-        *   [antigravity/process_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process/antigravity/process_tests.md) (Brownfield verification test specification)
-3.  **[Interactive Planning (/plan)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/plan_workflow.md)**
-    *   *Path*: `fullstack_software_dev/plan/`
+        *   [process_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process/process_workflow.md) (Detailed specifications)
+        *   [process_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process/process_questions.md) (Scans and Q&A Grill schema)
+        *   [antigravity/process_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process/antigravity/process_implementation_map.md) (Antigravity guard execution roadmap)
+        *   [antigravity/process_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process/antigravity/process_tests.md) (Brownfield verification test specification)
+3.  **[Interactive Planning (/plan)](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/plan/plan_workflow.md)**
+    *   *Path*: `software_dev_elements/plan/`
     *   *Purpose*: Leads the user through the creation of the 6-phase blueprint plans tracking status in `PROCESS_STATUS.md`.
     *   *Key Files*:
-        *   [plan_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/plan_workflow.md) (Detailed specifications)
-        *   [plan_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/plan_questions.md) (Scans and Q&A Grill schema)
-        *   [antigravity/plan_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/antigravity/plan_implementation_map.md) (Antigravity guard execution roadmap)
-        *   [antigravity/plan_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/antigravity/plan_tests.md) (Feature planning verification test specification)
-4.  **[Action Implementation (/implement)](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implement/implement_workflow.md)**
-    *   *Path*: `fullstack_software_dev/implement/`
+        *   [plan_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/plan/plan_workflow.md) (Detailed specifications)
+        *   [plan_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/plan/plan_questions.md) (Scans and Q&A Grill schema)
+        *   [antigravity/plan_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/plan/antigravity/plan_implementation_map.md) (Antigravity guard execution roadmap)
+        *   [antigravity/plan_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/plan/antigravity/plan_tests.md) (Feature planning verification test specification)
+4.  **[Action Implementation (/implement)](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/implement/implement_workflow.md)**
+    *   *Path*: `software_dev_elements/implement/`
     *   *Purpose*: The most complex workflow in the framework, responsible for entire feature code creation across `codebase-*` sub-repositories. Executes physical code scaffolding based on mandatory dual grounding (`implementation_map_v<version>.md` + `phase-5-verification.md` Test Plan), enforcing a 4-part step schema (Requirement, Prerequisites, Actions, Verification) and Sequential vs. Parallel stream execution. Guarantees visible step-by-step user interaction with interruption & clarification rights, optional token-optimized Code Graph (`src/<layer>/code_graph/`) and System Docs (`docs/`) updates (`--code-graph`, `--docs`), and mandatory synchronization between inner agent docs (Artifacts) and version-controlled files under `agent-workspace/plans/<feature-name>/`.
     *   *Key Files*:
-        *   [implement_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implement/implement_workflow.md) (Universal Tier 2 baseline specification)
-        *   [implement_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implement/implement_questions.md) (Micro-Architecture Q&A Grill schema)
-        *   [antigravity/implement_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implement/antigravity/implement_implementation_map.md) (Antigravity guard execution roadmap)
-        *   [antigravity/implement_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implement/antigravity/implement_tests.md) (Action implementation verification test specification)
+        *   [implement_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/implement/implement_workflow.md) (Universal Tier 2 baseline specification)
+        *   [implement_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/implement/implement_questions.md) (Micro-Architecture Q&A Grill schema)
+        *   [antigravity/implement_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/implement/antigravity/implement_implementation_map.md) (Antigravity guard execution roadmap)
+        *   [antigravity/implement_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/implement/antigravity/implement_tests.md) (Action implementation verification test specification)
 5.  **Verification (/verify)**
-    *   *Path*: `fullstack_software_dev/verify/`
+    *   *Path*: `software_dev_elements/verify/`
     *   *Purpose*: Executes automated assertions, unit/integration/E2E test suites, and regression checks.
 6.  **Release & Operations (/release)**
-    *   *Path*: `fullstack_software_dev/release/`
+    *   *Path*: `software_dev_elements/release/`
     *   *Purpose*: Manages Docker builds, operations deployment, walkthrough summaries, and pull requests.

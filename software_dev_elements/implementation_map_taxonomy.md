@@ -1,6 +1,6 @@
 # Guard Specification: Implementation Map Taxonomy & Structure (`implementation_map.md`)
 
-This document defines the standardized, high-level structure, schema, and taxonomy for **Implementation Maps** (`implementation_map.md`) across the **Guards Framework**. It is a Tier 1 General Specification linked from [summary.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/summary.md).
+This document defines the standardized, high-level structure, schema, and taxonomy for **Implementation Maps** (`implementation_map.md`) across the **Guards Framework**. It is a Tier 1 General Specification linked from [summary.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/summary.md).
 
 ---
 

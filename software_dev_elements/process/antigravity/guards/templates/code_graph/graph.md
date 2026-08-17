@@ -1,7 +1,7 @@
 # Structural Code Graph: `<layer_name>` Layer
 
 **Location**: `agent-workspace/src/<layer_name>/code_graph/graph.md`  
-**Description**: Block 1 — Unordered structural dependency graph and element registry for the `<layer_name>` layer adhering to [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/code_graph_taxonomy.md).
+**Description**: Block 1 — Unordered structural dependency graph and element registry for the `<layer_name>` layer adhering to [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/code_graph_taxonomy.md).
 
 ---
 

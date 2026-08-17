@@ -1,6 +1,6 @@
 # Guard Specification: Interactive Q&A Engine ("Grill Guard")
 
-This specification defines the reusable, stateful interactive questioning engine (inspired by Antigravity's `/grill-me` workflow) to be used across all workflow commands. It is a general-purpose component linked from the [Central Summary](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/summary.md) of the Guards Framework.
+This specification defines the reusable, stateful interactive questioning engine (inspired by Antigravity's `/grill-me` workflow) to be used across all workflow commands. It is a general-purpose component linked from the [Central Summary](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/summary.md) of the Guards Framework.
 
 ---
 
@@ -32,7 +32,7 @@ The Grill Engine operates as a gatekeeper at the start of any workflow step. Ins
 
 ### A. Question Schemas (`.agents/rules/questions/`)
 Each workflow step has a predefined set of questions stored as Markdown or JSON templates:
-- [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md): Project description, stack choices, container needs, and remote Git settings.
+- [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_questions.md): Project description, stack choices, container needs, and remote Git settings.
 - `plan_phase_2_questions.md`: UI colors, fonts, layout boundaries.
 - `plan_phase_3_questions.md`: DB types, data flow endpoints, third-party APIs.
 - `implement_questions.md`: Micro-architectural choices, refactoring paths.

@@ -15,14 +15,14 @@ The primary goal of `/init` is to initialize the project's agentic, software, an
 To ensure the Guards Framework can be baselined and implemented consistently across diverse AI coding environments (e.g. Google Antigravity, OpenAI Codex, Claude Code, Cursor), the design is divided into two distinct specification tiers:
 
 1.  **Platform-Agnostic Design Baselines (Theoretical & Architectural Specifications)**:
-    *   [summary.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/summary.md): Central framework sitemap and 6-stage operational lifecycle.
-    *   [multi_repo_architecture.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/multi_repo_architecture.md): Hybrid Multi-Repo structure, relative symlinks, Rule of Dependency config isolation, and Hybrid Docker handling strategy.
-    *   [init_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_workflow.md) (*This Document*): Core `/init` workflow state machine design, step-by-step reasoning, state storage mechanics, and guard element definitions.
-    *   [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/init_questions.md): Dual-mode Q&A interview schema — Q0 Mode Gate, QS1–QS3 Quick & Simple interview, Q1–Q10 Major Feature deep-dive, baselines, and auto-detection rules.
-    *   [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/folder_structure.md): Standard workspace folder layout specifications.
+    *   [summary.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/summary.md): Central framework sitemap and 6-stage operational lifecycle.
+    *   [multi_repo_architecture.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/multi_repo_architecture.md): Hybrid Multi-Repo structure, relative symlinks, Rule of Dependency config isolation, and Hybrid Docker handling strategy.
+    *   [init_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_workflow.md) (*This Document*): Core `/init` workflow state machine design, step-by-step reasoning, state storage mechanics, and guard element definitions.
+    *   [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/init_questions.md): Dual-mode Q&A interview schema — Q0 Mode Gate, QS1–QS3 Quick & Simple interview, Q1–Q10 Major Feature deep-dive, baselines, and auto-detection rules.
+    *   [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/folder_structure.md): Standard workspace folder layout specifications.
 2.  **Environment-Specific Execution Guidelines**:
-    *   [antigravity/init_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/antigravity/init_implementation_map.md): Specific execution guideline detailing how our agent implements these baselines within **Google Antigravity** using its native primitives (**rules, skills, workflows, hooks, sidecars, templates**) by scaffolding master guard files under `fullstack_software_dev/init/antigravity/guards/`.
-    *   [antigravity/init_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/init/antigravity/init_tests.md): Test specification and scenario for verifying `/init` greenfield execution in Antigravity.
+    *   [antigravity/init_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/antigravity/init_implementation_map.md): Specific execution guideline detailing how our agent implements these baselines within **Google Antigravity** using its native primitives (**rules, skills, workflows, hooks, sidecars, templates**) by scaffolding master guard files under `software_dev_elements/init/antigravity/guards/`.
+    *   [antigravity/init_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/init/antigravity/init_tests.md): Test specification and scenario for verifying `/init` greenfield execution in Antigravity.
 
 ### Simplicity & Separation of Concerns Rule
 For brownfield projects with existing source code and documentation, `/init` performs **only high-level layer identification** to create `codebase-*` skeletons and link existing source folders. **No code restructuring, deep historical analysis, or refactoring is required or allowed during `/init`**. All historical code analysis and legacy codebase restructuring are decoupled into the dedicated `/process` workflow.
@@ -68,7 +68,7 @@ graph TD
 *   **Folder-Based Environment (Node C)**:
     Organizes physical files, workspace boundaries, and existing source code links.
     *   **Plans & Tracking (Node C1)**: Scaffolds `agent-workspace/plans/` organized into feature/branch subdirectories (e.g., `agent-workspace/plans/initial/` for initial setup, `agent-workspace/plans/<feature_name>/` for feature branches) containing 6-phase blueprint templates, `GRILL_STATUS.md`, and `PROCESS_STATUS.md`.
-    *   **Decoupled Layout & Source Linking (Node C2)**: Maps `src/` symlinks to existing source folders or `codebase-<layer_name>` skeletons. For full details, refer to [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/folder_structure.md).
+    *   **Decoupled Layout & Source Linking (Node C2)**: Maps `src/` symlinks to existing source folders or `codebase-<layer_name>` skeletons. For full details, refer to [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/folder_structure.md).
 
 ---
 

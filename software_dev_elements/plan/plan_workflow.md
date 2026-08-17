@@ -30,13 +30,13 @@ Fundamentally, **the `/plan` workflow is a governed rule for resource usage and 
 
 ### Universal Design vs. Environment Implementation
 - **Universal Design Specifications (Tier 2 - Platform-Agnostic)**:
-  - [summary.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/summary.md): Central framework sitemap and operational lifecycle.
-  - [grill_engine.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md): Interactive Q&A interview engine rules.
-  - [process_handling.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/process_handling.md): Process status matrix and release governance rules.
-  - [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/code_graph_taxonomy.md): Code graph structure and taxonomy specification.
-  - [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implementation_map_taxonomy.md): Implementation map structure and schema specification.
-  - [plan_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/plan_workflow.md) (*This Document*): Core `/plan` state machine design, boundary rules, and execution reasoning.
-  - [plan_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/plan/plan_questions.md): Interactive planning questionnaire schema and scanning rules.
+  - [summary.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/summary.md): Central framework sitemap and operational lifecycle.
+  - [grill_engine.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/grill_engine.md): Interactive Q&A interview engine rules.
+  - [process_handling.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/process_handling.md): Process status matrix and release governance rules.
+  - [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/code_graph_taxonomy.md): Code graph structure and taxonomy specification.
+  - [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/implementation_map_taxonomy.md): Implementation map structure and schema specification.
+  - [plan_workflow.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/plan/plan_workflow.md) (*This Document*): Core `/plan` state machine design, boundary rules, and execution reasoning.
+  - [plan_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/plan/plan_questions.md): Interactive planning questionnaire schema and scanning rules.
 - **Environment-Specific Execution Guidelines (Tier 3 - Antigravity)**:
   - `antigravity/plan_implementation_map.md`: Antigravity-specific execution roadmap using native primitives (**rules, skills, workflows, templates, hooks**).
   - `antigravity/plan_tests.md`: Verification test suite for `/plan` execution.
@@ -76,7 +76,7 @@ Complex features may encompass multiple distinct layers (e.g. web UI + mobile ap
 ### D. Versioned Implementation Map & Asynchronous Execution Rule
 System components can be implemented **in parallel, sequentially, or all at once**. Consequently, the workflow supports decoupled implementation planning guided by a **versioned implementation map**:
 
-1. **Structured Document & Version Naming**: An implementation map is a formal document adhering to [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implementation_map_taxonomy.md). It is named after the target software version (e.g. `implementation_map_v1.0.0.md` or `implementation_map_v1.1.0_engine.md`).
+1. **Structured Document & Version Naming**: An implementation map is a formal document adhering to [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/implementation_map_taxonomy.md). It is named after the target software version (e.g. `implementation_map_v1.0.0.md` or `implementation_map_v1.1.0_engine.md`).
 2. **Step-by-Step Agent Guidance**: Serves as the agent's authoritative roadmap during the `/implement` workflow.
 3. **Flexible Creation Lifecycle**: An `implementation_map_v<version>.md` can be created:
    - **At the end of the `/plan` phase** (via an explicit option in Node S5), OR
@@ -201,7 +201,7 @@ graph TD
 * **Storage Actions**: Initializes `agent-workspace/plans/<feature-name>/` directory structure and logs initial summary.
 
 #### Step 3: Interactive Q&A Session - Affected System, Blueprint & Subfolder Identification (Node S3)
-* **Description**: Immediately follows the initial summary. Executes stateful Q&A interview governed by [grill_engine.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/grill_engine.md).
+* **Description**: Immediately follows the initial summary. Executes stateful Q&A interview governed by [grill_engine.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/grill_engine.md).
 * **Primary Goals**:
   1. Identify **which parts of the system are affected** (Frontend, Engine, API, DB, Operations; partial sub-module vs. full system).
   2. Determine **which specific `phase-*.md` documents should be created** for this feature.
@@ -219,7 +219,7 @@ graph TD
 * **Description**: Synthesizes the generated blueprint set into an Execution Acceptance Summary for developer review.
 * **Versioned Implementation Map Option**:
   - Developers can choose an explicit option: **Draft Versioned Implementation Map for Target Release**.
-  - When selected, the agent identifies the target software version and scope (e.g. `v1.0.0` or `v1.1.0_layout`) and drafts `agent-workspace/plans/<feature-name>/implementation_maps/implementation_map_v<version>.md` adhering to [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/implementation_map_taxonomy.md).
+  - When selected, the agent identifies the target software version and scope (e.g. `v1.0.0` or `v1.1.0_layout`) and drafts `agent-workspace/plans/<feature-name>/implementation_maps/implementation_map_v<version>.md` adhering to [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/implementation_map_taxonomy.md).
   - **STRICT PROHIBITION**: ONLY the creation of the versioned map document inside `agent-workspace/plans/<feature-name>/` is allowed. **Zero code scaffolding or source code modification is permitted during `/plan`**.
 * **Storage Actions**: Writes `implementation_map_v<version>.md` and appends acceptance status to `GRILL_STATUS.md`.
 

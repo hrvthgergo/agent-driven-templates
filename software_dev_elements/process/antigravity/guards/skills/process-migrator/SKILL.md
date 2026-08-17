@@ -34,7 +34,7 @@ To keep production `codebase-*` sub-repositories clean of documentation overhead
    - For each active layer (e.g. `layout`, `engine`), create `agent-workspace/src/<layer>/code_graph/`.
 
 2. **Generate Modular Analysis Files**:
-   - Parse legacy source code adhering to [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/fullstack_software_dev/code_graph_taxonomy.md) (Python, Go, or JS node types) and create 4 files per layer:
+   - Parse legacy source code adhering to [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/software_dev_elements/code_graph_taxonomy.md) (Python, Go, or JS node types) and create 4 files per layer:
      * **`graph.md` (Block 1)**: Unordered structural dependency graph & element registry listing interfaces, classes, functions, entities, and services.
      * **`process_flow.md` (Block 2A)**: Process entry points, execution triggers, and control flow initiation paths.
      * **`data_flow.md` (Block 2B)**: Inventory of data sources (user provided, configs, external APIs, databases, hardcoded constants) and datastream transformations.
