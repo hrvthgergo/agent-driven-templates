@@ -1,6 +1,6 @@
 # Desired Project Folder Structure
 
-This document defines the generic directory layout scaffolded, mapped, and enforced by the `/init` workflow across project repositories. The initial number and scope of `codebase-*` layers (e.g., single-layer UI/Engine only, or multi-layer fullstack) are dynamically configured during the `/init` Grill-me session, and can later be expanded at any point during the project lifecycle.
+This document defines the generic directory layout scaffolded, mapped, and enforced across project repositories. The `/init` workflow provisions the **Control Plane & Knowledge Hub** under `agent-workspace/`. Software layer repositories (`codebase-*`), Docker configurations, and `src/` symlinks are introduced during `/plan` (greenfield) or discovered and linked during `/process` (brownfield).
 
 ```
 [Local Workspace Root]

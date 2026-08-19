@@ -16,24 +16,25 @@ To prevent the master project workspace from becoming a heavy, congested monorep
 ### Local Development Integration (Symlinks)
 On local development environments (both macOS and Windows), symbolic links are placed inside the main workspace `src/` directory to map the active layer repositories into a single visual workspace (e.g., `src/devops` $\rightarrow$ `codebase-devops/src`, `src/qualify` $\rightarrow$ `codebase-qualify/src`, `src/layout` $\rightarrow$ `codebase-layout/src`, `src/engine` $\rightarrow$ `codebase-engine/src`). 
 
-*Note: Projects can initially focus on a single layer (e.g. UI-only or Engine API-only), fullstack, or multi-layer. The initial layer scope and `codebase-*` skeleton count are defined during the `/init` Grill-me session, and can be expanded later via the dynamic layer expansion workflow.*
+*Note: The `/init` action scaffolds the pure control plane (`agent-workspace/`) and creates `src/` as an empty staging folder with a `.gitkeep`. Software layers (`codebase-*`) and relative symlinks are introduced during `/plan` Phase 1 (for greenfield projects) or linked during `/process` (for brownfield projects).*
 
 ---
 
 ### Git & GitHub Remote Origin Setup (`/init` Behavior)
 
-During the `/init` workflow, Git and GitHub remotes are initialized for target sub-repositories (`agent-workspace`, `codebase-devops`, `codebase-layout`, and `codebase-engine`) based on the choices made during the Grill Q&A session (Questions Q4 and Q5):
+During the `/init` workflow, Git is initialized for `agent-workspace/` and linked to the primary remote Git origin based on Q5 (e.g. `https://github.com/org/my-project-workspace.git`), and the initial documentation is immediately pushed.
+
+When software layers are subsequently planned in `/plan` or discovered in `/process`, sub-repositories can follow:
 
 1. **Option A: True Multi-Repository Setup (Independent GitHub Repositories)**:
-   - **`agent-workspace/`**: Initialized with its own `.git` repository and linked to the workspace/docs GitHub remote origin (e.g. `https://github.com/org/my-project-workspace.git`). Tracks `.agents/`, `plans/`, `docs/`, and the **relative symlinks** under `src/`.
-   - **`codebase-devops/`**: Initialized with its own `.git` repository and linked to the DevOps GitHub remote origin (e.g. `https://github.com/org/my-project-devops.git`). Tracks `.github/`, `docker/`, `src/`, `config/`, `tests/`, and standalone `Dockerfile`.
-   - **`codebase-layout/`**: Initialized with its own `.git` repository and linked to the UI layer GitHub remote origin (e.g. `https://github.com/org/my-project-layout.git`). Tracks `src/`, `config/`, `tests/`, and standalone `Dockerfile`.
-   - **`codebase-engine/`**: Initialized with its own `.git` repository and linked to the Engine layer GitHub remote origin (e.g. `https://github.com/org/my-project-engine.git`). Tracks `src/`, `config/`, `tests/`, and standalone `Dockerfile`.
-   - **`codebase-qualify/`**: Initialized with its own `.git` repository and linked to the Test layer GitHub remote origin (e.g. `https://github.com/org/my-project-qualify.git`). Tracks `src/`, `config/`, `tests/`, and qualification `Dockerfile`.
+   - **`agent-workspace/`**: Initialized with its own `.git` repository and linked to the workspace/docs GitHub remote origin. Tracks `.agents/`, `plans/`, `docs/`, and the **relative symlinks** under `src/`.
+   - **`codebase-devops/`**: Initialized during `/plan` Phase 6 with its own `.git` repository. Tracks `.github/`, `docker/`, `src/`, `config/`, `tests/`, and standalone `Dockerfile`.
+   - **`codebase-<layer>/`**: Initialized during `/plan` Phase 1 with its own `.git` repository. Tracks `src/`, `config/`, `tests/`, and standalone `Dockerfile`.
+   - **`codebase-qualify/`**: Initialized during `/plan` Phase 5 with its own `.git` repository. Tracks test scripts, fixtures, and qualification `Dockerfile`.
    - *Symlink Portability*: Because symlinks under `agent-workspace/src/` use relative paths (`../../codebase-<layer>/src`), `agent-workspace` can be committed and pushed to its own GitHub repository without embedding or duplicating sub-repo source code.
 
 2. **Option B: Umbrella Workspace Setup (Single GitHub Repository)**:
-   - If a single repository is selected in Q5, `/init` initializes one root `.git` repository at `[Local Workspace Root]` encompassing all subfolders (`agent-workspace/`, `codebase-devops/`, `codebase-qualify/`, `codebase-layout/`, `codebase-engine/`) under a single GitHub remote origin URL.
+   - If a single repository is used, one root `.git` repository at `[Local Workspace Root]` encompasses all subfolders (`agent-workspace/`, `codebase-devops/`, `codebase-qualify/`, `codebase-layout/`, `codebase-engine/`) under a single GitHub remote origin URL.
 
 ---
 
@@ -72,6 +73,8 @@ This structural segregation establishes an incredibly fast, three-tier continuou
 ---
 
 ## 4. Docker Handling Strategy (The Hybrid Docker Strategy)
+
+*Note: The Hybrid Docker Strategy defines the target architecture for local multi-service orchestration and containerized deployment. Docker configurations (`dev.Dockerfile`, `docker-compose.yml`, and layer `Dockerfile` specs) are **planned and provisioned during `/plan` Phase 6: Operations** (for greenfield projects) or **discovered and catalogued during `/process`** (for brownfield projects). The `/init` action does not create Docker files.*
 
 Docker configurations follow **The Hybrid Docker Handling Strategy** to balance standalone container production deployment with centralized local multi-service orchestration.
 

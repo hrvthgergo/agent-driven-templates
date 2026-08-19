@@ -110,7 +110,7 @@ The framework is organized into six fundamental lifecycle actions, each with its
 
 ```mermaid
 graph TD
-    Start([User Request / Bootstrapping]) --> Init["/init (Initialization Action)<br/>• Docker & Environment Checks<br/>• Discover codebase-* Layers & Symlinks<br/>• Create Git Branch & PROCESS_STATUS.md"]
+    Start([User Request / Bootstrapping]) --> Init["/init (Initialization Action)<br/>• Setup agent-workspace/ & .agents/<br/>• Configure Rules, Skills, Hooks & MCPs<br/>• Configure Remote Origin & Push Documentation"]
     
     Init --> CheckType{Project Type?}
     
@@ -139,18 +139,18 @@ Every action in the Guards Framework operates under a distinct mindset and answe
 
 | Action | The Guiding Question | Persona / Mindset | Core Purpose & Scope |
 | :--- | :--- | :--- | :--- |
-| **`/init`** | **"Where and how do we work?"** | **System Administrator** | Sets up environments, sandboxes, skeletons, and status tracking. |
-| **`/process`** | **"What already exists?"** | **Archaeologist & Analyst** | Ingests legacy code intact, stages docs, and builds code graphs. |
-| **`/plan`** | **"What should the system do?"** | **Architect & Designer** | Designs 6-phase blueprints (incl. `phase-5-test.md`) and implementation maps. |
-| **`/implement`** | **"Does my code work?"** | **Software Engineer** | Scaffolds code and layer unit tests (`codebase-*/tests/`) to verify local logic. |
-| **`/qualify`** | **"Does the whole system work?"** | **Quality Engineer (QA)** | Runs cross-layer suites (`codebase-qualify/`), isolates defects, and gates release. |
-| **`/release`** | **"Is the system delivered?"** | **Release & DevOps Operator** | Builds production Docker images, tags versions, and coordinates deployment. |
+| **`/init`** | **"Where do we work, what are the agent rules, where is the remote repository, and how do we track progress?"** | **System Administrator** | Bootstraps the `agent-workspace/` pure control plane (`.agents/`, `plans/`, `docs/`, `src/`), configures agentic rules/skills/hooks/MCPs, initializes Git branch, configures primary remote Git origin, and pushes initial documentation. Does NOT create `codebase-*/` sub-repositories, Dockerfiles, or make tech stack choices. |
+| **`/process`** | **"What already exists in the legacy codebase?"** | **Archaeologist & Analyst** | Ingests brownfield legacy code and documentation intact, discovers existing programming languages, frameworks, Docker configs, and CI/CD pipelines, categorizes historical assets into staging, and generates topological code graphs. |
+| **`/plan`** | **"What are we going to build, what layers are needed, what tech stack will we use, and how will operations/Docker run?"** | **Architect & Designer** | Designs system architecture, determines software layer scope and creates `codebase-*` sub-repositories with `src/` symlinks, selects programming languages & frameworks, plans Hybrid Docker & CI/CD in Phase 6 (Operations), and generates implementation maps. |
+| **`/implement`** | **"Does my code work in isolation?"** | **Software Engineer** | Scaffolds production code layer-by-layer in `codebase-*` repositories, writes co-located unit tests in `codebase-*/tests/`, and executes local isolation testing. |
+| **`/qualify`** | **"Does the integrated system work as a whole?"** | **Quality Engineer (QA)** | Implements cross-layer test harnesses in `codebase-qualify/`, boots multi-container environments via `codebase-devops/`, runs E2E regression suites, and gates release progression. |
+| **`/release`** | **"Is the system packaged and delivered?"** | **Release & DevOps Operator** | Builds production Docker images, tags versions, generates audit walkthroughs, creates PRs, and coordinates deployment handoffs. |
 
 ### Detailed Action Descriptions
 
 1.  **[Initialization (/init)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_action.md)**
     *   *Path*: `actions/init/`
-    *   *Purpose*: Bootstraps Docker setups, performs lightweight layer scanning to establish `codebase-*` sub-repository skeletons, links existing source folders into initial documentation, and configures Git origin.
+    *   *Purpose*: Bootstraps the agentic environment and `agent-workspace/` control directory, configures rules, skills, hooks, and MCPs, sets up primary remote Git origin, and pushes initial documentation.
     *   *Key Files*:
         *   [init_action.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_action.md) (Detailed specifications)
         *   [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_questions.md) (Scans and Q&A schema)
@@ -158,7 +158,7 @@ Every action in the Guards Framework operates under a distinct mindset and answe
         *   [antigravity/init_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/antigravity/init_tests.md) (Greenfield & brownfield verification test specification)
 2.  **[Legacy Code & Docs Processing (/process)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process/process_action.md)**
     *   *Path*: `actions/process/`
-    *   *Purpose*: Handles deep historical code analysis, legacy documentation processing, refactoring proposals, and codebase restructuring for brownfield projects.
+    *   *Purpose*: Handles deep historical code analysis, legacy documentation processing, discovers existing tech stacks, languages, frameworks, Docker configs, and refactoring proposals for brownfield projects.
     *   *Key Files*:
         *   [process_action.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process/process_action.md) (Detailed specifications)
         *   [process_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process/process_questions.md) (Scans and Q&A Grill schema)
@@ -166,7 +166,7 @@ Every action in the Guards Framework operates under a distinct mindset and answe
         *   [antigravity/process_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process/antigravity/process_tests.md) (Brownfield verification test specification)
 3.  **[Interactive Planning (/plan)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/plan/plan_action.md)**
     *   *Path*: `actions/plan/`
-    *   *Purpose*: Leads the user through the creation of the 6-phase blueprint plans tracking status in `PROCESS_STATUS.md`.
+    *   *Purpose*: Leads the user through the creation of the 6-phase blueprint plans, designs software layer scope (`codebase-*`), selects tech stacks and frameworks, and plans Hybrid Docker / operations in Phase 6.
     *   *Key Files*:
         *   [plan_action.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/plan/plan_action.md) (Detailed specifications)
         *   [plan_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/plan/plan_questions.md) (Scans and Q&A Grill schema)

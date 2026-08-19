@@ -78,12 +78,12 @@ Rather than viewing the development lifecycle merely as a checklist of activitie
 
 | Action | The Guiding Question | The Mindset / Persona | Operational Boundary & Scope |
 | :--- | :--- | :--- | :--- |
-| **`/init`** | **"Where and how do we work?"** | **System Administrator** | Bootstraps agentic, software, and directory environments; sets up repositories, sandboxes, branches, and tracking matrices without altering code logic. |
-| **`/process`** | **"What already exists?"** | **Archaeologist & Analyst** | Ingests brownfield legacy code and documentation intact, categorizing historical context into feature staging and generating topological code graphs. |
-| **`/plan`** | **"What should the system do?"** | **Architect & Designer** | Explores design alternatives, evaluates system impact, authors 6-phase blueprints (including `phase-5-test.md`), and drafts versioned implementation maps. |
-| **`/implement`** | **"Does my code work?"** | **Software Engineer** | Scaffolds production code layer-by-layer and writes unit tests in `codebase-*/tests/` to verify local code logic in isolation. |
-| **`/qualify`** | **"Does the whole system work?"** | **Quality Engineer (QA)** | Executes cross-layer integration, E2E browser flows, and regression catalogs (`codebase-qualify/` and `tests/`), diagnoses multi-layer defects, and certifies release readiness. |
-| **`/release`** | **"Is the system delivered?"** | **Release & DevOps Operator** | Builds production Docker images, tags versions, generates walkthrough audit summaries, creates Pull Requests, and coordinates deployment handoffs. |
+| **`/init`** | **"Where do we work, what are the agent rules, where is the remote repository, and how do we track progress?"** | **System Administrator** | Bootstraps the `agent-workspace/` pure control plane (`.agents/`, `plans/`, `docs/`, `src/`), configures agentic rules/skills/hooks/MCPs, initializes Git branch, configures primary remote Git origin, and pushes initial documentation. Does NOT create `codebase-*/` sub-repositories, Dockerfiles, or make tech stack choices. |
+| **`/process`** | **"What already exists in the legacy codebase?"** | **Archaeologist & Analyst** | Ingests brownfield legacy code and documentation intact, discovers existing programming languages, frameworks, Docker configs, and CI/CD pipelines, categorizes historical assets into staging, and generates topological code graphs. |
+| **`/plan`** | **"What are we going to build, what layers are needed, what tech stack will we use, and how will operations/Docker run?"** | **Architect & Designer** | Designs system architecture, determines software layer scope and creates `codebase-*` sub-repositories with `src/` symlinks, selects programming languages & frameworks, plans Hybrid Docker & CI/CD in Phase 6 (Operations), and generates implementation maps. |
+| **`/implement`** | **"Does my code work in isolation?"** | **Software Engineer** | Scaffolds production code layer-by-layer in `codebase-*` repositories, writes co-located unit tests in `codebase-*/tests/`, and executes local isolation testing. |
+| **`/qualify`** | **"Does the integrated system work as a whole?"** | **Quality Engineer (QA)** | Implements cross-layer test harnesses in `codebase-qualify/`, boots multi-container environments via `codebase-devops/`, runs E2E regression suites, and gates release progression. |
+| **`/release`** | **"Is the system packaged and delivered?"** | **Release & DevOps Operator** | Builds production Docker images, tags versions, generates audit walkthroughs, creates PRs, and coordinates deployment handoffs. |
 
 ### The Separation of Testing Concerns
 

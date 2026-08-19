@@ -81,7 +81,12 @@ This section logs daily process initiations, completed milestones, and key decis
 2. **`/init` Branch Initialization**:
    - `/init --release <version>`: Creates a Git branch `release/<version>` from `main`/`master`, scaffolds `agent-workspace/plans/PROCESS_STATUS.md`, and registers the initial status matrix.
    - `/init --feature <feature-name>`: Creates a Git branch `feature/<feature-name>`, scaffolds `agent-workspace/plans/<feature-name>/PROCESS_STATUS.md`, and initializes the workflow matrix with `process` marked as `[-] Not In Scope` by default for greenfield features.
+   - **Branch Origination Rule**: When creating a new branch in an existing project (e.g. for a feature, bugfix, or hotfix), the parent branch is determined by:
+     1. If only one branch exists, originate from it.
+     2. If multiple branches exist but all are merged/rebased into `main`/`master`, select `main`/`master`.
+     3. If multiple unmerged active branches exist: the user may specify the parent in the prompt; otherwise, the agent MUST ask the user which branch to originate from.
 3. **Immutability of Closed Logs**: Past daily log entries in Block 2 must never be modified or overwritten; new events are strictly appended under the current date header.
+4. **Brownfield Discovery Scope**: The `/process` workflow is responsible for discovering and cataloguing existing Docker configurations, tech stacks, programming languages, CI/CD pipelines, and cloud infrastructure in brownfield projects. These discoveries inform `/plan` Phase 6 (Operations) decisions.
 
 ---
 

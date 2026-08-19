@@ -1,4 +1,4 @@
-# Phase 1 Summary Blueprint: Architectural Overview
+# Phase 1 Summary Blueprint: Project & Feature Overview
 
 **Project / Feature Name**: {{PROJECT_NAME}}  
 **Branch**: {{GIT_BRANCH}}  
@@ -20,19 +20,18 @@
 
 ---
 
-## 2. Architecture & Tech Stack
+## 2. Remote Repositories & Knowledge Links
 
-*   **Architecture Pattern**: {{ARCHITECTURE_PATTERN}}
-*   **Layer Skeletons**:
-    *   `codebase-devops`: DevOps & Container Orchestration (`.github/workflows/`, `docker/`)
-    *   `codebase-layout`: UI / Frontend Layer
-    *   `codebase-engine`: Backend Engine / API Layer
-*   **Tech Stack**: {{TECH_STACK}}
+*   **Primary Remote Git Origin**: {{PRIMARY_REMOTE_ORIGIN}}
+*   **Documentation Repository**: {{DOCS_REPOSITORY}}
+*   **Additional Remote Repositories**: {{ADDITIONAL_REMOTES}}
 
 ---
 
-## 3. Directory & Symlink Mapping
+## 3. Workspace Folder Map
 
-*   `agent-workspace/src/devops` $\rightarrow$ `../../codebase-devops/src`
-*   `agent-workspace/src/layout` $\rightarrow$ `../../codebase-layout/src`
-*   `agent-workspace/src/engine` $\rightarrow$ `../../codebase-engine/src`
+*   **Control Plane Root**: `agent-workspace/`
+*   **Rules & Governance**: `agent-workspace/.agents/rules/`
+*   **Workflows & Playbooks**: `agent-workspace/.agents/workflows/`
+*   **Active Plan Directory**: `agent-workspace/plans/{{GIT_BRANCH}}/`
+*   **Staging Directories**: `agent-workspace/docs/`, `agent-workspace/src/`

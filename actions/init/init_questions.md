@@ -5,29 +5,22 @@ This document defines the Q&A interview schema, auto-detection rules, unchangeab
 The `/init` Grill-Me session operates in **two distinct modes**, selected by the user at the very start of the interview:
 
 1. **Quick & Simple Mode**: A fast-track 3-question interview for bug fixes, minor changes, and small enhancements within an already initialized workspace.
-2. **Major Feature / Greenfield Mode**: The complete deep-dive interview (Q1–Q10) for major architectural features or first-time greenfield workspace setup.
+2. **Major Feature / Greenfield Mode**: The complete deep-dive interview (Q1–Q7) for major architectural features or first-time greenfield workspace setup.
 
 ---
 
 ## 1. Unchangeable Baselines (No Questions Asked)
 
-To ensure operational consistency and structural stability, the following two baselines are solid and non-negotiable. **Zero questions are asked about these baselines during the `/init` interview** (regardless of mode):
+To ensure operational consistency and structural stability, the following baseline is solid and non-negotiable. **Zero questions are asked about this baseline during the `/init` interview** (regardless of mode):
 
-### Baseline 1: Containerization Setup (Software Environment)
-*   **Specification**: The **Hybrid Docker Handling Strategy** MUST be used without exception.
+### Baseline 1: Pure Agent Control Plane & Folder Layout (Folder Environment)
+*   **Specification**: The `/init` action strictly scaffolds the **Control Plane & Knowledge Hub** under `agent-workspace/`. It does NOT create empty `codebase-*/` sub-repositories or Dockerfiles.
 *   **Enforced Architecture**:
-    *   `codebase-devops/docker/dev.Dockerfile`: Isolated agent execution sandbox environment.
-    *   `codebase-devops/docker/docker-compose.yml`: Local multi-service orchestrator linking layer sub-repositories.
-    *   `codebase-<layer_name>/Dockerfile`: Standalone production build specs inside each sub-repository.
-
-### Baseline 2: Folder Environment Layout (Folder Environment)
-*   **Specification**: The physical directory structure of the workspace is solid and MUST follow the designed Guards layout.
-*   **Enforced Architecture**:
-    *   Root multi-repo layout: `agent-workspace/`, `codebase-devops/`, `codebase-<layer_a>/`, `codebase-<layer_b>/`.
     *   `agent-workspace/.agents/`: Control directory (`rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`).
     *   `agent-workspace/plans/`: Feature-bound planning blueprints organized by branch (`plans/initial/`, `plans/<feature_name>/`).
-    *   `agent-workspace/src/`: Pure relative symlinks (`src/devops` $\rightarrow$ `../../codebase-devops/src`, `src/layout` $\rightarrow$ `../../codebase-layout/src`, `src/engine` $\rightarrow$ `../../codebase-engine/src`).
-    *   *Note*: While the **number and scope** of `codebase-*` layers are questioned in Major Feature Mode (Q7), the internal directory structure follows the designed baseline unconditionally.
+    *   `agent-workspace/docs/`: Human-facing system documentation.
+    *   `agent-workspace/src/`: Empty entry point directory (with `.gitkeep`) ready to receive relative symlinks when software layers are introduced during `/plan` (greenfield) or linked during `/process` (brownfield).
+*   *Note*: Software layer scope (`codebase-*`), programming languages, and containerization strategy (Hybrid Docker) are planned during `/plan` (or discovered by `/process` for brownfield projects), not during `/init`.
 
 ---
 
@@ -38,23 +31,23 @@ To ensure operational consistency and structural stability, the following two ba
                       │    Start /init Scan & Check      │
                       └────────────────┬─────────────────┘
                                        │
-                              ┌────────┴────────┐
-                              │  Q0: Mode Gate   │
-                              │  Quick or Major? │
-                              └───┬─────────┬────┘
-                                  │         │
-                        [Quick & Simple]  [Major Feature / Greenfield]
-                                  │         │
-                      ┌───────────┘         └───────────┐
-                      │                                 │
-              QS1 → QS2 → QS3                  Q1 → Q2 → ... → Q10
-              (3 Questions)                    (10 Questions with
-                      │                         Auto-Detection Scan)
-                      │                                 │
-                      └──────────┬──────────────────────┘
-                                 │
-                          [Node S3 → S7]
-                      (Shared Execution Path)
+                               ┌────────┴────────┐
+                               │  Q0: Mode Gate   │
+                               │  Quick or Major? │
+                               └───┬─────────┬────┘
+                                   │         │
+                         [Quick & Simple]  [Major Feature / Greenfield]
+                                   │         │
+                       ┌───────────┘         └───────────┐
+                       │                                 │
+               QS1 → QS2 → QS3                  Q1 → Q2 → ... → Q7
+               (3 Questions)                    (7 Questions with
+                       │                         Auto-Detection Scan)
+                       │                                 │
+                       └──────────┬──────────────────────┘
+                                  │
+                           [Node S3 → S7]
+                       (Shared Execution Path)
 ```
 
 *   **Prompting Law**: The Grill Engine MUST NOT mark any option as `[Recommended]`. Options must be listed neutrally. Every multiple-choice question MUST include a final free-text input option enabling the user to describe custom thoughts.
@@ -72,11 +65,11 @@ To ensure operational consistency and structural stability, the following two ba
 *   **Reframed Grill Prompt**:
     > **What type of change are you initializing?**
     > 1. **Quick & Simple (Bugfix / Minor Change)**: Fast-track setup for a bug fix, small UI tweak, or minor enhancement. Inherits existing workspace configuration. Only 3 focused questions.
-    > 2. **Major Feature / Full Architecture Setup**: Complete deep-dive interview for a significant new feature requiring architectural decisions, new layers, or stack changes. Full 10-question session.
+    > 2. **Major Feature / Full Architecture Setup**: Complete deep-dive interview for a significant new feature or greenfield setup. 7-question session.
     > 3. Other / Free-text (Describe the scope of your change)
 *   **Resulting Action**:
     *   **Quick & Simple selected**: Proceeds to Section 4 (QS1–QS3).
-    *   **Major Feature selected**: Proceeds to Section 5 (Q1–Q10).
+    *   **Major Feature selected**: Proceeds to Section 5 (Q1–Q7).
 
 ---
 
@@ -121,9 +114,9 @@ Quick & Simple Mode is designed for bug fixes, minor UI tweaks, and small enhanc
 
 ---
 
-## 5. Major Feature / Greenfield Mode Questions (Q1 – Q10)
+## 5. Major Feature / Greenfield Mode Questions (Q1 – Q7)
 
-Major Feature Mode executes the complete deep-dive interview to discover and configure the three core project environments. This mode is used for greenfield setups, significant new features, new layer introductions, or architectural changes.
+Major Feature Mode executes the complete interview to configure the agentic environment and workspace control plane. This mode is used for greenfield setups or significant new initiatives.
 
 ### Q1: Project Scope, Purpose, & Milestones
 *   **Target Environment**: Agentic Environment
@@ -200,74 +193,29 @@ Major Feature Mode executes the complete deep-dive interview to discover and con
 
 ---
 
-### Q5: Cloud-Based Repository Provider & Pre-Created Projects
-*   **Target Environment**: Agentic Environment
-*   **Goal**: Identify the cloud Git provider to configure remote synchronization and platform CI/CD pipelines.
+### Q5: Primary Remote Git Origin & Provider
+*   **Target Environment**: Agentic Environment / Remote Synchronization
+*   **Goal**: Identify the target remote Git repository origin URL for `agent-workspace/` to ensure all scaffolded documentation and control files are synchronized to the remote origin upon completion.
 *   **Auto-Detection Scanning Rule**:
-    *   Inspect `.git/config` for `origin` host signature (`github.com`, `gitlab.com`, `bitbucket.org`).
-*   **Reframed Grill Prompt** (If not detected):
-    > **Which cloud-based repository provider are you using for this project?**
-    > 1. GitHub
-    > 2. GitLab
-    > 3. Bitbucket
-    > 4. Other / Free-text (Specify provider URL / platform)
+    *   Inspect `.git/config` for existing `origin` remote (`github.com`, `gitlab.com`, `bitbucket.org`).
+*   **Reframed Grill Prompt** (If not detected or during greenfield setup):
+    > **Where is the remote Git repository origin for this project?**
+    > 1. GitHub (Provide repository URL, e.g. `https://github.com/org/repo.git`)
+    > 2. GitLab (Provide repository URL)
+    > 3. Bitbucket (Provide repository URL)
+    > 4. Other / Custom Git Server (Provide Git remote URL)
+    > 5. No remote origin (Local-only workspace)
 *   **Conditional Sub-Question**:
     *   **Q5.a (Pre-created project setup)**:
         > **Is there any pre-created project, organization, or board within this tool (e.g., GitHub Project, GitLab Group) pre-settled for this project?**
         > 1. Yes (Specify project / board name or ID)
         > 2. No pre-created project
         > 3. Other / Free-text (Describe provider project setup)
-*   **Resulting Action**: Installs platform CI actions (e.g., `.github/workflows/ci.yml` or `.gitlab-ci.yml`) and configures Git origin.
+*   **Resulting Action**: Configures `git remote add origin <url>` (or updates existing origin) in the workspace Git context, enabling automatic commit and push during Step S7.
 
 ---
 
-### Q6: Software Architecture Design Pattern
-*   **Target Environment**: Software Environment
-*   **Goal**: Determine the overarching software architecture design pattern to guide component boundaries.
-*   **Auto-Detection Scanning Rule**:
-    *   Inspect project manifests or directory names for architectural signatures (e.g., `services/`, `domain/`, `microservices/`).
-*   **Reframed Grill Prompt** (If not detected):
-    > **Is there any software architecture design pattern in place you would like to follow?**
-    > 1. Modular Monolith / Layered Architecture
-    > 2. Microservices Architecture
-    > 3. Domain-Driven Design (DDD)
-    > 4. Event-Driven Architecture
-    > 5. Other / Free-text (Describe architectural pattern and rules)
-*   **Resulting Action**: Records architectural laws in `agent-workspace/plans/<branch_name>/phase-1-summary.md` and enforces matching component boundary rules during planning.
-
----
-
-### Q7: Layer Scope & Sub-Repositories
-*   **Target Environment**: Folder Environment
-*   **Goal**: Question the number and scope of `codebase-*` layers to design and implement for the project.
-*   **Auto-Detection Scanning Rule**:
-    *   Inspect parent directory for existing layer sub-repos (`codebase-devops`, `codebase-layout`, `codebase-engine`, `codebase-api`, etc.).
-*   **Reframed Grill Prompt**:
-    > **Which architecture layers would you like to design and implement for this project?**
-    > 1. Fullstack (UI Layout + Backend Engine) $\rightarrow$ Skeletons: `codebase-layout` & `codebase-engine`
-    > 2. Pure Backend / Engine API project $\rightarrow$ Skeleton: `codebase-engine`
-    > 3. Lightweight UI / Presentation project $\rightarrow$ Skeleton: `codebase-layout`
-    > 4. Other / Free-text (Specify layer names, e.g. `codebase-api`, `codebase-worker`, `codebase-ui`)
-*   **Resulting Action**: Provisions defined `codebase-<layer_name>` layer skeletons, registers `src/<layer_name>` symbolic links under `agent-workspace/src/`, and provisions standalone `Dockerfile` specs per layer.
-
----
-
-### Q8: Software Stack, Building Blocks, & Frameworks
-*   **Target Environment**: Software Environment
-*   **Goal**: Establish programming languages, core building blocks, and frameworks for backend/frontend layers.
-*   **Auto-Detection Scanning Rule**:
-    *   Inspect file presence (`package.json`, `requirements.txt`, `pyproject.toml`, `go.mod`, `Cargo.toml`).
-*   **Reframed Grill Prompt** (If not detected):
-    > **Which software stack, building blocks, or frameworks would you like to use during the project?**
-    > 1. Python (FastAPI / HTML / Vanilla CSS)
-    > 2. Go (Engine API) + Node.js (UI)
-    > 3. Node.js (Express / HTML / Vanilla JS)
-    > 4. Other / Free-text (Specify language & framework per layer)
-*   **Resulting Action**: Generates standard package manifests (`requirements.txt`, `package.json`, `go.mod`) inside respective `codebase-*` sub-repositories.
-
----
-
-### Q9: Agent Guidance, Rules, Skills, MCPs, & Hooks
+### Q6: Agent Guidance, Rules, Skills, MCPs, & Hooks
 *   **Target Environment**: Agentic Environment
 *   **Goal**: Identify existing rules, skills, MCP servers, hooks, sidecars, or custom agent guiders, and specify their source locations.
 *   **Auto-Detection Scanning Rule**:
@@ -281,11 +229,11 @@ Major Feature Mode executes the complete deep-dive interview to discover and con
 
 ---
 
-### Q10: Q&A Summary Verification & Open Reflection
-*   **Target Environment**: Cross-Environment Verification (Agentic, Software, & Folder Environments)
-*   **Goal**: Summarize the gathered answers from Q1 through Q9 and allow the user to review, edit, or add any open-ended thoughts before finalizing initialization.
+### Q7: Q&A Summary Verification & Open Reflection
+*   **Target Environment**: Cross-Environment Verification (Agentic & Folder Environments)
+*   **Goal**: Summarize the gathered answers from Q1 through Q6 and allow the user to review, edit, or add any open-ended thoughts before finalizing initialization.
 *   **Execution Rule**:
-    1. The Grill Engine MUST format and display a clean summary table of all answers gathered across Q1–Q9.
+    1. The Grill Engine MUST format and display a clean summary table of all answers gathered across Q1–Q6.
     2. The Grill Engine MUST prompt the user for open-ended reflections or additional instructions.
 *   **Reframed Grill Prompt**:
     > **Summary of Answers Gathered During /init Session:**
@@ -295,12 +243,9 @@ Major Feature Mode executes the complete deep-dive interview to discover and con
     > | **Agentic** | Q1 Purpose & Scope | *[Q1 Answer / Vision summary]* |
     > | **Folder** | Q2 Local Folders | *[Q2 Answer / Paths linked]* |
     > | **Agentic** | Q3 Cloud Documentation | *[Q3 Answer / Doc URLs]* |
-    > | **Agentic** | Q4 Remote Repositories | *[Q4 Answer / Additional URLs]* |
-    > | **Agentic** | Q5 Cloud Provider & Setup | *[Q5 Answer / Git Provider & Board]* |
-    > | **Software** | Q6 Architecture Pattern | *[Q6 Answer / Design Pattern]* |
-    > | **Folder** | Q7 Layer Scope | *[Q7 Answer / Codebase Skeletons]* |
-    > | **Software** | Q8 Tech Stack & Frameworks | *[Q8 Answer / Languages & Stack]* |
-    > | **Agentic** | Q9 Agent Guiders & MCPs | *[Q9 Answer / Rules, Skills, Hooks]* |
+    > | **Agentic** | Q4 Additional Remotes | *[Q4 Answer / Additional URLs]* |
+    > | **Agentic** | Q5 Remote Git Origin | *[Q5 Answer / Primary Remote Origin URL]* |
+    > | **Agentic** | Q6 Agent Guiders & MCPs | *[Q6 Answer / Rules, Skills, Hooks, MCPs]* |
     >
     > **Reflecting on this summary, is there anything else you would like to add, adjust, or clarify for the project initialization?**
     > 1. Everything is accurate $\rightarrow$ Proceed to finalize `/init`

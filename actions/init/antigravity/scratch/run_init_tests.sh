@@ -5,12 +5,19 @@ echo "=== STARTING DUAL-MODE E2E TEST SUITE FOR /init WORKFLOW (init_tests.md) =
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 RM_PATH="${SCRIPT_DIR}/test_sandbox"
-rm -rf "$RM_PATH"
+REMOTE_REPO_PATH="${SCRIPT_DIR}/mock_remote.git"
+
+rm -rf "$RM_PATH" "$REMOTE_REPO_PATH"
 mkdir -p "$RM_PATH"
+
+# Create a bare remote Git repository to test push
+git init --bare "$REMOTE_REPO_PATH" >/dev/null
+
 cd "$RM_PATH"
 git init >/dev/null
 
 echo "--> Sandbox prepared at $RM_PATH"
+echo "--> Mock remote repository at $REMOTE_REPO_PATH"
 ERRORS=0
 
 # ==============================================================================
@@ -18,14 +25,13 @@ ERRORS=0
 # ==============================================================================
 echo ""
 echo "========================================================================"
-echo ">>> SCENARIO A: Greenfield Multi-Repo Setup (Major Feature Mode)"
+echo ">>> SCENARIO A: Greenfield Control Plane Setup (Major Feature Mode)"
 echo "========================================================================"
 
 # S1: Check environment & branch initialization
-docker info >/dev/null 2>&1 || docker --version >/dev/null 2>&1 || true
 git checkout -b initial >/dev/null 2>&1
 
-# S5: Scaffolding Directory Tree & Control Structures
+# S5: Scaffolding Pure Control Plane Directory Tree
 mkdir -p agent-workspace/.agents/rules \
          agent-workspace/.agents/workflows \
          agent-workspace/.agents/skills \
@@ -35,23 +41,7 @@ mkdir -p agent-workspace/.agents/rules \
          agent-workspace/docs \
          agent-workspace/src
 
-mkdir -p codebase-devops/.github/workflows \
-         codebase-devops/docker \
-         codebase-devops/config \
-         codebase-devops/src \
-         codebase-devops/tests
-
-mkdir -p codebase-layout/src \
-         codebase-layout/config \
-         codebase-layout/tests \
-         codebase-layout/.github/workflows
-
-mkdir -p codebase-engine/src \
-         codebase-engine/config \
-         codebase-engine/tests \
-         codebase-engine/.github/workflows
-
-# Provision .gitkeep Files in every node
+# Provision .gitkeep Files in every directory node
 touch agent-workspace/.agents/rules/.gitkeep \
       agent-workspace/.agents/workflows/.gitkeep \
       agent-workspace/.agents/skills/.gitkeep \
@@ -59,38 +49,25 @@ touch agent-workspace/.agents/rules/.gitkeep \
       agent-workspace/.agents/sidecars/.gitkeep \
       agent-workspace/plans/initial/.gitkeep \
       agent-workspace/docs/.gitkeep \
-      codebase-devops/.github/workflows/.gitkeep \
-      codebase-devops/docker/.gitkeep \
-      codebase-devops/config/.gitkeep \
-      codebase-devops/src/.gitkeep \
-      codebase-devops/tests/.gitkeep \
-      codebase-layout/src/.gitkeep \
-      codebase-layout/config/.gitkeep \
-      codebase-layout/tests/.gitkeep \
-      codebase-engine/src/.gitkeep \
-      codebase-engine/config/.gitkeep \
-      codebase-engine/tests/.gitkeep
+      agent-workspace/src/.gitkeep
 
-# Relative Symbolic Links (3-part verification)
-(cd agent-workspace/src && ln -s ../../codebase-devops/src devops)
-(cd agent-workspace/src && ln -s ../../codebase-layout/src layout)
-(cd agent-workspace/src && ln -s ../../codebase-engine/src engine)
+# Copy master guard primitives
+cp "${SCRIPT_DIR}/../guards/workflows/init.md" agent-workspace/.agents/workflows/
+cp "${SCRIPT_DIR}/../guards/rules/init-grill.md" agent-workspace/.agents/rules/
+mkdir -p agent-workspace/.agents/skills/init-scaffolder
+cp "${SCRIPT_DIR}/../guards/skills/init-scaffolder/SKILL.md" agent-workspace/.agents/skills/init-scaffolder/
 
-# Docker files
-touch codebase-devops/docker/dev.Dockerfile \
-      codebase-devops/docker/docker-compose.yml \
-      codebase-devops/Dockerfile \
-      codebase-layout/Dockerfile \
-      codebase-engine/Dockerfile
-
-# Deploy Status & Audit Documents
+# Deploy Status & Audit Documents (Q1–Q7)
 cat << 'LOG' > agent-workspace/plans/initial/GRILL_STATUS.md
 # GRILL_STATUS Audit Log
 mode: major_feature
-Q1 Purpose & Scope: Fullstack web application with automated background processing
-Q6 Architecture: Modular Monolith / Layered Architecture
-Q7 Layers: codebase-devops, codebase-layout, codebase-engine
-Q8 Stack: Go + PostgreSQL for engine; Vanilla JS + Pure CSS for layout
+Q1 Purpose & Scope: Fullstack e-commerce engine with real-time inventory management targeting Q3 MVP release
+Q2 Local System Folders: Current working directory
+Q3 Cloud Docs: None
+Q4 Additional Remotes: None
+Q5 Primary Remote Origin: file://MOCK_REMOTE (Provider: Other)
+Q6 Agent Guiders: Standard Guards framework defaults
+Q7 Summary Verification: Accepted
 Node S4 Execution Acceptance: Accepted
 LOG
 
@@ -98,7 +75,7 @@ cat << 'STATUS' > agent-workspace/plans/initial/PROCESS_STATUS.md
 # Process Status Matrix
 **Target Release/Feature**: Initial Setup
 **Git Branch**: initial
-**Date**: 2026-08-14
+**Date**: 2026-08-19
 **Active Workflow**: /init
 
 ## Block 1: Workflow Execution Matrix
@@ -118,28 +95,50 @@ cat << 'STATUS' > agent-workspace/plans/initial/PROCESS_STATUS.md
 | **6** | `/release` | Pending | Release Tag & Merge | Pending |
 
 ## Block 2: Daily Execution History
-### [2026-08-14]
+### [2026-08-19]
 - **Action**: Executed `/init` workflow.
+- **Result**: Scaffolded agent-workspace/ control structures, configured origin, and pushed initial documentation.
 STATUS
 
 cat << 'SUMMARY' > agent-workspace/plans/initial/phase-1-summary.md
-# Phase 1 Summary Blueprint: Architectural Overview
+# Phase 1 Summary Blueprint: Project & Feature Overview
 **Project / Feature Name**: Initial E-Commerce Platform
 **Branch**: initial
+**Date**: 2026-08-19
 **Mode**: major_feature
 
 ## 1. Executive Summary & Change Scope
 ### Aim & Purpose
-Fullstack e-commerce engine with real-time inventory management.
+Fullstack e-commerce engine with real-time inventory management targeting Q3 MVP release.
 
-## 2. Architecture & Tech Stack
-*   **Architecture Pattern**: Modular Monolith / Layered Architecture
-*   **Tech Stack**: Engine API in Go; UI Layout in Vanilla JS.
+### Issue & Ticket Reference
+N/A (Greenfield Setup)
+
+### Pre-Planning Decisions & Constraints
+None
+
+## 2. Remote Repositories & Knowledge Links
+*   **Primary Remote Git Origin**: file://MOCK_REMOTE
+*   **Documentation Repository**: None
+*   **Additional Remote Repositories**: None
+
+## 3. Workspace Folder Map
+*   **Control Plane Root**: `agent-workspace/`
+*   **Rules & Governance**: `agent-workspace/.agents/rules/`
+*   **Workflows & Playbooks**: `agent-workspace/.agents/workflows/`
+*   **Active Plan Directory**: `agent-workspace/plans/initial/`
+*   **Staging Directories**: `agent-workspace/docs/`, `agent-workspace/src/`
 SUMMARY
 
-# Install Pre-commit Safety Hook
-cp /Users/horvathgergo/Desktop/agent-driven-templates/actions/init/antigravity/guards/hooks/pre-commit-plan-validator.sh .git/hooks/pre-commit
+# S6: Remote Setup & Hook Installation
+git remote add origin "$REMOTE_REPO_PATH"
+cp "${SCRIPT_DIR}/../guards/hooks/pre-commit-plan-validator.sh" .git/hooks/pre-commit
 chmod +x .git/hooks/pre-commit
+
+# S7: Initial Commit & Push
+git add agent-workspace/
+git commit -m "chore(init): bootstrap agent control plane and documentation" >/dev/null 2>&1
+git push -u origin initial >/dev/null 2>&1
 
 echo "--> Scenario A Scaffolding complete. Running Assertions..."
 
@@ -153,10 +152,10 @@ else
 fi
 
 # Assertion A2: Audit Log & Mode Check
-if grep -q "mode: major_feature" agent-workspace/plans/initial/GRILL_STATUS.md; then
-    echo "[PASS A2] GRILL_STATUS.md has mode: major_feature"
+if grep -q "mode: major_feature" agent-workspace/plans/initial/GRILL_STATUS.md && grep -q "Q5 Primary Remote Origin" agent-workspace/plans/initial/GRILL_STATUS.md; then
+    echo "[PASS A2] GRILL_STATUS.md has mode: major_feature and Q5 remote origin"
 else
-    echo "[FAIL A2] GRILL_STATUS.md missing mode: major_feature"
+    echo "[FAIL A2] GRILL_STATUS.md missing mode or Q5 entry"
     ERRORS=$((ERRORS+1))
 fi
 
@@ -168,7 +167,7 @@ else
     ERRORS=$((ERRORS+1))
 fi
 
-# Assertion A4: Architecture Summary Blueprint Check
+# Assertion A4: Phase 1 Summary Check
 if [ -f agent-workspace/plans/initial/phase-1-summary.md ]; then
     echo "[PASS A4] phase-1-summary.md present in initial/"
 else
@@ -176,43 +175,47 @@ else
     ERRORS=$((ERRORS+1))
 fi
 
-# Assertion A5: .gitkeep in Control Directory
-if [ -f agent-workspace/.agents/skills/.gitkeep ]; then
-    echo "[PASS A5] .gitkeep present in agent-workspace/.agents/skills/"
-else
-    echo "[FAIL A5] .gitkeep missing in agent-workspace/.agents/skills/"
-    ERRORS=$((ERRORS+1))
-fi
-
-# Assertion A6: codebase-devops Docker Directory Check
-if [ -f codebase-devops/docker/dev.Dockerfile ] && [ -f codebase-devops/docker/docker-compose.yml ]; then
-    echo "[PASS A6] dev.Dockerfile and docker-compose.yml present in codebase-devops/docker/"
-else
-    echo "[FAIL A6] dev.Dockerfile or docker-compose.yml missing in codebase-devops/docker/"
-    ERRORS=$((ERRORS+1))
-fi
-
-# Assertion A7: Symlink 3-Part Verification (devops, layout, engine)
-SYM_OK=1
-for sym in devops layout engine; do
-    LINK_TARGET=$(readlink agent-workspace/src/$sym || true)
-    if [ ! -L agent-workspace/src/$sym ] || [ ! -d agent-workspace/src/$sym ] || [[ "$LINK_TARGET" != ../../codebase-* ]]; then
-        SYM_OK=0
-        echo "[FAIL A7] Relative symlink src/$sym invalid (target: $LINK_TARGET)"
+# Assertion A5: .gitkeep in all control and staging directories
+GITKEEP_OK=1
+for dir in rules workflows skills hooks sidecars; do
+    if [ ! -f "agent-workspace/.agents/$dir/.gitkeep" ]; then
+        echo "[FAIL A5] .gitkeep missing in agent-workspace/.agents/$dir/"
+        GITKEEP_OK=0
     fi
 done
-if [ $SYM_OK -eq 1 ]; then
-    echo "[PASS A7] Relative symlinks devops, layout, engine valid with 3-part verification"
+if [ ! -f "agent-workspace/docs/.gitkeep" ] || [ ! -f "agent-workspace/src/.gitkeep" ]; then
+    echo "[FAIL A5] .gitkeep missing in agent-workspace/docs/ or src/"
+    GITKEEP_OK=0
+fi
+
+if [ $GITKEEP_OK -eq 1 ]; then
+    echo "[PASS A5] .gitkeep present in all control and staging directories"
 else
     ERRORS=$((ERRORS+1))
 fi
 
-# Assertion A8: Symlink Purity
-NON_SYMLINKS=$(find agent-workspace/src -maxdepth 1 -mindepth 1 ! -type l | wc -l | tr -d ' ')
-if [ "$NON_SYMLINKS" = "0" ]; then
-    echo "[PASS A8] Symlink purity asserted (0 non-symlink items in agent-workspace/src/)"
+# Assertion A6: No codebase-* sub-repositories created during /init
+if [ ! -d codebase-devops ] && [ ! -d codebase-layout ] && [ ! -d codebase-engine ]; then
+    echo "[PASS A6] Pure control plane asserted: No codebase-* sub-repositories created during /init"
 else
-    echo "[FAIL A8] Symlink purity violated ($NON_SYMLINKS non-symlink items found)"
+    echo "[FAIL A6] codebase-* directories were created during /init!"
+    ERRORS=$((ERRORS+1))
+fi
+
+# Assertion A7: Remote Origin Configuration & Push
+REMOTE_URL=$(git remote get-url origin 2>/dev/null || true)
+if [ "$REMOTE_URL" = "$REMOTE_REPO_PATH" ]; then
+    echo "[PASS A7] Remote origin configured correctly ($REMOTE_URL)"
+else
+    echo "[FAIL A7] Remote origin URL mismatch: '$REMOTE_URL'"
+    ERRORS=$((ERRORS+1))
+fi
+
+# Verify remote repository received the push
+if git ls-remote --heads origin initial | grep -q "refs/heads/initial"; then
+    echo "[PASS A8] Initial commit successfully pushed to remote origin"
+else
+    echo "[FAIL A8] Remote origin does not contain branch 'initial'"
     ERRORS=$((ERRORS+1))
 fi
 
@@ -224,10 +227,6 @@ else
     ERRORS=$((ERRORS+1))
 fi
 
-# Commit initial state so we can test branch switching and Scenario B
-git add .
-git commit -m "chore: initial workspace setup" >/dev/null 2>&1
-
 
 # ==============================================================================
 # SCENARIO B: Quick & Simple / Bugfix Setup (3-Question Fast Track)
@@ -238,13 +237,13 @@ echo ">>> SCENARIO B: Quick & Simple Mode (Bugfix / Minor Change)"
 echo "========================================================================"
 
 # S1 & S2: Mode Gate -> Quick & Simple selected
-# Branch creation: bugfix/fix-checkout-button
+# Branch origination: branch creates from initial
 git checkout -b bugfix/fix-checkout-button >/dev/null 2>&1
 
 # S5: Scaffolding feature plan directory
 mkdir -p agent-workspace/plans/fix-checkout-button
 
-# Inherit stack from initial/GRILL_STATUS.md and write QS1-QS3 transcript
+# Write QS1-QS3 transcript
 cat << 'LOG' > agent-workspace/plans/fix-checkout-button/GRILL_STATUS.md
 # GRILL_STATUS Audit Log
 mode: quick_simple
@@ -253,10 +252,6 @@ branch: bugfix/fix-checkout-button
 QS1 Aim & Reason: Fix checkout button alignment on mobile view — button overflows container on screens < 375px
 QS2 Issue Reference: GitHub Issue #142 — Checkout button overflow on mobile
 QS3 Pre-Planning Decisions: None (Proceed with initialization)
-Inherited Architecture: Modular Monolith / Layered Architecture (from initial/GRILL_STATUS.md)
-Inherited Tech Stack: Go + PostgreSQL for engine; Vanilla JS + Pure CSS for layout (from initial/GRILL_STATUS.md)
-Inherited Cloud Provider: GitHub (from initial/GRILL_STATUS.md)
-Inherited Layer Scope: codebase-devops, codebase-layout, codebase-engine (from initial/GRILL_STATUS.md)
 Node S4 Execution Acceptance: Accepted
 LOG
 
@@ -264,7 +259,7 @@ cat << 'STATUS' > agent-workspace/plans/fix-checkout-button/PROCESS_STATUS.md
 # Process Status Matrix
 **Target Release/Feature**: fix-checkout-button
 **Git Branch**: bugfix/fix-checkout-button
-**Date**: 2026-08-14
+**Date**: 2026-08-19
 **Active Workflow**: /init
 
 ## Block 1: Workflow Execution Matrix
@@ -284,15 +279,16 @@ cat << 'STATUS' > agent-workspace/plans/fix-checkout-button/PROCESS_STATUS.md
 | **6** | `/release` | Pending | Release Tag & Merge | Pending |
 
 ## Block 2: Daily Execution History
-### [2026-08-14]
+### [2026-08-19]
 - **Action**: Executed `/init` workflow in Quick & Simple mode.
+- **Result**: Scaffolded agent-workspace/plans/fix-checkout-button/ and prepared for planning.
 STATUS
 
 cat << 'SUMMARY' > agent-workspace/plans/fix-checkout-button/phase-1-summary.md
-# Phase 1 Summary Blueprint: Architectural Overview
+# Phase 1 Summary Blueprint: Project & Feature Overview
 **Project / Feature Name**: fix-checkout-button
 **Branch**: bugfix/fix-checkout-button
-**Date**: 2026-08-14
+**Date**: 2026-08-19
 **Mode**: quick_simple
 
 ## 1. Executive Summary & Change Scope
@@ -305,9 +301,17 @@ GitHub Issue #142 — Checkout button overflow on mobile
 ### Pre-Planning Decisions & Constraints
 None
 
-## 2. Architecture & Tech Stack
-*   **Architecture Pattern**: Modular Monolith / Layered Architecture (Inherited)
-*   **Tech Stack**: Engine API in Go; UI Layout in Vanilla JS (Inherited).
+## 2. Remote Repositories & Knowledge Links
+*   **Primary Remote Git Origin**: file://MOCK_REMOTE
+*   **Documentation Repository**: None
+*   **Additional Remote Repositories**: None
+
+## 3. Workspace Folder Map
+*   **Control Plane Root**: `agent-workspace/`
+*   **Rules & Governance**: `agent-workspace/.agents/rules/`
+*   **Workflows & Playbooks**: `agent-workspace/.agents/workflows/`
+*   **Active Plan Directory**: `agent-workspace/plans/fix-checkout-button/`
+*   **Staging Directories**: `agent-workspace/docs/`, `agent-workspace/src/`
 SUMMARY
 
 echo "--> Scenario B Scaffolding complete. Running Assertions..."
@@ -337,28 +341,20 @@ else
     ERRORS=$((ERRORS+1))
 fi
 
-# Assertion B4: Stack Inheritance in GRILL_STATUS.md
-if grep -q "Go" agent-workspace/plans/fix-checkout-button/GRILL_STATUS.md && grep -q "Vanilla JS" agent-workspace/plans/fix-checkout-button/GRILL_STATUS.md; then
-    echo "[PASS B4] Stack inheritance verified (Go, Vanilla JS present)"
-else
-    echo "[FAIL B4] Stack inheritance failed in feature GRILL_STATUS.md"
-    ERRORS=$((ERRORS+1))
-fi
-
-# Assertion B5: No Redundant Sub-Repositories Created
+# Assertion B4: No Redundant Sub-Repositories Created
 if [ ! -d codebase-fix-checkout-button ] && [ ! -d codebase-bugfix ]; then
-    echo "[PASS B5] No redundant sub-repositories created for Quick & Simple mode"
+    echo "[PASS B4] No redundant sub-repositories created for Quick & Simple mode"
 else
-    echo "[FAIL B5] Redundant sub-repositories were created!"
+    echo "[FAIL B4] Redundant sub-repositories were created!"
     ERRORS=$((ERRORS+1))
 fi
 
-# Assertion B6: Pre-commit Hook Check on Bugfix Branch
-git add .
+# Assertion B5: Pre-commit Hook Check on Bugfix Branch
+git add agent-workspace/plans/fix-checkout-button/
 if .git/hooks/pre-commit >/dev/null 2>&1; then
-    echo "[PASS B6] Pre-commit hook passed validation on bugfix branch"
+    echo "[PASS B5] Pre-commit hook passed validation on bugfix branch"
 else
-    echo "[FAIL B6] Pre-commit hook failed validation on bugfix branch"
+    echo "[FAIL B5] Pre-commit hook failed validation on bugfix branch"
     ERRORS=$((ERRORS+1))
 fi
 
@@ -367,7 +363,7 @@ echo "--------------------------------------------------------"
 if [ $ERRORS -eq 0 ]; then
     echo "=== ALL E2E TEST ASSERTIONS (SCENARIOS A & B) PASSED SUCCESSFULLY! ==="
     # Clean up test sandbox
-    rm -rf "$RM_PATH"
+    rm -rf "$RM_PATH" "$REMOTE_REPO_PATH"
     exit 0
 else
     echo "=== E2E TEST SUITE FAILED WITH $ERRORS ERROR(S) ==="

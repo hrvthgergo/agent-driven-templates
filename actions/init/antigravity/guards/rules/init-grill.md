@@ -11,16 +11,11 @@ This rule guard governs the `/init` Grill-Me Q&A interview engine, enforcing unc
 
 ## 1. Unchangeable Baselines (No Questions Asked)
 
-Zero questions are asked about these baselines during the `/init` interview regardless of selected mode:
+Zero questions are asked about this baseline during the `/init` interview regardless of selected mode:
 
-1.  **Baseline 1: Hybrid Docker Handling Strategy**:
-    *   `codebase-devops/docker/dev.Dockerfile`: Isolated agent execution sandbox environment.
-    *   `codebase-devops/docker/docker-compose.yml`: Multi-service local orchestrator.
-    *   `codebase-<layer_name>/Dockerfile`: Standalone production build specs per layer.
-2.  **Baseline 2: Pure Control Plane (`agent-workspace/`) & Sub-Repository Layout**:
+1.  **Baseline 1: Pure Agent Control Plane (`agent-workspace/`) Layout**:
     *   `agent-workspace/` acts strictly as Control Plane & Knowledge Hub (`.agents/`, `plans/`, `docs/`, `src/`).
-    *   Infrastructure code resides in `codebase-devops/`.
-    *   Entry points in `agent-workspace/src/` are strictly pure relative symlinks (`devops`, `layout`, `engine` $\rightarrow$ `../../codebase-X/src`).
+    *   Software layer skeletons (`codebase-*`) and container configurations are decoupled from `/init` and planned in `/plan` or linked in `/process`.
 
 ---
 
@@ -38,16 +33,14 @@ Zero questions are asked about these baselines during the `/init` interview rega
 *   **Greenfield First-Time Run**: If `agent-workspace/plans/initial/` does NOT exist, auto-select **Major Feature / Greenfield Mode** (skip Q0).
 *   **Initialized Workspace**: Present Q0 mode selection prompt:
     *   *Prompt*: "What type of change are you initializing?"
-    *   *Option 1*: Quick & Simple (Bugfix / Minor Change) — 3 focused questions (QS1–QS3), inherits existing stack.
-    *   *Option 2*: Major Feature / Full Architecture Setup — 10 deep-dive questions (Q1–Q10).
+    *   *Option 1*: Quick & Simple (Bugfix / Minor Change) — 3 focused questions (QS1–QS3).
+    *   *Option 2*: Major Feature / Greenfield Setup — 7 interview questions (Q1–Q7).
     *   *Option 3*: Other / Free-text (Describe scope).
 *   **Branch Auto-Detection**: If Git branch starts with `bugfix/`, `fix/`, `hotfix/`, or `patch/`, pre-select Quick & Simple Mode.
 
 ---
 
 ## 4. Quick & Simple Mode Questions (QS1 – QS3)
-
-*Quick & Simple Mode inherits tech stack, architecture, cloud provider, and container profiles from `agent-workspace/plans/initial/GRILL_STATUS.md`.*
 
 *   **QS1: Aim & Reason of the Change**:
     *   Capture summary of purpose, expected outcome, affected area, and feature/branch name (`fix-<name>` or `<feature-name>`).
@@ -62,17 +55,16 @@ Zero questions are asked about these baselines during the `/init` interview rega
 
 ---
 
-## 5. Major Feature / Greenfield Mode Questions (Q1 – Q10)
+## 5. Major Feature / Greenfield Mode Questions (Q1 – Q7)
 
-*   **Q1: Project Scope, Purpose, & Milestones**: Ask high-level business goals and target release milestones. Auto-detect from `README.md` and package manifests if available.
-*   **Q2: Local System Folders**:
+*   **Q1: Project Scope, Purpose, & Milestones**: Ask high-level business goals and target release milestones. Auto-detect from `README.md` if available.
+*   **Q2: Local System Folders & Existing Locations**:
     *   Q2.a (If folder exists): List local folder paths. Auto-detect remotes from `.git/config`.
     *   Q2.b (If no folder exists): Select folder creation strategy (current working directory or custom path).
-*   **Q3: Cloud Documentation Repository**: Ask for external documentation links (Confluence, Notion, Wiki). If auto-scan fails, state scan failure before asking.
-*   **Q4: Additional Remote Code Repos**: Ask for additional remote repository URLs (Q4.a URL list).
-*   **Q5: Cloud Git Provider**: Select Git host (GitHub, GitLab, Bitbucket) and pre-created project/board setup (Q5.a).
-*   **Q6: Architecture Design Pattern**: Select system architecture (Modular Monolith, Microservices, DDD, Event-Driven).
-*   **Q7: Layer Scope & Sub-repos**: Select layer breakdown (Fullstack UI + Engine, UI-only, Engine-only, or custom).
-*   **Q8: Software Stack & Frameworks**: Select language and framework stack for each layer. Auto-detect from manifests if available.
-*   **Q9: Agent Guidance Rules & Tooling**: Select agentic control defaults (`.agents/` standards or custom).
-*   **Q10: Summary Verification & Reflection**: Present clean recap table of Q1–Q9 gathered choices for user verification, adjustment, or final approval.
+*   **Q3: Remote / Cloud Documentation Repository**: Ask for external documentation links (Confluence, Notion, Wiki). If auto-scan fails, state scan failure before asking.
+*   **Q4: Additional Remote Code Repositories**: Ask for secondary/additional remote repository URLs (Q4.a URL list).
+*   **Q5: Primary Remote Git Origin & Provider**:
+    *   Capture primary remote Git repository URL (e.g. `https://github.com/org/repo.git`) and provider type (GitHub, GitLab, Bitbucket, Other).
+    *   This remote origin is configured in Node S6 and used in Node S7 to push the initial documentation and control plane commit.
+*   **Q6: Agent Guidance, Rules, Skills, MCPs, & Hooks**: Select agentic control defaults (`.agents/` standards, custom skills, hooks, or MCP servers).
+*   **Q7: Summary Verification & Reflection**: Present clean recap table of Q1–Q6 gathered choices for user verification, adjustment, or final approval.
