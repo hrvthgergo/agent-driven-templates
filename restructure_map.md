@@ -106,36 +106,7 @@ For each `*_action.md`, add a dedicated **Commands Reference** section that list
 
 ---
 
-## Step 5 — Populate the `playbooks/` Directory
-
-**Type**: New file creation  
-**Prerequisite**: Step 2 (the `actions/` folder must exist so playbooks can reference it)  
-**Purpose**: The `playbooks/` directory currently exists but is empty (only a `.gitkeep`). Now
-that actions are clearly defined, playbooks can be authored as compositions of those actions.
-
-Each playbook is a markdown document that:
-- Names a specific development scenario (e.g., "Greenfield", "Brownfield", "Hotfix")
-- Describes the sequence and branching logic of actions to invoke
-- References actions by their folder path under `actions/`
-- Specifies which commands within each action to issue at each step
-
-**Playbooks to create** (one per primary development scenario):
-
-| File | Scenario |
-|:---|:---|
-| `playbooks/greenfield_playbook.md` | New project from scratch |
-| `playbooks/brownfield_playbook.md` | Existing codebase onboarding |
-| `playbooks/feature_playbook.md` | Incremental new feature on an existing project |
-| `playbooks/hotfix_playbook.md` | Expedited patch on a released version |
-
-> [!NOTE]
-> The content for these playbooks already exists implicitly in `summary.md`, `user_guide.md`,
-> and the mermaid lifecycle diagrams. Playbook creation is primarily a matter of extracting and
-> formalising that content into dedicated, scenario-scoped documents.
-
----
-
-## Step 6 — Update All Internal Cross-References
+## Step 5 — Update All Internal Cross-References
 
 **Type**: Content edits across multiple files  
 **Prerequisite**: Steps 2–4 (all renames must be complete before references are updated)  
@@ -194,7 +165,7 @@ updated to reflect the new paths and filenames.
 #### Inside `actions/release/`
 - *(currently no content files beyond `.gitkeep`)*
 
-### Terminology Substitution Rules for Step 6
+### Terminology Substitution Rules for Step 5
 
 When editing files, apply the following substitution rules consistently:
 
@@ -216,14 +187,14 @@ When editing files, apply the following substitution rules consistently:
 > - Inside `actions/init/antigravity/guards/workflows/` — these are Antigravity-native primitives
 >   and the term "workflow" there refers to Antigravity's own resource type, not the framework's concept
 > - References to "Antigravity workflows" as a platform primitive
-> - The `playbooks/` content itself, where "workflow" is appropriate at the playbook level
+> - References to playbooks as workflows
 
 ---
 
-## Step 7 — Update the `README.md` Section Headers and Framing
+## Step 6 — Update the `README.md` Section Headers and Framing
 
 **Type**: Content edits (1 file)  
-**Prerequisite**: Step 6  
+**Prerequisite**: Step 5  
 **Purpose**: The README is the first document any reader encounters. It currently frames the entire
 framework in workflow-first language. It needs a dedicated section that introduces and explains the
 three-tier model (Playbooks → Actions → Commands) before the reader reaches the mindset table.
@@ -240,10 +211,10 @@ Changes required:
 
 ---
 
-## Step 8 — Verify Internal Consistency
+## Step 7 — Verify Internal Consistency
 
 **Type**: Review / QA pass  
-**Prerequisite**: Steps 2–7  
+**Prerequisite**: Steps 2–6  
 **Purpose**: After all renames and content edits, perform a final consistency check to confirm
 no broken links, stale terminology, or structural gaps remain.
 
@@ -256,7 +227,6 @@ Verification checklist:
 - [ ] The term "workflow" no longer appears in any file to describe a single lifecycle action
 - [ ] The term "software_dev_elements" no longer appears in any file
 - [ ] Each `*_action.md` contains a Commands Reference section (Step 4)
-- [ ] Each playbook file exists and references actions using the `actions/` path (Step 5)
 - [ ] The `guards/workflows/` folders inside antigravity tiers are untouched
 - [ ] Git history is clean and all changes are committed on the restructure branch
 
@@ -269,14 +239,13 @@ Step 1  →  git checkout -b restructure/actions-commands-playbooks
 Step 2  →  Rename software_dev_elements/ → actions/
 Step 3  →  Rename *_workflow.md → *_action.md (6 files)
 Step 4  →  Add Commands Reference section to each *_action.md (6 files)
-Step 5  →  Create playbook files in playbooks/ (4 files)
-Step 6  →  Update all internal cross-references and terminology (all files)
-Step 7  →  Update README.md structure and framing
-Step 8  →  Verify internal consistency (QA checklist)
+Step 5  →  Update all internal cross-references and terminology (all files)
+Step 6  →  Update README.md structure and framing
+Step 7  →  Verify internal consistency (QA checklist)
 ```
 
 > [!TIP]
 > Steps 2 and 3 are pure filesystem operations and should be done first and together before any
 > content editing begins — this prevents editing files at paths that are about to move.
-> Steps 4, 5, 6, and 7 are content operations and can be batched action-by-action
+> Steps 4, 5, and 6 are content operations and can be batched action-by-action
 > (e.g., complete all changes for `init` before moving to `process`).
