@@ -26,7 +26,7 @@ This document defines the test scenario, mock execution sequence, user input sim
 
 To ensure isolated, reproducible test runs, the test environment MUST meet the following pre-conditions prior to command execution:
 
-1.  **Initialized Workspace**: An existing project workspace initialized via `/init` containing `agent-workspace/` control structures and `codebase-*` sub-repositories.
+1.  **Initialized Workspace**: An existing project workspace initialized via `/init` containing Agentic Environment and Folder-Based Control Plane structures, and `codebase-*` sub-repositories.
 2.  **Git Branch Context**: An active feature branch checked out (e.g. `feature/user-auth`).
 3.  **Docker Daemon Status**: Docker daemon active and accessible (`docker info` returns exit code `0`).
 
@@ -45,7 +45,7 @@ The test harness simulates an interactive user session responding to the sequent
 
 | Step | Prompt Title | Mock User Selection / Input | Asserted Output & Action |
 | :--- | :--- | :--- | :--- |
-| **S1** | **Precondition & Branch Check** | System verifies `agent-workspace/` baseline and checks out `feature/user-auth`. | Environment verified. Branch confirmed (`feature/user-auth`). |
+| **S1** | **Precondition & Branch Check** | System verifies Agentic Environment and Folder-Based Control Plane baselines and checks out `feature/user-auth`. | Environments verified. Branch confirmed (`feature/user-auth`). |
 | **S2** | **Initial Feature Understanding Summary** | Agent synthesizes initial understanding of user authentication feature and displays summary. | Initial Feature Summary printed to console *before* Q&A begins. |
 | **Q1** | **Feature Name & Initial Summary Verification** | Selected Option 1 (*Yes, summary and feature name are accurate*). | Feature name `user-auth` confirmed. Directory `agent-workspace/plans/user-auth/` initialized. |
 | **Q2** | **System Layer Impact & Affected Components** | Selected Option 6 (*Full System - All layers affected: UI, Data, Engine, Verification, Ops*). | System impact recorded in `phase-1-summary.md`. All 6 phase blueprints flagged for scaffolding. |
@@ -68,7 +68,7 @@ Upon completion of Node S7, the test harness executes automated verification che
 
 | Node | Verification Target | Asserted Resource Path | Expected State / Content Assertion |
 | :--- | :--- | :--- | :--- |
-| **S1** | Precondition & Branch Verification | Git Context & `agent-workspace/` | Verified `agent-workspace/` exists. Active branch confirmed as `feature/user-auth`. |
+| **S1** | Precondition & Branch Verification | Git Context & `agent-workspace/` | Verified environments exist. Active branch confirmed as `feature/user-auth`. |
 | **S2** | Initial Feature Summary Mandate | Subprocess Stdout / Audit Log | Console output contains Initial Feature Understanding Summary prior to Q1 prompt. |
 | **S3** | Audit Log & Transcript | `agent-workspace/plans/user-auth/GRILL_STATUS.md` | File exists. Contains full Q1–Q10 transcript, question texts, selected options, and user inputs. |
 | **S4** | Master Governor Blueprint | `agent-workspace/plans/user-auth/phase-1-summary.md` | File exists. Contains vision, System Impact Analysis, and links to research reports. |

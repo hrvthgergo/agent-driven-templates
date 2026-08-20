@@ -2,7 +2,7 @@
 
 This document defines the Q&A interview questionnaire schema, auto-detection scanning rules, unchangeable baselines, and structured prompts used by the `/plan` workflow's Grill Engine session.
 
-The primary objective of the `/plan` Grill-Me session is to guide the developer and AI agent through the interactive design of a new or modified feature, identifying affected system parts, selecting active `phase-*.md` blueprint subsets, evaluating multi-layer subfolders, capturing research reports, and linking version-based implementation maps inside `.agents/plans/<feature-name>/`.
+The primary objective of the `/plan` Grill-Me session is to guide the developer and AI agent through the interactive design of a new or modified feature, identifying affected system parts, selecting active `phase-*.md` blueprint subsets, evaluating multi-layer subfolders, capturing research reports, and linking version-based implementation maps inside `agent-workspace/plans/<feature-name>/`.
 
 ---
 
@@ -13,14 +13,14 @@ To ensure operational stability and system governance, the following five baseli
 ### Baseline 1: Initial Feature Understanding Summary Mandate (Node S2)
 * **Specification**: Every `/plan` session **MUST** open with the agent synthesizing its initial understanding of the feature (from `/init` outputs, `/process` outputs, and user prompt context) and presenting an **Initial Feature Understanding Summary** to the developer before any questions are asked.
 
-### Baseline 2: Strict Feature Plan Sandbox (`.agents/plans/<feature-name>/`)
-* **Specification**: ALL files created or modified during `/plan`—including active phase blueprints, `knowledge/` research reports, `phase_details/` folders, and versioned `implementation_maps/`—MUST reside strictly within `.agents/plans/<feature-name>/`.
+### Baseline 2: Strict Feature Plan Sandbox (`agent-workspace/plans/<feature-name>/`)
+* **Specification**: ALL files created or modified during `/plan`—including active phase blueprints, `knowledge/` research reports, `phase_details/` folders, and versioned `implementation_maps/`—MUST reside strictly within `agent-workspace/plans/<feature-name>/`.
 
 ### Baseline 3: Decisions Embedded Directly in `phase-*.md` (No Decisions Subfolder)
 * **Specification**: Architectural decisions, ADR trade-off rationale, and design choices MUST be documented **directly inside active `phase-*.md` documents** (and their sub-element blueprints inside `phase_details/`). There is no separate decisions folder.
 
 ### Baseline 4: Implementation Map Sandbox Guard (No Code Execution in `/plan`)
-* **Specification**: Creating or drafting a versioned `implementation_map_v<version>.md` inside `.agents/plans/<feature-name>/` is allowed, but **ZERO code scaffolding, file creation, or source code modification in `src/` or `codebase-*/` is permitted during `/plan`**. Source code implementation remains strictly reserved for `/implement`.
+* **Specification**: Creating or drafting a versioned `implementation_map_v<version>.md` inside `agent-workspace/plans/<feature-name>/` is allowed, but **ZERO code scaffolding, file creation, or source code modification in `src/` or `codebase-*/` is permitted during `/plan`**. Source code implementation remains strictly reserved for `/implement`.
 
 ### Baseline 5: Version-Based Implementation Map Naming & Schema
 * **Specification**: Implementation map documents MUST be named after the target software version created from that map (e.g. `implementation_map_v1.0.0.md` or `implementation_map_v1.1.0_layout.md`) and MUST adhere to the Tier 1 schema defined in [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implementation_map_taxonomy.md).
@@ -57,14 +57,14 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 * **Goal**: Confirm the feature slug name (`<feature-name>`) and verify the initial feature understanding summary presented in Node S2.
 * **Auto-Detection Scanning Rule**:
   * Read existing branch name (e.g. `feature/<feature-name>`) or prompt text.
-  * Inspect `.agents/plans/PROCESS_STATUS.md` for active feature rows.
+  * Inspect `agent-workspace/plans/PROCESS_STATUS.md` for active feature rows.
 * **Reframed Grill Prompt**:
   > **Would you like to confirm the feature name and initial feature understanding summary?**
   > *Please review the Initial Feature Understanding Summary presented above:*
   > 1. Yes, the summary and feature name are accurate. Proceed to system identification.
   > 2. Adjust feature name or target scope (Specify custom feature name or scope adjustments below)
   > 3. Other / Free-text (Describe custom feature summary adjustments)
-* **Resulting Action**: Initializes directory `.agents/plans/<feature-name>/` and creates `PROCESS_STATUS.md` and `GRILL_STATUS.md` tracking files.
+* **Resulting Action**: Initializes directory `agent-workspace/plans/<feature-name>/` and creates `PROCESS_STATUS.md` and `GRILL_STATUS.md` tracking files.
 
 ---
 
@@ -97,7 +97,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > 2. Complete 6-Phase Blueprint Set (Scaffold Phase 1 through Phase 6)
   > 3. Custom Phase Selection (Select specific Phase 2 - Phase 6 documents below)
   > 4. Other / Free-text (Describe custom blueprint document requirements)
-* **Resulting Action**: Scaffolds active `phase-*.md` documents in `.agents/plans/<feature-name>/` and marks unneeded blueprints as `[-] Not In Scope` in `PROCESS_STATUS.md`.
+* **Resulting Action**: Scaffolds active `phase-*.md` documents in `agent-workspace/plans/<feature-name>/` and marks unneeded blueprints as `[-] Not In Scope` in `PROCESS_STATUS.md`.
 
 ---
 
@@ -111,7 +111,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > 1. No (Use default simple flat layout with top-level phase-*.md blueprints)
   > 2. Yes (Create subfolders under phase_details/<element_name>/ for web UI, mobile app, or APIs)
   > 3. Other / Free-text (Describe custom phase details folder requirements)
-* **Resulting Action**: If Yes, provisions subfolders under `.agents/plans/<feature-name>/phase_details/<element_name>/` and links them to the master governor phase blueprints.
+* **Resulting Action**: If Yes, provisions subfolders under `agent-workspace/plans/<feature-name>/phase_details/<element_name>/` and links them to the master governor phase blueprints.
 
 ---
 
@@ -124,7 +124,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > 1. No research reports needed at this time
   > 2. Yes (Specify research topic, e.g. authentication protocol, DB migration strategy, API performance)
   > 3. Other / Free-text (Describe topic research requirements)
-* **Resulting Action**: Writes requested research report inside `.agents/plans/<feature-name>/knowledge/research_report_<topic>.md` and links it directly in the active `phase-*.md` documents.
+* **Resulting Action**: Writes requested research report inside `agent-workspace/plans/<feature-name>/knowledge/research_report_<topic>.md` and links it directly in the active `phase-*.md` documents.
 
 ---
 
@@ -135,7 +135,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > 1. Vanilla CSS / Custom Design Tokens with responsive grid boundaries
   > 2. Framework component library integration (Specify framework below)
   > 3. Other / Free-text (Describe UI layout, component hierarchy, and design tokens)
-* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-2-layout.md` with UI specs and layout decisions.
+* **Resulting Action**: Populates `agent-workspace/plans/<feature-name>/phase-2-layout.md` with UI specs and layout decisions.
 
 ---
 
@@ -147,7 +147,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > 2. Document/NoSQL key-value store with event stream capturing and TTL retention policies
   > 3. Hybrid persistence model with caching, event logging, and automated lifecycle archiving
   > 4. Other / Free-text (Describe data models, capture/storage mechanisms, and lifecycle events)
-* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-3-data.md` with data handling specs, storage schemas, and lifecycle decisions.
+* **Resulting Action**: Populates `agent-workspace/plans/<feature-name>/phase-3-data.md` with data handling specs, storage schemas, and lifecycle decisions.
 
 ---
 
@@ -158,7 +158,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > 1. RESTful API contracts with JSON DTO mappers and core service routing
   > 2. Event-driven message processing with microservice engine handlers
   > 3. Other / Free-text (Describe API endpoints, domain service logic, and DTOs)
-* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-4-engine.md` with backend specs and engine decisions.
+* **Resulting Action**: Populates `agent-workspace/plans/<feature-name>/phase-4-engine.md` with backend specs and engine decisions.
 
 ---
 
@@ -169,7 +169,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > 1. Extend existing unit & integration test scenarios
   > 2. Create new End-to-End (E2E) feature verification flow
   > 3. Other / Free-text (Describe specific test deltas or coverage gaps)
-* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-5-test.md` with the verification scope delta, and flags required updates to global `tests/`.
+* **Resulting Action**: Populates `agent-workspace/plans/<feature-name>/phase-5-test.md` with the verification scope delta, and flags required updates to global `tests/`.
 
 ---
 
@@ -180,7 +180,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > 1. Multi-container Compose orchestration with environment variable isolation
   > 2. Standalone container image build with CI/CD deployment pipeline integration
   > 3. Other / Free-text (Describe Dockerfiles, Compose profiles, and environment variables)
-* **Resulting Action**: Populates `.agents/plans/<feature-name>/phase-6-operation.md` with ops specs and infrastructure decisions.
+* **Resulting Action**: Populates `agent-workspace/plans/<feature-name>/phase-6-operation.md` with ops specs and infrastructure decisions.
 
 ---
 
@@ -193,4 +193,4 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > 2. Draft Full Feature Release Map (Specify target version, e.g. `implementation_map_v1.0.0.md`)
   > 3. Draft Partial Scope Release Map (Specify target version and scope, e.g. `implementation_map_v1.1.0_layout.md`)
   > 4. Other / Free-text (Describe custom versioned implementation map requirements)
-* **Resulting Action**: If option 2 or 3 selected, drafts `.agents/plans/<feature-name>/implementation_maps/implementation_map_v<version>.md` adhering to [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implementation_map_taxonomy.md).
+* **Resulting Action**: If option 2 or 3 selected, drafts `agent-workspace/plans/<feature-name>/implementation_maps/implementation_map_v<version>.md` adhering to [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implementation_map_taxonomy.md).

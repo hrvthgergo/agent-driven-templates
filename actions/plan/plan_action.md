@@ -46,8 +46,8 @@ Fundamentally, **the `/plan` action is a governed rule for resource usage and kn
 ## 2. Core Architectural Principles & Boundary Rules
 
 ### A. Action Preconditions & Pipeline Handoff
-1. **`/init` is Mandatory**: `/init` (or `/init --feature <name>` / `/init --release <v>`) **must** have been executed prior to running `/plan`. `/init` establishes Git branches, provisions root `.agents/` control structures, and scaffolds the initial architectural baseline (`phase-1-summary.md`).
-2. **`/process` is Optional**: For brownfield codebases, `/process` ingests legacy documentation and code history, drafting `restructure-proposal.md`. When present, `/plan` reads and incorporates these findings into the feature blueprints.
+1. **`/init` is Mandatory**: `/init` (or `/init --feature <name>` / `/init --release <v>`) **must** have been executed prior to running `/plan`. `/init` establishes Git branches, provisions the Agentic Environment (`.agents/` control structures) and the Folder-Based Control Plane (`agent-workspace/`), and scaffolds the initial architectural baseline (`phase-1-summary.md`).
+2. **`/process` is Optional**: For brownfield codebases, `/process` creates layer symlinks, stages legacy docs into `resource/`, and drafts `restructure-proposal.md`. When present, `/plan` reads and incorporates these findings and resources into the feature blueprints.
 
 ### B. Resource Usage Governance & Strict Feature Sandbox (`agent-workspace/plans/<feature-name>/`)
 All creation, editing, research drafting, and decision documentation generated during `/plan` **MUST reside strictly inside `agent-workspace/plans/<feature-name>/`** to serve as the single source of truth for downstream agents:
@@ -132,6 +132,7 @@ agent-workspace/plans/<feature-name>/
 ├── phase-4-engine.md              # Phase 4: Core Engine, API Contracts, Data Flow & DB Decisions
 ├── phase-5-test.md                # Phase 5: Feature Verification Scope & Test Delta
 ├── phase-6-operation.md           # Phase 6: Docker, Compose & Infrastructure Decisions
+├── resource/                      # Staged non-code legacy documentation & assets (from /process)
 ├── knowledge/                      # Topic Research Reports & Knowledge Summaries requested during /plan
 │   ├── research_report_<topic>.md    # Research report evaluating options requested by user
 │   └── knowledge_summary_<topic>.md   # Deep-dive topic overview
@@ -160,6 +161,7 @@ agent-workspace/plans/<feature-name>/
 │   │   └── phase-4-engine.md       # Sub-element API contract spec & decisions
 │   └── inventory_db/               # Inventory Database & Schema specs
 │       └── phase-3-data.md         # Sub-element DB schema & data store lifecycle spec
+├── resource/                       # Staged non-code legacy documentation & assets (from /process)
 ├── knowledge/                      # Research reports (linked directly into phase-*.md)
 │   └── research_report_<topic>.md
 └── implementation_maps/            # Version-named Implementation Maps
@@ -192,7 +194,7 @@ graph TD
 ### Step Descriptions & Implementation Reasoning
 
 #### Step 1: Check Environment & Preconditions (Node S1)
-* **Description**: Verifies workspace initialization (`.agents/` and active Git branch state). Asserts Docker engine status.
+* **Description**: Verifies workspace initialization (Agentic Environment `.agents/`, Folder-Based Control Plane `agent-workspace/`, and active Git branch state). Asserts Docker engine status.
 * **Storage Actions**: Reads `agent-workspace/plans/PROCESS_STATUS.md` or git branch metadata.
 
 #### Step 2: Initial Feature Understanding Summary (Node S2)
@@ -239,10 +241,10 @@ graph TD
 graph TD
     subgraph Phase1_Plan [/plan Workflow Sandbox]
         InitIn["/init Output<br/>(phase-1-summary.md)"] --> S2_Summary["Node S2: Initial Feature Understanding Summary"]
-        HistIn["/process Output<br/>(restructure-proposal.md)"] --> S2_Summary
+        HistIn["/process Output<br/>(restructure-proposal.md, resource/)"] --> S2_Summary
         S2_Summary --> S3_QA["Node S3: Q&A Session<br/>Identify Affected System, phase-*.md Set & Subfolders"]
         S3_QA --> S5_MapOption["Node S5: Draft Versioned Implementation Map (Optional)"]
-        S5_MapOption --> PlanOut["agent-workspace/plans/<feature-name>/<br/>• PROCESS_STATUS.md<br/>• phase-1-summary.md (Governor with Embedded Decisions)<br/>• Selected phase-*.md set<br/>• phase_details/ (On-Demand Subfolders)<br/>• knowledge/ (Research Reports linked into phase-*.md)<br/>• implementation_maps/ (Version-linked maps: implementation_map_v1.0.0.md)<br/>(Structured context & map repository for downstream agents)"]
+        S5_MapOption --> PlanOut["agent-workspace/plans/<feature-name>/<br/>• PROCESS_STATUS.md<br/>• phase-1-summary.md (Governor with Embedded Decisions)<br/>• Selected phase-*.md set<br/>• phase_details/ (On-Demand Subfolders)<br/>• resource/ (Staged Legacy Docs)<br/>• knowledge/ (Research Reports linked into phase-*.md)<br/>• implementation_maps/ (Version-linked maps: implementation_map_v1.0.0.md)<br/>(Structured context & map repository for downstream agents)"]
     end
 
     subgraph Phase2_Implement [/implement Sandbox]
@@ -269,7 +271,7 @@ graph TD
 
 ## 6. Summary of Guard Elements for `/plan`
 
-1. **Precondition Guard**: Halts execution if `.agents/` or `/init` baseline is missing.
+1. **Precondition Guard**: Halts execution if the Agentic Environment (`.agents/`), Folder-Based Control Plane (`agent-workspace/`), or `/init` baseline is missing.
 2. **Resource Usage & Knowledge Governance Guard**: Establishes `/plan` as the governed rule for collecting, analyzing, and structuring knowledge in `agent-workspace/plans/<feature-name>/` to share complete context with downstream AI agents.
 3. **Initial Summary Mandate**: Forces `/plan` to open with an agent synthesis of feature understanding before starting Q&A.
 4. **Embedded Decisions Guard**: Prohibits creating a separate decisions subfolder; forces all architectural decisions and trade-off choices to be documented directly within active `phase-*.md` documents.
@@ -284,4 +286,4 @@ graph TD
 13. **System Impact Guard**: Enforces explicit documentation of feature aftermath/impact on existing system features.
 14. **Grill State Engine**: Governed by `grill_engine.md`, auto-saving interview progress into `agent-workspace/plans/<feature-name>/GRILL_STATUS.md`.
 15. **Process Guard**: Governed by `process_handling.md`, maintaining Block 1 matrix and Block 2 datestamped execution history in `PROCESS_STATUS.md`.
-16. **Action Context Notification Guard**: Enforces the 3-Layer Action Context Notification Law (1-line turn banners `> 📍 **Active Workflow**: /plan | **Scope**: <feature> | **Node**: <Node_ID>`, state node transition badges, and persistent disk header metadata).
+16. **Action Context Notification Guard**: Enforces the Action Context Notification Law (Combined Multi-Layer Strategy) (1-line turn banners `> 📍 **Active Workflow**: /plan | **Scope**: <feature> | **Node**: <Node_ID>`, state node transition badges, and persistent disk header metadata).

@@ -75,7 +75,7 @@ The implementation plan directly realizes the following design blueprints and `/
     1. Create `actions/plan/antigravity/guards/workflows/plan.md`.
     2. Define YAML frontmatter (`name: plan`, `description: Interactive planning workflow for 6-phase blueprints and versioned implementation maps`).
     3. Implement the 7-step state machine execution nodes using Antigravity workflow syntax:
-        *   **Node S1 (Check Preconditions & Feature Branch)**: Verifies `agent-workspace/` initialization and active feature branch.
+        *   **Node S1 (Check Preconditions & Feature Branch)**: Verifies workspace initialization (Agentic Environment `.agents/` and Folder-Based Control Plane `agent-workspace/`) and active feature branch.
         *   **Node S2 (Initial Feature Understanding Summary)**: Synthesizes initial feature understanding (from `/init`, `/process`, and user prompt) and presents an Initial Feature Summary to the developer *before* Q&A begins.
         *   **Node S3 (Interactive Q&A Session)**: Invokes the interview engine adhering to `rules/plan-grill.md` (Q1–Q11). Evaluates affected system layers, selects 6-phase blueprint subset, evaluates `phase_details/` subfolder need, processes research requests under `knowledge/`, and embeds decisions directly into blueprints.
         *   **Node S4 (Dynamic Blueprint Scaffolding & Impact Drafting)**: Invokes `skills/plan-generator/SKILL.md` to scaffold active `phase-*.md` documents, `phase_details/` subfolders, and `knowledge/research_report_<topic>.md` files inside `agent-workspace/plans/<feature-name>/`.
