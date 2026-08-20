@@ -1,4 +1,4 @@
-# Verification & Test Specification: `/implement` Workflow (Feature Implementation Scenario)
+# Qualification & Test Specification: `/implement` Workflow (Feature Implementation Scenario)
 
 This document defines the test scenario, mock execution sequence, user input simulation, pragmatic CLI test commands, and verification assertions for testing the `/implement` workflow within **Google Antigravity**.
 
@@ -75,7 +75,7 @@ To ensure isolated, reproducible test runs, the test environment MUST meet the f
 
 ---
 
-## 4. Verification Assertions & Validation Matrix
+## 4. Qualification Assertions & Validation Matrix
 
 | Node | Verification Target | Asserted Resource Path | Expected State / Content Assertion |
 | :--- | :--- | :--- | :--- |

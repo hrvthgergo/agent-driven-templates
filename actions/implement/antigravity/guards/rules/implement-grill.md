@@ -11,7 +11,7 @@ This rule guard governs the `/implement` Grill-me Q&A interview engine, enforcin
 
 ## 1. Unchangeable Baselines
 
-1. **Baseline 1: Mandatory Dual Grounding Mandate**: Code implementation MUST stand firmly on BOTH a valid `implementation_map_v<version>.md` AND a Test Plan (`phase-5-verification.md`).
+1. **Baseline 1: Mandatory Dual Grounding Mandate**: Code implementation MUST stand firmly on BOTH a valid `implementation_map_v<version>.md` AND a Test Plan (`phase-5-test.md`).
 2. **Baseline 2: Strict Directory Separation & Production Cleanliness**: Source code in `codebase-*`, AST code graphs in `agent-workspace/src/<layer>/code_graph/`, and system documentation in `agent-workspace/docs/`.
 3. **Baseline 3: Mandatory 4-Part Step Schema Enforcement**: Requirement Fulfilled, Prerequisites, Actions Taken, Verification Fulfilled for every step.
 4. **Baseline 4: Mandatory Decision Persistence & Inner Agent Artifact Alignment**: 100% sync between agent inner docs (Artifacts) and version-controlled files in `agent-workspace/plans/<feature-name>/`.
@@ -31,7 +31,7 @@ This rule guard governs the `/implement` Grill-me Q&A interview engine, enforcin
 ## 3. Sequential Q1 – Q9 Prompts
 
 * **Q1: Implementation Map & Target Version Selection**: Confirm which version-named map (`implementation_map_v1.0.0.md`) inside `implementation_maps/` governs execution.
-* **Q2: Verification Test Plan & Critical Feature Assertions Alignment**: Confirm unit and integration test scaffolding strategy based on `phase-5-verification.md`.
+* **Q2: Verification Test Plan & Critical Feature Assertions Alignment**: Confirm unit and integration test scaffolding strategy based on `phase-5-test.md`.
 * **Q3: Starting Layer / Component Entry Point**: Confirm starting architectural layer (`codebase-data`, `codebase-engine`, `codebase-ui`, `codebase-ops`).
 * **Q4: Scaffolding Strategy & Visible Step Boundary**: Select execution mode (`--plan` for step-by-step confirmation with diff preview, `--auto` for continuous scaffolding, or `--dry-run`).
 * **Q5: Sequential vs. Parallel Stream Execution Order**: Confirm sequencing of decoupled parallel execution tasks.

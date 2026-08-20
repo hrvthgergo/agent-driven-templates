@@ -209,7 +209,7 @@ graph TD
 ### Step Descriptions & Execution Reasoning
 
 #### Step 1: Environment & Workspace Check (Node S1)
-* **Description**: Verifies workspace initialization (`.agents/` and active Git branch state). Asserts Docker engine status and active feature directory (`agent-workspace/plans/<feature-name>/`).
+* **Description**: Verifies workspace initialization (`agent-workspace/` and active Git branch state). Asserts Docker engine status and active feature directory (`agent-workspace/plans/<feature-name>/`).
 * **Storage Actions**: Reads `agent-workspace/plans/<feature-name>/PROCESS_STATUS.md`. Verifies Row 3 (`/plan`) is marked `Completed` or `In Progress`.
 
 #### Step 2: FIRST ACTION - Map & Verification Scope Check (Node S2)

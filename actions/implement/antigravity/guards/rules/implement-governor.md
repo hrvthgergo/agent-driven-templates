@@ -12,7 +12,7 @@ This rule guard enforces core execution safety, write boundaries, mandatory dual
 ## 1. Mandatory Dual Grounding Constraint
 The AI agent MUST NOT write, modify, or delete any source code files in `codebase-*` or `src/` unless BOTH of the following foundational conditions are verified:
 1. A valid, version-named implementation map (e.g. `implementation_map_v1.0.0.md`) exists in `agent-workspace/plans/<feature-name>/implementation_maps/`.
-2. A valid test specification (`phase-5-verification.md` or feature test plan detailing critical system assertions) exists in `agent-workspace/plans/<feature-name>/`.
+2. A valid test specification (`phase-5-test.md` or feature test plan detailing critical system assertions) exists in `agent-workspace/plans/<feature-name>/`.
 
 If either prerequisite is missing, the agent MUST immediately halt execution, notify the developer, and prompt to draft the missing prerequisite before touching code.
 

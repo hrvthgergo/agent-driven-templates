@@ -11,7 +11,7 @@ This skill provides step-by-step procedures for scaffolding source code in `code
 
 ## 1. Incremental Code Scaffolding in `codebase-*`
 
-1. Read target `implementation_map_v<version>.md` and `phase-5-verification.md` from `agent-workspace/plans/<feature-name>/`.
+1. Read target `implementation_map_v<version>.md` and `phase-5-test.md` from `agent-workspace/plans/<feature-name>/`.
 2. Parse planned tasks adhering to the mandatory 4-part step schema:
    * **1. Requirement Fulfilled**: Map to corresponding `phase-*.md` section.
    * **2. Prerequisites**: Verify preceding dependencies are satisfied.
@@ -19,7 +19,7 @@ This skill provides step-by-step procedures for scaffolding source code in `code
    * **4. Verification Fulfilled**: Execute unit and regression test commands.
 3. For each step in the implementation map:
    * Create new source files or edit existing code in target `codebase-*` sub-repositories.
-   * Create unit and integration test files alongside production code as specified in `phase-5-verification.md`.
+   * Create unit and integration test files alongside production code as specified in `phase-5-test.md`.
    * Enforce architectural boundaries and clean layer separation.
    * Verify workspace symlinks in `agent-workspace/src/<layer>/`.
 

@@ -58,7 +58,7 @@ The implementation plan directly realizes the following design blueprints and al
    - Implements neutral Q1–Q9 prompt schema.
 3. **Step 3: Stateful Workflow Playbook (`workflows/implement.md`)**
    - Orchestrates the 7-node state machine and interactive checkpoints.
-4. **Step 5: Process Status & Verification Integration**
+4. **Step 5: Process Status & Qualification Integration**
    - Final validation against `implement_tests.md`.
 
 #### Parallel Execution Stream (Decoupled Primitives)

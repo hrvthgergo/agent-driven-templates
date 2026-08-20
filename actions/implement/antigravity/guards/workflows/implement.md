@@ -30,7 +30,7 @@ This stateful execution playbook defines the 7-node state machine governing sour
 3. **Docker Daemon Check**: Execute `docker info` to verify runtime container health.
 
 ### Node S2: FIRST ACTION - Map & Test Plan Verification
-1. **Prerequisite Check**: As the very first action, inspect `agent-workspace/plans/<feature-name>/implementation_maps/` for `implementation_map_v<version>.md` and `agent-workspace/plans/<feature-name>/phase-5-verification.md`.
+1. **Prerequisite Check**: As the very first action, inspect `agent-workspace/plans/<feature-name>/implementation_maps/` for `implementation_map_v<version>.md` and `agent-workspace/plans/<feature-name>/phase-5-test.md`.
 2. **Scope Alignment**: Verify that the map version, target scope, and critical test assertions match the implementation request.
 3. If either prerequisite is missing or ambiguous, halt and prompt user before touching disk state.
 
@@ -43,7 +43,7 @@ This stateful execution playbook defines the 7-node state machine governing sour
 ### Node S4: Visible Step-by-Step Code Scaffolding Loop & Solution Testing
 1. Invoke `skills/implement-scaffolder/SKILL.md`.
 2. Execute code modifications step-by-step in target `codebase-*` sub-repositories following the mandatory 4-part step schema (Requirement, Prerequisites, Actions, Verification).
-3. Scaffold unit test files alongside production code files based on `phase-5-verification.md` test specifications.
+3. Scaffold unit test files alongside production code files based on `phase-5-test.md` test specifications.
 4. Execute solution tests per step (unit, integration, and regression assertions).
 5. **Inner Agent Artifact Sync**: Immediately write and synchronize all decisions, plan updates, and step outcomes produced in inner agent docs (Artifacts) to the corresponding version-controlled files under `agent-workspace/plans/<feature-name>/`.
 6. **User Interruption Checkpoints**: Maintain an active communication window between steps where the user can interrupt, ask questions, or request adjustments (no opaque subagent delegation).
@@ -58,7 +58,7 @@ This stateful execution playbook defines the 7-node state machine governing sour
 2. Inspect `agent-workspace/plans/<feature-name>/resource/` for staged legacy documents, schemas, and diagrams.
 3. Update global system documentation under `agent-workspace/docs/` (e.g. updating API reference, component architecture, data models).
 
-### Node S7: `PROCESS_STATUS.md` Sync & Handoff to `/verify`
+### Node S7: `PROCESS_STATUS.md` Sync & Handoff to `/qualify`
 1. Update `agent-workspace/plans/<feature-name>/PROCESS_STATUS.md`, marking Row 4 (`/implement`) as `Completed`.
 2. Record datestamped entry in Block 2 daily history log.
-3. Output completion report and recommend next workflow command (`/verify`).
+3. Output completion report and recommend next workflow command (`/qualify`).
