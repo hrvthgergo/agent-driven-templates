@@ -176,10 +176,116 @@ The framework coordinates three distinct execution layers during initialization 
 
 ---
 
-## 7. Next Steps & Guide Extensions
+## 7. Actions & Commands Reference Catalogue
 
-This initial version of the User Guide establishes the core operational mental model and workflow sequencing. As feature development progresses, subsequent sections will expand to include:
-- Step-by-step CLI usage guides and flag reference tables (`--auto`, `--plan`, `--dry-run`, `--scope`, `--coverage`).
-- Greenfield vs. Brownfield operational walkthroughs.
-- Detailed guidelines for downstream execution actions (`/implement`, `/qualify`, `/release`).
+The following tables provide the authoritative catalogue of all six fundamental lifecycle actions and their supported command variants and option flags.
+
+### Master Actions Overview
+
+| Action | Specification File | The Guiding Question | Cognitive Mindset | Default Command |
+| :--- | :--- | :--- | :--- | :--- |
+| **`/init`** | [`init_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_action.md) | *"Where and how do we work?"* | **System Administrator** | `/init` |
+| **`/process`** | [`process_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process/process_action.md) | *"What already exists?"* | **Archaeologist & Analyst** | `/process` |
+| **`/plan`** | [`plan_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/plan/plan_action.md) | *"What should the system do?"* | **Architect & Designer** | `/plan` |
+| **`/implement`** | [`implement_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md) | *"Does my code work?"* | **Software Engineer** | `/implement` |
+| **`/qualify`** | [`qualify_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/qualify/qualify_action.md) | *"Does the whole system work?"* | **Quality Engineer (QA)** | `/qualify` |
+| **`/release`** | [`release_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/release/release_action.md) | *"Is the system delivered?"* | **Release & DevOps Operator** | `/release` |
+
+---
+
+### Action Commands & Options Breakdown
+
+#### 1. Action: Initialization (`/init`)
+*Specification*: [`actions/init/init_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_action.md)
+
+| Command / Option | Execution Mode / Scope | Description |
+| :--- | :--- | :--- |
+| `/init` | **Default Interactive Initialization** | Bootstraps a greenfield `initial` branch or prompts for a new feature branch in an initialized workspace. Sets up `.agents/` and `agent-workspace/`. |
+| `/init --feature <feature_name>` | **Explicit Feature Scope** | Initializes a new feature development scope, creates/checks out `feature/<feature_name>`, and scaffolds a feature-bound `PROCESS_STATUS.md`. |
+| `/init --release <vX.Y.Z>` | **Release Scope Initialization** | Initializes a release branch (`release/vX.Y.Z`) and prepares release-scoped tracking sheets. |
+| `/init --auto` | **Automated Execution Mode** | Bypasses interactive execution acceptance prompt (Node S4) and executes all planned scaffolding, Git remote setup, and push tasks automatically. |
+| `/init --dry-run` | **Preview Mode** | Previews all proposed directories, agentic structures, and tracking sheets without writing changes to disk. |
+| `/init --force` | **Forced Overwrite Mode** | Overwrites existing default rules and workflows in `.agents/` while strictly preserving custom phase blueprints (`phase-1-summary.md`, `PROCESS_STATUS.md`). |
+
+---
+
+#### 2. Action: Legacy Ingestion & Processing (`/process`)
+*Specification*: [`actions/process/process_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process/process_action.md)
+
+| Command / Option | Execution Mode / Scope | Description |
+| :--- | :--- | :--- |
+| `/process` | **Default Interactive Mode** | Runs Q&A grill, creates layer symlinks in `agent-workspace/src/<layer>`, stages legacy docs into `plans/<feature-name>/resource/`, and updates `PROCESS_STATUS.md`. |
+| `/process --proposal` | **On-Demand Proposal Mode** | Generates `agent-workspace/plans/<branch_name>/restructure-proposal.md` and pauses for explicit developer consent before applying changes. |
+| `/process --auto` (or `--apply`) | **Immediate Execution Mode** | Runs Q&A grill and executes symlink creation and file staging immediately without pausing for confirmation. |
+| `/process --dry-run` | **Preview Mode** | Performs historical analysis and outputs proposed integration report without creating symlinks or modifying disk state. |
+| `/process --docs-only` | **Documentation Extraction Mode** | Extracts documentation and synthesizes phase blueprints without modifying workspace symlinks or moving files. |
+| `/process --code-graph` | **By-Request Code Graph Mode** | Parses legacy source code and generates modular `agent-workspace/src/<layer>/code_graph/` subfolders with Version Stamp Headers. |
+| `/process --docs` | **By-Request Documentation Mode** | Promotes non-code legacy documentation from `resource/` into global `agent-workspace/docs/` with Version Stamp Headers. |
+| `/process --full-sync` | **Full Synchronization Mode** | Executes core integration, Code Graph generation, and system documentation update in one pass. |
+
+---
+
+#### 3. Action: Interactive Planning (`/plan`)
+*Specification*: [`actions/plan/plan_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/plan/plan_action.md)
+
+| Command / Option | Execution Mode / Scope | Description |
+| :--- | :--- | :--- |
+| `/plan` | **Default Interactive Planning** | Synthesizes feature understanding, conducts interactive Q&A grill, and scaffolds 6-phase blueprints (`phase-1-summary.md` to `phase-6-operation.md`). |
+| `/plan --feature <feature_name>` | **Targeted Feature Scope** | Explicitly targets planning for a specific feature branch scope under `agent-workspace/plans/<feature_name>/`. |
+| `/plan --auto` | **Automated Planning Mode** | Evaluates system impact and scaffolds phase blueprints using default parameters and minimal Q&A prompting. |
+| `/plan --dry-run` | **Preview Mode** | Previews planned blueprint documents and decision records in memory without persisting files to disk. |
+| `/plan --research <topic>` | **Targeted Topic Research** | Executes deep-dive research on a specific architectural topic and generates `agent-workspace/plans/<feature-name>/knowledge/research_report_<topic>.md`. |
+| `/plan --map` | **Implementation Map Drafting** | Drafts a versioned implementation map (`agent-workspace/plans/<feature-name>/implementation_maps/implementation_map_v<version>.md`) at the conclusion of planning. |
+
+---
+
+#### 4. Action: Action Implementation (`/implement`)
+*Specification*: [`actions/implement/implement_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md)
+
+| Command / Option | Execution Mode / Scope | Description |
+| :--- | :--- | :--- |
+| `/implement` (or `--plan`) | **Core Implementation Mode** (Default) | Verifies map & test plan first, executes visible step-by-step code scaffolding across `codebase-*` sub-repositories with solution testing, syncing outcomes to `plans/`. |
+| `/implement --code-graph` | **Implementation + AST Code Graph Mode** | Executes code scaffolding, solution testing, and artifact sync, AND updates AST Code Graphs in `agent-workspace/src/<layer>/code_graph/`. |
+| `/implement --docs` | **Implementation + System Docs Mode** | Executes code scaffolding, solution testing, and artifact sync, AND promotes feature resources to global `agent-workspace/docs/`. |
+| `/implement --full-sync` | **Full Synchronization Mode** | Executes code scaffolding, solution testing, AST Code Graph updates, and System Documentation updates in one pass. |
+| `/implement --auto` (or `--apply`) | **Continuous Scaffolding Mode** | Verifies map & test plan first, executes step-by-step scaffolding automatically while streaming progress log and syncing outcomes to `plans/`. |
+| `/implement --version <vX.Y.Z>` | **Version Map Target** | Explicitly targets a specific implementation map version (e.g., `implementation_map_v1.0.0.md`). |
+| `/implement --dry-run` | **Preview Mode** | Simulates step-by-step code scaffolding, displays file diff previews, and verifies code graph updates without altering files. |
+
+---
+
+#### 5. Action: Release Qualification (`/qualify`)
+*Specification*: [`actions/qualify/qualify_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/qualify/qualify_action.md)
+
+| Command / Option | Execution Mode / Scope | Description |
+| :--- | :--- | :--- |
+| `/qualify` (or `--all`) | **Full Qualification Matrix** (Default) | Executes all testing tiers (unit, integration, E2E, regression) across all layers and generates `QUALIFICATION_REPORT.md`. |
+| `/qualify --unit` | **Unit & Isolation Tier** | Runs layer-autonomous unit tests across `codebase-<layer>/tests/` with 100% pass rate requirement. |
+| `/qualify --integration` | **Cross-Layer Integration Tier** | Runs API contract and service integration test suites from `codebase-qualify/`. |
+| `/qualify --e2e` | **End-to-End User Journey Tier** | Runs headless browser tests and complete user journeys from `codebase-qualify/`. |
+| `/qualify --regression` | **Regression Protection Tier** | Runs master regression catalog from `agent-workspace/tests/` to guarantee zero breakage of existing features. |
+| `/qualify --env <url>` | **Targeted Environment Run** | Executes test suites directly against an external running environment or staging URL. |
+| `/qualify --report-only` | **Audit Reporting Mode** | Synthesizes existing test execution outputs and generates `QUALIFICATION_REPORT.md` and `qualification_log.json`. |
+
+---
+
+#### 6. Action: Release & Operations (`/release`)
+*Specification*: [`actions/release/release_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/release/release_action.md)
+
+| Command / Option | Execution Mode / Scope | Description |
+| :--- | :--- | :--- |
+| `/release` | **Default Interactive Release** | Prompts for release version, verifies certified qualification report, builds production Docker images, tags Git, and opens PR. |
+| `/release --version <vX.Y.Z>` | **Explicit Version Tagging** | Explicitly specifies release version tag (e.g. `v1.0.0`) for Docker image tagging and Git release tags. |
+| `/release --auto` | **Automated Release Mode** | Builds images, creates tags, generates release walkthrough, and opens PR without pausing for confirmation. |
+| `/release --dry-run` | **Preview Mode** | Simulates release build and packaging, outputting walkthrough preview without modifying Git tags or pushing images. |
+| `/release --deploy` | **Deployment Trigger Mode** | Triggers post-release deployment scripts or webhooks defined in `codebase-devops/`. |
+
+---
+
+## 8. Next Steps & Guide Extensions
+
+This User Guide establishes the core operational mental model, action mindsets, and command reference catalogue. As the framework evolves, additional walkthroughs and scenario-specific execution guides will be added for:
+- Greenfield vs. Brownfield operational deep-dives.
+- Multi-agent coordination patterns and supervisor dispatch workflows.
+- Integration recipes for external CI/CD pipelines and deployment orchestrators.
 
