@@ -53,3 +53,19 @@ When the `--code-graph` command flag is passed, Code Graphs are generated exclus
 2. **Update Process Status**:
    - Update `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md`. Update Block 1 matrix marking Row 2.0 (`/process`) as `Completed` and record a datestamped summary entry in Block 2.
 
+---
+
+## Procedure 4: Remote Synchronization (`--sync` / `--pull`)
+
+When the `--sync` flag is passed, the agent MUST synchronize the workspace with remote coworker commits:
+
+1. **Remote Fetch & Pull**:
+   - Execute `git fetch` and `git pull` on the active workspace and linked legacy repository origins.
+   - If merge conflicts occur, halt and present the conflicts to the user or resolve them if trivial.
+
+2. **Structural Diff Analysis**:
+   - Analyze the `git diff` against the previous local HEAD to identify precisely which files, modules, or directories were modified by remote coworkers.
+
+3. **Incremental Knowledge Alignment**:
+   - For layers affected by the diffs, selectively re-execute **Procedure 2 (Code Graph Generation)** to update `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md`.
+   - Selectively update relevant phase blueprint documents in **Procedure 3** (e.g., if a new data model was pulled, update `phase-3-data.md`).

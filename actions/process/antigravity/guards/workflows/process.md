@@ -21,6 +21,7 @@ The `/process` action accepts the following CLI commands and flags:
 - `/process --code-graph`: By-Request Code Graph Mode. Parses legacy code and generates modular `agent-workspace/src/<layer>/code_graph/` subfolders (`graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`) with Version Stamp Headers. Skipped by default to preserve token efficiency.
 - `/process --docs`: By-Request Documentation Mode. Promotes non-code legacy documentation from `resource/` into `agent-workspace/docs/` with Version Stamp Headers. Skipped by default.
 - `/process --full-sync`: Full Synchronization Mode. Executes core integration, generates Code Graphs, and updates system documentation in one pass.
+- `/process --sync` (or `--pull`): Remote Synchronization Mode. Fetches remote commits, resolves conflicts, and automatically updates local Code Graphs and phase blueprints.
 
 ---
 
@@ -135,6 +136,7 @@ graph TD
 2. **Optional Operations (By-Request Flags)**:
    - **Code Graph Generation (`--code-graph`)**: If requested, scaffold `agent-workspace/src/<layer>/code_graph/` subfolders containing `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md` with Version Stamp Headers.
    - **System Documentation Update (`--docs`)**: If requested, synthesize and promote non-code legacy documentation from `resource/` into `agent-workspace/docs/` with Version Stamp Headers.
+   - **Remote Synchronization (`--sync` / `--pull`)**: If requested, execute `git pull` on linked origins, detect structural diffs, and dynamically re-align local Code Graphs and phase blueprints to match the new remote state.
 
 3. **Update Process Status**:
    - Update `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md`. Mark Row 2.0 (`/process`) as `Completed` in Block 1 and append datestamped entry in Block 2.
