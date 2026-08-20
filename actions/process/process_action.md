@@ -1,6 +1,6 @@
-# Guard Specification: Legacy Code & Docs Processing (/process)
+# Guard Specification: Legacy Ingestion & Synchronization (/process)
 
-This document defines the requirements, design decisions, and step-by-step specification for the `/process` action. This action is a dedicated, standalone lifecycle element designed to process historical codebases, analyze legacy documentation, and integrate legacy source repositories into the agent workspace without cluttering the `/init` action.
+This document defines the requirements, design decisions, and step-by-step specification for the `/process` action. This action is a dedicated, standalone lifecycle element designed to process historical codebases, synchronize with remote coworker commits, and integrate legacy source repositories into the agent workspace without cluttering the `/init` action.
 
 ---
 
@@ -9,7 +9,7 @@ This document defines the requirements, design decisions, and step-by-step speci
 The `/process` action is an essential component of the **Software Development Action Guard** for brownfield projects.
 
 ### Goal of the Action
-The primary goal of `/process` is to analyze an existing, legacy, or unorganized codebase, extract domain knowledge into agentic blueprints, integrate existing source code into the workspace layer layout (`agent-workspace/src/<layer>`), stage non-code documentation into feature resources, and link all previous remote sources into the workspace.
+The primary goal of `/process` is to analyze an existing, legacy, or unorganized codebase, extract domain knowledge into agentic blueprints, integrate existing source code into the workspace layer layout (`agent-workspace/src/<layer>`), stage non-code documentation into feature resources, link all previous remote sources into the workspace, and provide continuous knowledge synchronization for coworker commits.
 
 ### Pure Integration & No Code Modification Policy
 > [!IMPORTANT]
@@ -108,6 +108,7 @@ graph TD
     *   Selectively fills out relevant phase blueprint documents (`phase-1-summary.md` through `phase-6-operation.md` in `agent-workspace/plans/<feature-name>/`) based on identified legacy knowledge. *Filling out all 6 phase documents is optional and strictly based on relevance*.
     *   **OPTIONAL — Code Graph Generation (`--code-graph`)**: Executed only when explicitly requested. Generates a dedicated `agent-workspace/src/<layer>/code_graph/` subfolder per layer (containing `graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`) with Version Stamp Headers.
     *   **OPTIONAL — System Documentation Update (`--docs`)**: Executed only when explicitly requested. Synthesizes and promotes non-code legacy documentation from `agent-workspace/plans/<feature-name>/resource/` into `agent-workspace/docs/`.
+    *   **OPTIONAL — Remote Synchronization (`--sync` / `--pull`)**: Fetches and securely pulls remote coworker commits, identifies structural diffs, and dynamically re-aligns local Code Graphs and phase blueprints to match the new remote state.
     *   Updates `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` marking Row 2.0 (`/process`) as `Completed`.
 
 ---
@@ -126,6 +127,7 @@ graph TD
 | `/process --code-graph` | **By-Request Code Graph Mode**. Generates `agent-workspace/src/<layer>/code_graph/` subfolders with Version Stamp Headers |
 | `/process --docs` | **By-Request Documentation Mode**. Promotes non-code legacy documentation from `resource/` into `agent-workspace/docs/` |
 | `/process --full-sync` | **Full Synchronization Mode**. Executes core integration, Code Graph generation, and system documentation update in one pass |
+| `/process --sync` (or `--pull`) | **Remote Synchronization Mode**. Securely pulls remote coworker commits, identifies diffs, and dynamically re-aligns local Code Graphs and Phase Blueprints |
 
 ### Parameters & Options Details
 - `/process`: Default interactive execution. Runs the Grill Engine interview, verifies legacy paths, creates `agent-workspace/src/<layer>` symlinks, stages docs in `plans/<feature-name>/resource/`, and updates tracking sheets.
@@ -136,3 +138,4 @@ graph TD
 - `/process --code-graph`: By-Request Code Graph Mode. Parses legacy source code and generates `agent-workspace/src/<layer>/code_graph/` subfolders with Version Stamp Headers. Skipped by default to preserve token efficiency.
 - `/process --docs`: By-Request Documentation Mode. Promotes non-code legacy documentation from `resource/` into `agent-workspace/docs/` with Version Stamp Headers. Skipped by default to preserve token efficiency.
 - `/process --full-sync`: Full Synchronization Mode. Executes core integration, generates Code Graphs, and updates system documentation in one pass.
+- `/process --sync` (or `/process --pull`): Remote Synchronization Mode. Fetches and pulls remote coworker commits, identifies structural diffs, and dynamically re-aligns local Code Graphs and phase blueprints to match the new remote state.

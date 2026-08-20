@@ -209,7 +209,7 @@ The following tables provide the authoritative catalogue of all six fundamental 
 
 ---
 
-#### 2. Action: Legacy Ingestion & Processing (`/process`)
+#### 2. Action: Legacy Ingestion & Synchronization (`/process`)
 *Specification*: [`actions/process/process_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process/process_action.md)
 
 | Command / Option | Execution Mode / Scope | Description |
@@ -222,6 +222,7 @@ The following tables provide the authoritative catalogue of all six fundamental 
 | `/process --code-graph` | **By-Request Code Graph Mode** | Parses legacy source code and generates modular `agent-workspace/src/<layer>/code_graph/` subfolders with Version Stamp Headers. |
 | `/process --docs` | **By-Request Documentation Mode** | Promotes non-code legacy documentation from `resource/` into global `agent-workspace/docs/` with Version Stamp Headers. |
 | `/process --full-sync` | **Full Synchronization Mode** | Executes core integration, Code Graph generation, and system documentation update in one pass. |
+| `/process --sync` (or `--pull`) | **Remote Synchronization Mode** | Securely pulls remote coworker commits, identifies diffs, and dynamically re-aligns local Code Graphs and Phase Blueprints. |
 
 ---
 

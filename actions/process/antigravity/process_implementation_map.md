@@ -86,6 +86,7 @@ The implementation plan directly realizes the following design blueprints and al
             *   Selectively populates relevant phase blueprints in `agent-workspace/plans/<feature-name>/` based on discovered legacy domain knowledge.
             *   **By-request only (`--code-graph`)**: Generates `agent-workspace/src/<layer>/code_graph/` subfolders (`graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`) with Version Stamp Headers.
             *   **By-request only (`--docs`)**: Promotes non-code docs from `resource/` to `agent-workspace/docs/` with Version Stamp Headers.
+            *   **By-request only (`--sync` / `--pull`)**: Executes `git pull`, detects diffs, and dynamically updates Code Graphs and phase blueprints.
             *   Updates `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` Row 2.0 to `Completed`.
     4.  Implement CLI parameter handling:
         *   `/process`: Default interactive execution (Q&A grill, creates layer symlinks in `agent-workspace/src/<layer>`, stages docs in `resource/`).
@@ -96,6 +97,7 @@ The implementation plan directly realizes the following design blueprints and al
         *   `/process --code-graph`: By-Request Code Graph Mode (generates `agent-workspace/src/<layer>/code_graph/` subfolders).
         *   `/process --docs`: By-Request Documentation Mode (promotes docs to `agent-workspace/docs/`).
         *   `/process --full-sync`: Full Synchronization Mode (executes integration, Code Graph generation, and documentation promotion in one pass).
+        *   `/process --sync` (or `--pull`): Remote Synchronization Mode (pulls remote coworker commits, identifies diffs, and updates Code Graphs and blueprints).
 
 ---
 
@@ -132,6 +134,7 @@ The implementation plan directly realizes the following design blueprints and al
     3.  Define **Resource Staging Procedures**: Copy non-code legacy documentation, supplementary assets, schemas, and diagrams into `agent-workspace/plans/<feature-name>/resource/`.
     4.  Define **Workspace Code Graph Generation Procedures**: Parse code structures and write `agent-workspace/src/<layer>/code_graph/` subfolders (`graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`) with Version Stamp Headers.
     5.  Define **Selective Blueprint Population Procedures**: Synthesize extracted legacy metadata selectively into `agent-workspace/plans/<feature-name>/phase-*.md` based on relevance.
+    6.  Define **Synchronization Procedures**: Handle `git pull`, detect merge conflicts, and perform incremental/diff-based updates to Code Graphs.
 
 ---
 

@@ -17,6 +17,7 @@ This document defines the test scenario, mock execution sequence, real-world leg
     4. **On-Demand Proposal Mode (`--proposal`)**: Validates that `/process --proposal` generates `agent-workspace/plans/initial/restructure-proposal.md` and pauses for confirmation, while standard `/process` applies layer symlinks directly.
     5. **By-Request Code Graph Generation (`--code-graph`)**: When `--code-graph` flag is used, scoped code graph folders are created inside `agent-workspace/src/<layer>/code_graph/` containing `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md` with Version Stamp Headers. Skipped by default without the flag.
     6. **Selective Blueprint & Status Synthesis (Node S6)**: Selectively populates relevant phase blueprints in `agent-workspace/plans/initial/` based on identified domain knowledge (filling out all 6 is optional) and updates `PROCESS_STATUS.md` Row 2.0 to `Completed`.
+    7. **Remote Synchronization (`--sync`)**: Validates that remote coworker commits are securely fetched and pulled, and local Code Graphs and Blueprints are structurally updated to mirror the new remote state.
 
 ---
 
@@ -72,6 +73,7 @@ Upon completion of Node S6, the test harness executes automated verification che
 | **S6** | By-Request (`--code-graph` flag) | `agent-workspace/src/layout/code_graph/`<br/>`agent-workspace/src/engine/code_graph/` | Subfolders exist inside `src/<layer>/`. Each contains `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md` with Version Stamp Headers. |
 | **S6** | Phase Blueprints | `agent-workspace/plans/initial/phase-*.md` | Relevant phase blueprint documents populated with synthesized domain knowledge extracted from `ai-chronicle-hub` (filling out blueprints is selective/relevance-based). |
 | **S6** | Guard Process Status | `agent-workspace/plans/initial/PROCESS_STATUS.md` | Block 1 matrix contains Row 2.0 (`/process`) marked `Completed`. Block 2 daily history updated. |
+| **S6** | By-Request (`--sync` flag) | `agent-workspace/src/<layer>/code_graph/` | `git pull` is executed on linked origins; corresponding Code Graphs and Phase Blueprints reflect the remote changes. |
 
 ---
 
@@ -112,5 +114,10 @@ test -f agent-workspace/src/layout/code_graph/risk_analysis.md && echo "ASSERT P
 
 # 6d. Assert legacy source code integrity (100% untouched)
 md5sum -c /tmp/legacy-checksums.txt && echo "ASSERT PASS: Original ai-chronicle-hub repo 100% untouched"
+
+# 6e. Optionally: run with --sync flag to validate remote fetch and graph alignment
+# Simulate remote change by modifying a file in origin, then running /process --sync
+# /process --sync
+# test -f agent-workspace/src/layout/code_graph/graph.md && echo "ASSERT PASS: Graph regenerated after sync"
 ```
 
