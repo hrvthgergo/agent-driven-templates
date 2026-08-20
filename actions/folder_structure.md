@@ -1,6 +1,6 @@
 # Desired Project Folder Structure
 
-This document defines the generic directory layout scaffolded, mapped, and enforced across project repositories. The `/init` workflow provisions the **Control Plane & Knowledge Hub** under `agent-workspace/`. Software layer repositories (`codebase-*`), Docker configurations, and `src/` symlinks are introduced during `/plan` (greenfield) or discovered and linked during `/process` (brownfield).
+This document defines the generic directory layout scaffolded, mapped, and enforced across project repositories. The `/init` action provisions the **Control Plane & Knowledge Hub** under `agent-workspace/` with an empty `src/` staging directory. Software layer repositories (`codebase-*`), Docker configurations, and `src/` symlinks are introduced during `/plan` (greenfield) or linked in-place during `/process` (brownfield).
 
 ```
 [Local Workspace Root]
@@ -39,15 +39,15 @@ This document defines the generic directory layout scaffolded, mapped, and enfor
 │   ├── tests/                   # Global master test scenarios, regression suites & cross-layer assertions
 │   │
 │   └── src/                     # Source Code Entry Points & Agentic Layer Graphs
-│       ├── devops/              # [SYMLINK] Points to ../codebase-devops/src/ (DevOps/Infra entry point)
-│       ├── qualify/             # [SYMLINK] Points to ../codebase-qualify/src/ (Qualification entry point)
-│       ├── layout/              # [SYMLINK] Points to ../codebase-layout/src/ (Example UI layer)
+│       ├── devops/              # [SYMLINK] Points to ../codebase-devops/src/ or legacy devops folder
+│       ├── qualify/             # [SYMLINK] Points to ../codebase-qualify/src/ or legacy test folder
+│       ├── layout/              # [SYMLINK] Points to ../codebase-layout/src/ or legacy frontend/UI folder
 │       │   └── code_graph/      # Modular Code Graph Subfolder for Layout Layer (No symlink needed)
 │       │       ├── graph.md          # Block 1: Unordered structural dependency graph
 │       │       ├── process_flow.md   # Block 2A: Process entry points & control flow
 │       │       ├── data_flow.md      # Block 2B: Data sources (user, configs, APIs, DB, hardcoded)
 │       │       └── risk_analysis.md  # Block 2C: Coupling metrics & risk maps
-│       └── engine/              # [SYMLINK] Points to ../codebase-engine/src/ (Example Engine layer)
+│       └── engine/              # [SYMLINK] Points to ../codebase-engine/src/ or legacy backend/core folder
 │           └── code_graph/      # Modular Code Graph Subfolder for Engine Layer (No symlink needed)
 │               ├── graph.md
 │               ├── process_flow.md
@@ -66,14 +66,14 @@ This document defines the generic directory layout scaffolded, mapped, and enfor
 │   ├── src/                     # CI/CD deployment scripts, healthchecks, provisioning
 │   └── tests/                   # Infrastructure & pipeline integration tests
 │
-├── codebase-<layer_a>/          # Generic Layer Skeleton A (Production source repo; clean of doc overhead)
+├── codebase-<layer_a>/          # Generic Layer Skeleton A (or Existing Legacy Code Repository A)
 │   ├── .github/ (or .gitlab/)   # Layer micro-pipelines (linting, unit tests)
 │   ├── config/                  # Layer autonomous routing, themes, or DB settings
 │   ├── Dockerfile               # Standalone production build spec for Layer A
 │   ├── src/                     # Raw layer source code (views, services, APIs)
 │   └── tests/                   # Layer-specific unit and isolation tests
 │
-└── codebase-<layer_b>/          # Generic Layer Skeleton B (Production source repo; clean of doc overhead)
+└── codebase-<layer_b>/          # Generic Layer Skeleton B (or Existing Legacy Code Repository B)
     ├── .github/ (or .gitlab/)   # Layer micro-pipelines (unit tests, build checks)
     ├── config/                  # Layer autonomous background & service settings
     ├── Dockerfile               # Standalone production build spec for Layer B
@@ -81,20 +81,22 @@ This document defines the generic directory layout scaffolded, mapped, and enfor
     └── tests/                   # Layer-specific unit and integration tests
 
 ├── codebase-qualify/            # Cross-Layer Test Implementation Repository (Pure execution code)
-│   ├── .github/ (or .gitlab/)   # Qualification pipelines (triggered by macro-pipelines)
-│   ├── config/                  # Test environment profiles & coverage rules
-│   ├── Dockerfile               # Standalone qualification runner container
-│   ├── src/                     # Executable test scripts, fixtures, e2e scenarios
-│   └── tests/                   # Meta-tests for the qualification infrastructure itself
+    ├── .github/ (or .gitlab/)   # Qualification pipelines (triggered by macro-pipelines)
+    ├── config/                  # Test environment profiles & coverage rules
+    ├── Dockerfile               # Standalone qualification runner container
+    ├── src/                     # Executable test scripts, fixtures, e2e scenarios
+    └── tests/                   # Meta-tests for the qualification infrastructure itself
 ```
 
-*Note: Production `codebase-*` sub-repositories contain strictly implementation source code, test suites, and build specs required to build/run the service. `agent-workspace` serves strictly as the Control Plane & Knowledge Hub (`.agents/`, `plans/`, `docs/`, `src/`). Every entry point inside `agent-workspace/src/` is strictly a relative symlink pointing to an underlying `codebase-*` sub-repository.*
+*Note on Control Plane Separation: `agent-workspace` serves strictly as the Control Plane & Knowledge Hub (`.agents/`, `plans/`, `docs/`, `src/`). The `/init` action scaffolds `agent-workspace/` with an empty `src/` directory. Every entry point inside `agent-workspace/src/` is strictly a symbolic link pointing to an underlying `codebase-*` sub-repository (for greenfield projects) or directly to an existing legacy codebase folder (for brownfield in-place integration).*
 
-*Feature Resource Folder & Global Docs Policy: Non-code legacy documentation, supplementary assets, schemas, and diagrams discovered during `/process` are staged inside `plans/<feature_name>/resource/` as reference knowledge for the active feature. Global `docs/` contains knowledge of already implemented system capabilities. Staging legacy docs in `plans/<feature-name>/resource/` keeps active feature planning decoupled; later, during the `/implement` workflow, after the feature is implemented, relevant documentation will be linked/promoted into global `docs/`.*
+*Brownfield In-Place Integration: For brownfield projects, `/process` creates symbolic links inside `agent-workspace/src/<layer>` pointing directly to the existing codebase directories, allowing agents to navigate and orchestrate existing repositories without moving files or duplicating storage.*
+
+*Feature Resource Folder & Global Docs Policy: Non-code legacy documentation, supplementary assets, schemas, and diagrams discovered during `/process` are staged inside `plans/<feature_name>/resource/` as reference knowledge for the active feature. Global `docs/` contains knowledge of already implemented system capabilities. Staging legacy docs in `plans/<feature-name>/resource/` keeps active feature planning decoupled; later, during the `/implement` action, after the feature is implemented, relevant documentation will be linked/promoted into global `docs/`.*
 
 *Selective Phase Blueprint Rule: Filling out phase blueprint documents (`phase-1-summary.md` through `phase-6-operation.md` in `plans/<feature_name>/`) is optional and strictly based on relevance of identified legacy content.*
 
-*Lifecycle Layer Expansion: If a project begins as single-layer (e.g., `codebase-engine`) and later requires an additional layer (e.g., adding `codebase-layout` or `codebase-worker`), the framework introduces the new layer skeleton under the same `codebase-<new_layer>` pattern, registers a new symlink under `src/<new_layer>`, updates `codebase-devops/docker/docker-compose.yml`, and preserves complete structural consistency across the repository lifecycle.*
+*Lifecycle Layer Expansion: If a project begins as single-layer (e.g., `codebase-engine` or existing backend) and later requires an additional layer (e.g., adding `codebase-layout` or `codebase-worker`), the framework introduces the new layer skeleton under the same pattern, registers a new symlink under `src/<new_layer>`, updates `codebase-devops/docker/docker-compose.yml`, and preserves complete structural consistency across the repository lifecycle.*
 
 ---
 

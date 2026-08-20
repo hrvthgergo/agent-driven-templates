@@ -1,6 +1,6 @@
-# Legacy Restructuring & Migration Proposal: `/process`
+# Legacy Integration & Proposal: `/process --proposal`
 
-**Execution Mode**: [Plan-First (--plan) | Immediate Execution (--auto)]  
+**Execution Mode**: [Standard Interactive | Proposal Mode (--proposal) | Immediate Execution (--auto)]  
 **Date**: YYYY-MM-DD  
 **Status**: [Pending Review | Approved | Executed]
 
@@ -8,31 +8,31 @@
 
 ## 1. Overview & Safety Policy
 
-This restructuring proposal maps source files and documentation from linked brownfield legacy directories into the workspace's target sub-repository layout (`codebase-*`) and control plane (`agent-workspace/`).
+This integration proposal maps source files and documentation from linked brownfield legacy directories into the workspace's target layer layout (`agent-workspace/src/<layer>`) and control plane (`agent-workspace/`).
 
 > [!IMPORTANT]
-> **Read-Only Legacy Source Policy**: The original legacy repositories and source directories MUST remain 100% untouched and read-only. Files are copied intact into the target sub-repositories without modifying source logic.
+> **Read-Only Legacy Source Policy**: The original legacy repositories and source directories MUST remain 100% untouched and read-only with respect to code logic. In-place symbolic links are registered under `agent-workspace/src/<layer>` without modifying source logic or duplicating files.
 
 ---
 
-## 2. Source-to-Layer Migration & Staging Mapping
+## 2. Source-to-Layer Integration & Staging Mapping
 
-The table below outlines the proposed intact file copy and documentation staging operations:
+The table below outlines the proposed in-place layer symlink creation and documentation staging operations:
 
-| Legacy Source Directory | Classification | Target Destination |
-| :--- | :--- | :--- |
-| `[legacy_path/ui/...]` | UI / Presentation | `codebase-layout/src/` |
-| `[legacy_path/server/...]` | Domain Engine Logic | `codebase-engine/src/` |
-| `[legacy_path/docs/...]` | Non-Code Docs & Assets | `agent-workspace/plans/<branch_name>/resource/` |
-| `[legacy_path/research/...]` | Topic Research & Summaries | `agent-workspace/plans/<branch_name>/knowledge/` |
-| `[legacy_path/plans/...]` | Implementation Roadmaps | `agent-workspace/plans/<branch_name>/implementation_maps/` |
-| `[legacy_path/details/...]` | Sub-Element Blueprints | `agent-workspace/plans/<branch_name>/phase_details/` |
+| Legacy Source Directory | Classification | Target Workspace Destination | Integration Type |
+| :--- | :--- | :--- | :--- |
+| `[legacy_path/ui/...]` | UI / Presentation | `agent-workspace/src/layout/` | Symbolic Link (In-Place) |
+| `[legacy_path/server/...]` | Domain Engine Logic | `agent-workspace/src/engine/` | Symbolic Link (In-Place) |
+| `[legacy_path/docs/...]` | Non-Code Docs & Assets | `agent-workspace/plans/<branch_name>/resource/` | Staged Copy |
+| `[legacy_path/research/...]` | Topic Research & Summaries | `agent-workspace/plans/<branch_name>/knowledge/` | Staged Copy |
+| `[legacy_path/plans/...]` | Implementation Roadmaps | `agent-workspace/plans/<branch_name>/implementation_maps/` | Staged Copy |
+| `[legacy_path/details/...]` | Sub-Element Blueprints | `agent-workspace/plans/<branch_name>/phase_details/` | Staged Copy |
 
 ---
 
-## 3. Workspace Code Graph Generation Plan
+## 3. Workspace Code Graph Generation Plan (Optional --code-graph)
 
-The following layer-scoped Code Graph subfolders will be generated inside **`agent-workspace/src/<layer>/code_graph/`** (keeping production `codebase-*` sub-repositories clean of documentation overhead):
+When `--code-graph` is provided, the following layer-scoped Code Graph subfolders will be generated inside **`agent-workspace/src/<layer>/code_graph/`**:
 
 *   **`agent-workspace/src/layout/code_graph/`**:
     *   `graph.md` (Unordered structural dependency graph & element registry based on JS taxonomy)
@@ -52,6 +52,8 @@ The following layer-scoped Code Graph subfolders will be generated inside **`age
 The following planning phase documents in `agent-workspace/plans/<branch_name>/` will be selectively populated with domain knowledge extracted from the legacy codebase (*filling out blueprints is optional and strictly based on relevance*):
 - `agent-workspace/plans/<branch_name>/phase-1-summary.md` (Project vision, boundaries, remotes, linked folders)
 - `agent-workspace/plans/<branch_name>/phase-2-layout.md` (Presentation views, component hierarchy, styling system)
-- `agent-workspace/plans/<branch_name>/phase-3-engine.md` (Domain logic, API contracts, DTO schemas, DB models)
-- `agent-workspace/plans/<branch_name>/phase-4-verification.md` (Test specifications, test runner configs, assertion matrices)
-- `agent-workspace/plans/<branch_name>/phase-5-operation.md` (Docker specs, deployment pipelines, ops notes)
+- `agent-workspace/plans/<branch_name>/phase-3-data.md` (Data handling, capturing, models & storage mechanisms)
+- `agent-workspace/plans/<branch_name>/phase-4-engine.md` (Domain logic, API contracts, DTO schemas, core services)
+- `agent-workspace/plans/<branch_name>/phase-5-test.md` (Test specifications, test runner configs, assertion matrices)
+- `agent-workspace/plans/<branch_name>/phase-6-operation.md` (Docker specs, deployment pipelines, ops notes)
+

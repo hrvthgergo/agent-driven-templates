@@ -40,10 +40,10 @@ graph TD
 
 ### Action 2: Ingestion of Existing Systems (`/process`)
 - **Brownfield Context Ingestion**: For projects that possess pre-designed or previously implemented code and documentation from past development, `/process` runs immediately after `/init`.
-- **Structured Knowledge Organization**: `/process` ingests, analyzes, and reorganizes previous design artifacts and implementation sources:
-  - **Intact Source Migration**: Copies legacy source code intact into target `codebase-*` sub-repositories without modifying code logic.
-  - **Resource Staging**: Stages non-code legacy documentation and assets into `.agents/plans/<feature-name>/resource/` for feature reference.
-  - **Code Graph Generation**: Builds workspace-scoped Code Graphs (`antigravity-workspace/src/<layer>/code_graph/`) detailing structural node topologies.
+- **Structured Knowledge Organization**: `/process` ingests, analyzes, and integrates previous design artifacts and implementation sources:
+  - **In-Place Layer Integration**: Links existing legacy source code directly into workspace layers (`agent-workspace/src/<layer>/`) via symlinks (or copies intact into sub-repositories if isolated scaffolding is requested) without modifying code logic.
+  - **Resource Staging**: Stages non-code legacy documentation and assets into `agent-workspace/plans/<feature-name>/resource/` for feature reference.
+  - **Code Graph Generation**: Builds on-demand workspace-scoped Code Graphs (`agent-workspace/src/<layer>/code_graph/`) detailing structural node topologies.
 
 ### Action 3: Structured Feature Planning (`/plan`)
 - **Architectural Bridge**: Once `/init` (and `/process`, if applicable) finishes successfully, the workspace is structured and ready for architectural design. This is where the `/plan` workflow begins.

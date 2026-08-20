@@ -35,7 +35,7 @@ This matrix tracks top-level workflows and focused sub-processes. The 6-Phase Pl
 
 | Workflow / Sub-Process | Status | Focus / Artifact | Last Updated |
 | :--- | :--- | :--- | :--- |
-| **1. /init** | `[x] Done` | Environment checks, layer symlinks, Git branch creation | YYYY-MM-DD |
+| **1. /init** | `[x] Done` | Environment checks, control plane scaffolding, Git branch creation | YYYY-MM-DD |
 | **2. /process** | `[-] Not In Scope` | Legacy code & docs analysis (Brownfield only) | YYYY-MM-DD |
 | **3. /plan** | `[>] In Progress` | 6-Phase Blueprinting Framework | YYYY-MM-DD |
 | ├── **3.1 Phase 1: Summary** | `[x] Done` | High-level summary & folder map (`phase-1-summary.md`) | YYYY-MM-DD |
@@ -63,7 +63,6 @@ This section logs daily process initiations, completed milestones, and key decis
 ### [YYYY-MM-DD]
 - **[HH:MM] Workflow Initiated**: `/init --release v1.0.0`
   - Created Git branch `release/v1.0.0`.
-  - Discovered 2 layer skeletons (`codebase-layout`, `codebase-engine`).
   - Scaffolded `.agents/` control directory and `PROCESS_STATUS.md`.
 - **[HH:MM] Workflow Initiated**: `/plan --phase 1`
   - Started requirements gathering and initial architecture summary drafting.

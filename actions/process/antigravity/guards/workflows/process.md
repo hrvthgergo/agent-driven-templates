@@ -1,22 +1,26 @@
 ---
 name: process
-description: Stateful execution playbook for brownfield legacy codebase processing, Q&A interview, restructure proposal, as-is code migration, non-code doc resource staging, workspace code graph subfolder creation, and selective blueprint synthesis in Google Antigravity.
+description: Stateful execution playbook for brownfield legacy codebase discovery, in-place symlinking, non-code doc resource staging, on-demand proposal generation, modular code graph creation, and selective blueprint synthesis in Google Antigravity.
 ---
 
 # Stateful Execution Playbook: `/process`
 
-This playbook governs the step-by-step execution of the `/process` workflow within Google Antigravity. It transitions through nodes **S0** to **S7**, enforcing prerequisite initialization checks, read-only legacy source integrity, Q&A interview gating, restructure proposal consent, as-is file copying to `codebase-*` layers, non-code doc staging in `agent-workspace/plans/<branch_name>/resource/`, workspace-scoped Code Graph subfolder creation (`agent-workspace/src/<layer>/code_graph/`), selective 5-phase blueprint population, and process status updates.
+This playbook governs the step-by-step execution of the `/process` action within Google Antigravity. It transitions through nodes **S0** to **S6**, enforcing prerequisite initialization checks, read-only legacy source integrity, Q&A interview gating, execution acceptance / on-demand proposal generation, in-place layer symlinking under `agent-workspace/src/<layer>`, non-code doc staging in `agent-workspace/plans/<branch_name>/resource/`, on-demand workspace Code Graph subfolder creation (`agent-workspace/src/<layer>/code_graph/`), selective phase blueprint population, and process status updates.
 
 ---
 
 ## Command Flags & Parameters
 
-The `/process` workflow accepts the following CLI flags:
+The `/process` action accepts the following CLI commands and flags:
 
-- `/process` (or `/process --plan`): Default interactive execution (Plan-First Mode). Runs prerequisite check, legacy audit, Q&A Grill gate, drafts `agent-workspace/plans/<branch_name>/restructure-proposal.md`, displays Execution Acceptance prompt for user approval, copies code as-is to `codebase-*` layers, stages non-code docs in `resource/`, generates workspace code graphs, and selectively populates phase blueprints.
-- `/process --auto` (or `--apply`): Automatic execution mode. Bypasses the interactive Execution Acceptance prompt and executes all planned file migrations, resource doc staging, code graph subfolder creation, and blueprint population automatically while recording `restructure-proposal.md` as an audit log.
-- `/process --dry-run`: Executes the workflow in preview mode. Outputs all proposed file mappings, layer destinations, Code Graph structures, and blueprint updates without writing any changes to disk.
-- `/process --docs-only`: Extracts documentation, stages non-code docs in `resource/`, generates workspace Code Graph subfolders, and synthesizes phase blueprints without proposing physical source code migration.
+- `/process`: Default interactive execution. Runs prerequisite check, legacy audit, Q&A Grill gate, summarizes planned layer symlinks and resource staging, prompts for execution confirmation, creates `agent-workspace/src/<layer>` symlinks, stages non-code docs in `resource/`, selectively populates phase blueprints, and updates `PROCESS_STATUS.md`.
+- `/process --proposal`: On-Demand Proposal Mode. Runs Q&A grill, drafts `agent-workspace/plans/<branch_name>/restructure-proposal.md`, displays Execution Acceptance prompt for user review, and pauses before creating workspace symlinks.
+- `/process --auto` (or `--apply`): Automatic execution mode. Bypasses interactive confirmation prompts and executes all planned layer symlinks, resource doc staging, and blueprint updates immediately.
+- `/process --dry-run`: Executes in preview mode. Outputs all proposed symlinks, layer mappings, and blueprint updates without modifying disk state.
+- `/process --docs-only`: Extracts documentation, stages non-code docs in `resource/`, and synthesizes phase blueprints without creating workspace layer symlinks.
+- `/process --code-graph`: By-Request Code Graph Mode. Parses legacy code and generates modular `agent-workspace/src/<layer>/code_graph/` subfolders (`graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`) with Version Stamp Headers. Skipped by default to preserve token efficiency.
+- `/process --docs`: By-Request Documentation Mode. Promotes non-code legacy documentation from `resource/` into `agent-workspace/docs/` with Version Stamp Headers. Skipped by default.
+- `/process --full-sync`: Full Synchronization Mode. Executes core integration, generates Code Graphs, and updates system documentation in one pass.
 
 ---
 
@@ -24,14 +28,13 @@ The `/process` workflow accepts the following CLI flags:
 
 ```mermaid
 graph TD
-    S0[Node S0: Prerequisite /init Execution Check] -->|Verified| S1[Node S1: Inspect /init Metadata & Linked Folders]
+    S0[Node S0: Prerequisite /init Execution Check] -->|Verified| S1[Node S1: Inspect /init Metadata & Legacy Folders]
     S0 -->|Missing / Uncompleted| Halt[Halt & Prompt User to Run /init]
     S1 -->|Baseline Metadata Read| S2[Node S2: Audit Omitted Remotes & Submodules]
     S2 -->|Remotes Verified| S3[Node S3: Q&A Grill Gate]
-    S3 -->|Q1-Q7 Verified & GRILL_STATUS.md Written| S4[Node S4: Draft Restructure Proposal]
-    S4 -->|Plan Generated| S5[Node S5: Execution Acceptance / Consent Gate]
-    S5 -->|Approved / --auto| S6[Node S6: Execute As-Is Code Copying & Resource Staging]
-    S6 -->|Intact Files & Docs Staged| S7[Node S7: Workspace Code Graphs & Selective Blueprints Synthesis]
+    S3 -->|Q1-Q7 Verified & GRILL_STATUS.md Written| S4[Node S4: Execution Acceptance & Proposal Gate]
+    S4 -->|Approved / --auto| S5[Node S5: Execute Layer Symlinks & Resource Staging]
+    S5 -->|Symlinks & Docs Staged| S6[Node S6: Selective Blueprints & Maintenance Operations]
 ```
 
 ---
@@ -44,18 +47,18 @@ graph TD
 
 2. **Prerequisite Enforcement Gate**:
    - If `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` is missing or Row 1.0 is marked `Not Started`, halt execution immediately with error:
-     > `[ERROR] The /process workflow requires a pre-initialized workspace. Please run /init first (or /init --feature <name>) to bootstrap workspace boundaries, layer skeletons, and process tracking before running /process.`
+     > `[ERROR] The /process action requires a pre-initialized workspace. Please run /init first (or /init --feature <name>) to bootstrap workspace boundaries and process tracking before running /process.`
 
 ---
 
-### Node S1: Inspect `/init` Metadata
+### Node S1: Inspect `/init` Metadata & Legacy Folders
 
 1. **Read Architecture & Folder Map**:
-   - Read `agent-workspace/plans/<branch_name>/phase-1-summary.md` to extract linked legacy source folder paths, configured tech stack, and target layer skeletons (`codebase-devops`, `codebase-layout`, `codebase-engine`, etc.).
+   - Read `agent-workspace/plans/<branch_name>/phase-1-summary.md` to extract linked legacy source folder paths, configured tech stack, and primary remote Git origin.
 
 2. **Read-Only Integrity Check Baseline**:
    - Record MD5 checksums for all source files in linked legacy directories.
-   - Enforce **Baseline 1**: Original legacy directories remain 100% untouched and read-only.
+   - Enforce **Baseline 1**: Original legacy directories remain 100% untouched and read-only (no code logic rewriting).
 
 ---
 
@@ -78,10 +81,10 @@ graph TD
    - Prompt user sequentially through:
      * **Q1**: `/init` Baseline Review (linked legacy folders & project purpose).
      * **Q2**: Omitted Remote Sources Audit (remotes, submodules, external doc URLs).
-     * **Q3**: Legacy Source & Non-Code Docs Mapping Strategy (code to `codebase-*`, non-code docs to `agent-workspace/plans/<branch_name>/resource/`).
+     * **Q3**: Legacy Source & Non-Code Docs Mapping Strategy (code to `agent-workspace/src/<layer>/`, non-code docs to `agent-workspace/plans/<branch_name>/resource/`).
      * **Q4**: Workspace Code Graphs & Blueprint Extraction Scope (selective blueprint population).
-     * **Q5**: Execution Mode Selection (Plan-First `--plan` vs Immediate `--auto`).
-     * **Q6**: As-Is Code Migration & Path Linking Strategy (`agent-workspace/src/<layer>` symlinks).
+     * **Q5**: Workflow Execution Mode & Proposal Generation (Standard vs Proposal `--proposal` vs Immediate `--auto`).
+     * **Q6**: Integration Strategy (In-Place Symlink Mode vs Scaffolding Migration).
      * **Q7**: Q&A Summary Verification & Reflection.
    - Enforce **Neutral Prompting Law**: List options neutrally with zero `[Recommended]` tags and a mandatory final `Other / Free-text (...)` option.
 
@@ -90,36 +93,31 @@ graph TD
 
 ---
 
-### Node S4: Draft Restructure Proposal
-
-1. **Generate Migration & Staging Plan**:
-   - Draft `agent-workspace/plans/<branch_name>/restructure-proposal.md` detailing:
-     * Source file paths in linked legacy directories.
-     * Target layer sub-repository paths (`codebase-layout/src/`, `codebase-engine/src/`).
-     * Target non-code docs staging path (`agent-workspace/plans/<branch_name>/resource/`).
-     * Non-destructive policy statement confirming original files remain untouched.
-
----
-
-### Node S5: Execution Acceptance / Consent Gate
+### Node S4: Execution Acceptance & Proposal Gate
 
 1. **Execution Mode Evaluation**:
-   - **Plan-First Mode (`/process` / `--plan`)**: Present `agent-workspace/plans/<branch_name>/restructure-proposal.md` summary and pause for explicit developer confirmation:
-     > `Do you approve the proposed legacy file migration, non-code doc staging, and code graph generation plan?`
-     > `1. Proceed with execution`
-     > `2. Modify parameters`
-     - Proceed to Node S6 if approved; halt if rejected.
-   - **Immediate Execution Mode (`--auto`)**: Log summary to `GRILL_STATUS.md` and proceed immediately to Node S6.
+   - **Proposal Mode (`/process --proposal`)**:
+     * Draft `agent-workspace/plans/<branch_name>/restructure-proposal.md` detailing source-to-layer mappings, symlink paths, and doc staging targets.
+     * Present proposal summary and pause for explicit developer confirmation before creating symlinks:
+       > `Do you approve the proposed legacy integration plan in restructure-proposal.md?`
+       > `1. Proceed with execution`
+       > `2. Modify parameters`
+   - **Standard Interactive Mode (`/process`)**:
+     * Display a clean execution summary of planned layer symlinks and resource staging.
+     * Prompt developer for confirmation (`1. Proceed with execution` / `2. Modify parameters`).
+   - **Immediate Execution Mode (`--auto` / `--apply`)**:
+     * Log execution plan to `GRILL_STATUS.md` and transition immediately to Node S5.
 
 ---
 
-### Node S6: Execute As-Is Code Copying & Resource Staging
+### Node S5: Execute Layer Symlinks & Resource Staging
 
 1. **Invoke Migration Skill**:
    - Execute `skills/process-migrator/SKILL.md`.
 
-2. **As-Is Copy Operations & Non-Code Docs Staging**:
-   - Copy legacy source code intact from linked legacy folders into target `codebase-*` layer sub-repositories (`codebase-layout/src/`, `codebase-engine/src/`).
+2. **Execute In-Place Symlinks & Resource Staging**:
+   - **In-Place Symlink Mode (Default)**: Create relative symbolic links inside `agent-workspace/src/<layer>` pointing directly to target legacy codebase directories (e.g. `agent-workspace/src/layout` $\rightarrow$ `../../legacy-ui`, `agent-workspace/src/engine` $\rightarrow$ `../../legacy-core`).
+   - **Scaffolding & Copy Mode (Optional)**: If isolated sub-repositories were requested, scaffold `codebase-*` sub-repositories and copy source files intact without modifying code logic.
    - **Non-Code Documentation Staging**: Copy non-code legacy documentation, supplementary assets, schemas, and diagrams into **`agent-workspace/plans/<branch_name>/resource/`** as feature reference knowledge. (Global `docs/` is reserved for already implemented system capabilities; relevant docs will be linked/promoted into `docs/` later during `/implement`).
    - **Strict Non-Rewriting Rule**: Do NOT modify, rewrite, or refactor code logic or file contents.
 
@@ -128,22 +126,19 @@ graph TD
 
 ---
 
-### Node S7: Workspace Code Graphs & Selective Blueprints Synthesis
+### Node S6: Selective Blueprints & Maintenance Operations
 
-1. **Generate Workspace Code Graph Subfolders**:
-   - For each active layer, scaffold a dedicated subfolder at **`agent-workspace/src/<layer>/code_graph/`** (preventing doc overhead inside production `codebase-*` repos; no symlinks required).
-   - Generate 4 modular files per layer adhering to `code_graph_taxonomy.md`:
-     * `graph.md`: Unordered structural dependency graph & element registry (interfaces, classes, functions, entities, services based on Python, Go, or JS taxonomy).
-     * `process_flow.md`: Process entry points & control flow initiation paths.
-     * `data_flow.md`: Data sources (user provided, configs, APIs, DB, hardcoded) & datastream transformations.
-     * `risk_analysis.md`: Coupling metrics (fan-in/fan-out), critical code nodes, & test coverage maps.
+1. **Selective Blueprints Population**:
+   - Synthesize identified legacy domain knowledge into relevant phase blueprint documents in `agent-workspace/plans/<branch_name>/` (`phase-1-summary.md` through `phase-6-operation.md`).
+   - *Selective Rule*: Populate ONLY the blueprints for which relevant information was identified. Filling out all 6 phase documents is optional and not mandatory.
 
-2. **Selective Blueprints Population**:
-   - Synthesize identified legacy domain knowledge into relevant phase blueprint documents in `agent-workspace/plans/<branch_name>/` (`phase-1-summary.md` through `phase-5-operation.md`).
-   - *Selective Rule*: Populate ONLY the blueprints for which relevant information was identified. Filling out all 5 phase documents is optional and not mandatory.
+2. **Optional Operations (By-Request Flags)**:
+   - **Code Graph Generation (`--code-graph`)**: If requested, scaffold `agent-workspace/src/<layer>/code_graph/` subfolders containing `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md` with Version Stamp Headers.
+   - **System Documentation Update (`--docs`)**: If requested, synthesize and promote non-code legacy documentation from `resource/` into `agent-workspace/docs/` with Version Stamp Headers.
 
 3. **Update Process Status**:
-   - Deploy/update `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md`. Mark Row 2.0 (`/process`) as `Completed` in Block 1 and append datestamped entry in Block 2.
+   - Update `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md`. Mark Row 2.0 (`/process`) as `Completed` in Block 1 and append datestamped entry in Block 2.
 
 4. **Finalize State Machine**:
    - Report completion summary and recommend next command (`/plan`).
+

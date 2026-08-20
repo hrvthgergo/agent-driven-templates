@@ -114,7 +114,7 @@ graph TD
     
     Init --> CheckType{Project Type?}
     
-    CheckType -->|Brownfield / Legacy Code| ProcHist["/process (Legacy Processing)<br/>• Deep Historical Code/Docs Scan<br/>• Draft restructure-proposal.md<br/>• Refactor & Fix Relative Imports"]
+    CheckType -->|Brownfield / Legacy Code| ProcHist["/process (Legacy Processing)<br/>• Legacy Code/Docs Discovery<br/>• In-Place Layer Symlinks & Doc Staging<br/>• Optional --proposal / --code-graph"]
     CheckType -->|Greenfield / New Feature| Plan["/plan (Interactive Planning)<br/>• Q&A Grill Gate (Max 2 questions/turn)<br/>• Generate Phase 1-5 Blueprints<br/>• Update PROCESS_STATUS.md"]
     
     ProcHist --> Plan

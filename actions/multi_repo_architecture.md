@@ -14,26 +14,31 @@ To prevent the master project workspace from becoming a heavy, congested monorep
 *   **Test Implementation Repository (`codebase-qualify`):** Standalone repository dedicated to executable cross-layer test scripts, e2e scenarios, and fixtures. Tests are orchestrated by `devops` but implemented here.
 
 ### Local Development Integration (Symlinks)
-On local development environments (both macOS and Windows), symbolic links are placed inside the main workspace `src/` directory to map the active layer repositories into a single visual workspace (e.g., `src/devops` $\rightarrow$ `codebase-devops/src`, `src/qualify` $\rightarrow$ `codebase-qualify/src`, `src/layout` $\rightarrow$ `codebase-layout/src`, `src/engine` $\rightarrow$ `codebase-engine/src`). 
+On local development environments (both macOS and Windows), symbolic links are placed inside the main workspace `src/` directory to map the active layer repositories into a single visual workspace (e.g., `src/devops` $\rightarrow$ `codebase-devops/src`, `src/qualify` $\rightarrow$ `codebase-qualify/src`, `src/layout` $\rightarrow$ `codebase-layout/src` or legacy UI folder, `src/engine` $\rightarrow$ `codebase-engine/src` or legacy backend folder). 
 
-*Note: The `/init` action scaffolds the pure control plane (`agent-workspace/`) and creates `src/` as an empty staging folder with a `.gitkeep`. Software layers (`codebase-*`) and relative symlinks are introduced during `/plan` Phase 1 (for greenfield projects) or linked during `/process` (for brownfield projects).*
+*Note: The `/init` action scaffolds the pure control plane (`agent-workspace/`) and creates `src/` as an empty staging folder with a `.gitkeep`. Software layers (`codebase-*`) and relative symlinks are introduced during `/plan` Phase 1 (for greenfield projects) or linked in-place during `/process` (for brownfield projects).*
 
 ---
 
-### Git & GitHub Remote Origin Setup (`/init` Behavior)
+### Git & GitHub Remote Origin Setup (`/init` & `/process` Behavior)
 
-During the `/init` workflow, Git is initialized for `agent-workspace/` and linked to the primary remote Git origin based on Q5 (e.g. `https://github.com/org/my-project-workspace.git`), and the initial documentation is immediately pushed.
+During the `/init` action, Git is initialized for `agent-workspace/` and linked to the primary remote Git origin based on Q5 (e.g. `https://github.com/org/my-project-workspace.git`), and the initial documentation is immediately pushed.
 
-When software layers are subsequently planned in `/plan` or discovered in `/process`, sub-repositories can follow:
+When software layers are subsequently planned in `/plan` or discovered in `/process`, repositories follow:
 
-1. **Option A: True Multi-Repository Setup (Independent GitHub Repositories)**:
+1. **Option A: Greenfield Multi-Repository Setup (Independent Repositories)**:
    - **`agent-workspace/`**: Initialized with its own `.git` repository and linked to the workspace/docs GitHub remote origin. Tracks `.agents/`, `plans/`, `docs/`, and the **relative symlinks** under `src/`.
    - **`codebase-devops/`**: Initialized during `/plan` Phase 6 with its own `.git` repository. Tracks `.github/`, `docker/`, `src/`, `config/`, `tests/`, and standalone `Dockerfile`.
    - **`codebase-<layer>/`**: Initialized during `/plan` Phase 1 with its own `.git` repository. Tracks `src/`, `config/`, `tests/`, and standalone `Dockerfile`.
    - **`codebase-qualify/`**: Initialized during `/plan` Phase 5 with its own `.git` repository. Tracks test scripts, fixtures, and qualification `Dockerfile`.
    - *Symlink Portability*: Because symlinks under `agent-workspace/src/` use relative paths (`../../codebase-<layer>/src`), `agent-workspace` can be committed and pushed to its own GitHub repository without embedding or duplicating sub-repo source code.
 
-2. **Option B: Umbrella Workspace Setup (Single GitHub Repository)**:
+2. **Option B: Brownfield In-Place Integration (Existing Codebase Linking)**:
+   - Existing legacy repositories remain in their current location and retain their original Git origins and histories.
+   - The `/process` action registers relative symbolic links under `agent-workspace/src/<layer>` pointing directly to the existing codebase directories (e.g. `agent-workspace/src/engine` $\rightarrow$ `../../legacy-engine/src/`).
+   - `agent-workspace/` tracks the symlinks, enabling unified agent governance, code graphs, and planning across pre-existing repositories without code copying.
+
+3. **Option C: Umbrella Workspace Setup (Single GitHub Repository)**:
    - If a single repository is used, one root `.git` repository at `[Local Workspace Root]` encompasses all subfolders (`agent-workspace/`, `codebase-devops/`, `codebase-qualify/`, `codebase-layout/`, `codebase-engine/`) under a single GitHub remote origin URL.
 
 ---
