@@ -46,13 +46,13 @@ This matrix tracks top-level workflows and focused sub-processes. The 6-Phase Pl
 | └── **3.6 Phase 6: Operations** | `[ ] Not Started` | Dockerfiles, Compose & CI/CD (`phase-6-operation.md`) | YYYY-MM-DD |
 | **4. /implement** | `[ ] Not Started` | Code scaffolding & layout implementation | YYYY-MM-DD |
 | **5. /qualify** | `[ ] Not Started` | Full-spectrum qualification & release gating | YYYY-MM-DD |
-| **6. /release** | `[ ] Not Started` | Docker builds, PR creation & deployment | YYYY-MM-DD |
+| **6. /operate** | `[ ] Not Started` | Docker builds, PR creation & deployment | YYYY-MM-DD |
 
 ### Status Key:
 - `[ ] Not Started`: Workflow or sub-process has not been initiated.
 - `[>] In Progress`: Workflow or sub-process is currently active.
 - `[x] Done`: Workflow or sub-process has been successfully completed and verified.
-- `[-] Not In Scope`: Workflow is omitted for this feature/release scope.
+- `[-] Not In Scope`: Workflow is omitted for this feature/operate scope.
 
 ---
 

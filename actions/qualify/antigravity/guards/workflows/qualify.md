@@ -20,7 +20,7 @@ This stateful execution playbook defines the 6-node state machine governing cove
 * `/qualify --env <url>`: Targeted Environment Run. Executes suites directly against an external running URL, bypassing `codebase-devops` Docker provisioning.
 * `/qualify --report-only`: Audit Reporting Mode. Synthesizes existing test execution outputs into `QUALIFICATION_REPORT.md` without re-running tests.
 * `/qualify --propose`: Gap Discovery Mode. Executes suites and captures untested behaviors as proposals (`origin: qualify, status: unratified`) without blocking release.
-* `/qualify --force-gate "<justification>"`: Gate Override. Bypasses a failed Node Q1 gate, recording the justification verbatim and yielding a `provisional` certification that cannot unlock `/release`.
+* `/qualify --force-gate "<justification>"`: Gate Override. Bypasses a failed Node Q1 gate, recording the justification verbatim and yielding a `provisional` certification that cannot unlock `/operate`.
 
 ---
 
@@ -108,6 +108,6 @@ graph TD
 ### Node Q6: Release Gating, Regression Promotion & Handoff
 1. **Regression Catalog Promotion**: If certification is `full` and pass rate is 100%, copy/promote all **ratified** feature scenarios from `tests/scenarios/` into `agent-workspace/tests/regression/`.
 2. **Process Status Update**:
-   - If certification is `full` and all suites pass: Update `agent-workspace/plans/<feature-name>/PROCESS_STATUS.md` Row 5 (`/qualify`) to `Completed`. Unlocks `/release`.
-   - If certification is `provisional` or defects exist: Mark Row 5 as `Blocked` or `Failed` with diagnostic notes. `/release` remains locked.
-3. **Handoff**: Display execution summary and recommend proceeding to `/release` upon successful certification.
+   - If certification is `full` and all suites pass: Update `agent-workspace/plans/<feature-name>/PROCESS_STATUS.md` Row 5 (`/qualify`) to `Completed`. Unlocks `/operate`.
+   - If certification is `provisional` or defects exist: Mark Row 5 as `Blocked` or `Failed` with diagnostic notes. `/operate` remains locked.
+3. **Handoff**: Display execution summary and recommend proceeding to `/operate` upon successful certification.

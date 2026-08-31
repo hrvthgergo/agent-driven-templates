@@ -24,7 +24,7 @@ The **Guards Framework** structures agentic software development through a clean
 | Tier | Concept | Definition | Examples |
 |:---|:---|:---|:---|
 | **Tier 1** | **Playbook** | An orchestrated composition of actions with scenario-specific branching logic and feedback loops | "Greenfield Development Playbook", "Bugfix Playbook", "Hotfix Playbook" |
-| **Tier 2** | **Action** | A self-contained, independently invocable lifecycle element with a single guiding question and cognitive persona | `/init`, `/process`, `/plan`, `/implement`, `/qualify`, `/release` |
+| **Tier 2** | **Action** | A self-contained, independently invocable lifecycle element with a single guiding question and cognitive persona | `/init`, `/process`, `/plan`, `/implement`, `/qualify`, `/operate` |
 | **Tier 3** | **Command** | A parametrized invocation of an action — a specific mode, flag, or building block within an action | `/init --release vX.Y.Z`, `/init --feature payment`, `/implement --code-graph` |
 
 ---
@@ -44,7 +44,7 @@ Every action in the lifecycle describes **what the system is doing at a structur
 | `/plan` | Architectural design **process** |
 | `/implement` | Code execution **process** |
 | `/qualify` | Release qualification **process** |
-| `/release` | Deployment **process** |
+| `/operate` | Operations & delivery **process** |
 
 None of these map 1:1 to a tool. `/process` is not `grep`. `/plan` is not `jira`. `/implement` is not `vim`. `/qualify` is not `pytest`. Inserting a tool name — such as `/test` — into this sequence would mean describing one phase in the grammar of a different system entirely.
 
@@ -83,7 +83,7 @@ Rather than viewing the development lifecycle merely as a checklist of activitie
 | **`/plan`** | **"What are we going to build, what layers are needed, what tech stack will we use, and how will operations/Docker run?"** | **Architect & Designer** | Designs system architecture, determines software layer scope and creates `codebase-*` sub-repositories with `src/` symlinks, selects programming languages & frameworks, plans Hybrid Docker & CI/CD in Phase 6 (Operations), generates implementation maps, and **owns all verification design: test strategy, verification scope, ratified scenarios, and ratification**. |
 | **`/implement`** | **"Does my code work in isolation?"** | **Software Engineer** | Scaffolds production code layer-by-layer in `codebase-*` repositories, writes co-located unit tests in `codebase-*/tests/`, **builds the cross-layer harness in `codebase-qualify/` from ratified scenarios**, and executes local isolation testing. |
 | **`/qualify`** | **"Does the integrated system work as a whole?"** | **Quality Engineer (QA)** | Executes the qualification matrix against a booted environment, gates on scenario coverage, attributes defects across layers, renders the release verdict, and promotes ratified scenarios to the regression catalog. Authors no test assets. |
-| **`/release`** | **"Is the system packaged and delivered?"** | **Release & DevOps Operator** | Builds production Docker images, tags versions, generates audit walkthroughs, creates PRs, and coordinates deployment handoffs. |
+| **`/operate`** | **"Is the system packaged, delivered, and deployed?"** | **Operations Engineer (DevOps)** | Builds production Docker images, tags versions, generates audit walkthroughs, creates PRs, and coordinates deployment handoffs. |
 
 ### The Separation of Testing Concerns
 
@@ -130,7 +130,7 @@ The framework is organized into two primary structural pillars:
    - **[Interactive Planning (/plan)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/plan/plan_action.md)**: Interactive planning action specification, 6-phase blueprints, and implementation maps.
    - **[Action Implementation (/implement)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md)**: Action implementation specification, 4-part step schema, and visible scaffolding.
    - **[Release Qualification (/qualify)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/qualify/qualify_action.md)**: Release qualification action specification and 3-pillar testing architecture.
-   - **[Release & Operations (/release)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/release/release_action.md)**: Release packaging, Docker builds, Git tagging, and PR operations.
+   - **[Operations & Delivery (/operate)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/operate/operate_action.md)**: Release packaging, Docker builds, Git tagging, and PR operations.
    - **[Grill Engine Gate](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/grill_engine.md)**: Reusable Q&A engine design rules and state file formats (`GRILL_STATUS.md`).
    - **[Language-Specific Code Graph Taxonomy](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/code_graph_taxonomy.md)**: Universal node and connection rules for Python, Go, and JavaScript.
 
@@ -148,13 +148,13 @@ graph TD
         Plan["/plan<br/>(6-Phase Blueprint Design)"]
         Implement["/implement<br/>(Scaffolding & Testing)"]
         Qualify["/qualify<br/>(Release Qualification)"]
-        Release["/release<br/>(Publish & Deployment)"]
+        Release["/operate<br/>(Publish & Deployment)"]
     end
 
     subgraph "Composed Playbooks (playbooks/)"
-        Hotfix["<b>Hotfix Playbook</b><br/>Quick /init ➔ /implement ➔ Fast /qualify ➔ Expedited /release"]
+        Hotfix["<b>Hotfix Playbook</b><br/>Quick /init ➔ /implement ➔ Fast /qualify ➔ Expedited /operate"]
         Bugfix["<b>Bugfix Playbook</b><br/>Quick /init ➔ Focused /plan ➔ /implement ➔ /qualify"]
-        Feature["<b>Major Feature Playbook</b><br/>Full /init ➔ 6-Phase /plan ➔ /implement ➔ /qualify ➔ /release"]
+        Feature["<b>Major Feature Playbook</b><br/>Full /init ➔ 6-Phase /plan ➔ /implement ➔ /qualify ➔ /operate"]
         Legacy["<b>Legacy Onboarding Playbook</b><br/>Full /init ➔ /process ➔ Blueprint /plan"]
     end
 
@@ -183,9 +183,9 @@ graph TD
 
 | Playbook | Target Scenario | Composed Action Sequence | Key Characteristics |
 | :--- | :--- | :--- | :--- |
-| **`hotfix`** | Production incidents & urgent hotfixes | Quick `/init` → `/implement` → Fast `/qualify` → Expedited `/release` | Bypasses `/plan` and `/process`; inherits workspace environment configs; fast-tracks directly to execution. |
+| **`hotfix`** | Production incidents & urgent hotfixes | Quick `/init` → `/implement` → Fast `/qualify` → Expedited `/operate` | Bypasses `/plan` and `/process`; inherits workspace environment configs; fast-tracks directly to execution. |
 | **`bugfix`** | Standard defect resolution | Quick `/init` → Focused `/plan` (Summary + Qualification Plan) → `/implement` → `/qualify` | Focuses planning strictly on root-cause analysis and regression test contract definition. |
-| **`feature`** | Major new features & greenfield modules | Full `/init` → 6-Phase `/plan` → `/implement` → `/qualify` → `/release` | Full architectural governance, 6-phase blueprints, versioned implementation maps, and complete test suites. |
+| **`feature`** | Major new features & greenfield modules | Full `/init` → 6-Phase `/plan` → `/implement` → `/qualify` → `/operate` | Full architectural governance, 6-phase blueprints, versioned implementation maps, and complete test suites. |
 | **`legacy_onboarding`** | Ingesting and restructuring existing code | Full `/init` → `/process` → Selective `/plan` | Read-only legacy analysis, layer restructuring, resource staging, and baseline blueprint population. |
 
 ---
@@ -235,6 +235,6 @@ agent-driven-templates/
     │       └── guards/                # Antigravity native primitives (rules, skills, workflows, templates)
     ├── qualify/                       # [Tier 2] Release Qualification Subfolder
     │   └── qualify_action.md          # Detailed qualification action specification
-    └── release/                       # [Tier 2] Release & Operations Subfolder
-        └── release_action.md          # Detailed release action specification
+    └── release/                       # [Tier 2] Operations & Delivery Subfolder
+        └── operate_action.md          # Detailed release action specification
 ```

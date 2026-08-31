@@ -23,7 +23,7 @@ graph TD
     
     Implement --> Qualify["5. Release Qualification (/qualify)<br/>• Runs unit, integration, and E2E tests"]
     
-    Qualify --> Release["6. Release & Operations (/release)<br/>• Builds Docker images & creates PRs"]
+    Qualify --> Release["6. Operations & Delivery (/operate)<br/>• Builds Docker images & creates PRs"]
 ```
 
 ---
@@ -47,7 +47,7 @@ graph TD
 
 ### Action 3: Structured Feature Planning (`/plan`)
 - **Architectural Bridge**: Once `/init` (and `/process`, if applicable) finishes successfully, the workspace is structured and ready for architectural design. This is where the `/plan` workflow begins.
-- **Downstream Agent Guidance**: All planning artifacts are stored inside `.agents/plans/<feature-name>/` to share complete, unambiguous context with AI agents executing downstream implementation (`/implement`), qualification (`/qualify`), and deployment (`/release`).
+- **Downstream Agent Guidance**: All planning artifacts are stored inside `.agents/plans/<feature-name>/` to share complete, unambiguous context with AI agents executing downstream implementation (`/implement`), qualification (`/qualify`), and deployment (`/operate`).
 - **Sole Verification Design Authority**: `/plan` owns three of the five verification artifacts — test strategy, verification scope delta, and scenarios — and is the only action permitted to assign `SC-*` identifiers or transition a scenario's ratification status. It writes no harness code and executes no tests.
 
 ### Action 4: Action Implementation (`/implement`)
@@ -64,7 +64,7 @@ graph TD
 - **Three-Pillar Testing Architecture**: Separates verification governance (`agent-workspace/tests/`, owned by `/plan`), harness code (`codebase-qualify/`, built by `/implement`), and environment orchestration (`codebase-devops/`). `/qualify` executes across all three and owns none.
 - **Comprehensive Lifecycle Supervision**: Runs all testing tiers (layer unit tests, cross-layer contract suites, E2E browser flows, regression catalogs), performs multi-layer defect attribution, and generates audit artifacts (`QUALIFICATION_REPORT.md` and `qualification_log.json`).
 
-### Action 6: Release & Operations (`/release`)
+### Action 6: Operations & Delivery (`/operate`)
 - **Production Packaging & Deployment**: Builds production-ready Docker containers, generates Git release tags, opens pull requests, produces walkthrough summaries, and coordinates deployment handoffs.
 
 ---
@@ -80,7 +80,7 @@ A cornerstone of the Guards Framework is that **every action answers a fundament
 | **`/plan`** | **"What should the system do, and what must be proven?"** | **Architect & Designer** | Designs blueprints across 6 phases, drafts implementation maps, and owns **all verification design**: `TEST_STRATEGY.md`, `phase-5-test.md`, ratified `SC-*` scenarios, and ratification authority. |
 | **`/implement`** | **"Does my code work?"** | **Software Engineer** | Scaffolds code layer-by-layer, writes unit tests in `codebase-*/tests/`, and **builds the cross-layer harness in `codebase-qualify/`** from ratified scenarios it did not author. |
 | **`/qualify`** | **"Does the whole system work?"** | **Quality Engineer (QA)** | Executes the qualification matrix against a booted environment, gates on scenario coverage, attributes defects across layers, renders the release verdict, and promotes ratified scenarios to the regression catalog. Authors no test assets. |
-| **`/release`** | **"Is the system delivered?"** | **Release & DevOps Operator** | Builds production Docker images, tags release versions, generates audit walkthroughs, and creates pull requests. |
+| **`/operate`** | **"Is the system deployed?"** | **Operations Engineer (DevOps)** | Builds production Docker images, tags release versions, generates audit walkthroughs, and creates pull requests. |
 
 ### Clear Separation of Testing Concerns
 
@@ -125,7 +125,7 @@ graph TD
         Plan["<b>1. /plan (Architect)</b><br/>Designs Blueprints &<br/>Scaffolds Test Contracts"]
         Implement["<b>2. /implement (Developer)</b><br/>Builds Code &<br/>Verifies Unit Isolation"]
         Qualify["<b>3. /qualify (QA)</b><br/>Expands Test Suites,<br/>Audits & Gates System"]
-        Release["<b>4. /release (DevOps)</b><br/>Packages, Deploys &<br/>Surfaces Production Insights"]
+        Release["<b>4. /operate (DevOps)</b><br/>Packages, Deploys &<br/>Surfaces Production Insights"]
     end
 
     Plan -->|Blueprint & Test Scope| Implement
@@ -156,8 +156,8 @@ The actions "live together" through four continuous feedback channels:
    * If `/qualify` identifies a major business logic flaw or missing requirement, it feeds that insight back to `/plan` to update blueprints and `phase-5-test.md`.
    * Upon release certification, `/qualify` permanently promotes verified feature tests into `agent-workspace/tests/regression/`, enriching the baseline for all future `/plan` cycles.
 
-4. **`/release` $\longleftrightarrow$ `/plan` (The Evolution Dialogue)**
-   * `/release` delivers the validated system, tags the Git release version, and generates walkthrough audit summaries.
+4. **`/operate` $\longleftrightarrow$ `/plan` (The Evolution Dialogue)**
+   * `/operate` delivers the validated system, tags the Git release version, and generates walkthrough audit summaries.
    * Release is never a dead end: deployment metadata and user feedback directly seed the next iteration cycle (`/init --feature` or `/init --release`), launching a new `/plan` cycle with complete historical context.
 
 ---
@@ -205,7 +205,7 @@ The following tables provide the authoritative catalogue of all six fundamental 
 | **`/plan`** | [`plan_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/plan/plan_action.md) | *"What should the system do?"* | **Architect & Designer** | `/plan` |
 | **`/implement`** | [`implement_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md) | *"Does my code work?"* | **Software Engineer** | `/implement` |
 | **`/qualify`** | [`qualify_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/qualify/qualify_action.md) | *"Does the whole system work?"* | **Quality Engineer (QA)** | `/qualify` |
-| **`/release`** | [`release_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/release/release_action.md) | *"Is the system delivered?"* | **Release & DevOps Operator** | `/release` |
+| **`/operate`** | [`operate_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/operate/operate_action.md) | *"Is the system deployed?"* | **Operations Engineer (DevOps)** | `/operate` |
 
 ---
 
@@ -287,20 +287,20 @@ The following tables provide the authoritative catalogue of all six fundamental 
 | `/qualify --env <url>` | **Targeted Environment Run** | Executes test suites directly against an external running environment or staging URL. |
 | `/qualify --report-only` | **Audit Reporting Mode** | Synthesizes existing test execution outputs and generates `QUALIFICATION_REPORT.md` and `qualification_log.json`. |
 | `/qualify --propose` | **Gap Discovery Mode** | Executes the matrix and emits Coverage Gap Proposals (`origin: qualify, status: unratified`) without gating the release. |
-| `/qualify --force-gate "<justification>"` | **Gate Override (Provisional)** | Proceeds past a failed Node Q1 coverage gate. Records the justification, lists unproven IDs, and marks the run `certification: provisional` — which **cannot** unlock `/release`. The only override; no flag disables the gate. |
+| `/qualify --force-gate "<justification>"` | **Gate Override (Provisional)** | Proceeds past a failed Node Q1 coverage gate. Records the justification, lists unproven IDs, and marks the run `certification: provisional` — which **cannot** unlock `/operate`. The only override; no flag disables the gate. |
 
 ---
 
-#### 6. Action: Release & Operations (`/release`)
-*Specification*: [`actions/release/release_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/release/release_action.md)
+#### 6. Action: Operations & Delivery (`/operate`)
+*Specification*: [`actions/operate/operate_action.md`](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/operate/operate_action.md)
 
 | Command / Option | Execution Mode / Scope | Description |
 | :--- | :--- | :--- |
-| `/release` | **Default Interactive Release** | Prompts for release version, verifies certified qualification report, builds production Docker images, tags Git, and opens PR. |
-| `/release --version <vX.Y.Z>` | **Explicit Version Tagging** | Explicitly specifies release version tag (e.g. `v1.0.0`) for Docker image tagging and Git release tags. |
-| `/release --auto` | **Automated Release Mode** | Builds images, creates tags, generates release walkthrough, and opens PR without pausing for confirmation. |
-| `/release --dry-run` | **Preview Mode** | Simulates release build and packaging, outputting walkthrough preview without modifying Git tags or pushing images. |
-| `/release --deploy` | **Deployment Trigger Mode** | Triggers post-release deployment scripts or webhooks defined in `codebase-devops/`. |
+| `/operate` | **Default Interactive Delivery** | Prompts for release version, verifies certified qualification report, builds production Docker images, tags Git, and opens PR. |
+| `/operate --version <vX.Y.Z>` | **Explicit Version Tagging** | Explicitly specifies release version tag (e.g. `v1.0.0`) for Docker image tagging and Git release tags. |
+| `/operate --auto` | **Automated Delivery Mode** | Builds images, creates tags, generates release walkthrough, and opens PR without pausing for confirmation. |
+| `/operate --dry-run` | **Preview Mode** | Simulates release build and packaging, outputting walkthrough preview without modifying Git tags or pushing images. |
+| `/operate --deploy` | **Deployment Trigger Mode** | Triggers post-release deployment scripts or webhooks defined in `codebase-devops/`. |
 
 ---
 

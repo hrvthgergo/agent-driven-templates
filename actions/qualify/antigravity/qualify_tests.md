@@ -12,7 +12,7 @@ This document defines the test scenario, mock execution sequence, user input sim
 * **Primary Objective**: Validate end-to-end execution of the `/qualify` workflow state machine (Nodes Q1 $\rightarrow$ Q6), asserting that:
   1. **Coverage Gate Precedence (Node Q1)**: Node Q1 executes BEFORE environment boot and fails closed if any ratified in-scope scenario lacks an `@scenario` citation in the codebase.
   2. **No Authoring Authority**: Agent strictly limits its scope to execution and judgment; it never authors harness code or modifies ratified scenario criteria.
-  3. **Force-Gate Override**: `--force-gate "<justification>"` produces a `provisional` certification that cannot unlock `/release`.
+  3. **Force-Gate Override**: `--force-gate "<justification>"` produces a `provisional` certification that cannot unlock `/operate`.
   4. **Multi-Tier Test Execution**: Executes unit tests in `codebase-*/tests/`, integration tests in `codebase-qualify/src/integration/`, E2E tests in `codebase-qualify/src/e2e/`, and regression tests in `agent-workspace/tests/regression/`.
   5. **Layer Defect Attribution (Node Q4)**: Parses failure stack traces and attributes root causes accurately (`layout`, `engine`, `data`, `devops`, `test_spec`).
   6. **Defect vs. Coverage Gap Distinction**: Defects block release; discovered gaps are authored as proposals (`origin: qualify, status: unratified`) and never certified against.
@@ -84,7 +84,7 @@ To ensure isolated, reproducible test runs, the test environment MUST meet the f
 | **Q5 (Grill)**| **Defect Routing Confirmation** | *(Skipped silently: 100% pass rate)*. | No defects to route. |
 | **Q6 (Grill)**| **Coverage Gap Proposal Review** | *(Skipped silently: zero gaps)*. | Proceeds to reporting. |
 | **Q5 (Node)** | **Qualification Reporting** | System generates `QUALIFICATION_REPORT.md` & `qualification_log.json`. | Audit report written; Section 0 logs gate pass, Section 5 logs `certification: full`. |
-| **Q6 (Node)** | **Release Gating & Regression Promotion** | System promotes `SC-user-auth-001` & `002` to `tests/regression/` and syncs `PROCESS_STATUS.md`. | Row 5 marked `Completed`. Handoff to `/release` unlocked. |
+| **Q6 (Node)** | **Release Gating & Regression Promotion** | System promotes `SC-user-auth-001` & `002` to `tests/regression/` and syncs `PROCESS_STATUS.md`. | Row 5 marked `Completed`. Handoff to `/operate` unlocked. |
 
 ---
 

@@ -19,7 +19,7 @@ graph LR
 ### Core Philosophy: `/plan` as a Resource Usage & Knowledge Governance Rule
 Fundamentally, **the `/plan` action is a governed rule for resource usage and knowledge collection**:
 - **Knowledge Collection & Analysis**: During `/plan`, the developer and AI agent collect research, analyze system impact, explore design alternatives, and capture strategic decisions for a new or modified system capability.
-- **Context Sharing for Downstream Agents**: The overarching goal of storing all blueprints, research reports, and implementation maps strictly inside `agent-workspace/plans/<feature-name>/` is **to share complete, unambiguous context with AI agents in downstream phases** (`/implement`, `/qualify`, `/release`).
+- **Context Sharing for Downstream Agents**: The overarching goal of storing all blueprints, research reports, and implementation maps strictly inside `agent-workspace/plans/<feature-name>/` is **to share complete, unambiguous context with AI agents in downstream phases** (`/implement`, `/qualify`, `/operate`).
 - **Initial Feature Understanding Summary First**: Every `/plan` execution begins with the agent summarizing its initial understanding of the feature (synthesizing `/init`, `/process`, and user prompt context) before any questions are asked.
 - **Affected System, Blueprint & Subfolder Identification Q&A**: Following the summary, the interactive Q&A session starts. Its primary goals are to pinpoint **which parts of the system are affected**, determine **which specific `phase-*.md` documents must be created**, and evaluate **whether a multi-layer phase details subfolder structure is needed**.
 - **Decisions Embedded Directly in `phase-*.md`**: Decisions are documented **directly within the active `phase-*.md` documents** (and their sub-element blueprints inside `phase_details/`). There is no separate decisions folder.
@@ -59,7 +59,7 @@ All creation, editing, research drafting, and decision documentation generated d
    - Markdown links in `phase-1-summary.md` (and active phase blueprints) point to these research reports to provide complete contextual lineage.
 4. **Version-Named Implementation Maps (`implementation_maps/`)**:
    - Implementation maps are stored in `agent-workspace/plans/<feature-name>/implementation_maps/` and are **named based on the software version** created from that map (e.g. `implementation_map_v1.0.0.md` or `implementation_map_v1.1.0_layout.md`).
-   - This explicitly ties the implementation roadmap to the software version produced during `/implement` and `/release`.
+   - This explicitly ties the implementation roadmap to the software version produced during `/implement` and `/operate`.
 
 ### C. Multi-Layer Sub-Element Architecture & On-Demand Subfolders Rule (`phase_details/`)
 Complex features may encompass multiple distinct layers (e.g. web UI + mobile app UI, multiple microservice APIs, or distinct databases). The Guards Framework manages this complexity through an **on-demand hierarchy**:

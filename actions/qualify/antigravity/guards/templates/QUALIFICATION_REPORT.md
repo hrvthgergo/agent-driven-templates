@@ -77,4 +77,4 @@
 - [ ] Zero regressions detected in core capabilities
 - [ ] Certification is `full` (not `provisional`)
 
-**Recommendation**: `[Proceed to /release | Halt: Fix Layer Defects via /implement | Review in /plan]`
+**Recommendation**: `[Proceed to /operate | Halt: Fix Layer Defects via /implement | Review in /plan]`

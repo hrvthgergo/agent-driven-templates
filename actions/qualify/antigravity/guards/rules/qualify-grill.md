@@ -46,7 +46,7 @@ The agent MUST NOT formulate interview questions that negotiate or compromise th
   > This is a construction gap, not a test failure. How should it be resolved?
   > 1. Halt and return to `/implement --tests-only` to build the missing harness
   > 2. Review whether the missing scenarios should be retired or de-scoped in `/plan`
-  > 3. Override with `--force-gate` (requires justification; yields a provisional certification that cannot unlock `/release`)
+  > 3. Override with `--force-gate` (requires justification; yields a provisional certification that cannot unlock `/operate`)
   > 4. Other / Free-text (Describe custom resolution)
 
 ### Q3: Test Environment Target

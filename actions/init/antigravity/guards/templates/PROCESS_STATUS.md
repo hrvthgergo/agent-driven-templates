@@ -22,7 +22,7 @@
 | 3.6 | -- Phase 6: Operation | Pending | `phase-6-operation.md` | Pending |
 | **4** | `/implement` | Pending | Codebase Implementation | Pending |
 | **5** | `/qualify` | Pending | Verification & Test Suite | Pending |
-| **6** | `/release` | Pending | Release Tag & Merge | Pending |
+| **6** | `/operate` | Pending | Release Tag & Merge | Pending |
 
 ---
 

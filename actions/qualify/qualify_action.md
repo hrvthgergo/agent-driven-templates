@@ -9,14 +9,14 @@ This document serves as the authoritative baseline specification for the `/quali
 
 ## 1. General Introduction & Core Philosophy
 
-The `/qualify` action is the rigorous quality assurance and certification engine of the **Guards Framework**. Positioned between code implementation (`/implement`) and final release packaging (`/release`), it ensures that every code modification meets all functional, integration, regression, and business logic contracts.
+The `/qualify` action is the rigorous quality assurance and certification engine of the **Guards Framework**. Positioned between code implementation (`/implement`) and final release packaging (`/operate`), it ensures that every code modification meets all functional, integration, regression, and business logic contracts.
 
 ```mermaid
 graph LR
     Plan["/plan<br/>Feature Planning & Design<br/>• phase-1-summary.md ... phase-6-operation.md<br/>• implementation_map_v<version>.md<br/>• phase-5-test.md (Verification Scope)"] 
     --> Implement["/implement<br/>Action Implementation<br/>• Physical Code Creation<br/>• Layer Unit Test Scaffolding<br/>• Inner Artifact Sync"]
     --> Qualify["/qualify (Release Qualification)<br/>1. Scope Inspection (phase-5-test.md & tests/)<br/>2. Multi-Tier Test Execution (Unit, Integration, E2E)<br/>3. Defect Analysis & Attribution<br/>4. Audit Report Generation (QUALIFICATION_REPORT.md)<br/>5. Release Readiness Certification"]
-    --> Release["/release<br/>Deployment & Release Tagging<br/>• Production Builds & Tagging<br/>• Merge PRs & Deployments"]
+    --> Release["/operate<br/>Deployment & Release Tagging<br/>• Production Builds & Tagging<br/>• Merge PRs & Deployments"]
 ```
 
 ### Core Philosophy: Why `/qualify` Instead of `/test`?
@@ -118,7 +118,7 @@ graph TD
         
         QEval{Evaluation Result?}
         
-        QPass["<b>Certify & Promote</b><br/>• Promote feature tests to tests/regression/<br/>• Generate QUALIFICATION_REPORT.md<br/>• Handoff to /release"]
+        QPass["<b>Certify & Promote</b><br/>• Promote feature tests to tests/regression/<br/>• Generate QUALIFICATION_REPORT.md<br/>• Handoff to /operate"]
         
         QCodeFix["<b>Code Correction Loop</b><br/>Trigger /implement to fix code defects"]
         QDesignFix["<b>Design Correction Loop</b><br/>Trigger /plan to update blueprints"]
@@ -218,7 +218,7 @@ graph TD
     
     Q4 -->|100% Pass Rate| Q5
     
-    Q5 --> Q6[Node Q6: Release Gating & Handoff<br/>Update PROCESS_STATUS.md Row 5 to Completed<br/>Handoff to /release]
+    Q5 --> Q6[Node Q6: Release Gating & Handoff<br/>Update PROCESS_STATUS.md Row 5 to Completed<br/>Handoff to /operate]
 ```
 
 ### Step Descriptions & Execution Reasoning
@@ -248,7 +248,7 @@ Three interpretation rules apply:
 
 1. Scenarios with `status: unratified` or `status: retired` are excluded from `ratified` and never cause failure. Proposals are not obligations.
 2. **Gate failure is not a test failure.** It reports that a planned proof was never built, and is attributed to `/implement`, not to the code under test. The correct response is `/implement --tests-only`, not a code fix.
-3. The only override is `/qualify --force-gate "<justification>"`, which marks the run `certification: provisional`. A provisional run **may not** unlock `/release`.
+3. The only override is `/qualify --force-gate "<justification>"`, which marks the run `certification: provisional`. A provisional run **may not** unlock `/operate`.
 
 #### Step 2: Environment & Test Target Gate (Node Q2)
 * **Description**: Determines execution mode (e.g. running against live local/staging server or spinning up Docker compose network via `codebase-devops`). Confirms test tiers to run (`--unit`, `--integration`, `--e2e`, or full matrix).
@@ -273,8 +273,8 @@ Three interpretation rules apply:
   * Creates `agent-workspace/plans/<feature-name>/QUALIFICATION_REPORT.md` (human-readable executive summary, test matrix pass/fail breakdown, defect attribution, and release certification status).
   * Writes `agent-workspace/plans/<feature-name>/qualification_log.json` (machine-readable run log with timestamps, execution duration, and exit codes).
 
-#### Step 6: Release Gating & Handoff to `/release` (Node Q6)
-* **Description**: Synchronizes `agent-workspace/plans/<feature-name>/PROCESS_STATUS.md`, marking Row 5 (`/qualify`) as `Completed`. If all release criteria are met, the agent recommends proceeding to `/release`.
+#### Step 6: Release Gating & Handoff to `/operate` (Node Q6)
+* **Description**: Synchronizes `agent-workspace/plans/<feature-name>/PROCESS_STATUS.md`, marking Row 5 (`/qualify`) as `Completed`. If all release criteria are met, the agent recommends proceeding to `/operate`.
 
 ---
 
@@ -292,7 +292,7 @@ Three interpretation rules apply:
 | `/qualify --env <url>` | **Targeted Environment Run** | Executes test suites against an external running environment URL. |
 | `/qualify --report-only` | **Audit Reporting Mode** | Synthesizes existing test results and generates `QUALIFICATION_REPORT.md`. |
 | `/qualify --propose` | **Gap Discovery Mode** | Executes the matrix and emits Coverage Gap Proposals (`origin: qualify, status: unratified`) **without** gating the release. Used to survey coverage ahead of a planning cycle. |
-| `/qualify --force-gate "<justification>"` | **Gate Override (Provisional)** | Proceeds past a failed Node Q1 coverage gate. Records the justification verbatim, lists every unproven ID under **Unproven Scope**, and marks the run `certification: provisional`. A provisional run may not unlock `/release`. This is the **only** override; no flag disables the gate. |
+| `/qualify --force-gate "<justification>"` | **Gate Override (Provisional)** | Proceeds past a failed Node Q1 coverage gate. Records the justification verbatim, lists every unproven ID under **Unproven Scope**, and marks the run `certification: provisional`. A provisional run may not unlock `/operate`. This is the **only** override; no flag disables the gate. |
 
 ---
 
@@ -351,7 +351,7 @@ Three interpretation rules apply:
 - [x] Cross-layer contract verification satisfied
 - [x] Zero regressions detected in core capabilities
 - [x] Certification is `full` (not `provisional`)
-- **Recommendation**: Proceed to `/release`
+- **Recommendation**: Proceed to `/operate`
 ```
 
 ---
@@ -369,4 +369,4 @@ Three interpretation rules apply:
 - [ ] Promote only **ratified** scenarios into `agent-workspace/tests/regression/` upon certification.
 - [ ] Generate `QUALIFICATION_REPORT.md` and `qualification_log.json` in `agent-workspace/plans/<feature-name>/`.
 - [ ] Synchronize `PROCESS_STATUS.md` Row 5 to `Completed` with datestamped log entry.
-- [ ] Handoff to `/release` upon successful qualification gating.
+- [ ] Handoff to `/operate` upon successful qualification gating.

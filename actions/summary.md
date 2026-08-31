@@ -71,8 +71,8 @@ actions/
 │       ├── qualify_implementation_map.md # Antigravity execution map & decision links
 │       └── qualify_tests.md             # Release qualification verification test suite
 │
-└── release/                            # [Tier 2] Release & Operations Subfolder
-    ├── release_action.md             # Detailed workflow specifications
+└── release/                            # [Tier 2] Operations & Delivery Subfolder
+    ├── operate_action.md             # Detailed workflow specifications
     ├── release_implementation_map.md
     └── guards/                         # [Tier 3] Environment-Specific Guards
 ```
@@ -84,7 +84,7 @@ actions/
    - Defines overarching concepts, cross-cutting rules, user guides, and general-purpose specs (e.g., [End-User Guide](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/user_guide.md), [Grill Engine](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/grill_engine.md), [Multi-Repository Architecture Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/multi_repo_architecture.md), and [Process Guard Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process_handling.md)) applied across all workflow steps.
 
 2. **Action Subfolders & Implementation Maps**
-   - Subdirectories dedicated to each lifecycle action (e.g., `init/`, `process/`, `plan/`, `implement/`, `qualify/`, `release/`).
+   - Subdirectories dedicated to each lifecycle action (e.g., `init/`, `process/`, `plan/`, `implement/`, `qualify/`, `operate/`).
    - Contain detailed step specifications and environment/time-bound `*_implementation_map.md` files (e.g., `init_implementation_map.md`). These provide step-by-step execution roadmaps for implementing a specific workflow phase in a given environment at a specific point in time (e.g., an Antigravity-based implementation snapshot).
 
 3. **Environment-Specific Guard Folders (`guards/`)**
@@ -129,8 +129,8 @@ graph TD
     
     Qualify --> TestCheck{All Tests Pass?}
     
-    TestCheck -->|No| Fix["Log Failures in qualification_log.json<br/>Lock /release Command"] --> Implement
-    TestCheck -->|Yes| Release["/release (Release & Operations)<br/>• Build Production Docker Images<br/>• Deploy & Create Pull Request<br/>• Generate Walkthrough Summary"]
+    TestCheck -->|No| Fix["Log Failures in qualification_log.json<br/>Lock /operate Command"] --> Implement
+    TestCheck -->|Yes| Release["/operate (Operations & Delivery)<br/>• Build Production Docker Images<br/>• Deploy & Create Pull Request<br/>• Generate Walkthrough Summary"]
     
     Release --> Evolve{Post-Release Evolution?}
     Evolve -->|New Release Scope| InitRel["/init --release vX.Y.Z"] --> Plan
@@ -148,7 +148,7 @@ Every action in the Guards Framework operates under a distinct mindset and answe
 | **`/plan`** | **"What are we going to build, what layers are needed, what tech stack will we use, and how will operations/Docker run?"** | **Architect & Designer** | Designs system architecture, determines software layer scope and creates `codebase-*` sub-repositories with `src/` symlinks, selects programming languages & frameworks, plans Hybrid Docker & CI/CD in Phase 6 (Operations), generates implementation maps, and **owns all verification design: test strategy, verification scope, ratified scenarios, and ratification**. |
 | **`/implement`** | **"Does my code work in isolation?"** | **Software Engineer** | Scaffolds production code layer-by-layer in `codebase-*` repositories, writes co-located unit tests in `codebase-*/tests/`, **builds the cross-layer harness in `codebase-qualify/` from ratified scenarios**, and executes local isolation testing. |
 | **`/qualify`** | **"Does the integrated system work as a whole?"** | **Quality Engineer (QA)** | Executes the qualification matrix against a booted environment, gates on scenario coverage, attributes defects across layers, renders the release verdict, and promotes ratified scenarios to the regression catalog. Authors no test assets. |
-| **`/release`** | **"Is the system packaged and delivered?"** | **Release & DevOps Operator** | Builds production Docker images, tags versions, generates audit walkthroughs, creates PRs, and coordinates deployment handoffs. |
+| **`/operate`** | **"Is the system packaged, delivered, and deployed?"** | **Operations Engineer (DevOps)** | Builds production Docker images, tags versions, generates audit walkthroughs, creates PRs, and coordinates deployment handoffs. |
 
 ### Detailed Action Descriptions
 
@@ -192,6 +192,6 @@ Every action in the Guards Framework operates under a distinct mindset and answe
         *   [qualify_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/qualify/qualify_questions.md) (Execution-configuration Q&A Grill schema)
         *   [antigravity/qualify_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/qualify/antigravity/qualify_implementation_map.md) (Antigravity guard execution roadmap)
         *   [antigravity/qualify_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/qualify/antigravity/qualify_tests.md) (Release qualification verification test specification)
-6.  **Release & Operations (/release)**
-    *   *Path*: `actions/release/`
+6.  **Operations & Delivery (/operate)**
+    *   *Path*: `actions/operate/`
     *   *Purpose*: Manages Docker builds, operations deployment, walkthrough summaries, and pull requests.

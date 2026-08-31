@@ -84,7 +84,7 @@ The implementation plan directly realizes the following design blueprints and al
      * Enforce mandatory Node Q1 Coverage Gate execution before environment boot or test execution.
      * Prohibit writing harness code, assigning scenario IDs, amending `TEST_STRATEGY.md`, or altering scenario `status` fields.
      * Enforce strict distinction: Defects block release unconditionally; Coverage Gaps are proposals only (`origin: qualify, status: unratified`) and never block release unless accompanied by a defect.
-     * Mandate that provisional runs (`--force-gate`) never unlock `/release`.
+     * Mandate that provisional runs (`--force-gate`) never unlock `/operate`.
 4. **Verification Fulfilled**:
    - Antigravity rule syntax and frontmatter validated.
 
@@ -119,7 +119,7 @@ The implementation plan directly realizes the following design blueprints and al
        - **Node Q3**: Multi-Tier Test Suite Execution (Unit $\rightarrow$ Integration $\rightarrow$ E2E $\rightarrow$ Regression).
        - **Node Q4**: Defect Identification & Layer Attribution.
        - **Node Q5**: Qualification Reporting (`QUALIFICATION_REPORT.md` & `qualification_log.json`).
-       - **Node Q6**: Release Gating & Handoff to `/release`.
+       - **Node Q6**: Release Gating & Handoff to `/operate`.
      * Implement CLI flag handling: `--unit`, `--integration`, `--e2e`, `--regression`, `--env <url>`, `--report-only`, `--propose`, `--force-gate "<justification>"`.
      * Implement 3-layer context notification headers and badges.
 4. **Verification Fulfilled**:

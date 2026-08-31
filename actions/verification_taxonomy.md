@@ -249,7 +249,7 @@ consequences:
 1. The justification string is recorded verbatim in `QUALIFICATION_REPORT.md`.
 2. Every ID in `missing` is listed in the report under **Unproven Scope**.
 3. The resulting run is marked `certification: provisional`. A provisional run **may not** unlock
-   `/release`.
+   `/operate`.
 
 No second override exists. There is no configuration flag that disables the gate.
 
@@ -319,4 +319,4 @@ power to expand the certification bar and then render judgment against its own e
 | **`/plan`** | `existing_coverage.md`, prior `QUALIFICATION_REPORT.md` | `TEST_STRATEGY.md`, `phase-5-test.md`, `tests/scenarios/*.md`, ratification transitions |
 | **`/implement`** | `phase-5-test.md`, `tests/scenarios/*.md` | Harness code bearing `@scenario` citations |
 | **`/qualify`** | All of the above | `QUALIFICATION_REPORT.md`, `qualification_log.json`, unratified proposals, regression promotions |
-| **`/release`** | `QUALIFICATION_REPORT.md` (certification state) | — |
+| **`/operate`** | `QUALIFICATION_REPORT.md` (certification state) | — |

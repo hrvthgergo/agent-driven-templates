@@ -21,7 +21,7 @@
 | **3.6** | Phase 6: Operations & Deployment | Completed | `phase-6-operation.md` | Ops specs finalized |
 | **4** | `/implement` | Completed | `implementation_map_v1.0.0.md` | Source code & test harness scaffolded |
 | **5** | `/qualify` | Completed | `QUALIFICATION_REPORT.md` | Coverage gate passed, multi-tier matrix executed (100% pass rate), release certified |
-| **6** | `/release` | Pending | `release_notes.md` | Production deployment pending |
+| **6** | `/operate` | Pending | `release_notes.md` | Production deployment pending |
 
 ---
 

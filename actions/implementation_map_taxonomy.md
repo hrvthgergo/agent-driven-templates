@@ -13,7 +13,7 @@ Implementation map files are stored under `.agents/plans/<feature-name>/implemen
 - **Full Version Release Map**: `implementation_map_v1.0.0.md`
 - **Partial Scope Version Map**: `implementation_map_v1.1.0_layout.md` or `implementation_map_v1.1.0_engine.md`
 
-By naming implementation maps after the target software version, the planning roadmap is naturally and explicitly linked to the software release produced in `/implement` and `/release`.
+By naming implementation maps after the target software version, the planning roadmap is naturally and explicitly linked to the software release produced in `/implement` and `/operate`.
 
 ---
 

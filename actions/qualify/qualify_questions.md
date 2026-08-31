@@ -12,7 +12,7 @@ judgment action, and most of what it needs was decided upstream by `/plan` (crit
 These are never negotiated with the developer. They are asserted, and violations halt the action.
 
 ### Baseline 1: Coverage Gate Precedence
-* **Specification**: The Node Q1 coverage gate executes **before** environment boot and before any test runs. It is never deferred, reordered, or skipped. The only override is `--force-gate`, which produces a `provisional` certification that cannot unlock `/release`.
+* **Specification**: The Node Q1 coverage gate executes **before** environment boot and before any test runs. It is never deferred, reordered, or skipped. The only override is `--force-gate`, which produces a `provisional` certification that cannot unlock `/operate`.
 
 ### Baseline 2: No Authoring Authority
 * **Specification**: `/qualify` writes no harness code, assigns no scenario identifiers, amends no `TEST_STRATEGY.md`, and alters no `status` field. Its single bounded exception is authoring a coverage-gap proposal with `origin: qualify, status: unratified`, per [verification_taxonomy.md](../verification_taxonomy.md) §6.3.
@@ -66,7 +66,7 @@ These are never negotiated with the developer. They are asserted, and violations
   > **This is a construction gap, not a test failure. How should it be resolved?**
   > 1. **(Recommended)** Halt and return to `/implement --tests-only` to build the missing harness
   > 2. Review whether the missing scenarios should be retired or de-scoped in `/plan`
-  > 3. Override with `--force-gate` (requires justification; yields a **provisional** certification that cannot unlock `/release`)
+  > 3. Override with `--force-gate` (requires justification; yields a **provisional** certification that cannot unlock `/operate`)
   > 4. Other / Free-text (Describe custom resolution)
 
 ---

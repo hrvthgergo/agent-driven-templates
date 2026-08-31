@@ -23,7 +23,7 @@ The AI agent MUST execute the **Node Q1 Coverage Gate** BEFORE booting any envir
 * The only permitted override is `/qualify --force-gate "<justification>"`.
 * The justification MUST be recorded verbatim in `QUALIFICATION_REPORT.md` Section 4.
 * The run MUST be stamped `certification: provisional`.
-* **A provisional certification is strictly prohibited from unlocking the `/release` action.**
+* **A provisional certification is strictly prohibited from unlocking the `/operate` action.**
 
 ---
 
@@ -73,4 +73,4 @@ When executing test matrices in Node Q3, tests MUST execute in strict hierarchic
 
 ## 6. Regression Catalog Promotion & Release Gating
 1. **Promotion Rule**: Upon achieving a 100% pass rate across all tiers with full certification, the agent MUST promote only **ratified** feature scenarios into `agent-workspace/tests/regression/`. Unratified proposals are NEVER promoted.
-2. **Release Gating**: If all release criteria are met and certification is `full`, the agent updates `agent-workspace/plans/<feature-name>/PROCESS_STATUS.md` marking Row 5 (`/qualify`) as `Completed` and unlocks `/release`. If defects exist or certification is `provisional`, Row 5 remains blocked.
+2. **Release Gating**: If all release criteria are met and certification is `full`, the agent updates `agent-workspace/plans/<feature-name>/PROCESS_STATUS.md` marking Row 5 (`/qualify`) as `Completed` and unlocks `/operate`. If defects exist or certification is `provisional`, Row 5 remains blocked.

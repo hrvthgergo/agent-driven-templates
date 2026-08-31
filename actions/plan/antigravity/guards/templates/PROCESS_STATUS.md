@@ -16,7 +16,7 @@
 | **Implementation Map** | `agent-workspace/plans/[feature]/implementation_maps/implementation_map_v1.0.0.md` | Software Version Release Map (v1.0.0) | `[ ] Drafted` |
 | **4. Implementation** | `agent-workspace/plans/[feature]/implementation_log.md` | Incremental Code Scaffolding & Solution Tests | `[ ] Pending` |
 | **5. Qualification** | `agent-workspace/plans/[feature]/QUALIFICATION_REPORT.md` | Test Suite Execution & Quality Certification | `[ ] Pending` |
-| **6. Release** | `agent-workspace/plans/[feature]/release_walkthrough.md` | Production Tagging & Artifact Bundling | `[ ] Pending` |
+| **6. Operate** | `agent-workspace/plans/[feature]/release_walkthrough.md` | Production Tagging & Artifact Bundling | `[ ] Pending` |
 
 ---
 
