@@ -68,6 +68,8 @@ actions/
 │   ├── qualify_action.md                # Detailed action specifications (execution & verdict only)
 │   ├── qualify_questions.md             # Execution-configuration Q&A Grill schema
 │   └── antigravity/                     # [Tier 3] Antigravity-specific resources & guards
+│       ├── qualify_implementation_map.md # Antigravity execution map & decision links
+│       └── qualify_tests.md             # Release qualification verification test suite
 │
 └── release/                            # [Tier 2] Release & Operations Subfolder
     ├── release_action.md             # Detailed workflow specifications
@@ -187,7 +189,9 @@ Every action in the Guards Framework operates under a distinct mindset and answe
     *   *Purpose*: **Execution and judgment only.** Gates on scenario coverage (Node Q1, fail-closed), boots multi-container environments via `codebase-devops/`, executes the full test matrix, attributes defects to responsible layers, renders the release verdict, and promotes ratified scenarios into the regression catalog. It authors no test assets: scenarios and strategy belong to `/plan`, harness code to `/implement`. Its single bounded exception is proposing an unratified coverage-gap scenario, which it may never certify against.
     *   *Key Files*:
         *   [qualify_action.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/qualify/qualify_action.md) (Universal Tier 2 baseline specification)
-        *   [qualify_questions.md](./qualify/qualify_questions.md) (Execution-configuration Q&A Grill schema)
+        *   [qualify_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/qualify/qualify_questions.md) (Execution-configuration Q&A Grill schema)
+        *   [antigravity/qualify_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/qualify/antigravity/qualify_implementation_map.md) (Antigravity guard execution roadmap)
+        *   [antigravity/qualify_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/qualify/antigravity/qualify_tests.md) (Release qualification verification test specification)
 6.  **Release & Operations (/release)**
     *   *Path*: `actions/release/`
     *   *Purpose*: Manages Docker builds, operations deployment, walkthrough summaries, and pull requests.

@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "QualificationExecutionAuditTrail",
+  "type": "object",
+  "required": [
+    "timestamp",
+    "feature_scope",
+    "target_map",
+    "coverage_gate",
+    "certification",
+    "overall_status",
+    "tier_summary",
+    "defects_count",
+    "proposals_count"
+  ],
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "feature_scope": {
+      "type": "string"
+    },
+    "target_map": {
+      "type": "string"
+    },
+    "duration_seconds": {
+      "type": "number"
+    },
+    "coverage_gate": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["PASSED", "FAILED", "OVERRIDDEN"]
+        },
+        "ratified_in_scope": {
+          "type": "integer"
+        },
+        "proven_by_harness": {
+          "type": "integer"
+        },
+        "missing_ids": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "override_justification": {
+          "type": ["string", "null"]
+        }
+      },
+      "required": ["status", "ratified_in_scope", "proven_by_harness", "missing_ids"]
+    },
+    "certification": {
+      "type": "string",
+      "enum": ["full", "provisional"]
+    },
+    "overall_status": {
+      "type": "string",
+      "enum": ["PASSED", "CONDITIONALLY_PASSED", "FAILED"]
+    },
+    "tier_summary": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "type": "object",
+          "properties": {
+            "total": { "type": "integer" },
+            "passed": { "type": "integer" },
+            "failed": { "type": "integer" },
+            "pass_rate_percent": { "type": "number" }
+          }
+        },
+        "integration": {
+          "type": "object",
+          "properties": {
+            "total": { "type": "integer" },
+            "passed": { "type": "integer" },
+            "failed": { "type": "integer" },
+            "pass_rate_percent": { "type": "number" }
+          }
+        },
+        "e2e": {
+          "type": "object",
+          "properties": {
+            "total": { "type": "integer" },
+            "passed": { "type": "integer" },
+            "failed": { "type": "integer" },
+            "pass_rate_percent": { "type": "number" }
+          }
+        },
+        "regression": {
+          "type": "object",
+          "properties": {
+            "total": { "type": "integer" },
+            "passed": { "type": "integer" },
+            "failed": { "type": "integer" },
+            "pass_rate_percent": { "type": "number" }
+          }
+        }
+      }
+    },
+    "defects_count": {
+      "type": "integer"
+    },
+    "proposals_count": {
+      "type": "integer"
+    },
+    "promoted_regression_scenarios": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}
