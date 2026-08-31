@@ -18,14 +18,14 @@ To ensure the Guards Framework can be baselined and implemented consistently acr
     *   [summary.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/summary.md): Central framework sitemap and 6-stage operational lifecycle.
     *   [multi_repo_architecture.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/multi_repo_architecture.md): Hybrid Multi-Repo structure, relative symlinks, Rule of Dependency config isolation, and Hybrid Docker handling strategy.
     *   [init_action.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_action.md) (*This Document*): Core `/init` workflow state machine design, step-by-step reasoning, state storage mechanics, and guard element definitions.
-    *   [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_questions.md): Dual-mode Q&A interview schema — Q0 Mode Gate, QS1–QS3 Quick & Simple interview, Q1–Q10 Major Feature deep-dive, baselines, and auto-detection rules.
+    *   [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_questions.md): Dual-mode Q&A interview schema — Q0 Mode Gate, QS1–QS3 Quick & Simple interview, Q1–Q7 Major Feature interview, baselines, and auto-detection rules.
     *   [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/folder_structure.md): Standard workspace folder layout specifications.
 2.  **Environment-Specific Execution Guidelines**:
     *   [antigravity/init_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/antigravity/init_implementation_map.md): Specific execution guideline detailing how our agent implements these baselines within **Google Antigravity** using its native primitives (**rules, skills, workflows, hooks, sidecars, templates**) by scaffolding master guard files under `actions/init/antigravity/guards/`.
     *   [antigravity/init_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/antigravity/init_tests.md): Test specification and scenario for verifying `/init` greenfield execution in Antigravity.
 
 ### Simplicity & Separation of Concerns Rule
-For brownfield projects with existing source code and documentation, `/init` performs **only high-level layer identification** to create `codebase-*` skeletons and link existing source folders. **No code restructuring, deep historical analysis, or refactoring is required or allowed during `/init`**. All historical code analysis and legacy codebase restructuring are decoupled into the dedicated `/process` action.
+For brownfield projects with existing source code and documentation, `/init` performs **only high-level directory identification** to link existing source folders. **No empty `codebase-*` skeletons are created, and no code restructuring, deep historical analysis, or refactoring is performed during `/init`**. All historical code analysis and legacy codebase restructuring are decoupled into the dedicated `/process` action.
 
 ### The Two Environments Initialized by /init
 The initialization process establishes and connects two core environments:
