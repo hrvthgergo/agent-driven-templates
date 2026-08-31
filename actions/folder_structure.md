@@ -36,7 +36,11 @@ This document defines the generic directory layout scaffolded, mapped, and enfor
 │   │       └── phase_details/   # On-demand multi-layer sub-element blueprints (e.g. phase_details/<element_name>/)
 │   │
 │   ├── docs/                    # Global human-facing documentation (Implemented capabilities)
-│   ├── tests/                   # Global master test scenarios, regression suites & cross-layer assertions
+│   ├── tests/                   # Global verification governance (owned by /plan, executed by /qualify)
+│   │   ├── TEST_STRATEGY.md     # Project-durable: tiers, tooling, thresholds, mocking policy, definition of certified
+│   │   ├── scenarios/           # Ratified scenarios, one file per SC-<feature-slug>-<nnn> identifier
+│   │   │   └── SC-<feature>-001.md  # Frontmatter: id, origin, status, tier, feature, created
+│   │   └── regression/          # Master regression catalog (promoted from scenarios/ on certification)
 │   │
 │   └── src/                     # Source Code Entry Points & Agentic Layer Graphs
 │       ├── devops/              # [SYMLINK] Points to ../codebase-devops/src/ or legacy devops folder
@@ -95,6 +99,8 @@ This document defines the generic directory layout scaffolded, mapped, and enfor
 *Feature Resource Folder & Global Docs Policy: Non-code legacy documentation, supplementary assets, schemas, and diagrams discovered during `/process` are staged inside `plans/<feature_name>/resource/` as reference knowledge for the active feature. Global `docs/` contains knowledge of already implemented system capabilities. Staging legacy docs in `plans/<feature-name>/resource/` keeps active feature planning decoupled; later, during the `/implement` action, after the feature is implemented, relevant documentation will be linked/promoted into global `docs/`.*
 
 *Selective Phase Blueprint Rule: Filling out phase blueprint documents (`phase-1-summary.md` through `phase-6-operation.md` in `plans/<feature_name>/`) is optional and strictly based on relevance of identified legacy content.*
+
+*Verification Artifact Ownership: The three nodes under `agent-workspace/tests/` are project-durable and sit deliberately outside any single feature sandbox. `TEST_STRATEGY.md` and `scenarios/` are authored by `/plan`; `regression/` is promoted into by `/qualify` on certification. Harness code that proves these scenarios is built by `/implement` into `codebase-qualify/src/`, never into `agent-workspace/`. See [verification_taxonomy.md](./verification_taxonomy.md) for the full ownership model and the `SC-*` identifier scheme.*
 
 *Lifecycle Layer Expansion: If a project begins as single-layer (e.g., `codebase-engine` or existing backend) and later requires an additional layer (e.g., adding `codebase-layout` or `codebase-worker`), the framework introduces the new layer skeleton under the same pattern, registers a new symlink under `src/<new_layer>`, updates `codebase-devops/docker/docker-compose.yml`, and preserves complete structural consistency across the repository lifecycle.*
 

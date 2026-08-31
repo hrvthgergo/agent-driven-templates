@@ -1,6 +1,9 @@
 # Guard Specification: Release Qualification (/qualify)
 
-This document serves as the authoritative baseline specification for the `/qualify` action in the **Guards Framework**. It governs how AI agents manage, execute, analyze, and report on all testing tiers, supervise test scenario implementations, identify and track defects, and certify software releases before deployment.
+This document serves as the authoritative baseline specification for the `/qualify` action in the **Guards Framework**. It governs how AI agents execute, analyze, and report on all testing tiers, identify and attribute defects, and certify software releases before deployment.
+
+> [!IMPORTANT]
+> **Scope Boundary.** `/qualify` **executes and judges**. It does not design verification criteria and it does not build test assets. Scenarios and test strategy are authored by `/plan`; harness code is built by `/implement`. This boundary is what keeps the action's declared scope fully covered by its guiding question — *"Does the integrated system work as a whole?"* — and it preserves the framework's foundational principle that **the entity which builds a thing is never the sole entity that certifies it**. See [verification_taxonomy.md](../verification_taxonomy.md) for the full artifact ownership model.
 
 ---
 
@@ -58,10 +61,12 @@ To guarantee strict separation between governance, execution, and infrastructure
 ### Pillar 1: Test Governance & Living Assets (`agent-workspace/tests/`)
 * **Role**: Permanent knowledge base for all master test plans, regression test catalogs, and step-by-step user journey specifications.
 * **Separation of Concerns**: Test plans are first-class governance documents and live at the root of `agent-workspace/tests/`, distinct from general documentation (`docs/`) and feature-in-flight design plans (`plans/`).
-* **Role of `phase-5-test.md`**: Inside a feature plan, `phase-5-test.md` acts strictly as the **Feature Verification Scope** (the delta). It references which global scenarios in `agent-workspace/tests/` must be executed, updated, or created for that specific feature.
+* **Role of `phase-5-test.md`**: Inside a feature plan, `phase-5-test.md` acts strictly as the **Feature Verification Scope** (the delta). It lists the scenario IDs in scope for that feature; those IDs are the binding input to the Node Q1 coverage gate.
+* **Ownership**: This pillar is authored by `/plan`, not by `/qualify`. Scenarios under `agent-workspace/tests/scenarios/` carry immutable `SC-<feature-slug>-<nnn>` identifiers and a ratification status. `/qualify` **reads** them; it may not assign identifiers, amend `TEST_STRATEGY.md`, or alter any `status` field. Its single bounded exception is the coverage-gap proposal defined in Section 4.
 
 ### Pillar 2: Cross-Layer Test Implementation (`codebase-qualify/`)
 * **Role**: Standalone production-grade sub-repository dedicated to physical test scripts, mock servers, data factories, and acceptance fixtures.
+* **Ownership**: `codebase-qualify` is a **peer layer** of every other `codebase-*` repository, and its code is built by `/implement` under the same rules — via the Test Harness stream of the implementation map. `/qualify` executes this harness; it does not write it. Every harness test cites the scenario it satisfies using the canonical `@scenario SC-<feature-slug>-<nnn>` token defined in [verification_taxonomy.md](../verification_taxonomy.md) §4, and those citations are what the Node Q1 gate resolves against.
 * **Cleanliness**: Production repositories (`codebase-layout`, `codebase-engine`) remain clean of cross-layer testing harnesses.
 * **Symlink Visibility**: Exposed to the control plane via relative symlink `agent-workspace/src/qualify/`.
 * **Layer-Autonomous Unit Tests**: Unit tests remain co-located inside layer skeletons (`codebase-<layer>/tests/`) and run during layer micro-pipelines with a mandatory 100% pass rate.
@@ -99,8 +104,8 @@ The qualification action bridges upfront architectural design with adaptive runt
 
 ```mermaid
 graph TD
-    subgraph S1["Stage 1: Upfront Scaffolding (/plan)"]
-        PlanScope["<b>1. Minimum Test Contract</b><br/>• phase-5-test.md defines required test tiers<br/>• Scaffolds initial scenarios in agent-workspace/tests/<br/>• Sets acceptance criteria for unit tests"]
+    subgraph S1["Stage 1: Verification Design (/plan)"]
+        PlanScope["<b>1. Strategy, Scope & Scenarios</b><br/>• TEST_STRATEGY.md declares tiers, tooling, thresholds<br/>• phase-5-test.md lists scenario IDs in scope<br/>• Authors ratified SC-* scenarios in tests/scenarios/"]
     end
 
     subgraph S2["Stage 2: Layer Construction (/implement)"]
@@ -108,7 +113,8 @@ graph TD
     end
 
     subgraph S3["Stage 3: Adaptive Qualification & Feedback (/qualify)"]
-        QExec["<b>3. Execute, Extend & Implement</b><br/>• Runs multi-tier matrix (Unit, Integration, E2E)<br/>• Optionally adds new test phases & edge-case scenarios to tests/<br/>• Implements automated test code in codebase-qualify/"]
+        QGate["<b>3a. Coverage Gate (Node Q1)</b><br/>• Resolves ratified scenario IDs against @scenario citations<br/>• Fails closed on any unproven ratified scenario"]
+        QExec["<b>3b. Execute & Judge</b><br/>• Runs multi-tier matrix (Unit, Integration, E2E, Regression)<br/>• Attributes defects to responsible layer<br/>• Renders verdict; authors no test assets"]
         
         QEval{Evaluation Result?}
         
@@ -118,26 +124,47 @@ graph TD
         QDesignFix["<b>Design Correction Loop</b><br/>Trigger /plan to update blueprints"]
     end
 
+    subgraph S2b["Stage 2b: Harness Construction (/implement)"]
+        ImpHarness["<b>2b. Build Cross-Layer Harness</b><br/>• One cited test per ratified scenario<br/>• Written into codebase-qualify/src/<br/>• May run red-first via --tests-only"]
+    end
+
     PlanScope --> ImpCode
-    ImpCode --> QExec
+    ImpCode --> ImpHarness
+    ImpHarness --> QGate
+    QGate -->|Missing harness| QCodeFix
+    QGate -->|Complete| QExec
     QExec --> QEval
     
     QEval -->|100% Pass| QPass
     QEval -->|Layer Code Defect| QCodeFix --> ImpCode
-    QEval -->|Architectural Gap / Missing Spec| QDesignFix --> PlanScope
+    QEval -->|Architectural Gap / Coverage Gap Proposal| QDesignFix --> PlanScope
 ```
 
 ### Key Principles of the Progressive Model
 
-1. **Shift-Left Baseline (`/plan`)**: During feature planning, the agent does not need to over-engineer every edge-case test script. It establishes the **Minimum Test Contract** (`phase-5-test.md` + initial `tests/` scenarios) so that `/implement` knows what unit tests and component behaviors to verify.
-2. **Local Component Verification (`/implement`)**: Production code and unit tests are built against this baseline contract to ensure local component integrity.
-3. **Adaptive Test Extension (`/qualify`)**: Prior to release, `/qualify` is not limited to static verification. The Quality Engineer agent can:
-   - Extend test plans and introduce new test phases (e.g., performance checks, cross-browser flows, boundary stress cases) into `agent-workspace/tests/`.
-   - Implement the physical automation scripts for these new phases directly in `codebase-qualify/`.
-4. **Bidirectional Feedback & Correction Triggers**: If qualification exposes flaws or gaps:
+1. **Verification Design (`/plan`)**: Test strategy, verification scope, and scenarios are authored during planning. Criteria therefore exist — in executable-ready, version-controlled form — before any feature code is written.
+2. **Local Component Verification (`/implement`)**: Production code and layer-local unit tests are built against that contract.
+3. **Harness Construction (`/implement`)**: The cross-layer harness in `codebase-qualify/` is built by the same action that builds the feature, from scenarios it did not author. It may be built red-first, ahead of feature code.
+4. **Execution & Judgment (`/qualify`)**: Prior to release, `/qualify` gates on coverage, executes the full matrix, attributes defects across layers, and renders the verdict. **It authors no test assets.**
+5. **Bidirectional Feedback & Correction Triggers**: If qualification exposes flaws or gaps:
+   - **Unproven Scope**: the Node Q1 gate halts before execution and returns to `/implement --tests-only`.
    - **Layer Code Defect**: `/qualify` isolates the responsible layer and triggers a targeted fix in `/implement`.
-   - **Architectural / Requirement Gap**: `/qualify` triggers a design revision in `/plan` to update blueprints before re-implementing.
-5. **Regression Catalog Promotion**: Upon 100% pass certification, newly authored test scenarios are automatically promoted into `agent-workspace/tests/regression/` to permanently safeguard future releases.
+   - **Architectural / Requirement Gap**: `/qualify` triggers a design revision in `/plan`.
+6. **Regression Catalog Promotion**: Upon certification, **ratified** feature scenarios are promoted into `agent-workspace/tests/regression/` to safeguard future releases. Unratified proposals are never promoted.
+
+### Defect Versus Coverage Gap
+
+Execution routinely surfaces two different kinds of finding. Conflating them is what collapses the `/qualify` persona, so the framework separates them explicitly:
+
+| Finding | Definition | `/qualify` authority |
+| :--- | :--- | :--- |
+| **Defect** | Observed behaviour contradicts a ratified scenario, or is self-evidently broken. | **Full.** Report it, attribute it to a layer, and **block the release**. No ratification required. A bug is a bug. |
+| **Coverage gap** | Behaviour is untested because no criterion was ever written for it. | **Proposal only.** Author a scenario with `origin: qualify, status: unratified`, list it under **Coverage Gap Proposals** in the report, and continue. May not certify against it. |
+
+`/qualify` therefore retains complete power to stop a bad release. What it does not hold is the power to expand the certification bar and then render judgment against its own expansion. Unratified proposals are inputs to the next `/plan --ratify` cycle.
+
+> [!NOTE]
+> **Hot-context capture without persona drift.** The action that discovers a gap is best placed to describe it, so `/qualify` may write the scenario while the context is fresh. What it may not do is ratify it. The `origin: qualify` stamp makes the provenance auditable, and the ratio of `plan`-origin to `qualify`-origin scenarios is itself a signal about planning quality.
 
 ---
 
@@ -178,8 +205,9 @@ Execution of the `/qualify` workflow follows a strict 6-node state machine:
 
 ```mermaid
 graph TD
-    Q1[Node Q1: Scope & Pre-Condition Inspection<br/>Read phase-5-test.md, implementation_map & tests/]
-    --> Q2[Node Q2: Environment & Test Target Gate<br/>Select Target Mode: Unit, Integration, E2E, or Full Matrix]
+    Q1[Node Q1: Scope Resolution & COVERAGE GATE<br/>Resolve ratified SC-* IDs against @scenario citations<br/>FAIL CLOSED if any ratified scenario is unproven]
+    Q1 -->|Gate FAILED| QHalt[HALT before environment boot<br/>Report missing IDs<br/>Return to /implement --tests-only]
+    Q1 -->|Gate PASSED| Q2[Node Q2: Environment & Test Target Gate<br/>Select Target Mode: Unit, Integration, E2E, or Full Matrix]
     
     Q2 --> Q3[Node Q3: Multi-Tier Test Suite Execution<br/>• Tier 1: Layer Unit Tests (codebase-*/tests/)<br/>• Tier 2: Integration & Contract Tests (codebase-qualify/)<br/>• Tier 3: E2E User Journeys (codebase-qualify/)<br/>• Tier 4: Regression Catalog Assertions]
     
@@ -195,9 +223,32 @@ graph TD
 
 ### Step Descriptions & Execution Reasoning
 
-#### Step 1: Scope & Pre-Condition Inspection (Node Q1)
-* **Description**: Inspects `agent-workspace/plans/<feature-name>/phase-5-test.md` to identify the feature verification delta, reads the target `implementation_map_v<version>.md`, and resolves corresponding master scenarios in `agent-workspace/tests/`.
-* **Reasoning**: Establishes unambiguous qualification boundaries and assertion criteria before test execution begins.
+#### Step 1: Scope Resolution & Coverage Gate (Node Q1)
+* **Description**: Inspects `agent-workspace/plans/<feature-name>/phase-5-test.md` to extract the scenario IDs in scope, resolves each against `agent-workspace/tests/scenarios/`, and executes the **Coverage Gate** defined in [verification_taxonomy.md](../verification_taxonomy.md) §5.
+* **Reasoning**: A suite that runs green proves nothing if a planned criterion was never built. The gate runs **before environment boot** so that unproven scope is caught as a scope failure rather than disguised as a passing run.
+
+##### Gate Computation
+
+```
+scope       := scenario IDs listed in phase-5-test.md
+ratified    := { id in scope : tests/scenarios/<id>.md has status == ratified }
+implemented := { id : an "@scenario <id>" citation exists in codebase-qualify/src/
+                      or codebase-*/tests/ }
+missing     := ratified \ implemented
+```
+
+##### Gate Semantics
+
+| Condition | Result |
+| :--- | :--- |
+| `missing` is empty | **Pass.** Proceed to Node Q2. |
+| `missing` is non-empty | **Fail closed.** Halt before environment boot. Report every missing ID with its scenario title. Execute no tests and render no verdict. |
+
+Three interpretation rules apply:
+
+1. Scenarios with `status: unratified` or `status: retired` are excluded from `ratified` and never cause failure. Proposals are not obligations.
+2. **Gate failure is not a test failure.** It reports that a planned proof was never built, and is attributed to `/implement`, not to the code under test. The correct response is `/implement --tests-only`, not a code fix.
+3. The only override is `/qualify --force-gate "<justification>"`, which marks the run `certification: provisional`. A provisional run **may not** unlock `/release`.
 
 #### Step 2: Environment & Test Target Gate (Node Q2)
 * **Description**: Determines execution mode (e.g. running against live local/staging server or spinning up Docker compose network via `codebase-devops`). Confirms test tiers to run (`--unit`, `--integration`, `--e2e`, or full matrix).
@@ -240,6 +291,8 @@ graph TD
 | `/qualify --regression` | **Regression Protection Tier** | Runs master regression catalog from `agent-workspace/tests/`. |
 | `/qualify --env <url>` | **Targeted Environment Run** | Executes test suites against an external running environment URL. |
 | `/qualify --report-only` | **Audit Reporting Mode** | Synthesizes existing test results and generates `QUALIFICATION_REPORT.md`. |
+| `/qualify --propose` | **Gap Discovery Mode** | Executes the matrix and emits Coverage Gap Proposals (`origin: qualify, status: unratified`) **without** gating the release. Used to survey coverage ahead of a planning cycle. |
+| `/qualify --force-gate "<justification>"` | **Gate Override (Provisional)** | Proceeds past a failed Node Q1 coverage gate. Records the justification verbatim, lists every unproven ID under **Unproven Scope**, and marks the run `certification: provisional`. A provisional run may not unlock `/release`. This is the **only** override; no flag disables the gate. |
 
 ---
 
@@ -251,7 +304,17 @@ graph TD
 - **Date**: YYYY-MM-DD
 - **Target Map**: `implementation_map_v<version>.md`
 - **Verification Scope**: `phase-5-test.md`
+- **Coverage Gate (Node Q1)**: [PASSED | FAILED | OVERRIDDEN]
+- **Certification**: [full | provisional]
 - **Overall Status**: [PASSED | CONDITIONALLY_PASSED | FAILED]
+
+## 0. Coverage Gate Result
+
+| Ratified in scope | Proven by harness | Missing |
+| :--- | :--- | :--- |
+| 7 | 7 | 0 |
+
+*Gate passed. All ratified scenarios in scope resolve to at least one `@scenario` citation.*
 
 ## 1. Test Suite Execution Summary
 
@@ -266,10 +329,28 @@ graph TD
 ## 2. Identified Defects & Layer Attribution
 *(None if 100% pass rate)*
 
-## 3. Release Certification
+## 3. Coverage Gap Proposals
+*Scenarios discovered during execution for which no criterion previously existed.*
+*Authored with `origin: qualify, status: unratified`. NOT certified against.*
+*Inputs to the next `/plan --ratify` cycle.*
+
+| Proposed ID | Behaviour | Discovered in | Blocker? |
+| :--- | :--- | :--- | :--- |
+| `SC-<feature>-007` | Discount persists after cart is emptied | E2E tier | Yes — filed as defect |
+
+## 4. Unproven Scope
+*Populated only when the Node Q1 gate was overridden via `--force-gate`.*
+*(Empty on a full certification.)*
+
+- **Override justification**: *(verbatim, as supplied)*
+- **Unproven ratified IDs**: *(none)*
+
+## 5. Release Certification
+- [x] Coverage gate passed (every ratified in-scope scenario proven)
 - [x] Unit test baseline satisfied (100% pass rate)
 - [x] Cross-layer contract verification satisfied
 - [x] Zero regressions detected in core capabilities
+- [x] Certification is `full` (not `provisional`)
 - **Recommendation**: Proceed to `/release`
 ```
 
@@ -277,11 +358,15 @@ graph TD
 
 ## 9. Summary Checklist for AI Agents Executing `/qualify`
 
-- [ ] **First Action**: Inspect `phase-5-test.md` and target `implementation_map_v<version>.md` for verification scope.
-- [ ] Resolve required test scenarios in `agent-workspace/tests/`.
+- [ ] **First Action**: Inspect `phase-5-test.md` and extract the scenario IDs in scope.
+- [ ] Resolve every ID against `agent-workspace/tests/scenarios/`; identify which carry `status: ratified`.
+- [ ] **Run the Node Q1 Coverage Gate BEFORE booting any environment.** Halt fail-closed if any ratified in-scope scenario has no `@scenario` citation.
+- [ ] Do NOT author harness code, assign scenario IDs, amend `TEST_STRATEGY.md`, or alter any `status` field.
 - [ ] Determine execution mode (targeted live URL vs. `codebase-devops` container orchestrator).
 - [ ] Execute multi-tier test suites in strict order: Unit $\rightarrow$ Integration $\rightarrow$ E2E $\rightarrow$ Regression.
 - [ ] In case of failures, isolate defect attribution (`layout`, `engine`, `data`, or `test_spec`).
+- [ ] Classify each finding as **defect** (may block release outright) or **coverage gap** (proposal only, `status: unratified`).
+- [ ] Promote only **ratified** scenarios into `agent-workspace/tests/regression/` upon certification.
 - [ ] Generate `QUALIFICATION_REPORT.md` and `qualification_log.json` in `agent-workspace/plans/<feature-name>/`.
 - [ ] Synchronize `PROCESS_STATUS.md` Row 5 to `Completed` with datestamped log entry.
 - [ ] Handoff to `/release` upon successful qualification gating.

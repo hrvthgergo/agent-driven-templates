@@ -197,3 +197,22 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > 2. Edit a specific answer (Specify question number to re-run)
   > 3. Other / Free-text (Add further instructions, constraints, or notes for execution)
 * **Resulting Action**: Saves answers to `agent-workspace/plans/<branch_name>/GRILL_STATUS.md`, creates workspace symlinks under `agent-workspace/src/<layer>` (or copies files if scaffolding mode selected), stages non-code docs in `agent-workspace/plans/<feature-name>/resource/`, optionally generates modular `agent-workspace/src/<layer>/code_graph/` subfolders (containing `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md`), selectively populates relevant phase blueprints in `agent-workspace/plans/<feature-name>/` (`phase-1-summary.md` through `phase-6-operation.md`), and updates `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` to finalize `/process`.
+
+
+---
+
+### Q-COV: Existing Test Coverage Discovery
+* **Goal**: Catalogue the verification assets the legacy codebase already contains, so that `/plan` can author `phase-5-test.md` as a **delta against existing coverage** rather than a scope written from zero.
+* **Auto-Detection Scanning Rule**:
+  * Locate test directories by convention (`test/`, `tests/`, `spec/`, `__tests__/`, `*_test.go`, `*Test.java`).
+  * Detect test runners and frameworks from manifests (`pytest.ini`, `jest.config.*`, `go.mod`, `pom.xml`, `package.json` scripts).
+  * Detect fixture, mock, and factory directories.
+  * Detect coverage configuration (`.coveragerc`, `codecov.yml`, `jest` coverage thresholds).
+  * Detect CI steps that execute tests in `.github/workflows/` or `.gitlab-ci.yml`.
+* **Reframed Grill Prompt**:
+  > **Existing test assets detected: `<n>` suites across `<m>` directories, runner(s): `<list>`. How should they be catalogued?**
+  > 1. **(Recommended)** Catalogue all discovered suites, runners, fixtures and coverage config into `resource/existing_coverage.md`
+  > 2. Catalogue only suites relevant to the active feature scope
+  > 3. Skip test discovery (no existing coverage, or greenfield feature)
+  > 4. Other / Free-text (Describe custom coverage discovery scope)
+* **Boundary**: Legacy tests are **read and catalogued only**. `/process` never modifies, relocates, refactors, or executes them.

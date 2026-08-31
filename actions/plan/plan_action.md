@@ -117,6 +117,18 @@ The `/plan` workflow enforces a strict write sandbox:
   - **`agent-workspace/plans/<feature-name>/`** (and all its subfolders)
 - **Forbidden Actions**: `/plan` is **strictly prohibited** from modifying general system documentation in `docs/`, code graphs in `src/*/code_graph/`, or source code files (`src/`, `codebase-*/`). Code Graph generation and System Documentation updates are strictly by-request operations, executed only via explicit `--code-graph` and `--docs` flags during `/implement` or `/process`.
 
+### I. Verification Design Authority
+`/plan` is the **sole design authority for verification**. Of the five verification artifacts defined in [verification_taxonomy.md](../verification_taxonomy.md), `/plan` owns three:
+
+1. **Test Strategy** (`agent-workspace/tests/TEST_STRATEGY.md`) — the project-durable declaration of tiers, tooling, thresholds, mocking policy, defect severity, and the definition of "certified". Authored on the first `/plan` cycle; amended thereafter only via `/plan --test-strategy`.
+2. **Verification Scope Delta** (`phase-5-test.md`) — what *this feature* must prove. It **references** the strategy and **lists scenario IDs in scope**; it never restates tooling, thresholds, or mocking policy.
+3. **Scenarios** (`agent-workspace/tests/scenarios/`) — the given/when/then criteria, each carrying an immutable `SC-<feature-slug>-<nnn>` identifier assigned exclusively by `/plan`.
+
+`/plan` is also the **sole ratification authority**: only `/plan --ratify` may transition a scenario's `status` field. Harness code is built by `/implement`; execution and verdict belong to `/qualify`. `/plan` writes neither.
+
+> [!IMPORTANT]
+> **Criteria precede implementation.** Because scenarios are authored here, version-controlled, and owned by a different action than the one that writes the code, the pass/fail bar cannot be quietly weakened downstream — any such change surfaces as a diff against a `/plan`-owned artifact. This, not authorship of the harness, is what makes verification independent.
+
 ---
 
 ## 3. Directory Layout & Document Hierarchy
@@ -130,7 +142,7 @@ agent-workspace/plans/<feature-name>/
 ├── phase-2-layout.md              # Phase 2: Design System, UI Layout & Component Decisions
 ├── phase-3-data.md                # Phase 3: Data Handling, Capturing, Storing Mechanisms & Data Store Lifecycle
 ├── phase-4-engine.md              # Phase 4: Core Engine, API Contracts, Data Flow & DB Decisions
-├── phase-5-test.md                # Phase 5: Feature Verification Scope & Test Delta
+├── phase-5-test.md                # Phase 5: Verification Scope Delta (references TEST_STRATEGY.md; lists scenario IDs in scope)
 ├── phase-6-operation.md           # Phase 6: Docker, Compose & Infrastructure Decisions
 ├── resource/                      # Staged non-code legacy documentation & assets (from /process)
 ├── knowledge/                      # Topic Research Reports & Knowledge Summaries requested during /plan
@@ -150,7 +162,7 @@ agent-workspace/plans/<feature-name>/
 ├── phase-2-layout.md              # Master Design System & UI Governor
 ├── phase-3-data.md                # Master Data Handling & Lifecycle Governor
 ├── phase-4-engine.md              # Master Core Engine & API Contracts Governor
-├── phase-5-test.md                # Master Verification Scope Governor (Delta to tests/)
+├── phase-5-test.md                # Master Verification Scope Governor (Delta; cites SC-* IDs from tests/scenarios/)
 ├── phase-6-operation.md           # Master Operations & Deployment Governor
 ├── phase_details/                  # Detailed sub-element design folders (created on-demand)
 │   ├── web_ui/                     # Web interface layout & component specs
@@ -177,7 +189,7 @@ Execution of the `/plan` workflow follows a strict 7-node sequential state machi
 ```mermaid
 graph TD
     S1[Node S1: Check Environment & Preconditions] --> S2[Node S2: Initial Feature Understanding Summary]
-    S2 --> S3[Node S3: Interactive Q&A Session<br/>Identify Affected System, phase-*.md Set & Subfolders]
+    S2 --> S3[Node S3: Interactive Q&A Session<br/>Identify Affected System, phase-*.md Set, Subfolders<br/>& Verification Scope]
     S3 -->|Scope/Sub-Element Discovery or Research Request| S3_Docs[Draft phase_details/ Folders & Research Reports under knowledge/]
     S3_Docs --> S3
     S3 -->|Affected System & Blueprint Structure Finalized| S4[Node S4: Dynamic Blueprint Scaffolding & Embedded Decision Drafting]
@@ -210,12 +222,19 @@ graph TD
   3. Evaluate **whether multi-layer subfolders (`phase_details/`) are required** (for complex features with multiple UIs or APIs), or if the default simple layout is sufficient.
   4. Support mid-planning discovery: if new sub-elements surface during Q&A, dynamically provision subfolders under `agent-workspace/plans/<feature-name>/phase_details/`.
   5. Support developer requests for **research reports** (`knowledge/`), writing reports to `knowledge/research_report_<topic>.md` and linking them directly inside `phase-*.md`.
-* **Storage Actions**: Updates `agent-workspace/plans/<feature-name>/GRILL_STATUS.md`.
+  6. **Assert and amend the Test Strategy**: read `agent-workspace/tests/TEST_STRATEGY.md`. If it does not exist, author it before feature planning proceeds. If this feature requires a tier, tool, or policy the strategy does not declare, amend it **once, project-wide** via `/plan --test-strategy` — per-feature deviation from the strategy is not permitted.
+  7. **Ratify carry-over proposals**: read the prior cycle's `QUALIFICATION_REPORT.md` Coverage Gap Proposals block. For each scenario with `origin: qualify, status: unratified`, either adopt it (`status: ratified`, pulled into this feature's scope) or reject it with a recorded reason. This is the only transition permitted on a scenario's `status` field, and only `/plan --ratify` may perform it.
+* **Storage Actions**: Updates `agent-workspace/plans/<feature-name>/GRILL_STATUS.md`; creates or amends `agent-workspace/tests/TEST_STRATEGY.md`; applies ratification transitions in `agent-workspace/tests/scenarios/`.
 
 #### Step 4: Dynamic Blueprint Scaffolding & Impact Drafting (Node S4)
 * **Description**: Scaffolds the selected active phase blueprint documents (`phase-1-summary.md` plus identified `phase-*.md` set) and any required `phase_details/` subfolder specs under `agent-workspace/plans/<feature-name>/`, explicitly documenting feature design, master governors, embedded decisions, affected system parts, and system impact analysis.
-* **Rules**: Strictly respects the Workspace Boundary rule (writing ONLY to `agent-workspace/plans/<feature-name>/`).
-* **Storage Actions**: Deploys/updates populated phase blueprint files and sub-element specs.
+* **Scenario Authoring**: When scaffolding `phase-5-test.md`, `/plan` writes the feature's scenarios into `agent-workspace/tests/scenarios/`, one file per scenario, each named after its identifier and carrying the frontmatter schema defined in [verification_taxonomy.md](../verification_taxonomy.md) §2:
+  - Identifiers follow `SC-<feature-slug>-<nnn>` and are assigned in creation order. IDs are **never reused and never renumbered**.
+  - Scenarios authored here carry `origin: plan` and `status: ratified`.
+  - Each scenario states behaviour in given/when/then form. It declares **what must be true**, never **how it is proven** — mechanism belongs to the harness, which `/implement` builds.
+  - `phase-5-test.md` lists the scenario IDs in scope for this feature. That list is the binding input to the `/qualify` coverage gate.
+* **Rules**: Strictly respects the Workspace Boundary rule for feature-scoped planning artifacts (writing ONLY to `agent-workspace/plans/<feature-name>/`). Two workspace-level verification artifacts are the explicit, bounded exception: `agent-workspace/tests/TEST_STRATEGY.md` and `agent-workspace/tests/scenarios/`, which are project-durable and therefore live outside any single feature sandbox. `/plan` writes no source code and no harness code under any circumstances.
+* **Storage Actions**: Deploys/updates populated phase blueprint files and sub-element specs; writes scenario files to `agent-workspace/tests/scenarios/`.
 
 #### Step 5: Execution Acceptance Gate & Implementation Map Option (Node S5)
 * **Description**: Synthesizes the generated blueprint set into an Execution Acceptance Summary for developer review.
@@ -268,6 +287,8 @@ graph TD
 | `/plan --dry-run` | Previews planned blueprint documents and decision records without persisting files to disk |
 | `/plan --research <topic>` | Executes deep-dive research on a specific architectural topic and generates `knowledge/research_report_<topic>.md` |
 | `/plan --map` | Drafts a versioned implementation map (`implementation_maps/implementation_map_v<version>.md`) at the conclusion of planning |
+| `/plan --test-strategy` | Authors or amends the project-durable `agent-workspace/tests/TEST_STRATEGY.md` (tiers, tooling, thresholds, mocking policy, defect severity, definition of certified). Run once per project; amended only when a feature requires a tier or policy the strategy does not declare |
+| `/plan --ratify` | Reviews `origin: qualify, status: unratified` scenarios proposed by the previous `/qualify` run and either adopts them (`status: ratified`) into the active verification scope or rejects them with a recorded reason. The sole authority for scenario status transitions |
 
 ## 6. Summary of Guard Elements for `/plan`
 
@@ -278,6 +299,9 @@ graph TD
 5. **Research Report Linkage Guard**: Stores research reports in `knowledge/research_report_<topic>.md` and mandates direct markdown file links inside `phase-*.md` blueprints.
 6. **Version-Linked Implementation Map Guard**: Governs the creation of `implementation_map_v<version>.md` files named after the target software version, while strictly forbidding code execution during `/plan`.
 7. **Phase Details Hierarchy Guard**: Maintains simple flat `phase-*.md` blueprints by default, while dynamically creating `phase_details/` subfolders for multi-layer features using top-level phase docs as master governors.
+8. **Verification Design Authority Guard**: Establishes `/plan` as the sole author of Test Strategy, Verification Scope Delta, and Scenarios, and the sole authority for scenario ratification. Prohibits `/plan` from writing harness code or executing any test.
+9. **Scenario Identity Guard**: Enforces the immutable `SC-<feature-slug>-<nnn>` identifier scheme defined in [verification_taxonomy.md](../verification_taxonomy.md) §1. Identifiers are never reused and never renumbered; a materially changed behaviour retires its scenario and mints a new one.
+10. **Strategy Hoisting Guard**: Forbids per-feature re-litigation of project-durable testing decisions. Tooling, thresholds, and mocking policy are answered once in `TEST_STRATEGY.md`; `phase-5-test.md` references them and never restates them.
 8. **All-Documents Sandbox Guard**: Enforces that **ALL** documents generated during `/plan` (blueprints, subfolders, research reports, implementation maps) reside strictly within `agent-workspace/plans/<feature-name>/`.
 9. **System Identification & Blueprint Selection Guard**: Directs the Q&A session to identify affected system parts and select the exact subset of `phase-*.md` documents and subfolder structures to create.
 10. **Elastic Design Guard**: Governs iterative human decision turning points, design pivots, mid-planning sub-element discovery, and idea explorations during planning.

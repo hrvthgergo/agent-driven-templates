@@ -155,6 +155,7 @@ graph TD
 ---
 
 #### Step 3: Lightweight Scan & Path Verification (Node S3)
+* **Test Strategy Assertion**: As part of path verification, `/init` asserts the existence of `agent-workspace/tests/TEST_STRATEGY.md`. This is an **assertion only** — `/init` does not author it, since declaring test tiers and tooling is a stack decision reserved for `/plan`. If the file is absent, `/init` records the gap in `PROCESS_STATUS.md` and reports that `/plan --test-strategy` must run before `/implement` can satisfy its Dual Grounding preconditions. A missing strategy does not halt `/init`.
 *   **Description**: Verifies target workspace directory paths and auto-detects version control configs (`.git/config`, etc.) to confirm remote origin URLs.
 *   **Architectural & Implementation Reasoning**:
     *   *Simplicity & Non-Restructuring Rule*: `/init` strictly limits scanning to folder path verification and documentation linking into `phase-1-summary.md`. **No codebase restructuring, deep historical parsing, or refactoring is performed during `/init`**; all legacy codebase analysis is decoupled into `/process`.

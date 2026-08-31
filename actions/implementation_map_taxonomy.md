@@ -52,6 +52,13 @@ Lists all files to be created (`[NEW]`), modified (`[MODIFY]`), or refactored (`
 - **Step 3.A: Web UI View Presentation Components** (Can run concurrently with Step 3.B after Step 2)
 - **Step 3.B: Mobile App Presenter Views** (Can run concurrently with Step 3.A after Step 2)
 
+### Test Harness Stream (`codebase-qualify/`)
+- **Step 3.T: Cross-Layer Harness for Ratified Scenarios** (May run FIRST, ahead of all feature code)
+
+Every implementation map whose feature carries ratified scenarios MUST declare a Test Harness stream. It targets `codebase-qualify/src/`, building one test per ratified scenario listed in `phase-5-test.md`. Because `/plan` authors scenarios before any code exists, this stream MAY be scheduled first — producing a failing (red) harness that subsequent feature steps turn green. `codebase-qualify` is a peer layer of every other `codebase-*` repository and is built by `/implement` under identical rules.
+
+Each harness step MUST cite the scenario identifiers it satisfies, and each resulting test MUST carry the canonical `@scenario SC-<feature-slug>-<nnn>` token inside its declaration block, per [verification_taxonomy.md](./verification_taxonomy.md) §4. These citations are what the `/qualify` Node Q1 coverage gate resolves against; an uncited test contributes nothing to gate satisfaction.
+
 ---
 
 ## Block 3: Step-by-Step Task Sequence

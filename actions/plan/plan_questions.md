@@ -162,14 +162,60 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 
 ---
 
-### Q9: Phase 5 - Feature Verification Scope (If Executable Scope)
-* **Goal**: Determine which global test scenarios in `agent-workspace/tests/` need to be modified, added, or executed for this specific feature delta.
+### Q8b: Test Strategy Assertion & Amendment
+* **Goal**: Confirm the project-durable test strategy covers this feature, and amend it **once, project-wide** if it does not.
+* **Precondition**: Runs before Q9. A feature may not proceed to scenario authoring against an absent or insufficient strategy.
+* **Auto-Detection Scanning Rule**:
+  * Read `agent-workspace/tests/TEST_STRATEGY.md`. If absent, this feature triggers first-time authoring.
+  * Compare the tiers this feature requires against the tiers declared in strategy §1.
+  * Read `resource/existing_coverage.md` (if `/process` ran) to see what the legacy codebase already proves.
 * **Reframed Grill Prompt**:
-  > **Which global test scenarios need to be updated or created to verify this feature?**
-  > 1. Extend existing unit & integration test scenarios
-  > 2. Create new End-to-End (E2E) feature verification flow
-  > 3. Other / Free-text (Describe specific test deltas or coverage gaps)
-* **Resulting Action**: Populates `agent-workspace/plans/<feature-name>/phase-5-test.md` with the verification scope delta, and flags required updates to global `tests/`.
+  > **Test strategy status: `<present | absent>`. Declared tiers: `<list>`. Does this feature require anything not yet declared?**
+  > 1. Strategy is sufficient — proceed to scenario authoring
+  > 2. Amend the strategy (add a tier, tool, threshold, or mocking policy) — applied project-wide via `/plan --test-strategy`
+  > 3. Author the strategy for the first time (tiers, tooling per layer, thresholds, mocking policy, defect severity, definition of certified)
+  > 4. Other / Free-text (Describe the strategy gap)
+* **Boundary**: Tooling, mocking policy, and coverage thresholds are answered **here, once, for the project** — never per feature in `phase-5-test.md`. Per-feature deviation from the strategy is not permitted.
+* **Resulting Action**: Creates or amends `agent-workspace/tests/TEST_STRATEGY.md`.
+
+---
+
+### Q8c: Carry-Over Ratification
+* **Goal**: Adopt or reject scenarios proposed by the previous `/qualify` run.
+* **Auto-Detection Scanning Rule**:
+  * Read the prior cycle's `QUALIFICATION_REPORT.md` **Coverage Gap Proposals** block.
+  * List every scenario carrying `origin: qualify, status: unratified`.
+* **Reframed Grill Prompt**:
+  > **`<n>` unratified proposals carried over from the last qualification run:**
+  > `SC-<feature>-007 — <behaviour>`
+  >
+  > **How should each be handled?**
+  > 1. Adopt into this feature's verification scope (`status: ratified`)
+  > 2. Adopt but defer to a later feature scope
+  > 3. Reject with a recorded reason (`status: retired`)
+  > 4. Other / Free-text (Describe per-scenario disposition)
+* **Boundary**: `/plan --ratify` is the **sole authority** for scenario status transitions. No other action may alter a `status` field.
+* **Resulting Action**: Applies status transitions in `agent-workspace/tests/scenarios/`.
+
+---
+
+### Q9: Phase 5 - Verification Scope Delta & Scenario Authoring
+* **Goal**: Determine which behaviours this feature must prove, and author one ratified scenario per behaviour.
+* **Auto-Detection Scanning Rule**:
+  * Read `resource/existing_coverage.md` to establish what is already proven — `phase-5-test.md` is a **delta against existing coverage**, not a scope written from zero.
+  * Determine the next free ordinal in the `SC-<feature-slug>-<nnn>` sequence.
+* **Reframed Grill Prompt**:
+  > **Which behaviours must this feature prove? Each becomes a ratified scenario with a permanent identifier.**
+  > 1. Enumerate behaviours now (agent proposes a scenario set for review)
+  > 2. Derive them from the phase blueprints already drafted
+  > 3. Extend or supersede specific existing scenarios (identify by `SC-*` ID)
+  > 4. Other / Free-text (Describe the verification delta)
+* **Scenario Authoring Rules**:
+  * One file per scenario under `agent-workspace/tests/scenarios/`, named after its identifier.
+  * Identifiers follow `SC-<feature-slug>-<nnn>`, assigned in creation order, **never reused and never renumbered**.
+  * Scenarios authored here carry `origin: plan` and `status: ratified`.
+  * Body states behaviour in given/when/then form — **what must be true**, never **how it is proven**. Mechanism belongs to the harness, which `/implement` builds.
+* **Resulting Action**: Populates `phase-5-test.md` with the scope delta and the list of scenario IDs in scope; writes scenario files to `agent-workspace/tests/scenarios/`. That ID list is the binding input to the `/qualify` Node Q1 coverage gate.
 
 ---
 

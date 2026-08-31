@@ -48,6 +48,7 @@ graph TD
 ### Action 3: Structured Feature Planning (`/plan`)
 - **Architectural Bridge**: Once `/init` (and `/process`, if applicable) finishes successfully, the workspace is structured and ready for architectural design. This is where the `/plan` workflow begins.
 - **Downstream Agent Guidance**: All planning artifacts are stored inside `.agents/plans/<feature-name>/` to share complete, unambiguous context with AI agents executing downstream implementation (`/implement`), qualification (`/qualify`), and deployment (`/release`).
+- **Sole Verification Design Authority**: `/plan` owns three of the five verification artifacts — test strategy, verification scope delta, and scenarios — and is the only action permitted to assign `SC-*` identifiers or transition a scenario's ratification status. It writes no harness code and executes no tests.
 
 ### Action 4: Action Implementation (`/implement`)
 - **Execution Engine & Highest Complexity**: `/implement` is the most complex action in the framework lifecycle, responsible for physical code creation across `codebase-*` sub-repositories.
@@ -58,9 +59,10 @@ graph TD
 - **Token Economy Guard**: AST Code Graph (`src/<layer>/code_graph/`) and System Documentation (`docs/`) updates are optional add-ons (`--code-graph`, `--docs`) to prevent token bloat during routine code scaffolding.
 
 ### Action 5: Release Qualification (`/qualify`)
-- **Holistic Quality Assurance**: `/qualify` acts as the mandatory quality gate and defect attribution engine before any code can be packaged or deployed.
-- **Three-Pillar Testing Architecture**: Separates living test governance (`agent-workspace/tests/`), test execution code (`codebase-qualify/`), and environment orchestration (`codebase-devops/`).
-- **Comprehensive Lifecycle Supervision**: Supervises all testing tiers (layer unit tests, cross-layer contract suites, E2E browser flows, and regression catalogs), performs multi-layer defect attribution, and generates audit artifacts (`QUALIFICATION_REPORT.md` and `qualification_log.json`).
+- **Execution and Judgment Only**: `/qualify` is the mandatory quality gate and defect attribution engine before any code is packaged or deployed. It **executes and judges**; it does not design criteria and does not build test assets.
+- **Coverage Gate (Node Q1)**: Before any environment boots, `/qualify` resolves every ratified scenario in scope against the `@scenario` citations present in the harness. A missing proof **fails closed** and halts qualification — catching the one failure a green suite cannot report: a proof that was planned and never built.
+- **Three-Pillar Testing Architecture**: Separates verification governance (`agent-workspace/tests/`, owned by `/plan`), harness code (`codebase-qualify/`, built by `/implement`), and environment orchestration (`codebase-devops/`). `/qualify` executes across all three and owns none.
+- **Comprehensive Lifecycle Supervision**: Runs all testing tiers (layer unit tests, cross-layer contract suites, E2E browser flows, regression catalogs), performs multi-layer defect attribution, and generates audit artifacts (`QUALIFICATION_REPORT.md` and `qualification_log.json`).
 
 ### Action 6: Release & Operations (`/release`)
 - **Production Packaging & Deployment**: Builds production-ready Docker containers, generates Git release tags, opens pull requests, produces walkthrough summaries, and coordinates deployment handoffs.
@@ -75,27 +77,41 @@ A cornerstone of the Guards Framework is that **every action answers a fundament
 | :--- | :--- | :--- | :--- |
 | **`/init`** | **"Where and how do we work?"** | **System Administrator** | Bootstraps environments, sandboxes, layer skeletons, and tracking sheets. Makes zero code edits. |
 | **`/process`** | **"What already exists?"** | **Archaeologist & Analyst** | Ingests brownfield legacy code intact, stages reference docs, and generates code graphs. |
-| **`/plan`** | **"What should the system do?"** | **Architect & Designer** | Designs blueprints across 6 phases (including `phase-5-test.md`), analyzes system impact, and drafts implementation maps. |
-| **`/implement`** | **"Does my code work?"** | **Software Engineer** | Scaffolds code layer-by-layer and writes unit tests in `codebase-*/tests/` to verify local logic in isolation. |
-| **`/qualify`** | **"Does the whole system work?"** | **Quality Engineer (QA)** | Runs cross-layer integration, E2E scenarios, and regression suites (`codebase-qualify/` & `tests/`), attributes defects, and gates release. |
+| **`/plan`** | **"What should the system do, and what must be proven?"** | **Architect & Designer** | Designs blueprints across 6 phases, drafts implementation maps, and owns **all verification design**: `TEST_STRATEGY.md`, `phase-5-test.md`, ratified `SC-*` scenarios, and ratification authority. |
+| **`/implement`** | **"Does my code work?"** | **Software Engineer** | Scaffolds code layer-by-layer, writes unit tests in `codebase-*/tests/`, and **builds the cross-layer harness in `codebase-qualify/`** from ratified scenarios it did not author. |
+| **`/qualify`** | **"Does the whole system work?"** | **Quality Engineer (QA)** | Executes the qualification matrix against a booted environment, gates on scenario coverage, attributes defects across layers, renders the release verdict, and promotes ratified scenarios to the regression catalog. Authors no test assets. |
 | **`/release`** | **"Is the system delivered?"** | **Release & DevOps Operator** | Builds production Docker images, tags release versions, generates audit walkthroughs, and creates pull requests. |
 
 ### Clear Separation of Testing Concerns
 
-- **The Architect (`/plan`)** asks: *"What needs testing?"* $\rightarrow$ Defines requirements in `phase-5-test.md` and master scenarios in `agent-workspace/tests/`.
-- **The Developer (`/implement`)** asks: *"Does my code work?"* $\rightarrow$ Scaffolds unit tests co-located in `codebase-<layer>/tests/` to verify components in isolation.
-- **The Quality Engineer (`/qualify`)** asks: *"Does the whole system work?"* $\rightarrow$ Implements cross-layer harnesses in `codebase-qualify/`, boots environments, executes full matrices, isolates defect root causes, and certifies release readiness.
+- **The Architect (`/plan`)** asks: *"What must be proven?"* $\rightarrow$ Owns `TEST_STRATEGY.md` (project-durable), `phase-5-test.md` (per-feature scope delta), and the ratified scenarios in `agent-workspace/tests/scenarios/`, each carrying an immutable `SC-<feature-slug>-<nnn>` identifier. Sole ratification authority.
+- **The Developer (`/implement`)** asks: *"Does my code work?"* $\rightarrow$ Scaffolds unit tests co-located in `codebase-<layer>/tests/`, **and builds the cross-layer harness in `codebase-qualify/src/`** — one `@scenario`-cited test per ratified scenario. May build red-first.
+- **The Quality Engineer (`/qualify`)** asks: *"Does the whole system work?"* $\rightarrow$ Gates on coverage, boots environments, executes the full matrix, isolates defect root causes, and certifies. **Authors nothing.**
+
+> [!IMPORTANT]
+> Test artifacts receive the **same three-action lifecycle as production code**. `codebase-qualify` is a peer layer, not a special case. This preserves the framework's foundational principle at both levels: `/implement` builds the harness but does not render the verdict; `/qualify` renders the verdict but did not write the criteria. Independence rests on **criteria and verdict**, not authorship — the pass/fail bar is authored before implementation, by a different action, into version control, so it cannot be weakened without a visible diff against a `/plan`-owned artifact.
 
 ### Progressive Test Lifecycle & Feedback Loops
 
 Testing in the Guards Framework evolves dynamically across three coordinated stages:
 
-1. **Upfront Minimum Test Contract (`/plan`)**: During feature design, `/plan` defines the verification scope (`phase-5-test.md`) and scaffolds initial scenarios in `agent-workspace/tests/`. This gives `/implement` clear boundaries and unit test criteria before code is written.
-2. **Local Component Construction (`/implement`)**: The developer builds the feature code and implements unit tests inside `codebase-<layer>/tests/` to satisfy the `/plan` contract in isolation.
-3. **Adaptive Qualification & Extension (`/qualify`)**: Prior to release, `/qualify` executes the full matrix. It has the authority to:
-   - **Extend Test Coverage**: Design new test phases (e.g. stress, edge-case, E2E browser flows) in `agent-workspace/tests/` and implement them in `codebase-qualify/`.
-   - **Trigger Correction Loops**: Route code bugs back to `/implement` or architectural gaps back to `/plan`.
-   - **Promote Regressions**: Automatically promote verified feature tests into the master `agent-workspace/tests/regression/` catalog upon release certification.
+1. **Verification Design (`/plan`)**: `/plan` asserts or amends `TEST_STRATEGY.md`, ratifies carry-over proposals from the previous cycle, defines the verification scope (`phase-5-test.md`), and authors one ratified scenario per behaviour into `agent-workspace/tests/scenarios/`. Criteria therefore exist, in version control, before any code.
+2. **Local Component Construction (`/implement`)**: The developer builds feature code and unit tests inside `codebase-<layer>/tests/`.
+3. **Harness Construction (`/implement`)**: The cross-layer harness is built into `codebase-qualify/src/`, one `@scenario`-cited test per ratified scenario. Because criteria pre-exist, this stream MAY run first via `/implement --tests-only`, producing a red harness that feature scaffolding turns green.
+4. **Execution & Judgment (`/qualify`)**: Prior to release, `/qualify`:
+   - **Gates on Coverage**: resolves ratified scenario IDs against `@scenario` citations. A missing proof halts qualification **before** any environment boots.
+   - **Executes & Attributes**: runs the full matrix and isolates defect root causes by layer.
+   - **Triggers Correction Loops**: unproven scope → `/implement --tests-only`; code defects → `/implement`; architectural gaps → `/plan`.
+   - **Promotes Regressions**: promotes **ratified** feature scenarios into `agent-workspace/tests/regression/` upon certification. Unratified proposals are never promoted.
+
+### Defect Versus Coverage Gap
+
+`/qualify` retains full power to stop a bad release, but not to expand the bar it judges against:
+
+| Finding | `/qualify` authority |
+| :--- | :--- |
+| **Defect** — behaviour contradicts a ratified scenario, or is self-evidently broken | **Full.** Report, attribute, and **block the release**. No ratification required. |
+| **Coverage gap** — behaviour untested because no criterion was ever written | **Proposal only.** Author `origin: qualify, status: unratified`; may not certify against it. Input to the next `/plan --ratify`. |
 
 ---
 
@@ -237,6 +253,8 @@ The following tables provide the authoritative catalogue of all six fundamental 
 | `/plan --dry-run` | **Preview Mode** | Previews planned blueprint documents and decision records in memory without persisting files to disk. |
 | `/plan --research <topic>` | **Targeted Topic Research** | Executes deep-dive research on a specific architectural topic and generates `agent-workspace/plans/<feature-name>/knowledge/research_report_<topic>.md`. |
 | `/plan --map` | **Implementation Map Drafting** | Drafts a versioned implementation map (`agent-workspace/plans/<feature-name>/implementation_maps/implementation_map_v<version>.md`) at the conclusion of planning. |
+| `/plan --test-strategy` | **Project-Durable Strategy Authoring** | Authors or amends `agent-workspace/tests/TEST_STRATEGY.md` (tiers, tooling per layer, thresholds, mocking policy, defect severity, definition of certified). Run once per project; amended only when a feature needs an undeclared tier or policy. |
+| `/plan --ratify` | **Carry-Over Ratification** | Adopts or rejects `origin: qualify, status: unratified` scenarios proposed by the previous `/qualify` run. The sole authority for scenario status transitions. |
 
 ---
 
@@ -252,6 +270,7 @@ The following tables provide the authoritative catalogue of all six fundamental 
 | `/implement --auto` (or `--apply`) | **Continuous Scaffolding Mode** | Verifies map & test plan first, executes step-by-step scaffolding automatically while streaming progress log and syncing outcomes to `plans/`. |
 | `/implement --version <vX.Y.Z>` | **Version Map Target** | Explicitly targets a specific implementation map version (e.g., `implementation_map_v1.0.0.md`). |
 | `/implement --dry-run` | **Preview Mode** | Simulates step-by-step code scaffolding, displays file diff previews, and verifies code graph updates without altering files. |
+| `/implement --tests-only` | **Harness Stream Isolation** | Executes only the Test Harness stream against `codebase-qualify/`, building one `@scenario`-cited test per ratified in-scope scenario. Used for red-first construction and to close coverage gaps reported by a failed `/qualify` Node Q1 gate. |
 
 ---
 
@@ -267,6 +286,8 @@ The following tables provide the authoritative catalogue of all six fundamental 
 | `/qualify --regression` | **Regression Protection Tier** | Runs master regression catalog from `agent-workspace/tests/` to guarantee zero breakage of existing features. |
 | `/qualify --env <url>` | **Targeted Environment Run** | Executes test suites directly against an external running environment or staging URL. |
 | `/qualify --report-only` | **Audit Reporting Mode** | Synthesizes existing test execution outputs and generates `QUALIFICATION_REPORT.md` and `qualification_log.json`. |
+| `/qualify --propose` | **Gap Discovery Mode** | Executes the matrix and emits Coverage Gap Proposals (`origin: qualify, status: unratified`) without gating the release. |
+| `/qualify --force-gate "<justification>"` | **Gate Override (Provisional)** | Proceeds past a failed Node Q1 coverage gate. Records the justification, lists unproven IDs, and marks the run `certification: provisional` — which **cannot** unlock `/release`. The only override; no flag disables the gate. |
 
 ---
 

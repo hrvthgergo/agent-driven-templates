@@ -25,6 +25,7 @@ The `/process` action synthesizes three distinct knowledge sources to construct 
 Based on these three knowledge sources, `/process` executes four primary operations:
 - **In-Place Symlink Integration & Layer Mapping**: Creates symbolic links inside `agent-workspace/src/<layer>` pointing directly to existing legacy codebases (or optionally scaffolds new `codebase-*` sub-repositories if isolated file migration is requested), integrating them seamlessly into the workspace without duplicating files.
 - **Stage Non-Code Legacy Docs into Feature Resource Folder**: Copies non-code legacy documentation, supplementary assets, schemas, and diagrams into **`agent-workspace/plans/<feature-name>/resource/`** to serve as reference knowledge for the feature. (Global `docs/` is reserved for already implemented system capabilities, which will be updated later during `/implement`).
+- **Catalogue Existing Test Coverage**: Discovers and records the verification assets already present in the legacy codebase — suites, runners, fixtures, coverage configuration, and test-executing CI steps — into **`agent-workspace/plans/<feature-name>/resource/existing_coverage.md`**. This catalogue is a required input to `/plan`, whose `phase-5-test.md` is a delta against existing coverage rather than a scope written from zero. Legacy tests are never modified or moved.
 - **Link Previous Sources**: Registers and links external remote code repositories, Git submodules, and cloud documentation links into workspace project configurations and phase blueprints.
 - **Selective Blueprint Population & Workspace Code Graph Generation**: Fills out relevant phase blueprint documents in `agent-workspace/plans/<feature-name>/` (filling out all 6 is optional and strictly based on relevance of identified content) and generates a dedicated **Modular Code Graph Subfolder** (`agent-workspace/src/<layer>/code_graph/`) inside the workspace layer directory containing 2 distinct analytical blocks (Unordered Graph + Multi-Perspective Analysis).
 
@@ -65,6 +66,7 @@ graph TD
         B -->|"--auto (Automated)"| C1
         
         C1 --> C2["Stage Non-Code Docs into plans/<feature>/resource/"]
+        C2 --> C2b["Catalogue Existing Test Assets into resource/existing_coverage.md"]
         C2 --> D1["Optional Operations (--code-graph / --docs)"]
         D1 --> D2["Populate Relevant Phase Blueprints & Finalize PROCESS_STATUS.md"]
     end
@@ -104,6 +106,7 @@ graph TD
     *   **In-Place Symlink Mode (Default)**: Creates symbolic links under `agent-workspace/src/<layer>` pointing directly to target legacy codebase directories (e.g. `agent-workspace/src/engine` $\rightarrow$ `../../legacy-engine/src` or target path).
     *   **Scaffolding & Copy Mode (Optional)**: If isolated sub-repositories were requested, creates target `codebase-*` directories and copies source files intact without modifying code logic.
     *   **Resource Staging**: Copies non-code legacy documentation, supplementary assets, schemas, and diagrams into **`agent-workspace/plans/<feature-name>/resource/`** as reference knowledge for the feature.
+    *   **Existing Test Asset Discovery**: Catalogues the verification assets the legacy codebase already contains — test suites and their locations, test runners and frameworks in use, fixture and mock directories, coverage configuration, and any CI steps that execute tests. The catalogue is written to **`agent-workspace/plans/<feature-name>/resource/existing_coverage.md`**. Legacy tests are **read and catalogued, never modified or relocated** — the No-Restructuring Rule applies to test code exactly as it applies to production code.
 *   **Step 6: Selective Blueprint Population & Optional Maintenance Operations (Node S6)**:
     *   Selectively fills out relevant phase blueprint documents (`phase-1-summary.md` through `phase-6-operation.md` in `agent-workspace/plans/<feature-name>/`) based on identified legacy knowledge. *Filling out all 6 phase documents is optional and strictly based on relevance*.
     *   **OPTIONAL — Code Graph Generation (`--code-graph`)**: Executed only when explicitly requested. Generates a dedicated `agent-workspace/src/<layer>/code_graph/` subfolder per layer (containing `graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`) with Version Stamp Headers.

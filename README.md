@@ -80,23 +80,36 @@ Rather than viewing the development lifecycle merely as a checklist of activitie
 | :--- | :--- | :--- | :--- |
 | **`/init`** | **"Where do we work, what are the agent rules, where is the remote repository, and how do we track progress?"** | **System Administrator** | Bootstraps the `agent-workspace/` pure control plane (`.agents/`, `plans/`, `docs/`, `src/`), configures agentic rules/skills/hooks/MCPs, initializes Git branch, configures primary remote Git origin, and pushes initial documentation. Does NOT create `codebase-*/` sub-repositories, Dockerfiles, or make tech stack choices. |
 | **`/process`** | **"What already exists in the legacy codebase?"** | **Archaeologist & Analyst** | Ingests brownfield legacy code and documentation intact, discovers existing programming languages, frameworks, Docker configs, and CI/CD pipelines, categorizes historical assets into staging, and generates topological code graphs. |
-| **`/plan`** | **"What are we going to build, what layers are needed, what tech stack will we use, and how will operations/Docker run?"** | **Architect & Designer** | Designs system architecture, determines software layer scope and creates `codebase-*` sub-repositories with `src/` symlinks, selects programming languages & frameworks, plans Hybrid Docker & CI/CD in Phase 6 (Operations), and generates implementation maps. |
-| **`/implement`** | **"Does my code work in isolation?"** | **Software Engineer** | Scaffolds production code layer-by-layer in `codebase-*` repositories, writes co-located unit tests in `codebase-*/tests/`, and executes local isolation testing. |
-| **`/qualify`** | **"Does the integrated system work as a whole?"** | **Quality Engineer (QA)** | Implements cross-layer test harnesses in `codebase-qualify/`, boots multi-container environments via `codebase-devops/`, runs E2E regression suites, and gates release progression. |
+| **`/plan`** | **"What are we going to build, what layers are needed, what tech stack will we use, and how will operations/Docker run?"** | **Architect & Designer** | Designs system architecture, determines software layer scope and creates `codebase-*` sub-repositories with `src/` symlinks, selects programming languages & frameworks, plans Hybrid Docker & CI/CD in Phase 6 (Operations), generates implementation maps, and **owns all verification design: test strategy, verification scope, ratified scenarios, and ratification**. |
+| **`/implement`** | **"Does my code work in isolation?"** | **Software Engineer** | Scaffolds production code layer-by-layer in `codebase-*` repositories, writes co-located unit tests in `codebase-*/tests/`, **builds the cross-layer harness in `codebase-qualify/` from ratified scenarios**, and executes local isolation testing. |
+| **`/qualify`** | **"Does the integrated system work as a whole?"** | **Quality Engineer (QA)** | Executes the qualification matrix against a booted environment, gates on scenario coverage, attributes defects across layers, renders the release verdict, and promotes ratified scenarios to the regression catalog. Authors no test assets. |
 | **`/release`** | **"Is the system packaged and delivered?"** | **Release & DevOps Operator** | Builds production Docker images, tags versions, generates audit walkthroughs, creates PRs, and coordinates deployment handoffs. |
 
 ### The Separation of Testing Concerns
 
-Understanding these mindsets resolves the common confusion around where testing belongs:
+Understanding these mindsets resolves the common confusion around where testing belongs. Test artifacts receive **the same three-action lifecycle as production code** — `codebase-qualify` is a peer layer, not a special case:
 
-1. **The Architect (`/plan`) asks: *"What needs testing?"***
-   * Produces `phase-5-test.md` (the verification scope delta) and updates living test scenarios under `agent-workspace/tests/`. It defines *what* must be proven, not the code to prove it.
+1. **The Architect (`/plan`) asks: *"What must be proven?"***
+   * Owns three of the five verification artifacts: `TEST_STRATEGY.md` (project-durable tiers, tooling, thresholds), `phase-5-test.md` (the per-feature scope delta), and the ratified scenarios in `agent-workspace/tests/scenarios/`. Each scenario carries an immutable `SC-<feature-slug>-<nnn>` identifier assigned only here. `/plan` is also the sole ratification authority.
 2. **The Developer (`/implement`) asks: *"Does my code work?"***
-   * Scaffolds unit tests co-located inside `codebase-<layer>/tests/` alongside newly written code to verify components in isolation. It does not boot the whole system or run cross-layer suites.
+   * Scaffolds unit tests co-located inside `codebase-<layer>/tests/`, **and builds the cross-layer harness in `codebase-qualify/src/`** — one cited test per ratified scenario, tagged `@scenario SC-...`. Because scenarios exist before any code, the harness may be built red-first.
 3. **The Quality Engineer (`/qualify`) asks: *"Does the system work?"***
-   * Implements cross-layer test harnesses in `codebase-qualify/`, boots multi-service environments via `codebase-devops/`, executes the entire test matrix, performs root-cause defect attribution across layers, and signs off on release readiness.
+   * Gates on coverage, boots environments via `codebase-devops/`, executes the matrix, attributes defects across layers, and certifies. **It authors nothing.**
 
-This separation ensures that **the entity that writes the code is never the sole entity that certifies the system**, establishing true architectural rigor in autonomous agentic workflows.
+This separation preserves the framework's foundational principle — **the entity that builds a thing is never the sole entity that certifies it** — at both levels. `/implement` builds the harness but does not render the verdict; `/qualify` renders the verdict but did not write the criteria.
+
+> [!NOTE]
+> **What independence actually means here.** It rests on *criteria and verdict*, not authorship. The pass/fail bar is authored before implementation, by a different action, into version control — so it cannot be quietly weakened without producing a visible diff against a `/plan`-owned artifact. That is mechanically checkable; "a different entity typed the test" is not.
+
+### The Coverage Gate
+
+The framework's first fail-closed guard. Before `/qualify` boots anything, it resolves every ratified scenario in scope against the `@scenario` citations present in the harness:
+
+```
+missing := ratified_in_scope − implemented_citations
+```
+
+A non-empty result halts qualification **before execution**, and is attributed to `/implement`, not to the code under test. It catches the failure a green test suite cannot report: *a proof that was planned and never built.*
 
 ---
 
@@ -111,6 +124,7 @@ The framework is organized into two primary structural pillars:
    - **[Guard Process Handling Spec (`PROCESS_STATUS.md`)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process_handling.md)**: Release and feature governance with a concise 2-block status matrix and daily execution history log.
    - **[Multi-Repo & Docker Strategy Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/multi_repo_architecture.md)**: Hybrid Docker containerization, symlink mapping, and dynamic layer expansion.
    - **[Standard Folder Structure Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/folder_structure.md)**: Standard project folder layout, pure control plane architecture, and sub-repo symlink definitions.
+   - **[Verification Taxonomy & Scenario Identity](./actions/verification_taxonomy.md)**: The identity layer — scenario `SC-*` identifiers, ratification lifecycle, `TEST_STRATEGY.md` schema, harness citation grammar, and the coverage gate contract. Defines the five verification artifacts and their single owning actions.
    - **[Initialization Action (/init)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_action.md)**: Bootstrapping action specification, 3-block Q&A schema (`init_questions.md`), and initialization execution maps.
    - **[Legacy Code & Docs Processing (/process)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process/process_action.md)**: Standalone action specification for deep historical code analysis, documentation review, and refactoring proposals.
    - **[Interactive Planning (/plan)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/plan/plan_action.md)**: Interactive planning action specification, 6-phase blueprints, and implementation maps.
@@ -169,10 +183,10 @@ graph TD
 
 | Playbook | Target Scenario | Composed Action Sequence | Key Characteristics |
 | :--- | :--- | :--- | :--- |
-| **`hotfix`** | Production incidents & urgent hotfixes | Quick `/init` $ightarrow$ `/implement` $ightarrow$ Fast `/qualify` $ightarrow$ Expedited `/release` | Bypasses `/plan` and `/process`; inherits workspace environment configs; fast-tracks directly to execution. |
-| **`bugfix`** | Standard defect resolution | Quick `/init` $ightarrow$ Focused `/plan` (Summary + Qualification Plan) $ightarrow$ `/implement` $ightarrow$ `/qualify` | Focuses planning strictly on root-cause analysis and regression test contract definition. |
-| **`feature`** | Major new features & greenfield modules | Full `/init` $ightarrow$ 6-Phase `/plan` $ightarrow$ `/implement` $ightarrow$ `/qualify` $ightarrow$ `/release` | Full architectural governance, 6-phase blueprints, versioned implementation maps, and complete test suites. |
-| **`legacy_onboarding`** | Ingesting and restructuring existing code | Full `/init` $ightarrow$ `/process` $ightarrow$ Selective `/plan` | Read-only legacy analysis, layer restructuring, resource staging, and baseline blueprint population. |
+| **`hotfix`** | Production incidents & urgent hotfixes | Quick `/init` → `/implement` → Fast `/qualify` → Expedited `/release` | Bypasses `/plan` and `/process`; inherits workspace environment configs; fast-tracks directly to execution. |
+| **`bugfix`** | Standard defect resolution | Quick `/init` → Focused `/plan` (Summary + Qualification Plan) → `/implement` → `/qualify` | Focuses planning strictly on root-cause analysis and regression test contract definition. |
+| **`feature`** | Major new features & greenfield modules | Full `/init` → 6-Phase `/plan` → `/implement` → `/qualify` → `/release` | Full architectural governance, 6-phase blueprints, versioned implementation maps, and complete test suites. |
+| **`legacy_onboarding`** | Ingesting and restructuring existing code | Full `/init` → `/process` → Selective `/plan` | Read-only legacy analysis, layer restructuring, resource staging, and baseline blueprint population. |
 
 ---
 

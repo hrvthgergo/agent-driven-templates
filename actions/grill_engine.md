@@ -35,6 +35,7 @@ Each workflow step has a predefined set of questions stored as Markdown or JSON 
 - [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_questions.md): Project description, stack choices, container needs, and remote Git settings.
 - `plan_phase_2_questions.md`: UI colors, fonts, layout boundaries.
 - `plan_phase_3_questions.md`: DB types, data flow endpoints, third-party APIs.
+- `qualify_questions.md`: Environment target, tier selection, gate-failure routing, gap proposal review.
 - `implement_questions.md`: Micro-architectural choices, refactoring paths.
 
 ### B. State File (`.agents/plans/GRILL_STATUS.md`)
@@ -69,7 +70,12 @@ To build the foundation of the project, `/init` grills the user on:
 To populate the 5 planning phases, `/plan` runs mini-grill sessions:
 - **Phase 2 (Layout)**: Ask about color themes, responsive breakpoints, CSS files structure.
 - **Phase 3 (Engine)**: Ask about data persistence (SQL, NoSQL, or local files), schemas, and external APIs.
-- **Phase 4 (Verification)**: Ask about testing tools (e.g., pytest, vitest) and how to mock external calls.
+- **Phase 5 (Verification Scope)**: Ask which behaviours this feature must prove, and author a ratified scenario per behaviour. Do **not** ask about testing tools or mocking strategy here — those are project-durable decisions answered once in `agent-workspace/tests/TEST_STRATEGY.md` and amended only via `/plan --test-strategy`. Re-asking them per feature is what causes strategy to be silently re-litigated on every cycle.
+
+### 4. In `/qualify` (Execution Configuration Only)
+`/qualify` asks only *how to run*, never *what counts as correct* — certification criteria are inherited from `TEST_STRATEGY.md` and cannot be renegotiated at execution time:
+1. **Environment Target**: *"Boot an isolated container network, use a running local environment, or target a staging URL?"*
+2. **Gate Failure Routing**: asked only when the Node Q1 coverage gate fails — *"Return to `/implement --tests-only`, de-scope in `/plan`, or override with a provisional certification?"*
 
 ### 3. In `/implement` (Phase Implementation Maps)
 Before drafting the specific `implementation-map.md`, `/implement` confirms:

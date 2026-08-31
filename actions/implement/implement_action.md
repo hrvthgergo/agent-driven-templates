@@ -61,7 +61,11 @@ The `/implement` action is responsible for the **entire implementation of the pl
 > [!IMPORTANT]
 > **Dual Grounding Mandate**: Any code implementation MUST stand firmly on two mandatory foundational resources created or confirmed prior to code modification:
 > 1. **An `implementation_map` (`implementation_map_v<version>.md`)**: The version-linked execution roadmap detailing step-by-step file scaffolding, dependencies, and modification scopes (adhering to [implementation_map_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implementation_map_taxonomy.md)).
-> 2. **A Verification Scope (`phase-5-test.md`)**: The testing specification delta defining which global `tests/` must be updated, and which critical feature assertions must be verified.
+>    _Adhering to [implementation_map_taxonomy.md](../implementation_map_taxonomy.md), including its Test Harness stream._
+> 2. **A Verification Scope (`phase-5-test.md`)**: The scope delta declaring which scenario IDs this feature must prove.
+> 3. **A ratified Scenario Set (`agent-workspace/tests/scenarios/`)**: Every scenario ID listed in `phase-5-test.md` MUST resolve to a scenario file carrying `status: ratified`, per [verification_taxonomy.md](../verification_taxonomy.md) §6.
+>
+> The third leg is what makes the mandate checkable rather than advisory. A prose delta can be satisfied by assertion; a ratified scenario set can only be satisfied by resolution. If any listed ID is missing, unratified, or retired, `/implement` halts and returns the scope to `/plan` — it does not ratify, author, or amend scenarios itself.
 
 ---
 
@@ -93,6 +97,7 @@ Complex features consist of both dependent tasks and independent components. The
 
 * **Sequential Execution Steps**: Steps that possess hard linear dependencies (e.g., Data Layer Schema Migration → Repository Interface → Service Logic → API Controller). These MUST be executed in strict numerical sequence.
 * **Parallel Execution Steps**: Decoupled, independent steps that share no direct file dependencies (e.g., independent UI component views, standalone helper utilities, isolated DTO mappers). These MAY be executed in parallel or in flexible order.
+* **Test Harness Stream**: A dedicated parallel stream targeting `codebase-qualify/`, constructing the cross-layer harness that proves the feature's ratified scenarios. `codebase-qualify` is a peer layer of every other `codebase-*` repository, and its code is built here — by the Engineer — exactly like any other layer. See Section 3.I.
 
 ```mermaid
 graph TD
@@ -119,8 +124,9 @@ graph TD
 
 ### A. First-Action Verification & Dual Grounding Preconditions
 1. **First-Action Map Check**: Upon receiving an `/implement` request, the agent's very first action is inspecting `agent-workspace/plans/<feature-name>/implementation_maps/` to verify that the target `implementation_map_v<version>.md` exists and matches the user's requested release scope.
-2. **First-Action Verification Scope Check**: Simultaneously, the agent verifies `phase-5-test.md` to ensure all critical system feature assertions are present and linked to the implementation scope.
-3. **Precondition Resolution Gate**: If either the map or test plan is missing or ambiguous, the agent MUST immediately stop, present the situation to the user, and confirm the right map and test plan before proceeding.
+2. **First-Action Verification Scope Check**: Simultaneously, the agent verifies `phase-5-test.md` to ensure the verification scope delta is present and linked to the implementation scope.
+3. **First-Action Scenario Resolution Check**: Every scenario ID listed in `phase-5-test.md` is resolved against `agent-workspace/tests/scenarios/`. Each MUST exist and carry `status: ratified`. Unratified, retired, or missing scenarios fail this check.
+4. **Precondition Resolution Gate**: If the map, the scope delta, or any scenario resolution fails, the agent MUST immediately stop, present the situation to the user, and return the scope to `/plan`. `/implement` never resolves a failed precondition by authoring the missing artifact itself.
 
 ### B. Inner Agent Artifact & Version-Controlled `plans/` Synchronization Rule
 1. **Mandatory Document Sync**: Every conversation result, decision, design choice, or step outcome produced in an inner agent doc/Artifact (e.g. Antigravity internal `implementation_plan.md`, `walkthrough.md`) MUST be immediately written and synchronized into the corresponding version-controlled files inside `agent-workspace/plans/<feature-name>/`.
@@ -157,6 +163,21 @@ agent-workspace/src/<layer>/code_graph/→ Optional AST Code Graphs (Written onl
 agent-workspace/docs/                  → Optional Global System Docs (Written only when --docs enabled)
 agent-workspace/plans/<feature-name>/  → Version-Controlled Planning Artifacts & Decision Registry (Updated & Synced during /implement)
 ```
+
+### I. Test Harness Construction Authority (`codebase-qualify/`)
+`codebase-qualify` is a first-class software layer, not a special case. `/implement` therefore builds its code under the same rules that govern every other `codebase-*` repository.
+
+1. **Scope**: For each ratified scenario listed in `phase-5-test.md`, `/implement` scaffolds a corresponding cross-layer test in `codebase-qualify/src/`. Layer-local unit tests remain co-located in `codebase-<layer>/tests/`, unchanged.
+2. **Mandatory Citation**: Every harness test MUST declare the scenario it satisfies using the canonical language-invariant token defined in [verification_taxonomy.md](../verification_taxonomy.md) §4:
+   ```
+   @scenario SC-<feature-slug>-<nnn>
+   ```
+   The token appears within the test's own declaration block — decorator list, annotation, docstring, or the comment lines immediately preceding its definition. Placement is what binds the citation to a specific test rather than to a file. An uncited test is permitted but contributes nothing to gate satisfaction.
+3. **Red-First Option**: Because scenarios are authored by `/plan` and exist before any feature code, the harness stream MAY be executed first, via `/implement --tests-only`. This produces a failing (red) harness that subsequent feature scaffolding turns green — system-level test-first development, using the framework's existing ordering machinery.
+4. **Strict Boundary**: `/implement` builds harness code. It does **not** author scenarios, assign identifiers, amend `TEST_STRATEGY.md`, alter any `status` field, or execute the qualification matrix. Design belongs to `/plan`; execution and verdict belong to `/qualify`.
+
+> [!NOTE]
+> **Why the builder may write the harness.** Independence here rests on *criteria and verdict*, not authorship. The pass/fail bar is authored before implementation by a different action and held in version control; the verdict is rendered by a third. `/implement` implements criteria it did not write and cannot weaken without producing a visible diff against a `/plan`-owned artifact.
 
 ### G. Optional AST Code Graph Synchronization Rule (`--code-graph`)
 1. **Default State**: By default, `/implement` skips AST code graph updates to conserve token usage and minimize API overhead.
@@ -213,7 +234,7 @@ graph TD
 * **Storage Actions**: Reads `agent-workspace/plans/<feature-name>/PROCESS_STATUS.md`. Verifies Row 3 (`/plan`) is marked `Completed` or `In Progress`.
 
 #### Step 2: FIRST ACTION - Map & Verification Scope Check (Node S2)
-* **Description**: **As the very first action**, the agent checks `agent-workspace/plans/<feature-name>/implementation_maps/` and verifies that the request will be executed based on the **RIGHT `implementation_map_v<version>.md` AND Verification Scope (`phase-5-test.md`)**.
+* **Description**: **As the very first action**, the agent checks `agent-workspace/plans/<feature-name>/implementation_maps/` and verifies that the request will be executed based on the **RIGHT `implementation_map_v<version>.md`, the Verification Scope (`phase-5-test.md`), AND a fully resolved, ratified scenario set**. All three legs of the Dual Grounding Mandate are checked here; failure of any one halts execution.
 * **Reasoning**: Ensures zero ambiguity about target version, release scope, critical system assertions, or verification contracts before a single line of code is written.
 
 #### Step 3: Micro-Architecture Alignment Gate (Node S3)
@@ -251,6 +272,7 @@ graph TD
 | `/implement --auto` (or `/implement --apply`) | **Continuous Scaffolding Mode**. Executes step-by-step scaffolding automatically while streaming progress log and syncing outcomes |
 | `/implement --version <vX.Y.Z>` | **Version Map Target**. Explicitly targets a specific implementation map version (e.g., `implementation_map_v1.0.0.md`) |
 | `/implement --dry-run` | **Preview Mode**. Simulates step-by-step code scaffolding and displays file diff previews without altering files |
+| `/implement --tests-only` | **Harness Stream Isolation Mode**. Executes only the Test Harness stream against `codebase-qualify/`, building one cited test per ratified in-scope scenario. Used for red-first construction ahead of feature code, and to close coverage gaps reported by a failed `/qualify` Node Q1 gate |
 
 
 ---
@@ -260,7 +282,9 @@ graph TD
 - [ ] **FIRST ACTION**: Check `implementation_map_v<version>.md` and verify execution is based on the RIGHT map and Verification Scope (`phase-5-test.md`).
 - [ ] Confirm target release version, scope, `codebase-*` layers, and critical system assertions.
 - [ ] Parse implementation map steps enforcing the mandatory 4-part step schema (Requirement, Prerequisites, Actions, Verification).
-- [ ] Identify Sequential vs. Parallel execution streams before scaffolding.
+- [ ] Resolve every scenario ID in `phase-5-test.md` against `tests/scenarios/`; confirm all are `status: ratified`.
+- [ ] Identify Sequential, Parallel, and Test Harness execution streams before scaffolding.
+- [ ] Tag every harness test with `@scenario SC-<feature-slug>-<nnn>` inside its declaration block.
 - [ ] Execute visible step-by-step code scaffolding across target `codebase-*` projects in `src/`.
 - [ ] Run solution testing verifying critical system regression assertions AND new feature test specs.
 - [ ] **MANDATORY ARTIFACT SYNC**: Write and synchronize all decisions, plan updates, and conversation outcomes from inner agent docs (Artifacts) directly into version-controlled files under `agent-workspace/plans/<feature-name>/`.

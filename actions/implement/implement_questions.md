@@ -11,7 +11,7 @@ The primary objective of the `/implement` Grill-Me session is to align the devel
 To ensure system stability, code quality, and process governance, six unchangeable baselines are strictly enforced. **Zero questions are asked about these baselines during the `/implement` interview**:
 
 ### Baseline 1: Mandatory Dual Grounding Mandate
-* **Specification**: Code implementation MUST stand firmly on BOTH a valid `implementation_map_v<version>.md` (located under `agent-workspace/plans/<feature-name>/implementation_maps/`) AND a Verification Scope (`phase-5-test.md`). Source code modification without both prerequisites is strictly prohibited.
+* **Specification**: Code implementation MUST stand firmly on THREE resolved foundations: (1) a valid `implementation_map_v<version>.md` under `agent-workspace/plans/<feature-name>/implementation_maps/`, (2) a Verification Scope (`phase-5-test.md`), and (3) a fully resolved, **ratified** scenario set — every scenario ID listed in `phase-5-test.md` resolving to a file in `agent-workspace/tests/scenarios/` with `status: ratified`, per [verification_taxonomy.md](../verification_taxonomy.md) §6. Source code modification without all three is strictly prohibited. `/implement` never resolves a failed precondition by authoring the missing artifact itself; it returns the scope to `/plan`.
 
 ### Baseline 2: Strict Directory Separation & Production Cleanliness
 * **Specification**: Source code edits and unit test additions MUST take place inside `codebase-*` sub-repositories (or `src/`). Production source repositories must remain 100% clean of documentation maps; AST code graphs MUST be placed exclusively in `agent-workspace/src/<layer>/code_graph/`, and system documentation MUST be written to `agent-workspace/docs/`.
@@ -57,7 +57,7 @@ To ensure system stability, code quality, and process governance, six unchangeab
 
 ---
 
-## 3. Sequential Question List (Execution Order: Q1 to Q9)
+## 3. Sequential Question List (Execution Order: Q1 to Q9, incl. Q4b)
 
 ### Q1: Implementation Map & Target Version Selection
 * **Goal**: Confirm which version-named implementation map inside `agent-workspace/plans/<feature-name>/implementation_maps/` governs this execution.
@@ -76,7 +76,8 @@ To ensure system stability, code quality, and process governance, six unchangeab
 ### Q2: Verification Test Plan & Critical Feature Assertions Alignment
 * **Goal**: Confirm alignment with test specifications in `phase-5-test.md` and global test scenarios before code scaffolding.
 * **Auto-Detection Scanning Rule**:
-  * Read `agent-workspace/plans/<feature-name>/phase-5-test.md`. Check for verification scopes, updated test scenarios, and regression assertions.
+  * Read `agent-workspace/plans/<feature-name>/phase-5-test.md`. Extract the scenario ID list in scope.
+  * Resolve every extracted ID against `agent-workspace/tests/scenarios/<id>.md`. Confirm each exists and carries `status: ratified`. Report any missing, unratified, or retired ID as a **precondition failure**, not as a question.
 * **Reframed Grill Prompt**:
   > **How should unit and integration test specs from the Test Plan be scaffolded during implementation?**
   > 1. Scaffold unit test files alongside production code files per step
@@ -114,10 +115,24 @@ To ensure system stability, code quality, and process governance, six unchangeab
 
 ---
 
+### Q4b: Test Harness Construction Ordering (Red-First vs. Feature-First)
+* **Goal**: Determine when the Test Harness stream (`codebase-qualify/`) is executed relative to feature code.
+* **Auto-Detection Scanning Rule**:
+  * Inspect Block 2 of the target `implementation_map_v<version>.md` for a Test Harness stream and count the ratified scenarios it must cover.
+  * Check whether `codebase-qualify/src/` already contains tests citing any in-scope `SC-*` identifier.
+* **Reframed Grill Prompt**:
+  > **When should the cross-layer test harness for this feature be built?**
+  > 1. **Red-first (Recommended)** — Build the harness before feature code (`/implement --tests-only`), producing a failing suite that feature scaffolding turns green. Available because scenarios already exist from `/plan`.
+  > 2. Feature-first — Scaffold feature code first, then build the harness to match
+  > 3. Interleaved — Build each scenario's harness immediately after the step that satisfies it
+  > 4. Other / Free-text (Describe custom harness ordering)
+
+---
+
 ### Q5: Sequential vs. Parallel Stream Execution Order
 * **Goal**: Confirm how parallel execution streams defined in Block 2 of the implementation map should be handled.
 * **Auto-Detection Scanning Rule**:
-  * Inspect Block 2 of target `implementation_map_v<version>.md` for parallel tasks.
+  * Inspect Block 2 of target `implementation_map_v<version>.md` for parallel tasks, including the Test Harness stream targeting `codebase-qualify/`.
 * **Reframed Grill Prompt**:
   > **How should decoupled parallel execution tasks be sequenced?**
   > 1. Interleaved sequential execution (Execute Parallel Stream A, then Parallel Stream B)
@@ -172,6 +187,8 @@ To ensure system stability, code quality, and process governance, six unchangeab
   > **Review implementation configuration:**
   > * Target Map: `implementation_map_v<version>.md`
   > * Verification Scope: `phase-5-test.md`
+  > * Ratified Scenarios in Scope: `<n>` (all resolved)
+  > * Harness Ordering: `[Red-First | Feature-First | Interleaved]`
   > * Execution Mode: `[Plan-First | Continuous | Dry-Run]`
   > * Code Graph Updates: `[Enabled | Skipped (Default)]`
   > * System Docs Updates: `[Enabled | Skipped (Default)]`

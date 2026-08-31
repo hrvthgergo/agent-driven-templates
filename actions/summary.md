@@ -32,6 +32,7 @@ actions/
 ├── multi_repo_architecture.md          # [Tier 1] Multi-Repo & Symlink Architecture Spec
 ├── process_handling.md                 # [Tier 1] Process Guard & Matrix Spec
 ├── code_graph_taxonomy.md              # [Tier 1] Language-Specific Code Graph Taxonomy (Python, Go, JS)
+├── verification_taxonomy.md            # [Tier 1] Scenario Identity, Ratification & Coverage Gate Contract
 ├── implementation_map_taxonomy.md      # [Tier 1] Implementation Map Taxonomy & Schema Spec
 │
 ├── init/                               # [Tier 2] Initialization Workflow Subfolder
@@ -42,10 +43,10 @@ actions/
 │       ├── init_tests.md               # Greenfield & brownfield verification test suite
 │       └── guards/                     # Antigravity native primitives (rules, skills, hooks)
 │
-├── process/                            # [Tier 2] Legacy Processing Workflow Subfolder
-│   ├── process_action.md             # Detailed workflow specifications
-│   ├── process_implementation_map.md
-│   └── guards/                         # [Tier 3] Environment-Specific Guards
+├── process/                            # [Tier 2] Legacy Processing Action Subfolder
+│   ├── process_action.md               # Detailed action specifications
+│   ├── process_questions.md            # Scan & Q&A Grill schema (incl. existing coverage discovery)
+│   └── antigravity/                    # [Tier 3] Antigravity-specific resources & guards
 │
 ├── plan/                               # [Tier 2] Interactive Planning Subfolder
 │   ├── plan_action.md                # Detailed workflow specifications
@@ -64,9 +65,9 @@ actions/
 │       └── guards/                     # Antigravity native primitives (rules, skills, workflows, templates)
 │
 ├── qualify/                             # [Tier 2] Release Qualification Subfolder
-│   ├── qualify_action.md              # Detailed workflow specifications
-│   ├── qualify_implementation_map.md
-│   └── guards/                          # [Tier 3] Environment-Specific Guards
+│   ├── qualify_action.md                # Detailed action specifications (execution & verdict only)
+│   ├── qualify_questions.md             # Execution-configuration Q&A Grill schema
+│   └── antigravity/                     # [Tier 3] Antigravity-specific resources & guards
 │
 └── release/                            # [Tier 2] Release & Operations Subfolder
     ├── release_action.md             # Detailed workflow specifications
@@ -99,6 +100,7 @@ The framework utilizes shared components and architectural blueprints that opera
 - **[Multi-Repository Architecture Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/multi_repo_architecture.md)**: Specifications mapping out directory separation, symbolic link mapping, config dependency policies (Rule of Dependency), and the Hybrid Docker handling strategy to isolate UI and Engine components.
 - **[Standard Folder Structure Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/folder_structure.md)**: Standard directory layout, pure control plane (`agent-workspace/`), and sub-repository symlink structure across the framework lifecycle.
 - **[Guard Process Handling Spec (Process Guard)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process_handling.md)**: Specifications for release-governed process handling documents (`PROCESS_STATUS.md`), featuring a concise 2-block structure (Workflow Execution Matrix & Datestamped Daily History) and branch-based release initialization options.
+- **[Verification Taxonomy & Scenario Identity Spec](./verification_taxonomy.md)**: The identity layer of the framework — `SC-<feature-slug>-<nnn>` scenario identifiers, ratification lifecycle, `TEST_STRATEGY.md` schema, `@scenario` harness citation grammar, and the fail-closed coverage gate contract. Establishes the five verification artifacts and their single owning actions.
 - **[Implementation Map Taxonomy Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implementation_map_taxonomy.md)**: Standardized schema and structure for `implementation_map.md` documents, guiding agent-driven code scaffolding, dependency sequences, and verification command execution.
 - **Action Context Notification Law**: 3-layer notification standard (1-line turn headers, state node transition badges, and persistent disk header metadata) ensuring continuous developer awareness of active workflow state.
 
@@ -141,9 +143,9 @@ Every action in the Guards Framework operates under a distinct mindset and answe
 | :--- | :--- | :--- | :--- |
 | **`/init`** | **"Where do we work, what are the agent rules, where is the remote repository, and how do we track progress?"** | **System Administrator** | Bootstraps the `agent-workspace/` pure control plane (`.agents/`, `plans/`, `docs/`, `src/`), configures agentic rules/skills/hooks/MCPs, initializes Git branch, configures primary remote Git origin, and pushes initial documentation. Does NOT create `codebase-*/` sub-repositories, Dockerfiles, or make tech stack choices. |
 | **`/process`** | **"What already exists in the legacy codebase?"** | **Archaeologist & Analyst** | Ingests brownfield legacy code and documentation intact, discovers existing programming languages, frameworks, Docker configs, and CI/CD pipelines, categorizes historical assets into staging, and generates topological code graphs. |
-| **`/plan`** | **"What are we going to build, what layers are needed, what tech stack will we use, and how will operations/Docker run?"** | **Architect & Designer** | Designs system architecture, determines software layer scope and creates `codebase-*` sub-repositories with `src/` symlinks, selects programming languages & frameworks, plans Hybrid Docker & CI/CD in Phase 6 (Operations), and generates implementation maps. |
-| **`/implement`** | **"Does my code work in isolation?"** | **Software Engineer** | Scaffolds production code layer-by-layer in `codebase-*` repositories, writes co-located unit tests in `codebase-*/tests/`, and executes local isolation testing. |
-| **`/qualify`** | **"Does the integrated system work as a whole?"** | **Quality Engineer (QA)** | Implements cross-layer test harnesses in `codebase-qualify/`, boots multi-container environments via `codebase-devops/`, runs E2E regression suites, and gates release progression. |
+| **`/plan`** | **"What are we going to build, what layers are needed, what tech stack will we use, and how will operations/Docker run?"** | **Architect & Designer** | Designs system architecture, determines software layer scope and creates `codebase-*` sub-repositories with `src/` symlinks, selects programming languages & frameworks, plans Hybrid Docker & CI/CD in Phase 6 (Operations), generates implementation maps, and **owns all verification design: test strategy, verification scope, ratified scenarios, and ratification**. |
+| **`/implement`** | **"Does my code work in isolation?"** | **Software Engineer** | Scaffolds production code layer-by-layer in `codebase-*` repositories, writes co-located unit tests in `codebase-*/tests/`, **builds the cross-layer harness in `codebase-qualify/` from ratified scenarios**, and executes local isolation testing. |
+| **`/qualify`** | **"Does the integrated system work as a whole?"** | **Quality Engineer (QA)** | Executes the qualification matrix against a booted environment, gates on scenario coverage, attributes defects across layers, renders the release verdict, and promotes ratified scenarios to the regression catalog. Authors no test assets. |
 | **`/release`** | **"Is the system packaged and delivered?"** | **Release & DevOps Operator** | Builds production Docker images, tags versions, generates audit walkthroughs, creates PRs, and coordinates deployment handoffs. |
 
 ### Detailed Action Descriptions
@@ -182,9 +184,10 @@ Every action in the Guards Framework operates under a distinct mindset and answe
         *   [antigravity/implement_tests.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/antigravity/implement_tests.md) (Action implementation verification test specification)
 5.  **Release Qualification (`/qualify`)**
     *   *Path*: `actions/qualify/`
-    *   *Purpose*: Executes automated assertions, unit/integration/E2E test suites, regression checks, defect reporting, and issue tracking. Acts as the mandatory quality gate controlling release progression.
+    *   *Purpose*: **Execution and judgment only.** Gates on scenario coverage (Node Q1, fail-closed), boots multi-container environments via `codebase-devops/`, executes the full test matrix, attributes defects to responsible layers, renders the release verdict, and promotes ratified scenarios into the regression catalog. It authors no test assets: scenarios and strategy belong to `/plan`, harness code to `/implement`. Its single bounded exception is proposing an unratified coverage-gap scenario, which it may never certify against.
     *   *Key Files*:
         *   [qualify_action.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/qualify/qualify_action.md) (Universal Tier 2 baseline specification)
+        *   [qualify_questions.md](./qualify/qualify_questions.md) (Execution-configuration Q&A Grill schema)
 6.  **Release & Operations (/release)**
     *   *Path*: `actions/release/`
     *   *Purpose*: Manages Docker builds, operations deployment, walkthrough summaries, and pull requests.
