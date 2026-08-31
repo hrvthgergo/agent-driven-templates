@@ -13,11 +13,11 @@ This document defines the test scenario, mock execution sequence, real-world leg
 *   **Primary Objective**: Validate end-to-end execution of the `/process` action state machine (Nodes S0 $\rightarrow$ S6) using `ai-chronicle-hub` as test data, asserting:
     1. **Prerequisite Check (Node S0)**: Halts execution if `/init` has not been completed.
     2. **Read-Only Legacy Source Policy**: The cloned `ai-chronicle-hub` repository remains 100% untouched and unedited.
-    3. **In-Place Layer Symlinks & Non-Code Docs Staging (Node S5)**: Creates symbolic links inside `agent-workspace/src/layout` and `agent-workspace/src/engine` pointing to `ai-chronicle-hub/` without copying or duplicating files, while non-code documentation and assets are staged inside `agent-workspace/plans/initial/resource/`.
+    3. **In-Place Layer Symlinks & Non-Code Docs Staging (Node S5)**: Creates symbolic links inside `agent-workspace/src/layout` and `agent-workspace/src/engine` pointing to `ai-chronicle-hub/` without copying or duplicating files, while non-code documentation, assets, and existing test coverage catalog (`resource/existing_coverage.md`) are staged inside `agent-workspace/plans/initial/resource/`.
     4. **On-Demand Proposal Mode (`--proposal`)**: Validates that `/process --proposal` generates `agent-workspace/plans/initial/restructure-proposal.md` and pauses for confirmation, while standard `/process` applies layer symlinks directly.
     5. **By-Request Code Graph Generation (`--code-graph`)**: When `--code-graph` flag is used, scoped code graph folders are created inside `agent-workspace/src/<layer>/code_graph/` containing `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md` with Version Stamp Headers. Skipped by default without the flag.
     6. **Selective Blueprint & Status Synthesis (Node S6)**: Selectively populates relevant phase blueprints in `agent-workspace/plans/initial/` based on identified domain knowledge (filling out all 6 is optional) and updates `PROCESS_STATUS.md` Row 2.0 to `Completed`.
-    7. **Remote Synchronization (`--sync`)**: Validates that remote coworker commits are securely fetched and pulled, and local Code Graphs and Blueprints are structurally updated to mirror the new remote state.
+    7. **Remote Synchronization (`--sync` / `--pull`)**: Validates that when invoked with `--sync` (or `--pull`), the workflow bypasses interactive Q&A interview, securely fetches and pulls remote coworker commits, and structurally updates affected local Code Graphs and Blueprints to mirror the new remote state.
 
 ---
 
@@ -44,7 +44,7 @@ To ensure isolated, reproducible test runs, the test environment MUST execute th
 
 ### Mock User Input Sequence (Q1 to Q7 Prompts for `ai-chronicle-hub`)
 
-The test harness simulates an interactive user session responding to the sequential Q1–Q7 interview prompts enforced by `rules/process-grill.md`:
+The test harness simulates an interactive user session responding to the sequential interview prompts enforced by `rules/process-grill.md`:
 
 | Step | Prompt Title | Mock User Selection / Input | Asserted Output & Action |
 | :--- | :--- | :--- | :--- |
@@ -52,9 +52,10 @@ The test harness simulates an interactive user session responding to the sequent
 | **Q2** | **Omitted Remote Sources Audit** | Selected Option 1 (*No additional remote sources*). | Remote Git origin (`https://github.com/hrvthgergo/ai-chronicle-hub.git`) acknowledged and registered. |
 | **Q3** | **Legacy Source & Non-Code Docs Mapping** | Selected Option 1 (*Accept proposed automatic classification*). | UI components mapped to `agent-workspace/src/layout/`, backend logic to `agent-workspace/src/engine/`, non-code docs to `agent-workspace/plans/initial/resource/`. |
 | **Q4** | **Code Graph & Blueprint Scope** | Selected Option 1 (*Full Extraction & Workspace Code Graphs*). | Selective blueprint synthesis and `agent-workspace/src/<layer>/code_graph/` subfolder generation configured. |
+| **Q-COV** | **Existing Test Coverage Discovery** | Selected Option 1 (*Catalogue all discovered suites, runners, fixtures and coverage config into resource/existing_coverage.md*). | Test assets catalogued in `agent-workspace/plans/initial/resource/existing_coverage.md` as feature reference. |
 | **Q5** | **Execution Mode Selection** | Selected Option 1 (*Standard Interactive Mode*). | Summarizes planned symlink creation; developer confirms execution. |
 | **Q6** | **Integration Strategy** | Selected Option 1 (*In-Place Symlink Mode*). | Configures direct symlinks under `agent-workspace/src/` to existing codebase without file copies. |
-| **Q7** | **Summary Verification** | Displays Q1–Q6 recap matrix. Selected Option 1 (*Execute /process action*). | Execution authorized. Symbolic links created in `agent-workspace/src/`, non-code docs staged in `resource/`, blueprints populated. |
+| **Q7** | **Summary Verification** | Displays recap matrix. Selected Option 1 (*Execute /process action*). | Execution authorized. Symbolic links created in `agent-workspace/src/`, non-code docs and test coverage catalog staged in `resource/`, blueprints populated. |
 
 ---
 
@@ -69,11 +70,12 @@ Upon completion of Node S6, the test harness executes automated verification che
 | **S4** | Proposal Mode Flag (`--proposal`) | `agent-workspace/plans/initial/restructure-proposal.md` | File exists ONLY if `/process --proposal` was invoked; documents planned mappings and symlinks. |
 | **S5** | In-Place Layer Symlinks | `agent-workspace/src/layout`<br/>`agent-workspace/src/engine` | Symbolic links exist and point directly to corresponding directories in `/tmp/test-process/ai-chronicle-hub/` (`test -L` evaluates true). |
 | **S5** | Resource Staging | `agent-workspace/plans/initial/resource/` | Non-code legacy documentation, schemas, and assets staged in `resource/`. |
+| **S5** | Existing Coverage Catalog | `agent-workspace/plans/initial/resource/existing_coverage.md` | Discovered test suites, runners, fixtures, and configurations catalogued. |
 | **S6** | By-Default (No `--code-graph` flag) | `agent-workspace/src/layout/code_graph/` | Subfolder does **NOT** exist. Code Graph skipped by default to preserve token efficiency. |
 | **S6** | By-Request (`--code-graph` flag) | `agent-workspace/src/layout/code_graph/`<br/>`agent-workspace/src/engine/code_graph/` | Subfolders exist inside `src/<layer>/`. Each contains `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md` with Version Stamp Headers. |
 | **S6** | Phase Blueprints | `agent-workspace/plans/initial/phase-*.md` | Relevant phase blueprint documents populated with synthesized domain knowledge extracted from `ai-chronicle-hub` (filling out blueprints is selective/relevance-based). |
 | **S6** | Guard Process Status | `agent-workspace/plans/initial/PROCESS_STATUS.md` | Block 1 matrix contains Row 2.0 (`/process`) marked `Completed`. Block 2 daily history updated. |
-| **S6** | By-Request (`--sync` flag) | `agent-workspace/src/<layer>/code_graph/` | `git pull` is executed on linked origins; corresponding Code Graphs and Phase Blueprints reflect the remote changes. |
+| **S6** | By-Request (`--sync` flag) | `agent-workspace/src/<layer>/code_graph/` | Bypasses interactive interview; `git pull` executed on linked origins; corresponding Code Graphs and Phase Blueprints reflect remote changes. |
 
 ---
 
@@ -89,8 +91,8 @@ git init
 # 2. Clone test dataset repository (as part of test cycle setup)
 git clone https://github.com/hrvthgergo/ai-chronicle-hub.git /tmp/test-process/ai-chronicle-hub
 
-# 3. Calculate pre-test file checksums to assert read-only integrity
-find /tmp/test-process/ai-chronicle-hub -type f -exec md5sum {} + > /tmp/legacy-checksums.txt
+# 3. Calculate pre-test file checksums to assert read-only integrity (excluding .git)
+find /tmp/test-process/ai-chronicle-hub -type f -not -path "*/\.git/*" -exec md5sum {} + | sort > /tmp/legacy-checksums.txt
 
 # 4. Run /init first to satisfy prerequisite gate and link ai-chronicle-hub
 /init
@@ -102,22 +104,25 @@ find /tmp/test-process/ai-chronicle-hub -type f -exec md5sum {} + > /tmp/legacy-
 test -L agent-workspace/src/layout && echo "ASSERT PASS: agent-workspace/src/layout is a valid symlink"
 test -L agent-workspace/src/engine && echo "ASSERT PASS: agent-workspace/src/engine is a valid symlink"
 
-# 6b. Assert default behavior: code_graph skipped without --code-graph flag
+# 6b. Assert non-code docs and test coverage catalog staged in resource/
+test -d agent-workspace/plans/initial/resource && echo "ASSERT PASS: resource/ directory created"
+test -f agent-workspace/plans/initial/resource/existing_coverage.md && echo "ASSERT PASS: existing_coverage.md catalog present"
+
+# 6c. Assert default behavior: code_graph skipped without --code-graph flag
 test ! -d agent-workspace/src/layout/code_graph && echo "ASSERT PASS: code_graph skipped by default (token economy)"
 
-# 6c. Optionally: run with --code-graph flag to validate on-request generation
+# 6d. Optionally: run with --code-graph flag to validate on-request generation
 /process --code-graph
 test -f agent-workspace/src/layout/code_graph/graph.md && echo "ASSERT PASS: Workspace code_graph/graph.md present (on-request)"
 test -f agent-workspace/src/layout/code_graph/process_flow.md && echo "ASSERT PASS: Workspace code_graph/process_flow.md present (on-request)"
 test -f agent-workspace/src/layout/code_graph/data_flow.md && echo "ASSERT PASS: Workspace code_graph/data_flow.md present (on-request)"
 test -f agent-workspace/src/layout/code_graph/risk_analysis.md && echo "ASSERT PASS: Workspace code_graph/risk_analysis.md present (on-request)"
 
-# 6d. Assert legacy source code integrity (100% untouched)
-md5sum -c /tmp/legacy-checksums.txt && echo "ASSERT PASS: Original ai-chronicle-hub repo 100% untouched"
+# 6e. Assert legacy source code integrity (100% untouched)
+md5sum -c /tmp/legacy-checksums.txt > /dev/null && echo "ASSERT PASS: Original ai-chronicle-hub repo 100% untouched"
 
-# 6e. Optionally: run with --sync flag to validate remote fetch and graph alignment
-# Simulate remote change by modifying a file in origin, then running /process --sync
-# /process --sync
-# test -f agent-workspace/src/layout/code_graph/graph.md && echo "ASSERT PASS: Graph regenerated after sync"
+# 6f. Optionally: run with --sync flag to validate remote fetch and graph alignment
+/process --sync
+test -f agent-workspace/src/layout/code_graph/graph.md && echo "ASSERT PASS: Graph regenerated after sync"
 ```
 

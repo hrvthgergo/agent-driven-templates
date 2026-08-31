@@ -9,19 +9,27 @@ This skill provides step-by-step procedures for scaffolding source code in `code
 
 ---
 
-## 1. Incremental Code Scaffolding in `codebase-*`
+## 1. Incremental Code Scaffolding in `codebase-*` and `codebase-qualify/`
 
-1. Read target `implementation_map_v<version>.md` and `phase-5-test.md` from `agent-workspace/plans/<feature-name>/`.
-2. Parse planned tasks adhering to the mandatory 4-part step schema:
-   * **1. Requirement Fulfilled**: Map to corresponding `phase-*.md` section.
-   * **2. Prerequisites**: Verify preceding dependencies are satisfied.
-   * **3. Actions Taken**: Detail target sub-repositories (`codebase-<layer>/` or `src/<layer>/`) and files (`[NEW]`, `[MODIFY]`, `[REFACTOR]`).
-   * **4. Verification Fulfilled**: Execute unit and regression test commands.
-3. For each step in the implementation map:
+1. Read target `implementation_map_v<version>.md` and `phase-5-test.md` from `agent-workspace/plans/<feature-name>/`, and extract in-scope scenario IDs.
+2. Verify all in-scope scenarios carry `status: ratified` in `agent-workspace/tests/scenarios/`.
+3. Parse planned tasks adhering to the mandatory 4-part step schema:
+   * 1. **Requirement Fulfilled**: Map to corresponding `phase-*.md` section.
+   * 2. **Prerequisites**: Verify preceding dependencies are satisfied.
+   * 3. **Actions Taken**: Detail target sub-repositories (`codebase-<layer>/`, `codebase-qualify/`, or `src/<layer>/`) and files (`[NEW]`, `[MODIFY]`, `[REFACTOR]`).
+   * 4. **Verification Fulfilled**: Execute unit, regression, and harness test commands.
+4. **Test Harness Construction (`codebase-qualify/src/`)**:
+   * For each in-scope ratified scenario, scaffold a cross-layer test in `codebase-qualify/src/`.
+   * Inject the mandatory language-invariant citation token within the test declaration block:
+     ```
+     @scenario SC-<feature-slug>-<nnn>
+     ```
+   * When `--tests-only` is invoked, execute only this stream (red-first harness construction).
+5. **Feature Code & Layer-Local Tests (`codebase-*`)**:
    * Create new source files or edit existing code in target `codebase-*` sub-repositories.
-   * Create unit and integration test files alongside production code as specified in `phase-5-test.md`.
+   * Create layer-local unit and integration test files in `codebase-<layer>/tests/` alongside production code.
    * Enforce architectural boundaries and clean layer separation.
-   * Verify workspace symlinks in `agent-workspace/src/<layer>/`.
+   * Verify workspace symlinks in `agent-workspace/src/<layer>/` and `agent-workspace/src/qualify/`.
 
 ---
 

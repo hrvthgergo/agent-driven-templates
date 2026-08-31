@@ -1,11 +1,11 @@
 ---
 name: process
-description: Stateful execution playbook for brownfield legacy codebase discovery, in-place symlinking, non-code doc resource staging, on-demand proposal generation, modular code graph creation, and selective blueprint synthesis in Google Antigravity.
+description: Stateful execution playbook for brownfield legacy codebase discovery, in-place symlinking, non-code doc resource staging, on-demand proposal generation, modular code graph creation, selective blueprint synthesis, and remote origin synchronization in Google Antigravity.
 ---
 
 # Stateful Execution Playbook: `/process`
 
-This playbook governs the step-by-step execution of the `/process` action within Google Antigravity. It transitions through nodes **S0** to **S6**, enforcing prerequisite initialization checks, read-only legacy source integrity, Q&A interview gating, execution acceptance / on-demand proposal generation, in-place layer symlinking under `agent-workspace/src/<layer>`, non-code doc staging in `agent-workspace/plans/<branch_name>/resource/`, on-demand workspace Code Graph subfolder creation (`agent-workspace/src/<layer>/code_graph/`), selective phase blueprint population, and process status updates.
+This playbook governs the step-by-step execution of the `/process` action within Google Antigravity. It transitions through nodes **S0** to **S6**, enforcing prerequisite initialization checks, read-only legacy source integrity, Q&A interview gating, execution acceptance / on-demand proposal generation, in-place layer symlinking under `agent-workspace/src/<layer>`, non-code doc and test coverage staging in `agent-workspace/plans/<branch_name>/resource/`, on-demand workspace Code Graph subfolder creation (`agent-workspace/src/<layer>/code_graph/`), selective phase blueprint population, remote origin synchronization, and process status updates.
 
 ---
 
@@ -21,7 +21,7 @@ The `/process` action accepts the following CLI commands and flags:
 - `/process --code-graph`: By-Request Code Graph Mode. Parses legacy code and generates modular `agent-workspace/src/<layer>/code_graph/` subfolders (`graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`) with Version Stamp Headers. Skipped by default to preserve token efficiency.
 - `/process --docs`: By-Request Documentation Mode. Promotes non-code legacy documentation from `resource/` into `agent-workspace/docs/` with Version Stamp Headers. Skipped by default.
 - `/process --full-sync`: Full Synchronization Mode. Executes core integration, generates Code Graphs, and updates system documentation in one pass.
-- `/process --sync` (or `--pull`): Remote Synchronization Mode. Fetches remote commits, resolves conflicts, and automatically updates local Code Graphs and phase blueprints.
+- `/process --sync` (or `--pull`): Remote Synchronization Mode. Bypasses interactive interview, fetches remote commits, analyzes diffs, resolves conflicts, and automatically updates local Code Graphs and phase blueprints.
 
 ---
 
@@ -29,13 +29,14 @@ The `/process` action accepts the following CLI commands and flags:
 
 ```mermaid
 graph TD
-    S0[Node S0: Prerequisite /init Execution Check] -->|Verified| S1[Node S1: Inspect /init Metadata & Legacy Folders]
+    S0[Node S0: Prerequisite /init Execution Check] -->|Verified (Standard / Proposal)| S1[Node S1: Inspect /init Metadata & Legacy Folders]
+    S0 -->|Verified (--sync / --pull)| S6[Node S6: Remote Synchronization & Maintenance Operations]
     S0 -->|Missing / Uncompleted| Halt[Halt & Prompt User to Run /init]
     S1 -->|Baseline Metadata Read| S2[Node S2: Audit Omitted Remotes & Submodules]
     S2 -->|Remotes Verified| S3[Node S3: Q&A Grill Gate]
-    S3 -->|Q1-Q7 Verified & GRILL_STATUS.md Written| S4[Node S4: Execution Acceptance & Proposal Gate]
+    S3 -->|Q1-Q7 / Q-COV Verified & GRILL_STATUS.md Written| S4[Node S4: Execution Acceptance & Proposal Gate]
     S4 -->|Approved / --auto| S5[Node S5: Execute Layer Symlinks & Resource Staging]
-    S5 -->|Symlinks & Docs Staged| S6[Node S6: Selective Blueprints & Maintenance Operations]
+    S5 -->|Symlinks & Docs Staged| S6
 ```
 
 ---
@@ -75,22 +76,26 @@ graph TD
 
 ### Node S3: Q&A Grill Gate
 
-1. **Invoke Rule Guard**:
+1. **Invocation Check**:
+   - If invoked with `--sync` (or `--pull`), bypass Nodes S1–S5 entirely and transition immediately to Node S6 (Remote Synchronization).
+
+2. **Invoke Rule Guard**:
    - Load and execute `rules/process-grill.md`.
 
-2. **Sequential Q1–Q7 Interview Execution**:
+3. **Sequential Interview Execution**:
    - Prompt user sequentially through:
      * **Q1**: `/init` Baseline Review (linked legacy folders & project purpose).
      * **Q2**: Omitted Remote Sources Audit (remotes, submodules, external doc URLs).
      * **Q3**: Legacy Source & Non-Code Docs Mapping Strategy (code to `agent-workspace/src/<layer>/`, non-code docs to `agent-workspace/plans/<branch_name>/resource/`).
      * **Q4**: Workspace Code Graphs & Blueprint Extraction Scope (selective blueprint population).
+     * **Q-COV**: Existing Test Coverage Discovery (catalogue suites, runners, fixtures into `resource/existing_coverage.md`).
      * **Q5**: Workflow Execution Mode & Proposal Generation (Standard vs Proposal `--proposal` vs Immediate `--auto`).
      * **Q6**: Integration Strategy (In-Place Symlink Mode vs Scaffolding Migration).
      * **Q7**: Q&A Summary Verification & Reflection.
    - Enforce **Neutral Prompting Law**: List options neutrally with zero `[Recommended]` tags and a mandatory final `Other / Free-text (...)` option.
 
-3. **Permanent Audit Log Persistence**:
-   - Write full transcript of Q1–Q7 questions, choices, and text inputs to `agent-workspace/plans/<branch_name>/GRILL_STATUS.md`.
+4. **Permanent Audit Log Persistence**:
+   - Write full transcript of questions, choices, and text inputs to `agent-workspace/plans/<branch_name>/GRILL_STATUS.md`.
 
 ---
 
@@ -119,7 +124,7 @@ graph TD
 2. **Execute In-Place Symlinks & Resource Staging**:
    - **In-Place Symlink Mode (Default)**: Create relative symbolic links inside `agent-workspace/src/<layer>` pointing directly to target legacy codebase directories (e.g. `agent-workspace/src/layout` $\rightarrow$ `../../legacy-ui`, `agent-workspace/src/engine` $\rightarrow$ `../../legacy-core`).
    - **Scaffolding & Copy Mode (Optional)**: If isolated sub-repositories were requested, scaffold `codebase-*` sub-repositories and copy source files intact without modifying code logic.
-   - **Non-Code Documentation Staging**: Copy non-code legacy documentation, supplementary assets, schemas, and diagrams into **`agent-workspace/plans/<branch_name>/resource/`** as feature reference knowledge. (Global `docs/` is reserved for already implemented system capabilities; relevant docs will be linked/promoted into `docs/` later during `/implement`).
+   - **Non-Code Documentation & Coverage Staging**: Copy non-code legacy documentation, supplementary assets, schemas, and diagrams into **`agent-workspace/plans/<branch_name>/resource/`**, and stage discovered test suites and runners into `agent-workspace/plans/<branch_name>/resource/existing_coverage.md` as feature reference knowledge. (Global `docs/` is reserved for already implemented system capabilities; relevant docs will be linked/promoted into `docs/` later during `/implement`).
    - **Strict Non-Rewriting Rule**: Do NOT modify, rewrite, or refactor code logic or file contents.
 
 3. **Read-Only Verification Check**:
@@ -136,7 +141,7 @@ graph TD
 2. **Optional Operations (By-Request Flags)**:
    - **Code Graph Generation (`--code-graph`)**: If requested, scaffold `agent-workspace/src/<layer>/code_graph/` subfolders containing `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md` with Version Stamp Headers.
    - **System Documentation Update (`--docs`)**: If requested, synthesize and promote non-code legacy documentation from `resource/` into `agent-workspace/docs/` with Version Stamp Headers.
-   - **Remote Synchronization (`--sync` / `--pull`)**: If requested, execute `git pull` on linked origins, detect structural diffs, and dynamically re-align local Code Graphs and phase blueprints to match the new remote state.
+   - **Remote Synchronization (`--sync` / `--pull`)**: If requested, execute Procedure 4 in `skills/process-migrator/SKILL.md` (fetch/pull remote coworker commits, analyze structural diffs, resolve conflicts, and dynamically re-align affected local Code Graphs and phase blueprints).
 
 3. **Update Process Status**:
    - Update `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md`. Mark Row 2.0 (`/process`) as `Completed` in Block 1 and append datestamped entry in Block 2.

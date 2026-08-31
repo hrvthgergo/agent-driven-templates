@@ -211,7 +211,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   * Detect CI steps that execute tests in `.github/workflows/` or `.gitlab-ci.yml`.
 * **Reframed Grill Prompt**:
   > **Existing test assets detected: `<n>` suites across `<m>` directories, runner(s): `<list>`. How should they be catalogued?**
-  > 1. **(Recommended)** Catalogue all discovered suites, runners, fixtures and coverage config into `resource/existing_coverage.md`
+  > 1. Catalogue all discovered suites, runners, fixtures and coverage config into `resource/existing_coverage.md`
   > 2. Catalogue only suites relevant to the active feature scope
   > 3. Skip test discovery (no existing coverage, or greenfield feature)
   > 4. Other / Free-text (Describe custom coverage discovery scope)

@@ -1,11 +1,11 @@
 ---
 name: process-migrator
-description: Antigravity skill instructing the agent on brownfield legacy source analysis, in-place layer symlink creation under agent-workspace/src/, non-code doc resource staging, workspace-scoped Code Graph subfolder creation, and selective phase blueprint population.
+description: Antigravity skill instructing the agent on brownfield legacy source analysis, in-place layer symlink creation under agent-workspace/src/, non-code doc resource staging, test coverage cataloguing, workspace-scoped Code Graph subfolder creation, selective phase blueprint population, and remote origin synchronization.
 ---
 
 # Action Skill: Legacy Migration & Code Graph Generation (`process-migrator`)
 
-This skill package defines the exact procedural instructions for analyzing brownfield legacy codebases, creating in-place symbolic links inside `agent-workspace/src/<layer>` (or optional sub-repository scaffolding), staging non-code legacy documentation in `agent-workspace/plans/<branch_name>/resource/`, building modular workspace Code Graph subfolders (`agent-workspace/src/<layer>/code_graph/`), and selectively synthesizing phase blueprints during the `/process` action in Google Antigravity.
+This skill package defines the exact procedural instructions for analyzing brownfield legacy codebases, creating in-place symbolic links inside `agent-workspace/src/<layer>` (or optional sub-repository scaffolding), staging non-code legacy documentation and test coverage catalogs in `agent-workspace/plans/<branch_name>/resource/`, building modular workspace Code Graph subfolders (`agent-workspace/src/<layer>/code_graph/`), selectively synthesizing phase blueprints, and executing remote origin synchronization during the `/process` action in Google Antigravity.
 
 ---
 
@@ -22,9 +22,9 @@ When executing legacy codebase integration, the agent MUST adhere to the followi
    - For each classified legacy codebase folder (e.g. UI $\rightarrow$ `layout`, Server/API $\rightarrow$ `engine`), register a relative symbolic link inside `agent-workspace/src/<layer>` pointing directly to the corresponding legacy path (e.g., `ln -s ../../legacy-app/src agent-workspace/src/layout`).
    - If isolated scaffolding is requested instead, scaffold the `codebase-*` sub-repository structure and copy files intact without code modifications.
 
-3. **Feature Plan Subfolders Staging**:
-   - Copy non-code legacy documentation, supplementary assets, schemas, and diagrams into **`agent-workspace/plans/<branch_name>/resource/`**, research reports into `knowledge/`, version-named implementation maps into `implementation_maps/`, and multi-layer sub-element blueprints into `phase_details/` as feature reference knowledge. (Global `docs/` is reserved for already implemented system capabilities; relevant docs will be linked/promoted into `docs/` later during `/implement`).
-   - **Strict Non-Rewriting Rule**: Do NOT modify, refactor, or rewrite source code logic, variable names, or syntax.
+3. **Feature Plan Subfolders & Test Coverage Staging**:
+   - Copy non-code legacy documentation, supplementary assets, schemas, and diagrams into **`agent-workspace/plans/<branch_name>/resource/`**, research reports into `knowledge/`, version-named implementation maps into `implementation_maps/`, multi-layer sub-element blueprints into `phase_details/`, and stage discovered test suites, runners, fixtures, and configs into **`agent-workspace/plans/<branch_name>/resource/existing_coverage.md`** as feature reference knowledge. (Global `docs/` is reserved for already implemented system capabilities; relevant docs will be linked/promoted into `docs/` later during `/implement`).
+   - **Strict Non-Rewriting Rule**: Do NOT modify, refactor, or rewrite source code logic, variable names, or syntax. Legacy test suites are catalogued only and never edited or refactored.
 
 ---
 

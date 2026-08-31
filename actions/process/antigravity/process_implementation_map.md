@@ -32,6 +32,8 @@ The implementation plan directly realizes the following design blueprints and al
 | **On-Demand Proposal Mode (`--proposal`)** | [process_action.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process/process_action.md) & [process_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process/process_questions.md) | Workflow & Template Primitives | `workflows/process.md` (Node S4) & `templates/restructure-proposal.md` |
 | **Modular Workspace Code Graph Subfolders (`--code-graph`)** | [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/folder_structure.md) & [code_graph_taxonomy.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/code_graph_taxonomy.md) | Skill & Template Primitives | `skills/process-migrator/SKILL.md` & `templates/code_graph/` |
 | **Selective Blueprints & Governance Synthesis** | [process_action.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process/process_action.md) | Template & Workflow Primitives | `agent-workspace/plans/<branch_name>/phase-*.md` & `PROCESS_STATUS.md` |
+| **Remote Origin Synchronization (`--sync`)** | [process_action.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process/process_action.md) & [user_guide.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/user_guide.md) | Workflow & Skill Primitives | `workflows/process.md` (Node S6 & `--sync` fast-path) & `skills/process-migrator/SKILL.md` (Procedure 4) |
+| **Existing Test Coverage Discovery (`Q-COV`)** | [process_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process/process_questions.md) | Rule & Skill Primitives | `rules/process-grill.md` (Q-COV) & `skills/process-migrator/SKILL.md` |
 | **Action Context Notification Law** | [user_guide.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/user_guide.md) | Rule, Workflow & Template Primitives | `rules/process-grill.md`, `workflows/process.md` & `templates/PROCESS_STATUS.md` |
 
 ---
@@ -68,12 +70,12 @@ The implementation plan directly realizes the following design blueprints and al
 
 *   **List of Actions**:
     1.  Create `actions/process/antigravity/guards/workflows/process.md`.
-    2.  Define YAML frontmatter (`name: process`, `description: Brownfield legacy code discovery, in-place symlinking, and knowledge ingestion playbook for Antigravity`).
+    2.  Define YAML frontmatter (`name: process`, `description: Stateful execution playbook for brownfield legacy codebase discovery, in-place symlinking, non-code doc resource staging, on-demand proposal generation, modular code graph creation, selective blueprint synthesis, and remote origin synchronization in Google Antigravity.`).
     3.  Implement the 7-node state machine execution flow (Nodes S0 to S6):
         *   **Node S0 (Prerequisite `/init` Check)**: Inspects `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md`. If missing or `/init` marked `Not Started`, halts immediately and instructs user to run `/init` first.
         *   **Node S1 (Inspect `/init` Metadata & Legacy Folders)**: Reads linked legacy folders, tech stack, and project goals from `agent-workspace/plans/<branch_name>/phase-1-summary.md`.
         *   **Node S2 (Audit Omitted Remotes & Submodules)**: Scans `.git/config`, `.gitmodules`, and documentation links across linked legacy folders.
-        *   **Node S3 (Q&A Grill Gate)**: Invokes interactive interview adhering to `rules/process-grill.md`.
+        *   **Node S3 (Q&A Grill Gate)**: Invokes interactive interview adhering to `rules/process-grill.md`. *(Bypassed when invoked with `--sync` / `--pull`)*.
         *   **Node S4 (Execution Acceptance & Proposal Gate)**:
             *   **Proposal Mode (`--proposal`)**: Generates `agent-workspace/plans/<branch_name>/restructure-proposal.md` and pauses for developer review before applying changes.
             *   **Standard Interactive Mode**: Summarizes planned layer symlink creation and doc staging, prompting for execution confirmation.
@@ -81,12 +83,12 @@ The implementation plan directly realizes the following design blueprints and al
         *   **Node S5 (Execute Layer Symlinks & Resource Staging)**:
             *   **In-Place Symlink Mode (Default)**: Invokes `skills/process-migrator/SKILL.md` to create symbolic links under `agent-workspace/src/<layer>` pointing directly to existing legacy codebase directories.
             *   **Scaffolding & Copy Mode (Optional)**: If requested, scaffolds new `codebase-*` sub-repositories and copies source files intact.
-            *   **Resource Staging**: Stages non-code documentation, schemas, and diagrams into `agent-workspace/plans/<feature-name>/resource/`.
+            *   **Resource Staging**: Stages non-code documentation, schemas, existing test coverage catalogs (`resource/existing_coverage.md`), and diagrams into `agent-workspace/plans/<feature-name>/resource/`.
         *   **Node S6 (Selective Blueprints & Maintenance Operations)**:
             *   Selectively populates relevant phase blueprints in `agent-workspace/plans/<feature-name>/` based on discovered legacy domain knowledge.
             *   **By-request only (`--code-graph`)**: Generates `agent-workspace/src/<layer>/code_graph/` subfolders (`graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`) with Version Stamp Headers.
             *   **By-request only (`--docs`)**: Promotes non-code docs from `resource/` to `agent-workspace/docs/` with Version Stamp Headers.
-            *   **By-request only (`--sync` / `--pull`)**: Executes `git pull`, detects diffs, and dynamically updates Code Graphs and phase blueprints.
+            *   **By-request only (`--sync` / `--pull`)**: Executes remote synchronization fast-path (bypasses Nodes S1–S5, executes `git fetch` and `git pull`, analyzes structural diffs, incrementally updates affected Code Graphs and phase blueprints).
             *   Updates `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` Row 2.0 to `Completed`.
     4.  Implement CLI parameter handling:
         *   `/process`: Default interactive execution (Q&A grill, creates layer symlinks in `agent-workspace/src/<layer>`, stages docs in `resource/`).
@@ -97,7 +99,7 @@ The implementation plan directly realizes the following design blueprints and al
         *   `/process --code-graph`: By-Request Code Graph Mode (generates `agent-workspace/src/<layer>/code_graph/` subfolders).
         *   `/process --docs`: By-Request Documentation Mode (promotes docs to `agent-workspace/docs/`).
         *   `/process --full-sync`: Full Synchronization Mode (executes integration, Code Graph generation, and documentation promotion in one pass).
-        *   `/process --sync` (or `--pull`): Remote Synchronization Mode (pulls remote coworker commits, identifies diffs, and updates Code Graphs and blueprints).
+        *   `/process --sync` (or `--pull`): Remote Synchronization Mode (bypasses interactive interview, pulls remote coworker commits, identifies diffs, and updates affected Code Graphs and blueprints).
 
 ---
 
@@ -108,9 +110,9 @@ The implementation plan directly realizes the following design blueprints and al
     2.  Encode **Unchangeable Baselines**:
         *   *Baseline 1*: Read-Only Legacy Source Rule (no code logic rewriting during `/process`).
         *   *Baseline 2*: Workspace Layer Alignment (`agent-workspace/src/<layer>` target symlinks).
-    3.  Encode **Prompting Law**: Neutral choice lists with mandatory `Other / Free-text (...)` option; forbid `[Recommended]` labels.
-    4.  Encode **Sequential Q1 to Q7 Prompts**:
-        *   Q1 (Baseline Review), Q2 (Omitted Remotes Audit), Q3 (Legacy Source & Non-Code Docs Mapping), Q4 (Workspace Code Graphs & Blueprint Extraction Scope), Q5 (Execution Mode & Proposal Generation), Q6 (Integration Strategy: In-Place Symlink vs Scaffolding), and Q7 (Summary Verification).
+    3.  Encode **Prompting Law**: Neutral choice lists with mandatory `Other / Free-text (...)` option; strictly forbid `[Recommended]` labels.
+    4.  Encode **Sequential Prompts**:
+        *   Q1 (Baseline Review), Q2 (Omitted Remotes Audit), Q3 (Legacy Source & Non-Code Docs Mapping), Q4 (Workspace Code Graphs & Blueprint Extraction Scope), Q-COV (Existing Test Coverage Discovery), Q5 (Execution Mode & Proposal Generation), Q6 (Integration Strategy: In-Place Symlink vs Scaffolding), and Q7 (Summary Verification).
 
 ---
 
@@ -130,11 +132,12 @@ The implementation plan directly realizes the following design blueprints and al
 
 *   **List of Actions**:
     1.  Create `actions/process/antigravity/guards/skills/process-migrator/SKILL.md`.
-    2.  Define **In-Place Symlink Procedures**: Create relative symbolic links under `agent-workspace/src/<layer>` pointing to target legacy directories without moving files or duplicating storage.
-    3.  Define **Resource Staging Procedures**: Copy non-code legacy documentation, supplementary assets, schemas, and diagrams into `agent-workspace/plans/<feature-name>/resource/`.
-    4.  Define **Workspace Code Graph Generation Procedures**: Parse code structures and write `agent-workspace/src/<layer>/code_graph/` subfolders (`graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`) with Version Stamp Headers.
-    5.  Define **Selective Blueprint Population Procedures**: Synthesize extracted legacy metadata selectively into `agent-workspace/plans/<feature-name>/phase-*.md` based on relevance.
-    6.  Define **Synchronization Procedures**: Handle `git pull`, detect merge conflicts, and perform incremental/diff-based updates to Code Graphs.
+    2.  Define YAML frontmatter (`name: process-migrator`, `description: Antigravity skill instructing the agent on brownfield legacy source analysis, in-place layer symlink creation under agent-workspace/src/, non-code doc resource staging, test coverage cataloguing, workspace-scoped Code Graph subfolder creation, selective phase blueprint population, and remote origin synchronization.`).
+    3.  Define **In-Place Symlink Procedures**: Create relative symbolic links under `agent-workspace/src/<layer>` pointing to target legacy directories without moving files or duplicating storage.
+    4.  Define **Resource Staging Procedures**: Copy non-code legacy documentation, supplementary assets, schemas, test coverage catalogs (`resource/existing_coverage.md`), and diagrams into `agent-workspace/plans/<feature-name>/resource/`.
+    5.  Define **Workspace Code Graph Generation Procedures**: Parse code structures and write `agent-workspace/src/<layer>/code_graph/` subfolders (`graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`) with Version Stamp Headers.
+    6.  Define **Selective Blueprint Population Procedures**: Synthesize extracted legacy metadata selectively into `agent-workspace/plans/<feature-name>/phase-*.md` based on relevance.
+    7.  Define **Synchronization Procedures**: Handle `git fetch` and `git pull`, detect merge conflicts, perform structural diff analysis, and execute incremental updates to affected Code Graphs and phase blueprints.
 
 ---
 

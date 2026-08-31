@@ -1,19 +1,20 @@
 ---
 name: implement
-description: Action implementation workflow for incremental code scaffolding, solution testing, AST code graph generation, and system documentation updates
+description: Action implementation workflow for incremental code scaffolding, test harness construction, solution testing, AST code graph generation, and system documentation updates
 ---
 
 # `/implement` Workflow Execution Playbook
 
-This stateful execution playbook defines the 7-node state machine governing source code implementation, solution testing, decision persistence, and optional AST code graph and documentation promotion within Google Antigravity.
+This stateful execution playbook defines the 7-node state machine governing source code implementation, cross-layer test harness construction (`codebase-qualify/`), solution testing, decision persistence, and optional AST code graph and documentation promotion within Google Antigravity.
 
 ---
 
 ## 1. Parameters & Operational Rules of Thumb
 
 ### CLI Parameter Handling
-* `/implement` (or `/implement --plan`): Default interactive execution mode. Validates map & test plan, runs micro-architecture grill, presents step-by-step code edits with diff previews, and pauses for developer approval before writing to disk. Code graph and docs updates are skipped by default.
+* `/implement` (or `/implement --plan`): Default interactive execution mode. Validates map, test plan, and ratified scenarios, runs micro-architecture grill, presents step-by-step code edits with diff previews, and pauses for developer approval before writing to disk. Code graph and docs updates are skipped by default.
 * `/implement --auto` (or `/implement --apply`): Continuous execution mode. Automatically scaffolds code step-by-step according to `implementation_map_v<version>.md`, executes solution tests, and syncs decisions to `plans/`, logging to `implementation_log.md`.
+* `/implement --tests-only`: Harness Stream Isolation Mode. Executes only the Test Harness stream against `codebase-qualify/`, building one cited test (`@scenario SC-<feature-slug>-<nnn>`) per ratified in-scope scenario. Used for red-first construction ahead of feature code, and to close coverage gaps reported by a failed `/qualify` Node Q1 gate.
 * `/implement --code-graph`: Enables optional AST Code Graph updates in `agent-workspace/src/<layer>/code_graph/`.
 * `/implement --docs`: Enables optional System Documentation updates in `agent-workspace/docs/`.
 * `/implement --full-sync`: Enables both optional Code Graph and System Documentation updates.
@@ -29,24 +30,25 @@ This stateful execution playbook defines the 7-node state machine governing sour
 2. **Git Context Verification**: Verify Git context and active feature branch.
 3. **Docker Daemon Check**: Execute `docker info` to verify runtime container health.
 
-### Node S2: FIRST ACTION - Map & Test Plan Verification
+### Node S2: FIRST ACTION - Map, Test Plan & Scenario Ratification Verification
 1. **Prerequisite Check**: As the very first action, inspect `agent-workspace/plans/<feature-name>/implementation_maps/` for `implementation_map_v<version>.md` and `agent-workspace/plans/<feature-name>/phase-5-test.md`.
-2. **Scope Alignment**: Verify that the map version, target scope, and critical test assertions match the implementation request.
-3. If either prerequisite is missing or ambiguous, halt and prompt user before touching disk state.
+2. **Scenario Ratification Check**: Extract all scenario IDs from `phase-5-test.md` and resolve each against `agent-workspace/tests/scenarios/<id>.md`. Confirm every scenario exists and carries `status: ratified`.
+3. **Fail-Closed Resolution Gate**: If the map, test plan, or any scenario ratification check fails, immediately halt execution, report the missing/unratified items, and **return the scope to `/plan`**. `/implement` NEVER authors missing scenarios or artifacts itself.
 
 ### Node S3: Micro-Architecture Q&A Grill Gate
 1. Invoke the neutral interview engine enforcing `rules/implement-grill.md`.
-2. Execute sequential prompts Q1 to Q9 neutrally without `[Recommended]` bias labels.
-3. Confirm starting layer/module, scaffolding execution strategy, sequential vs. parallel stream handling, and optional token economy flags (`--code-graph`, `--docs`).
+2. Execute sequential prompts Q1 to Q9 (including Q4b Test Harness Construction Ordering) neutrally without `[Recommended]` bias labels.
+3. Confirm starting layer/module, scaffolding execution strategy, harness ordering (Red-First, Feature-First, Interleaved), sequential vs. parallel stream handling, and optional token economy flags (`--code-graph`, `--docs`).
 4. Write interview choices permanently to `agent-workspace/plans/<feature-name>/GRILL_STATUS.md`.
 
-### Node S4: Visible Step-by-Step Code Scaffolding Loop & Solution Testing
+### Node S4: Visible Step-by-Step Code Scaffolding, Test Harness Loop & Solution Testing
 1. Invoke `skills/implement-scaffolder/SKILL.md`.
 2. Execute code modifications step-by-step in target `codebase-*` sub-repositories following the mandatory 4-part step schema (Requirement, Prerequisites, Actions, Verification).
-3. Scaffold unit test files alongside production code files based on `phase-5-test.md` test specifications.
-4. Execute solution tests per step (unit, integration, and regression assertions).
-5. **Inner Agent Artifact Sync**: Immediately write and synchronize all decisions, plan updates, and step outcomes produced in inner agent docs (Artifacts) to the corresponding version-controlled files under `agent-workspace/plans/<feature-name>/`.
-6. **User Interruption Checkpoints**: Maintain an active communication window between steps where the user can interrupt, ask questions, or request adjustments (no opaque subagent delegation).
+3. **Test Harness Scaffolding**: For each in-scope ratified scenario, scaffold cross-layer tests in `codebase-qualify/src/` tagged with `@scenario SC-<feature-slug>-<nnn>` inside test declaration blocks (or execute exclusively when `--tests-only` is active).
+4. **Layer-Local Tests**: Scaffold unit and integration test files in `codebase-<layer>/tests/` alongside production code.
+5. **Solution Testing**: Execute unit, integration, and regression assertions per step.
+6. **Inner Agent Artifact Sync**: Immediately write and synchronize all decisions, plan updates, and step outcomes produced in inner agent docs (Artifacts) to the corresponding version-controlled files under `agent-workspace/plans/<feature-name>/`.
+7. **User Interruption Checkpoints**: Maintain an active communication window between steps where the user can interrupt, ask questions, or request adjustments (no opaque subagent delegation).
 
 ### Node S5: OPTIONAL AST Code Graph Generation & Update
 1. **Condition**: Executed ONLY when `--code-graph` or `--full-sync` flag is present (skipped by default).

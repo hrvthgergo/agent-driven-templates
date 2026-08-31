@@ -1,6 +1,6 @@
-# Rule Guard: Legacy Code & Docs Processing Interview (`rules/process-grill.md`)
+# Rule Guard: Legacy Ingestion & Synchronization Interview (`rules/process-grill.md`)
 
-This rule guard defines the unchangeable baselines, prompting laws, and sequential Q1–Q7 interview questions for the `/process` action's Grill Engine in Google Antigravity.
+This rule guard defines the unchangeable baselines, prompting laws, and sequential interview questions for the `/process` action's Grill Engine in Google Antigravity.
 
 ---
 
@@ -28,7 +28,7 @@ To ensure operational safety, non-destructive file processing, and clean workspa
 
 ## 3. Sequential Question List (Execution Order: Q1 to Q7)
 
-The Grill Engine MUST evaluate and ask questions in the strict sequential order listed below:
+The Grill Engine MUST evaluate and ask questions in the strict sequential order listed below (bypassed entirely when `/process --sync` / `--pull` is invoked):
 
 ### Q1: `/init` Baseline Review & Verification
 > **Here is the summary of project knowledge and legacy folders collected during `/init`:**
@@ -88,6 +88,15 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 
 ---
 
+### Q-COV: Existing Test Coverage Discovery
+> **Existing test assets detected: `<n>` suites across `<m>` directories, runner(s): `<list>`. How should they be catalogued?**
+> 1. Catalogue all discovered suites, runners, fixtures and coverage config into `agent-workspace/plans/<branch_name>/resource/existing_coverage.md`
+> 2. Catalogue only suites relevant to the active feature scope
+> 3. Skip test discovery (no existing coverage, or greenfield feature)
+> 4. Other / Free-text (Describe custom coverage discovery scope)
+
+---
+
 ### Q5: Workflow Execution Mode & Proposal Generation
 > **Which execution mode would you like to use for integrating your legacy codebase?**
 > 1. **Standard Interactive Mode (`/process`)**: Summarize planned layer integrations and confirm before creating symlinks.
@@ -115,6 +124,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 > | **Agentic** | Q2 Omitted Remotes Audit | *[Q2 Answer / Remotes & submodules]* |
 > | **Folder & Software** | Q3 Legacy Source & Docs Mapping | *[Q3 Answer / Code to agent-workspace/src/<layer>, Docs to resource/]* |
 > | **Agentic** | Q4 Code Graph & Docs | *[Q4 Answer / Workspace Code Graph subfolder & selective blueprint extraction scope]* |
+> | **Qualify & Test** | Q-COV Test Coverage | *[Q-COV Answer / Discovery & cataloguing scope]* |
 > | **Governance** | Q5 Execution Mode | *[Q5 Answer / Standard vs Proposal vs Immediate]* |
 > | **Software** | Q6 Integration Strategy | *[Q6 Answer / In-place symlink vs scaffolding]* |
 >

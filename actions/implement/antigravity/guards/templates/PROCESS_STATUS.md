@@ -19,8 +19,8 @@
 | **3.4** | Phase 4: Core Engine & API Contracts | Completed | `phase-4-engine.md` | API contracts finalized |
 | **3.5** | Phase 5: Verification Specifications | Completed | `phase-5-test.md` | Test plan active |
 | **3.6** | Phase 6: Operations & Deployment | Completed | `phase-6-operation.md` | Ops specs finalized |
-| **4** | `/implement` | Completed | `implementation_map_v1.0.0.md` | Source code & solution tests executed |
-| **5** | `/qualify` | Pending | `verification_log.json` | Automated test suite execution pending |
+| **4** | `/implement` | Completed | `implementation_map_v1.0.0.md` | Source code, test harness & solution tests executed |
+| **5** | `/qualify` | Pending | `QUALIFICATION_REPORT.md` | Automated test suite execution & qualification report pending |
 | **6** | `/release` | Pending | `release_notes.md` | Production deployment pending |
 
 ---

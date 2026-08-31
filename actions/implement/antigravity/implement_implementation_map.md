@@ -24,14 +24,16 @@ The implementation plan directly realizes the following design blueprints and al
 
 | Design Decision / Principle | Documented Source File | Antigravity Native Primitive | Applied Guard Path |
 | :--- | :--- | :--- | :--- |
-| **Mandatory Dual Grounding Mandate** | [implement_action.md Section 1](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md#L45-L53) | Rule & Workflow Primitives | `rules/implement-governor.md` & `workflows/implement.md` |
-| **Decision Persistence & Artifact Sync** | [implement_action.md Section 1](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md#L27-L35) | Rule & Skill Primitives | `rules/implement-governor.md` & `skills/implement-scaffolder/SKILL.md` |
-| **4-Part Step Schema Enforcement** | [implement_action.md Section 2.A](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md#L58-L75) | Rule & Skill Primitives | `rules/implement-governor.md` & `skills/implement-scaffolder/SKILL.md` |
-| **Sequential vs. Parallel Streams** | [implement_action.md Section 2.B](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md#L76-L95) | Workflow & Skill Primitives | `workflows/implement.md` & `skills/implement-scaffolder/SKILL.md` |
-| **Visible Step-by-Step Execution** | [implement_action.md Section 1](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md#L36-L44) | Workflow Primitive | `workflows/implement.md` (Node S4) |
-| **Token Economy Guard (Optional Features)** | [implement_action.md Section 1](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md#L27-L35) | Rule & Workflow Primitives | `rules/implement-governor.md` & `workflows/implement.md` |
-| **Directory Separation & Production Cleanliness** | [implement_action.md Section 3.E](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md#L125-L140) | Rule & Skill Primitives | `rules/implement-governor.md` & `skills/implement-scaffolder/SKILL.md` |
-| **Sequential Q1–Q9 Micro-Architecture Grill** | [implement_questions.md Section 3](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_questions.md#L45-L160) | Rule & Workflow Primitives | `rules/implement-grill.md` & `workflows/implement.md` |
+| **Mandatory Dual Grounding Mandate (3-Leg)** | [implement_action.md Section 1 & 3.A](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md) | Rule & Workflow Primitives | `rules/implement-governor.md` & `workflows/implement.md` |
+| **Decision Persistence & Artifact Sync** | [implement_action.md Section 1 & 3.B](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md) | Rule & Skill Primitives | `rules/implement-governor.md` & `skills/implement-scaffolder/SKILL.md` |
+| **4-Part Step Schema Enforcement** | [implement_action.md Section 2.A](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md) | Rule & Skill Primitives | `rules/implement-governor.md` & `skills/implement-scaffolder/SKILL.md` |
+| **Sequential, Parallel & Test Harness Streams** | [implement_action.md Section 2.B & 3.I](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md) | Workflow & Skill Primitives | `workflows/implement.md` & `skills/implement-scaffolder/SKILL.md` |
+| **Test Harness Authority & `@scenario` Tagging** | [implement_action.md Section 3.I](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md) | Rule & Skill Primitives | `rules/implement-governor.md` & `skills/implement-scaffolder/SKILL.md` |
+| **Red-First Harness Isolation (`--tests-only`)** | [implement_action.md Section 3.I & 5](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md) | Workflow & Skill Primitives | `workflows/implement.md` & `skills/implement-scaffolder/SKILL.md` |
+| **Visible Step-by-Step Execution** | [implement_action.md Section 1](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md) | Workflow Primitive | `workflows/implement.md` (Node S4) |
+| **Token Economy Guard (Optional Features)** | [implement_action.md Section 1 & 3.G/H](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md) | Rule & Workflow Primitives | `rules/implement-governor.md` & `workflows/implement.md` |
+| **Directory Separation & Production Cleanliness** | [implement_action.md Section 3.E/I](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md) | Rule & Skill Primitives | `rules/implement-governor.md` & `skills/implement-scaffolder/SKILL.md` |
+| **Sequential Q1–Q9 (incl. Q4b) Grill Engine** | [implement_questions.md Section 3](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_questions.md) | Rule & Workflow Primitives | `rules/implement-grill.md` & `workflows/implement.md` |
 | **Branch Process Status (`PROCESS_STATUS.md`) Sync** | [process_handling.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process_handling.md) | Template & Workflow Primitives | `templates/PROCESS_STATUS.md` & `workflows/implement.md` |
 
 ---
@@ -39,30 +41,31 @@ The implementation plan directly realizes the following design blueprints and al
 ## 3. Implementation Plan Schema & Task Sequence
 
 ### Block 1: Target Files & Scaffolding Checklist
-- [ ] `[NEW]` `actions/implement/antigravity/guards/rules/implement-governor.md` - Core governor rule enforcing dual grounding, artifact sync, 4-part step schema, and write boundaries.
-- [ ] `[NEW]` `actions/implement/antigravity/guards/rules/implement-grill.md` - Micro-architecture interview rule guard.
-- [ ] `[NEW]` `actions/implement/antigravity/guards/workflows/implement.md` - Stateful execution playbook governing 7-node state machine.
-- [ ] `[NEW]` `actions/implement/antigravity/guards/skills/implement-scaffolder/SKILL.md` - Scaffolder skill for incremental code modification, optional AST graph building, and optional doc updates.
+- [ ] `[NEW]` `actions/implement/antigravity/guards/rules/implement-governor.md` - Core governor rule enforcing 3-leg dual grounding, artifact sync, 4-part step schema, harness construction authority, `@scenario` tagging, and write boundaries.
+- [ ] `[NEW]` `actions/implement/antigravity/guards/rules/implement-grill.md` - Micro-architecture interview rule guard enforcing Q1–Q9 prompts (including Q4b harness ordering).
+- [ ] `[NEW]` `actions/implement/antigravity/guards/workflows/implement.md` - Stateful execution playbook governing 7-node state machine with `--tests-only` mode and 3-leg fail-closed Node S2.
+- [ ] `[NEW]` `actions/implement/antigravity/guards/skills/implement-scaffolder/SKILL.md` - Scaffolder skill for incremental code modification in `codebase-*`, harness construction in `codebase-qualify/src/`, `@scenario` tag injection, AST graphs, and doc updates.
 - [ ] `[NEW]` `actions/implement/antigravity/guards/templates/code_graph_node.md` - Structural node template.
 - [ ] `[NEW]` `actions/implement/antigravity/guards/templates/system_doc_template.md` - Global system documentation update template.
 - [ ] `[NEW]` `actions/implement/antigravity/guards/templates/PROCESS_STATUS.md` - Process status matrix update template.
 
 ---
 
-### Block 2: Execution Flow Categorization (Sequential vs. Parallel Streams)
+### Block 2: Execution Flow Categorization (Sequential, Parallel & Test Harness Streams)
 
 #### Sequential Execution Stream (Strict Linear Order)
 1. **Step 1: Core Implementation Governor Rule (`rules/implement-governor.md`)**
-   - Foundation for all execution constraints and write boundaries.
+   - Foundation for all execution constraints, 3-leg grounding, and write boundaries.
 2. **Step 2: Micro-Architecture Grill Rule (`rules/implement-grill.md`)**
-   - Implements neutral Q1–Q9 prompt schema.
+   - Implements neutral Q1–Q9 prompt schema (including Q4b harness ordering).
 3. **Step 3: Stateful Workflow Playbook (`workflows/implement.md`)**
-   - Orchestrates the 7-node state machine and interactive checkpoints.
+   - Orchestrates the 7-node state machine, `--tests-only` execution, and interactive checkpoints.
 4. **Step 5: Process Status & Qualification Integration**
    - Final validation against `implement_tests.md`.
 
 #### Parallel Execution Stream (Decoupled Primitives)
 - **Step 4.A: Scaffolding Skill (`skills/implement-scaffolder/SKILL.md`)**
+  - Handles feature code scaffolding, `codebase-qualify/src/` test harness construction, and `@scenario` tagging.
 - **Step 4.B: Document & Node Templates (`templates/*`)**
 
 ---
@@ -71,51 +74,51 @@ The implementation plan directly realizes the following design blueprints and al
 
 #### Step 1: Implement Core Implementation Governor Rule (`rules/implement-governor.md`)
 1. **Requirement Fulfilled**:
-   - `implement_action.md Section 1 & Section 3` (Mandatory Dual Grounding, Inner Artifact Alignment, Token Economy Guard, and Write Boundaries).
+   - `implement_action.md Section 1 & Section 3` (Mandatory 3-Leg Dual Grounding, Inner Artifact Alignment, Test Harness Authority & `@scenario` Tagging, Token Economy Guard, and Write Boundaries).
 2. **Prerequisites**:
    - Directory `actions/implement/antigravity/guards/rules/` initialized.
 3. **Actions Taken**:
-   - `[NEW]` `actions/implement/antigravity/guards/rules/implement-governor.md`: Define constraints prohibiting code editing without map & test plan, enforcing 100% artifact sync to `plans/`, and keeping code graph/doc updates optional.
+   - `[NEW]` `actions/implement/antigravity/guards/rules/implement-governor.md`: Define constraints prohibiting code editing without map, test plan, and ratified scenarios; enforce fail-closed return to `/plan` on precondition failure; enforce 100% artifact sync to `plans/`; mandate `@scenario SC-<feature-slug>-<nnn>` tag inside test declaration blocks in `codebase-qualify/src/`; enforce strict harness write boundaries (no scenario authorship or verdict rendering).
 4. **Verification Fulfilled**:
    - Antigravity rule syntax and frontmatter validated.
 
 #### Step 2: Implement Micro-Architecture Grill Rule (`rules/implement-grill.md`)
 1. **Requirement Fulfilled**:
-   - `implement_questions.md Section 1 to Section 3` (Sequential Q1–Q9 micro-architecture interview).
+   - `implement_questions.md Section 1 to Section 3` (Sequential Q1–Q9 micro-architecture interview, including Q4b Test Harness Construction Ordering).
 2. **Prerequisites**:
    - Step 1 completed.
 3. **Actions Taken**:
-   - `[NEW]` `actions/implement/antigravity/guards/rules/implement-grill.md`: Implement neutral prompting laws and sequential Q1–Q9 prompts.
+   - `[NEW]` `actions/implement/antigravity/guards/rules/implement-grill.md`: Implement neutral prompting laws, scenario ratification scanning in Q2, Q4b harness ordering prompt (Red-first, Feature-first, Interleaved), and ratified scenarios count in Q9 recap.
 4. **Verification Fulfilled**:
    - Confirm zero `[Recommended]` bias labels and persistence to `GRILL_STATUS.md`.
 
 #### Step 3: Implement Stateful Workflow Playbook (`workflows/implement.md`)
 1. **Requirement Fulfilled**:
-   - `implement_action.md Section 5` (7-Node State Machine S1–S7 with visible checkpoints).
+   - `implement_action.md Section 5` (7-Node State Machine S1–S7 with visible checkpoints, `--tests-only` mode, and 3-leg Node S2 gate).
 2. **Prerequisites**:
    - Steps 1 & 2 completed.
 3. **Actions Taken**:
-   - `[NEW]` `actions/implement/antigravity/guards/workflows/implement.md`: Implement 7-node state machine with CLI parameter handling (`--auto`, `--plan`, `--code-graph`, `--docs`, `--full-sync`, `--dry-run`).
+   - `[NEW]` `actions/implement/antigravity/guards/workflows/implement.md`: Implement 7-node state machine with CLI parameter handling (`--auto`, `--plan`, `--code-graph`, `--docs`, `--full-sync`, `--dry-run`, `--tests-only`), 3-leg Node S2 resolution gate returning to `/plan` on failure, and Node S4 harness construction loop.
 4. **Verification Fulfilled**:
    - Workflow transitions verified through all 7 nodes.
 
 #### Step 4.A: Implement Scaffolder Skill (`skills/implement-scaffolder/SKILL.md`) (Parallel Stream)
 1. **Requirement Fulfilled**:
-   - `implement_action.md Section 2 & Section 3` (Code scaffolding, AST code graph updating, doc promotion).
+   - `implement_action.md Section 2, Section 3 & Section 3.I` (Code scaffolding, `codebase-qualify/src/` harness building, `@scenario` tagging, AST code graph updating, doc promotion).
 2. **Prerequisites**:
    - Workflow playbook structure established.
 3. **Actions Taken**:
-   - `[NEW]` `actions/implement/antigravity/guards/skills/implement-scaffolder/SKILL.md`: Detail incremental code scaffolding procedure, optional AST graph updates, and optional doc updates.
+   - `[NEW]` `actions/implement/antigravity/guards/skills/implement-scaffolder/SKILL.md`: Detail incremental code scaffolding procedure across `codebase-*` and `codebase-qualify/src/`, `@scenario SC-<feature-slug>-<nnn>` tag injection, `--tests-only` red-first execution, optional AST graph updates, and optional doc updates.
 4. **Verification Fulfilled**:
-   - Skill procedure references verified against `code_graph_taxonomy.md`.
+   - Skill procedure references verified against `code_graph_taxonomy.md` and `verification_taxonomy.md`.
 
 #### Step 4.B: Implement Template Assets (`templates/*`) (Parallel Stream)
 1. **Requirement Fulfilled**:
-   - `code_graph_taxonomy.md` and `process_handling.md`.
+   - `code_graph_taxonomy.md`, `verification_taxonomy.md`, and `process_handling.md`.
 2. **Prerequisites**:
    - Directory `actions/implement/antigravity/guards/templates/` initialized.
 3. **Actions Taken**:
-   - `[NEW]` `templates/code_graph_node.md`, `templates/system_doc_template.md`, `templates/PROCESS_STATUS.md`.
+   - `[NEW]` `templates/code_graph_node.md`, `templates/system_doc_template.md`, `templates/PROCESS_STATUS.md` (with `/qualify` pointing to `QUALIFICATION_REPORT.md`).
 4. **Verification Fulfilled**:
    - Templates conform to 2-block status matrix and code graph taxonomy schemas.
 
@@ -128,5 +131,7 @@ Automated and manual verification procedures defined in [implement_tests.md](fil
 
 ### Block 5: Acceptance Criteria & Consent Gate
 - All 7 guard files scaffolded adhering to Antigravity primitive standards.
-- Rejection tests assert dual grounding before code modification.
+- Rejection tests assert 3-leg dual grounding before code modification (map, test plan, ratified scenarios).
+- Test harness construction in `codebase-qualify/src/` enforces `@scenario SC-<feature-slug>-<nnn>` tag syntax.
+- `/implement --tests-only` mode verified for red-first harness building.
 - Working tree clean and synchronized.
