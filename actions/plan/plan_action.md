@@ -153,8 +153,8 @@ design.
 
 ### J. Operations Design Authority
 `/plan` is the **sole design authority for operations**: environment topology, image specifications,
-configuration and secret *declarations*, pipeline topology, promotion policy, and health contracts —
-the full eight-section content contract defined below for `phase-6-operation.md`.
+configuration and secret *declarations*, pipeline topology, promotion policy, and observability
+contracts — the full eight-section content contract defined below for `phase-6-operation.md`.
 
 1. **Recorded Inside the Sandbox**: All operations design is recorded in
    `agent-workspace/plans/<feature-name>/phase-6-operation.md` — inside the `plans/` sandbox,
@@ -238,18 +238,38 @@ Any `phase-6-operation.md` MUST contain the following eight sections:
 | **2** | Service Orchestration & Compose | Services, networks, volumes, ports, startup ordering |
 | **3** | **Configuration & Secret Declarations** | Key name · scope · environments · source. **Names only — never a value** |
 | **4** | **CI/CD Pipeline Topology** | This feature mapped onto the 3-tier hierarchy from [multi_repo_architecture.md](../multi_repo_architecture.md) §3 |
-| **5** | **Delivery & Promotion Policy** | Versioning scheme, image tagging + immutable digest, promotion edges, rebuild policy, rollback |
-| **6** | **Health & Readiness Contracts** | Check · endpoint/command · expected · timeout. These become `/operate`'s post-deploy assertions |
+| **5** | **Delivery & Promotion Policy** | Versioning scheme, image tagging + immutable digest, promotion edges, rebuild policy, rollback, **post-delivery hooks** (per environment: notification, cache purge, external sync — trigger and target only, never the script) |
+| **6** | **Observability & Health Contracts** | Three blocks — 6a signals & instrumentation, 6b monitoring tooling & endpoints, 6c health, readiness & alert contracts. These become `/operate`'s post-deploy assertions |
 | **7** | Operations Decisions (Embedded ADRs) | Context → Options → Choice → Consequence |
 
 Sections 0, 3, 4, 5, and 6 are the expansion introduced by this contract; 1, 2, and 7 restate the
 document's original containerization scope.
 
+#### §6 Block Structure
+
+| Block | Content | Consumed by |
+|:---|:---|:---|
+| **6a. Signals & Instrumentation Contract** | Signal name · type (`metric` / `log` / `trace`) · source layer · emitted-when. Declares **what must be emitted**; the emission code is `/implement`'s | `/implement` builds; `/operate` asserts presence |
+| **6b. Monitoring Tooling & Endpoints** | Which tool (Prometheus, Datadog, CloudWatch, …) · scrape/ingest endpoint · per environment. Subject to the **First-Definer Rule**, exactly like §0 environments | `/implement` configures in `codebase-devops/` |
+| **6c. Health, Readiness & Alert Contracts** | Check · endpoint/command · expected · timeout · **soak duration** (optional). Alert rule · condition · window · routing target | `/operate` asserts at Node O5 |
+
+`/plan` declares §6 boundaries the same way it declares every other operations section:
+
+1. **Declares, never implements.** §6 records signal names, thresholds, and routing *targets*. It
+   never contains instrumentation code, a dashboard definition, an alert-rule YAML, or a collector
+   config. Those are code, written by `/implement` into `codebase-<layer>/` and `codebase-devops/`.
+2. **Credentials split from targets.** A routing *target* (`#oncall-payments`, an email alias) is
+   declared in §6c. The *credential* that reaches it (a PagerDuty integration key, a webhook secret)
+   is declared in **§3** under the names-only rule, and never held in either section.
+3. **The Type B guard.** If proving an assertion requires a real time window or live traffic, it
+   belongs here as a §6c contract. Observability contracts are **never** authored as `SC-*`
+   scenarios and never carry a scenario identifier — the coverage gate does not govern them.
+
 > [!NOTE]
-> **First-Definer Rule.** The first feature to define an environment owns its canonical row in §0.
-> Later features reference the existing definition and record only their delta. Absent a
-> project-durable operations artifact, this rule is what keeps environment definitions from forking
-> across feature sandboxes.
+> **First-Definer Rule.** The first feature to define an environment (§0) or a monitoring tool (§6b)
+> owns its canonical row. Later features reference the existing definition and record only their
+> delta. Absent a project-durable operations artifact, this rule is what keeps environment and
+> tooling definitions from forking across feature sandboxes.
 
 `phase-6-operation.md` **specifies; it never contains a Dockerfile, a compose file, or pipeline
 YAML.** Those are code, written by `/implement` per §J below.

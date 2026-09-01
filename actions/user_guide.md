@@ -80,7 +80,7 @@ A cornerstone of the Guards Framework is that **every action answers a fundament
 | :--- | :--- | :--- | :--- |
 | **`/init`** | **"Where and how do we work?"** | **System Administrator** | Bootstraps environments, sandboxes, layer skeletons, and tracking sheets. Makes zero code edits. |
 | **`/process`** | **"What already exists?"** | **Archaeologist & Analyst** | Ingests brownfield legacy code intact, stages reference docs, and generates code graphs. |
-| **`/plan`** | **"What should the system do, and what must be proven?"** | **Architect & Designer** | Designs blueprints across 6 phases, drafts implementation maps, owns **all verification design**: `TEST_STRATEGY.md`, `phase-5-test.md`, ratified `SC-*` scenarios, and ratification authority, and owns **all operations design**: environment topology, image specs, configuration declarations, pipeline topology, and promotion policy in `phase-6-operation.md`. |
+| **`/plan`** | **"What should the system do, and what must be proven?"** | **Architect & Designer** | Designs blueprints across 6 phases, drafts implementation maps, owns **all verification design**: `TEST_STRATEGY.md`, `phase-5-test.md`, ratified `SC-*` scenarios, and ratification authority, and owns **all operations design**: environment topology, image specs, configuration declarations, pipeline topology, promotion policy, and observability contracts in `phase-6-operation.md`. |
 | **`/implement`** | **"Does my code work?"** | **Software Engineer** | Scaffolds code layer-by-layer, writes unit tests in `codebase-*/tests/`, and **builds the cross-layer harness in `codebase-qualify/`** from ratified scenarios it did not author. |
 | **`/qualify`** | **"Does the whole system work?"** | **Quality Engineer (QA)** | Executes the qualification matrix against a booted environment, gates on scenario coverage, attributes defects across layers, renders the release verdict, and promotes ratified scenarios to the regression catalog. Authors no test assets. |
 | **`/operate`** | **"Is the system deployed?"** | **Operations Engineer (DevOps)** | Executes delivery; designs and builds nothing. Builds production Docker images once, tags release versions immutably, gates on a per-environment entry gate plus a provenance gate, generates audit walkthroughs, and creates pull requests. |
@@ -304,7 +304,8 @@ The following tables provide the authoritative catalogue of all six fundamental 
 | `/operate --version <vX.Y.Z>` | **Explicit Version Tagging** | Explicitly specifies release version tag (e.g. `v1.0.0`) for Docker image tagging and Git release tags. |
 | `/operate --auto` | **Automated Delivery Mode** | Builds images, creates tags, generates release walkthrough, and opens PR without pausing for confirmation. |
 | `/operate --dry-run` | **Preview Mode** | Simulates release build and packaging, outputting walkthrough preview without modifying Git tags or pushing images. |
-| `/operate --deploy` | **Deployment Trigger Mode** | Triggers post-release deployment scripts or webhooks defined in `codebase-devops/`. |
+
+*There is no `--deploy` flag. Post-delivery side effects (notification, cache purge, external sync) are a per-environment policy declared in `phase-6-operation.md` §5 — Node O4 executes a declared hook automatically on successful promotion.*
 
 ---
 

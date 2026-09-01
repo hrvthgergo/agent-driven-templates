@@ -221,7 +221,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 
 ### Q10: Phase 6 - Docker & Operations Deployment Impact (If Ops Affected)
 * **Goal**: Gather environment topology, container profiles, configuration/secret declarations, CI/CD pipeline impact, and promotion policy decisions.
-* **Structure**: Q10 is asked as four sub-questions (Q10.1–Q10.4), each populating a distinct section of `phase-6-operation.md`'s eight-section content contract (see [plan_action.md](./plan_action.md) §3). Respecting the Grill Engine's max-2-questions-per-turn rule: Q10.1 + Q10.2 in one turn, Q10.3 + Q10.4 in the next.
+* **Structure**: Q10 is asked as five sub-questions (Q10.1–Q10.5), each populating a distinct section of `phase-6-operation.md`'s eight-section content contract (see [plan_action.md](./plan_action.md) §3). Respecting the Grill Engine's max-2-questions-per-turn rule: Q10.1 + Q10.2 in one turn, Q10.3 + Q10.4 in the next, then Q10.5.
 
 #### Q10.1: Environment Topology
 * **Goal**: Determine which environments this feature targets, and whether a new environment is required.
@@ -260,6 +260,19 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > 2. Pipeline changes required (specify layer micro-pipeline, qualification pipeline, or macro-pipeline impact and promotion edges)
   > 3. Other / Free-text (Describe pipeline topology or promotion policy changes)
 * **Resulting Action**: Populates `phase-6-operation.md` §4–§5 (CI/CD Pipeline Topology & Delivery/Promotion Policy).
+
+#### Q10.5: Observability & Monitoring Design
+* **Goal**: Declare what the system must emit, which tool observes it, and what conditions constitute unhealthy.
+* **Auto-Detection Scanning Rule**:
+  * Read prior cycles' `phase-6-operation.md` §6b for already-declared tooling (First-Definer Rule).
+  * For brownfield, read `resource/` for any monitoring stack `/process` discovered.
+* **Reframed Grill Prompt**:
+  > **What observability and monitoring contracts does this feature require?**
+  > 1. No new observability contracts (existing health checks and monitoring suffice)
+  > 2. New signals, health checks, or alert conditions required (specify signal names, monitoring tool, thresholds, soak windows, and routing targets)
+  > 3. Other / Free-text (Describe observability and monitoring requirements)
+* **Boundary**: Declares **what** must be emitted and **what** constitutes unhealthy — never the emission code, dashboard definition, alert-rule YAML, or collector config. Observability contracts are never authored as `SC-*` scenarios.
+* **Resulting Action**: Populates `phase-6-operation.md` §6 (blocks 6a, 6b, 6c).
 
 ---
 

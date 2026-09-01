@@ -179,6 +179,11 @@ agent-workspace/plans/<feature-name>/  → Version-Controlled Planning Artifacts
    never invents a layer.
 4. **Brownfield Exception**: Where `/process` has already linked existing repositories in place,
    `/implement` provisions nothing and writes directly into the linked targets.
+5. **Observability Artifacts**: Instrumentation code (metric emission, trace spans, health
+   endpoints) is written into `codebase-<layer>/`; monitoring infrastructure (collector
+   configuration, alert rules, dashboards-as-code) is written into `codebase-devops/`. Both realize
+   the contracts declared in `phase-6-operation.md` §6; `/implement` authors neither the signal list
+   nor the thresholds.
 
 > [!NOTE]
 > **Why the builder may provision.** A directory whose existence is a design output cannot be

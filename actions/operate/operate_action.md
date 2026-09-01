@@ -19,7 +19,7 @@ graph LR
     Plan["/plan Phase 6<br/>Operations Design<br/>• Environment Topology<br/>• Image Specs & Health Contracts<br/>• Promotion Policy"]
     --> Implement["/implement<br/>Provisions & Builds<br/>• codebase-devops/, Dockerfiles<br/>• Compose & Pipeline YAML"]
     --> Qualify["/qualify<br/>Release Qualification<br/>• Certified QUALIFICATION_REPORT.md"]
-    --> Operate["/operate (Operations & Delivery)<br/>1. Entry & Provenance Gate<br/>2. Image Build & Immutable Tagging<br/>3. Promotion to Target Environment<br/>4. Health Assertion & Walkthrough Record"]
+    --> Operate["/operate (Operations & Delivery)<br/>1. Entry & Provenance Gate<br/>2. Image Build & Immutable Tagging<br/>3. Promotion to Target Environment<br/>4. Observability & Health Assertion & Walkthrough Record"]
     --> Evolve["Post-Release Evolution<br/>• /init --feature <name><br/>• /init --release <version>"]
 ```
 
@@ -56,6 +56,7 @@ The gate `/operate` evaluates is **per-environment**, read from `phase-6-operati
 - Author or ratify a scenario, or alter any scenario's `status` field.
 - Modify `TEST_STRATEGY.md` or any `phase-*.md` document.
 - Write to any `codebase-*/` repository.
+- Edit a dashboard definition, alert rule, or collector configuration.
 
 If a delivery fails because an ops file is wrong — a broken Dockerfile stage, a missing compose
 service, a misconfigured pipeline step — that is an `/implement` defect. `/operate` reports it and
@@ -92,7 +93,10 @@ exactly as `/qualify`'s coverage-gap proposals are the direct input to the next 
 
 ### E. Environment Targeting & the Promotion Model
 `/operate` builds an image **once** and promotes the same immutable digest across every environment
-it reaches. It never rebuilds per environment.
+it reaches. It never rebuilds per environment. Build identity is keyed on **source state**, not on
+the `--version` tag (see Node O3, §4): re-invoking `/operate` with a new `--version` against
+unchanged source re-tags the previously recorded digest rather than rebuilding — this is the
+mechanism that lets a release candidate become its final release without a second build.
 
 **The provenance gate**: before promoting into any environment whose entry gate is
 `certification: full`, `/operate` MUST verify that the digest it is about to promote is identical to
@@ -131,8 +135,8 @@ graph TD
     O2 -->|Gate Failed| O2_Halt[Halt. Report gate failure. No artifact touched]
     O2 -->|Both Gates Passed| O3[Node O3: Image Build & Immutable Tagging<br/>Build from /implement-authored Dockerfiles; tag + record digest]
     O3 --> O4[Node O4: Delivery / Promotion to Target Environment<br/>Promote the recorded digest; never rebuild]
-    O4 --> O5[Node O5: Post-Deploy Health & Readiness Assertion<br/>Execute Section 6 health contracts]
-    O5 -->|Health Check Failed| O5_Halt[Halt. Report failed assertion. Do not mark delivery complete]
+    O4 --> O5[Node O5: Post-Deploy Observability & Health Assertion<br/>Execute Section 6 contracts: signals, health, alerts]
+    O5 -->|Assertion Failed| O5_Halt[Halt. Report failed assertion. Do not mark delivery complete]
     O5 -->|All Checks Passed| O6[Node O6: Walkthrough Record & Ops Finding Capture<br/>Write WALKTHROUGH.md]
     O6 --> O7[Node O7: PROCESS_STATUS.md Sync & Handoff<br/>Row 6 -> Done; datestamped Block 2 entry]
 ```
@@ -153,20 +157,40 @@ graph TD
 * **Storage Actions**: Reads `QUALIFICATION_REPORT.md` in `agent-workspace/plans/<feature-name>/`.
 
 #### Step 3: Image Build & Immutable Tagging (Node O3)
-* **Description**: Builds the production image from the Dockerfiles `/implement` authored in each
-  target `codebase-<layer>/`. Tags the image with the resolved version and records its content
-  digest. This is the only node at which a build occurs — every later promotion reuses this digest.
+* **Description**: Identity is keyed on **source state** (the resolved commit/tag of every
+  `codebase-<layer>/` the build touches), not on the `--version` string. Before building, O3 checks
+  the feature's delivery history (`WALKTHROUGH.md` entries) for a prior successful build whose
+  recorded source state matches exactly:
+  - **Match found** — the source is unchanged since that build. O3 skips the build and **reuses the
+    recorded digest**, applying only the new `vX.Y.Z` tag. This is what makes promoting a release
+    candidate to its final tag (`v1.2.0-rc.1` → `v1.2.0`) a re-tag, not a rebuild.
+  - **No match** — either this is the first build for this source state, or the source changed since
+    the last one. O3 builds fresh from the Dockerfiles `/implement` authored, and records the new
+    digest.
 * **Storage Actions**: None outside the container registry / build output.
 
 #### Step 4: Delivery / Promotion to Target Environment (Node O4)
 * **Description**: Promotes the digest recorded in Node O3 into the resolved environment, using the
-  orchestration `/implement` built in `codebase-devops/`. Never rebuilds.
+  orchestration `/implement` built in `codebase-devops/`, including the target environment's
+  monitoring configuration per `phase-6-operation.md` §6b. Never rebuilds. If the resolved
+  environment declares a **post-delivery hook** in `phase-6-operation.md` §5, O4 executes it after a
+  successful promotion; an environment declaring none triggers nothing.
 * **Storage Actions**: None beyond the target environment's runtime state.
 
-#### Step 5: Post-Deploy Health & Readiness Assertion (Node O5)
-* **Description**: Executes every check declared in `phase-6-operation.md` §6 (Health & Readiness
-  Contracts) against the newly promoted deployment. A failed assertion halts before the delivery is
-  reported complete.
+#### Step 5: Post-Deploy Observability & Health Assertion (Node O5)
+* **Description**: Asserts all three contract classes declared in `phase-6-operation.md` §6
+  (Observability & Health Contracts) against the newly promoted deployment, halting fail-closed on
+  any failure:
+  1. **Signal presence** — every signal declared in §6a is being emitted and is reachable at the
+     §6b endpoint for this environment.
+  2. **Health & readiness** — every check in §6c passes within its timeout, and holds for its
+     **soak duration** where one is declared.
+  3. **Alert registration** — every alert rule in §6c is registered with the monitoring tool and
+     resolves to its declared routing target.
+
+  O5 runs **unconditionally on every delivery**, including to `gate: none` environments. This is
+  what makes an instrumentation defect surface before any `certification: full` environment is
+  reached.
 * **Storage Actions**: None; results are captured into `WALKTHROUGH.md` in Node O6.
 
 #### Step 6: Walkthrough Record & Ops Finding Capture (Node O6)
@@ -193,7 +217,13 @@ graph TD
 | `/operate --version <vX.Y.Z>` | Explicitly specifies release version tag (e.g. `v1.0.0`) |
 | `/operate --auto` | Automated release execution (builds images, creates tags, and generates PR without pausing for confirmation) |
 | `/operate --dry-run` | Simulates release build and packaging — evaluates both gates and prints the delivery plan — without modifying Git tags or pushing images |
-| `/operate --deploy` | Triggers post-release deployment scripts / webhooks defined in `codebase-devops/` |
+
+> [!NOTE]
+> **No `--deploy` flag.** Post-delivery side effects (notification, cache purge, external system
+> sync) are not a mode you opt into — they are a **per-environment policy** declared in
+> `phase-6-operation.md` §5 (Delivery & Promotion Policy). If the target environment declares a
+> hook, Node O4 executes it automatically as part of promotion; if it declares none, nothing fires.
+> This mirrors why there is no `--monitor` flag: optionality lives in the design, not in the command.
 
 ---
 
@@ -205,7 +235,9 @@ graph TD
 - **Date**: YYYY-MM-DD
 - **Target Environment**: `ENV-<id>`
 - **Version**: `vX.Y.Z`
+- **Source State**: `<commit/tag per codebase-<layer>, the O3 lookup key>`
 - **Image Digest**: `sha256:...`
+- **Build Action**: `[Built | Reused — matched <date> entry]`
 - **Entry Gate**: `[none | certification: full]` — `[PASSED | FAILED | N/A]`
 - **Provenance Gate**: `[PASSED | FAILED | N/A — entry gate is none]`
 
@@ -220,15 +252,23 @@ graph TD
 - **Source Report**: `QUALIFICATION_REPORT.md` (`<date>`)
 - **Certification**: `[full | provisional | N/A]`
 
-## 3. Health & Readiness Assertion Results
+## 3. Observability & Health Assertion Results
 
-| Check | Expected | Result |
+### 3a. Signal Presence
+| Signal | Type | Endpoint | Result |
+| :--- | :--- | :--- | :--- |
+
+### 3b. Health & Readiness
+| Check | Expected | Soak | Result |
+| :--- | :--- | :--- | :--- |
+
+### 3c. Alert Registration
+| Alert Rule | Routing Target | Registered |
 | :--- | :--- | :--- |
-| `<from phase-6-operation.md §6>` | `<expected>` | `[PASS | FAIL]` |
 
 ## 4. Delivery Actions
 - **PR / Merge Reference**: `<link or N/A>`
-- **Deployment Trigger**: `[--deploy executed | not requested]`
+- **Post-Delivery Hook**: `[<hook from phase-6-operation.md §5> executed | none declared]`
 
 ## 5. Ops Findings
 *Recorded per §2.D. `origin: operate`, `status: unratified`. Input to the next `/plan` Phase 6 cycle.*
@@ -248,7 +288,10 @@ graph TD
 - [ ] Do NOT edit any Dockerfile, compose file, pipeline YAML, or deploy script. Do NOT create or provision any repository. Do NOT alter an environment, entry gate, scenario, or `TEST_STRATEGY.md`.
 - [ ] Build the production image once; tag it immutably; record its digest.
 - [ ] Promote the recorded digest into the target environment. Never rebuild for a different environment.
-- [ ] Execute every health & readiness contract declared in `phase-6-operation.md` §6. Halt on failure.
+- [ ] Apply the target environment's monitoring configuration during promotion (§6b).
+- [ ] Execute the target environment's post-delivery hook, if one is declared in `phase-6-operation.md` §5; trigger nothing if none is declared.
+- [ ] Assert all three §6 contract classes at Node O5 — signal presence, health & readiness (including soak windows), and alert registration. Halt fail-closed on any failure.
+- [ ] Do NOT edit a dashboard, alert rule, or collector config. A wrong monitoring artifact is an `/implement` defect.
 - [ ] Author ops findings only as `origin: operate, status: unratified`; never act on one directly.
 - [ ] Generate `WALKTHROUGH.md` in `agent-workspace/plans/<feature-name>/`.
 - [ ] Synchronize `PROCESS_STATUS.md` Row 6 to `Completed` with a datestamped log entry.
