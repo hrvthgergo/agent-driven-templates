@@ -1,6 +1,6 @@
 # Desired Project Folder Structure
 
-This document defines the generic directory layout scaffolded, mapped, and enforced across project repositories. The `/init` action provisions the **Control Plane & Knowledge Hub** under `agent-workspace/` with an empty `src/` staging directory. Software layer repositories (`codebase-*`), Docker configurations, and `src/` symlinks are introduced during `/plan` (greenfield) or linked in-place during `/process` (brownfield).
+This document defines the generic directory layout scaffolded, mapped, and enforced across project repositories. The `/init` action provisions the **Control Plane & Knowledge Hub** under `agent-workspace/` with an empty `src/` staging directory. Software layer repositories (`codebase-*`), Docker configurations, and `src/` symlinks are designed in `/plan` and provisioned by `/implement` (greenfield), or linked in-place during `/process` (brownfield).
 
 ```
 [Local Workspace Root]

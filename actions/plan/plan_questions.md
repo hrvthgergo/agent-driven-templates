@@ -220,13 +220,46 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 ---
 
 ### Q10: Phase 6 - Docker & Operations Deployment Impact (If Ops Affected)
-* **Goal**: Gather container profiles, environment variable configurations, Compose orchestration details, and infrastructure deployment decisions.
+* **Goal**: Gather environment topology, container profiles, configuration/secret declarations, CI/CD pipeline impact, and promotion policy decisions.
+* **Structure**: Q10 is asked as four sub-questions (Q10.1–Q10.4), each populating a distinct section of `phase-6-operation.md`'s eight-section content contract (see [plan_action.md](./plan_action.md) §3). Respecting the Grill Engine's max-2-questions-per-turn rule: Q10.1 + Q10.2 in one turn, Q10.3 + Q10.4 in the next.
+
+#### Q10.1: Environment Topology
+* **Goal**: Determine which environments this feature targets, and whether a new environment is required.
+* **Auto-Detection Scanning Rule**:
+  * Read `phase-6-operation.md` §0 from prior feature cycles, if present, for existing `ENV-*` definitions (First-Definer Rule).
 * **Reframed Grill Prompt**:
-  > **What are the Docker containerization and operations deployment impact requirements?**
+  > **Which environments does this feature target, and does it require a new one?**
+  > 1. Existing environments only (reference the current topology; no new `ENV-*` row)
+  > 2. A new environment is required (specify purpose, services, and entry gate — `none` or `certification: full`)
+  > 3. Other / Free-text (Describe environment topology impact)
+* **Resulting Action**: Populates `phase-6-operation.md` §0 (Environment Topology).
+
+#### Q10.2: Containerization & Image Impact
+* **Goal**: Gather container profiles, base images, and service orchestration decisions.
+* **Reframed Grill Prompt**:
+  > **What are the containerization and service orchestration requirements?**
   > 1. Multi-container Compose orchestration with environment variable isolation
-  > 2. Standalone container image build with CI/CD deployment pipeline integration
-  > 3. Other / Free-text (Describe Dockerfiles, Compose profiles, and environment variables)
-* **Resulting Action**: Populates `agent-workspace/plans/<feature-name>/phase-6-operation.md` with ops specs and infrastructure decisions.
+  > 2. Standalone container image build with no new orchestrated services
+  > 3. Other / Free-text (Describe Dockerfiles, base images, and Compose profiles)
+* **Resulting Action**: Populates `phase-6-operation.md` §1–§2 (Containerization & Service Orchestration).
+
+#### Q10.3: Configuration & Secret Declarations
+* **Goal**: Declare configuration keys and secret names this feature requires, scoped by environment.
+* **Reframed Grill Prompt**:
+  > **What configuration keys or secrets does this feature require? (Names and scope only — never a value.)**
+  > 1. No new configuration or secrets required
+  > 2. New configuration/secret keys required (specify key name, scope, and target environments)
+  > 3. Other / Free-text (Describe configuration or secret declarations)
+* **Resulting Action**: Populates `phase-6-operation.md` §3 (Configuration & Secret Declarations).
+
+#### Q10.4: CI/CD Pipeline Impact & Promotion Policy
+* **Goal**: Map this feature onto the 3-tier CI/CD hierarchy and determine its delivery/promotion policy.
+* **Reframed Grill Prompt**:
+  > **What CI/CD pipeline and promotion policy changes does this feature require?**
+  > 1. No pipeline changes; standard promotion policy applies
+  > 2. Pipeline changes required (specify layer micro-pipeline, qualification pipeline, or macro-pipeline impact and promotion edges)
+  > 3. Other / Free-text (Describe pipeline topology or promotion policy changes)
+* **Resulting Action**: Populates `phase-6-operation.md` §4–§5 (CI/CD Pipeline Topology & Delivery/Promotion Policy).
 
 ---
 

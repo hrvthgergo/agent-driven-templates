@@ -32,7 +32,7 @@ The initialization process establishes and connects two core environments:
 - **Agentic Environment**: Sets up the agentic control layers (rules, workflows, skills, hooks, and sidecars) to guide agent execution, and configures the primary remote Git origin for workspace synchronization.
 - **Folder-Based Control Plane**: Creates the physical directories for agent blueprints, human-facing docs, and the process state matrix under `agent-workspace/`.
 
-*Note: Software layer scope (`codebase-*` sub-repositories), tech stack selection, and containerized execution (Hybrid Docker) are designed during `/plan` Phase 6 (Operations) or discovered by `/process` for brownfield projects.*
+*Note: Software layer scope (`codebase-*` sub-repositories), tech stack selection, and containerized execution (Hybrid Docker) are designed during `/plan` Phase 1 and Phase 6 (Operations), then provisioned by `/implement` — or discovered by `/process` for brownfield projects.*
 
 ---
 
@@ -246,7 +246,7 @@ graph TD
 - `/init --force`: Overwrites existing default rules and workflows in `.agents/rules/` and `.agents/workflows/` while strictly preserving custom phase blueprints (`phase-1-summary.md`, `PROCESS_STATUS.md`).
 
 *Historical Codebase Restructuring Note: Codebase restructuring, historical code analysis, and legacy migrations are explicitly decoupled from `/init` and managed by the separate `/process` action.*
-*Layer Scaffolding Note: Software layers (`codebase-*`) and container configurations are introduced during `/plan` (greenfield) or linked during `/process` (brownfield).*
+*Layer Scaffolding Note: Software layers (`codebase-*`) and container configurations are designed during `/plan` and provisioned by `/implement` (greenfield), or linked during `/process` (brownfield).*
 
 ### Operational Rules of Thumb
 1.  **Branch Initialization Rule**:

@@ -80,10 +80,10 @@ Rather than viewing the development lifecycle merely as a checklist of activitie
 | :--- | :--- | :--- | :--- |
 | **`/init`** | **"Where do we work, what are the agent rules, where is the remote repository, and how do we track progress?"** | **System Administrator** | Bootstraps the `agent-workspace/` pure control plane (`.agents/`, `plans/`, `docs/`, `src/`), configures agentic rules/skills/hooks/MCPs, initializes Git branch, configures primary remote Git origin, and pushes initial documentation. Does NOT create `codebase-*/` sub-repositories, Dockerfiles, or make tech stack choices. |
 | **`/process`** | **"What already exists in the legacy codebase?"** | **Archaeologist & Analyst** | Ingests brownfield legacy code and documentation intact, discovers existing programming languages, frameworks, Docker configs, and CI/CD pipelines, categorizes historical assets into staging, and generates topological code graphs. |
-| **`/plan`** | **"What are we going to build, what layers are needed, what tech stack will we use, and how will operations/Docker run?"** | **Architect & Designer** | Designs system architecture, determines software layer scope and creates `codebase-*` sub-repositories with `src/` symlinks, selects programming languages & frameworks, plans Hybrid Docker & CI/CD in Phase 6 (Operations), generates implementation maps, and **owns all verification design: test strategy, verification scope, ratified scenarios, and ratification**. |
+| **`/plan`** | **"What are we going to build, what layers are needed, what tech stack will we use, and how will operations/Docker run?"** | **Architect & Designer** | Designs system architecture, determines software layer scope (provisioned by `/implement`), selects programming languages & frameworks, plans Hybrid Docker & CI/CD in Phase 6 (Operations), generates implementation maps, **owns all verification design**: test strategy, verification scope, ratified scenarios, and ratification, and **owns all operations design**: environment topology, image specs, configuration declarations, pipeline topology, and promotion policy. |
 | **`/implement`** | **"Does my code work in isolation?"** | **Software Engineer** | Scaffolds production code layer-by-layer in `codebase-*` repositories, writes co-located unit tests in `codebase-*/tests/`, **builds the cross-layer harness in `codebase-qualify/` from ratified scenarios**, and executes local isolation testing. |
 | **`/qualify`** | **"Does the integrated system work as a whole?"** | **Quality Engineer (QA)** | Executes the qualification matrix against a booted environment, gates on scenario coverage, attributes defects across layers, renders the release verdict, and promotes ratified scenarios to the regression catalog. Authors no test assets. |
-| **`/operate`** | **"Is the system packaged, delivered, and deployed?"** | **Operations Engineer (DevOps)** | Builds production Docker images, tags versions, generates audit walkthroughs, creates PRs, and coordinates deployment handoffs. |
+| **`/operate`** | **"Is the system packaged, delivered, and deployed?"** | **Operations Engineer (DevOps)** | Executes delivery; designs and builds nothing. Builds production Docker images once, tags them immutably, gates promotion on a per-environment entry gate plus a provenance gate, generates audit walkthroughs, creates PRs, and coordinates deployment handoffs. |
 
 ### The Separation of Testing Concerns
 
@@ -125,12 +125,13 @@ The framework is organized into two primary structural pillars:
    - **[Multi-Repo & Docker Strategy Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/multi_repo_architecture.md)**: Hybrid Docker containerization, symlink mapping, and dynamic layer expansion.
    - **[Standard Folder Structure Spec](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/folder_structure.md)**: Standard project folder layout, pure control plane architecture, and sub-repo symlink definitions.
    - **[Verification Taxonomy & Scenario Identity](./actions/verification_taxonomy.md)**: The identity layer — scenario `SC-*` identifiers, ratification lifecycle, `TEST_STRATEGY.md` schema, harness citation grammar, and the coverage gate contract. Defines the five verification artifacts and their single owning actions.
+   - **[Directory Handling Roles & Folder Authority Map](./actions/directory_handling_roles.md)**: The folder authority matrix resolving which action creates, writes, and reads each directory across the repository tree.
    - **[Initialization Action (/init)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_action.md)**: Bootstrapping action specification, 3-block Q&A schema (`init_questions.md`), and initialization execution maps.
    - **[Legacy Code & Docs Processing (/process)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process/process_action.md)**: Standalone action specification for deep historical code analysis, documentation review, and refactoring proposals.
    - **[Interactive Planning (/plan)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/plan/plan_action.md)**: Interactive planning action specification, 6-phase blueprints, and implementation maps.
    - **[Action Implementation (/implement)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/implement/implement_action.md)**: Action implementation specification, 4-part step schema, and visible scaffolding.
    - **[Release Qualification (/qualify)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/qualify/qualify_action.md)**: Release qualification action specification and 3-pillar testing architecture.
-   - **[Operations & Delivery (/operate)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/operate/operate_action.md)**: Release packaging, Docker builds, Git tagging, and PR operations.
+   - **[Operations & Delivery (/operate)](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/operate/operate_action.md)**: Pure execution — per-environment entry gates, the provenance gate, immutable digest promotion, Git tagging, and PR operations. Authors no operations design.
    - **[Grill Engine Gate](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/grill_engine.md)**: Reusable Q&A engine design rules and state file formats (`GRILL_STATUS.md`).
    - **[Language-Specific Code Graph Taxonomy](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/code_graph_taxonomy.md)**: Universal node and connection rules for Python, Go, and JavaScript.
 
@@ -235,6 +236,6 @@ agent-driven-templates/
     │       └── guards/                # Antigravity native primitives (rules, skills, workflows, templates)
     ├── qualify/                       # [Tier 2] Release Qualification Subfolder
     │   └── qualify_action.md          # Detailed qualification action specification
-    └── release/                       # [Tier 2] Operations & Delivery Subfolder
-        └── operate_action.md          # Detailed release action specification
+    └── operate/                       # [Tier 2] Operations & Delivery Subfolder
+        └── operate_action.md          # Detailed action specification (execution only)
 ```

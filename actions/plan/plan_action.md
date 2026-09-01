@@ -112,10 +112,32 @@ The Guards Framework strictly decouples theoretical design intent, system-wide f
    - Generated on-request via `--code-graph` flag during `/implement` (for newly written code) or `/process` (for legacy/brownfield code). Each generated file carries a **Version Stamp Header** (e.g., `<!-- Last Updated: v1.1.0 | <date> -->`) so readers can assess freshness without forcing regeneration.
 
 ### H. Filesystem Boundary Guard Rule
-The `/plan` workflow enforces a strict write sandbox:
-- **Allowed Workspace**: All write, edit, create, and delete actions are **strictly restricted to**:
-  - **`agent-workspace/plans/<feature-name>/`** (and all its subfolders)
-- **Forbidden Actions**: `/plan` is **strictly prohibited** from modifying general system documentation in `docs/`, code graphs in `src/*/code_graph/`, or source code files (`src/`, `codebase-*/`). Code Graph generation and System Documentation updates are strictly by-request operations, executed only via explicit `--code-graph` and `--docs` flags during `/implement` or `/process`.
+**`/plan` authors design; it never modifies an executional element.** The boundary is not a path
+prefix — it is a category distinction between design-relevant resources (which `/plan` may modify
+regardless of where they live in `agent-workspace/`) and executional elements (which `/plan` may
+never touch, under any circumstance):
+
+```text
+ALLOWED — design surfaces
+    agent-workspace/plans/<feature-name>/**
+    agent-workspace/tests/TEST_STRATEGY.md
+    agent-workspace/tests/scenarios/**
+
+FORBIDDEN — executional elements
+    codebase-*/**                        every layer repo, every path, no exception
+    agent-workspace/src/**               symlink maps and AST code graphs
+    agent-workspace/tests/regression/**  promoted catalog, owned by /qualify
+    agent-workspace/docs/**              owned by /implement (--docs) and /process
+```
+
+This is why `/plan` legitimately writes `agent-workspace/tests/TEST_STRATEGY.md` and
+`agent-workspace/tests/scenarios/` — both design artifacts, per §I below — while being strictly
+barred from `agent-workspace/src/`, which holds symlinks pointing at execution repositories and
+their AST code graphs. Code Graph generation and System Documentation updates are strictly
+by-request operations, executed only via explicit `--code-graph` and `--docs` flags during
+`/implement` or `/process`. See [directory_handling_roles.md](../directory_handling_roles.md) for
+the full per-directory authority matrix, and §J below for the parallel rule governing operations
+design.
 
 ### I. Verification Design Authority
 `/plan` is the **sole design authority for verification**. Of the five verification artifacts defined in [verification_taxonomy.md](../verification_taxonomy.md), `/plan` owns three:
@@ -128,6 +150,25 @@ The `/plan` workflow enforces a strict write sandbox:
 
 > [!IMPORTANT]
 > **Criteria precede implementation.** Because scenarios are authored here, version-controlled, and owned by a different action than the one that writes the code, the pass/fail bar cannot be quietly weakened downstream — any such change surfaces as a diff against a `/plan`-owned artifact. This, not authorship of the harness, is what makes verification independent.
+
+### J. Operations Design Authority
+`/plan` is the **sole design authority for operations**: environment topology, image specifications,
+configuration and secret *declarations*, pipeline topology, promotion policy, and health contracts —
+the full eight-section content contract defined below for `phase-6-operation.md`.
+
+1. **Recorded Inside the Sandbox**: All operations design is recorded in
+   `agent-workspace/plans/<feature-name>/phase-6-operation.md` — inside the `plans/` sandbox,
+   consistent with §H above. No operations artifact lives outside a feature's planning scope.
+2. **Specifies, Never Constructs**: `/plan` writes **no** Dockerfile, compose file, pipeline YAML, or
+   deploy script, and **creates no repository**. Those are execution, owned by `/implement`
+   (see [implement_action.md](../implement/implement_action.md) §J).
+3. **Never Holds a Secret Value**: `/plan` declares a secret's name, scope, and source — never its
+   value.
+
+> [!IMPORTANT]
+> **Gates precede delivery.** Because environment entry gates are authored by `/plan` and held in
+> version control, `/operate` cannot weaken a gate without producing a visible diff against a
+> `/plan`-owned artifact. That, not authorship of the pipeline, is what makes delivery governed.
 
 ---
 
@@ -179,6 +220,39 @@ agent-workspace/plans/<feature-name>/
 └── implementation_maps/            # Version-named Implementation Maps
     └── implementation_map_v1.0.0.md
 ```
+
+---
+
+### Phase 6 Content Contract: Operations & Environment Design
+
+> [!NOTE]
+> This is the Tier 2 universal content contract for `phase-6-operation.md`. The Tier 3 antigravity
+> template file realizes this contract for that environment; consult it for the fillable form.
+
+Any `phase-6-operation.md` MUST contain the following eight sections:
+
+| § | Section | Content |
+|:---|:---|:---|
+| **0** | **Environment Topology** | Matrix: `ENV-<id>` · purpose · services · config source · **entry gate** · promoted-from. Entry gate ∈ {`none`, `certification: full`} |
+| **1** | Containerization & Image Specifications | Base images, multi-stage build targets, runtime profiles, image naming |
+| **2** | Service Orchestration & Compose | Services, networks, volumes, ports, startup ordering |
+| **3** | **Configuration & Secret Declarations** | Key name · scope · environments · source. **Names only — never a value** |
+| **4** | **CI/CD Pipeline Topology** | This feature mapped onto the 3-tier hierarchy from [multi_repo_architecture.md](../multi_repo_architecture.md) §3 |
+| **5** | **Delivery & Promotion Policy** | Versioning scheme, image tagging + immutable digest, promotion edges, rebuild policy, rollback |
+| **6** | **Health & Readiness Contracts** | Check · endpoint/command · expected · timeout. These become `/operate`'s post-deploy assertions |
+| **7** | Operations Decisions (Embedded ADRs) | Context → Options → Choice → Consequence |
+
+Sections 0, 3, 4, 5, and 6 are the expansion introduced by this contract; 1, 2, and 7 restate the
+document's original containerization scope.
+
+> [!NOTE]
+> **First-Definer Rule.** The first feature to define an environment owns its canonical row in §0.
+> Later features reference the existing definition and record only their delta. Absent a
+> project-durable operations artifact, this rule is what keeps environment definitions from forking
+> across feature sandboxes.
+
+`phase-6-operation.md` **specifies; it never contains a Dockerfile, a compose file, or pipeline
+YAML.** Those are code, written by `/implement` per §J below.
 
 ---
 

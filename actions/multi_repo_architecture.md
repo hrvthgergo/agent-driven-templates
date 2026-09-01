@@ -16,7 +16,7 @@ To prevent the master project workspace from becoming a heavy, congested monorep
 ### Local Development Integration (Symlinks)
 On local development environments (both macOS and Windows), symbolic links are placed inside the main workspace `src/` directory to map the active layer repositories into a single visual workspace (e.g., `src/devops` $\rightarrow$ `codebase-devops/src`, `src/qualify` $\rightarrow$ `codebase-qualify/src`, `src/layout` $\rightarrow$ `codebase-layout/src` or legacy UI folder, `src/engine` $\rightarrow$ `codebase-engine/src` or legacy backend folder). 
 
-*Note: The `/init` action scaffolds the pure control plane (`agent-workspace/`) and creates `src/` as an empty staging folder with a `.gitkeep`. Software layers (`codebase-*`) and relative symlinks are introduced during `/plan` Phase 1 (for greenfield projects) or linked in-place during `/process` (for brownfield projects).*
+*Note: The `/init` action scaffolds the pure control plane (`agent-workspace/`) and creates `src/` as an empty staging folder with a `.gitkeep`. Software layers (`codebase-*`) are designed in `/plan` Phase 1 and provisioned — repository, skeleton, and relative symlink registration — during `/implement` (for greenfield projects), or linked in-place during `/process` (for brownfield projects).*
 
 ---
 
@@ -28,9 +28,9 @@ When software layers are subsequently planned in `/plan` or discovered in `/proc
 
 1. **Option A: Greenfield Multi-Repository Setup (Independent Repositories)**:
    - **`agent-workspace/`**: Initialized with its own `.git` repository and linked to the workspace/docs GitHub remote origin. Tracks `.agents/`, `plans/`, `docs/`, and the **relative symlinks** under `src/`.
-   - **`codebase-devops/`**: Initialized during `/plan` Phase 6 with its own `.git` repository. Tracks `.github/`, `docker/`, `src/`, `config/`, `tests/`, and standalone `Dockerfile`.
-   - **`codebase-<layer>/`**: Initialized during `/plan` Phase 1 with its own `.git` repository. Tracks `src/`, `config/`, `tests/`, and standalone `Dockerfile`.
-   - **`codebase-qualify/`**: Initialized during `/plan` Phase 5 with its own `.git` repository. Tracks test scripts, fixtures, and qualification `Dockerfile`.
+   - **`codebase-devops/`**: Specified in `/plan` Phase 6; created and written by `/implement` with its own `.git` repository. Tracks `.github/`, `docker/`, `src/`, `config/`, `tests/`, and standalone `Dockerfile`.
+   - **`codebase-<layer>/`**: Specified in `/plan` Phase 1; created and written by `/implement` with its own `.git` repository. Tracks `src/`, `config/`, `tests/`, and standalone `Dockerfile`.
+   - **`codebase-qualify/`**: Specified in `/plan` Phase 5; created and written by `/implement` with its own `.git` repository. Tracks test scripts, fixtures, and qualification `Dockerfile`.
    - *Symlink Portability*: Because symlinks under `agent-workspace/src/` use relative paths (`../../codebase-<layer>/src`), `agent-workspace` can be committed and pushed to its own GitHub repository without embedding or duplicating sub-repo source code.
 
 2. **Option B: Brownfield In-Place Integration (Existing Codebase Linking)**:
@@ -79,7 +79,7 @@ This structural segregation establishes an incredibly fast, three-tier continuou
 
 ## 4. Docker Handling Strategy (The Hybrid Docker Strategy)
 
-*Note: The Hybrid Docker Strategy defines the target architecture for local multi-service orchestration and containerized deployment. Docker configurations (`dev.Dockerfile`, `docker-compose.yml`, and layer `Dockerfile` specs) are **planned and provisioned during `/plan` Phase 6: Operations** (for greenfield projects) or **discovered and catalogued during `/process`** (for brownfield projects). The `/init` action does not create Docker files.*
+*Note: The Hybrid Docker Strategy defines the target architecture for local multi-service orchestration and containerized deployment. Docker configurations (`dev.Dockerfile`, `docker-compose.yml`, and layer `Dockerfile` specs) are **planned during `/plan` Phase 6: Operations** (for greenfield projects) and **written by `/implement`**, or **discovered and catalogued during `/process`** (for brownfield projects). The `/init` action does not create Docker files.*
 
 Docker configurations follow **The Hybrid Docker Handling Strategy** to balance standalone container production deployment with centralized local multi-service orchestration.
 
@@ -115,13 +115,16 @@ A project may start as single-layer (e.g. backend API engine only under `codebas
 
 The multi-repo and folder structure rules are enforced **consistently across the entire project lifecycle**:
 
-### Layer Expansion Workflow (`/plan --evolve` / `/init --add-layer <layer_name>`)
-1. **Target Sub-Repository Provisioning**:
+### Layer Expansion Workflow (`/plan --evolve` specifies; `/implement` provisions)
+1. **Blueprint Delta First**: `/plan --evolve` specifies the new layer in a delta blueprint
+   (`plans/<feature_name>/phase-1-summary.md`) defining the integration boundaries. This is a design
+   act — no repository, file, or symlink is created during `/plan`.
+2. **Target Sub-Repository Provisioning** *(by `/implement`)*:
    - Creates the new standalone sub-repository `codebase-<new_layer>` following the exact generic skeleton (`src/`, `config/`, `tests/`, `.github/workflows/`, `Dockerfile`).
-2. **Orchestrator Symlink Registration**:
+3. **Orchestrator Symlink Registration** *(by `/implement`)*:
    - Adds a symbolic link under `agent-workspace/src/<new_layer>` pointing to `../../codebase-<new_layer>/src/`.
-3. **Configuration & Docker Injection**:
+4. **Configuration & Docker Injection** *(by `/implement`)*:
    - Scaffolds layer-specific autonomous configurations in `codebase-<new_layer>/config/`.
    - Updates `codebase-devops/docker/docker-compose.yml` to include the new container service.
-4. **Blueprint Synchronization**:
-   - Updates `PROCESS_STATUS.md` and generates a delta blueprint (`plans/<feature_name>/phase-1-summary.md`) defining the integration boundaries, preserving system consistency.
+5. **Blueprint Synchronization** *(by `/implement`)*:
+   - Updates `PROCESS_STATUS.md` to reflect the provisioned layer, preserving system consistency.

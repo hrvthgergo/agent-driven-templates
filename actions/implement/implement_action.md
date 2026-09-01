@@ -164,6 +164,30 @@ agent-workspace/docs/                  → Optional Global System Docs (Written 
 agent-workspace/plans/<feature-name>/  → Version-Controlled Planning Artifacts & Decision Registry (Updated & Synced during /implement)
 ```
 
+### J. Repository & Infrastructure Provisioning Authority
+1. **Sole Provisioner**: `/implement` is the **sole provisioner of execution directories**:
+   `codebase-<layer>/`, `codebase-qualify/`, and `codebase-devops/`. For each repository named in the
+   active blueprint that does not yet exist, `/implement` creates it, initializes its `.git`, and
+   registers the relative symlink under `agent-workspace/src/<layer>/`.
+2. **Applies, Does Not Define, the Skeleton Contract**: Provisioning **conforms to** the standard
+   skeleton contract owned by `/init` and specified in
+   [folder_structure.md](../folder_structure.md) — `src/`, `config/`, `tests/`,
+   `.github/workflows/`, `Dockerfile`, and universal `.gitkeep` provisioning per the Directory
+   Preservation Policy. `/implement` applies the contract; it does not define it.
+3. **Layer Scope Is an Input, Never a Decision**: Which layers exist, their names, and their stacks
+   come from `/plan` Phase 1 and Phase 6. `/implement` provisions what the blueprint specifies and
+   never invents a layer.
+4. **Brownfield Exception**: Where `/process` has already linked existing repositories in place,
+   `/implement` provisions nothing and writes directly into the linked targets.
+
+> [!NOTE]
+> **Why the builder may provision.** A directory whose existence is a design output cannot be
+> created before design completes — `/init` runs before `/plan`, so it cannot know which layers a
+> project needs. `/implement` runs immediately after design and already holds write authority
+> (**[W]**) over every path it provisions per
+> [directory_handling_roles.md](../directory_handling_roles.md), so creating the directory is the
+> degenerate first case of writing to it. No new authority boundary is crossed.
+
 ### I. Test Harness Construction Authority (`codebase-qualify/`)
 `codebase-qualify` is a first-class software layer, not a special case. `/implement` therefore builds its code under the same rules that govern every other `codebase-*` repository.
 
@@ -242,6 +266,10 @@ graph TD
 * **Reasoning**: Establishes developer alignment on immediate implementation targets before modifying code.
 
 #### Step 4: Visible Step-by-Step Code Scaffolding & Solution Testing (Node S4)
+* **Repository Provisioning (First Act)**: Before any file content is written, `/implement` provisions
+  any `codebase-<layer>/`, `codebase-qualify/`, or `codebase-devops/` repository named in the
+  blueprint that does not yet exist, per §3.J. This is skipped entirely for layers `/process` has
+  already linked in place.
 * **Description**: Executes code modifications step-by-step following the 4-part step schema (Requirement, Prerequisites, Actions, Verification) outlined in the target `implementation_map_v<version>.md`. Executes sequential steps in order and parallel steps flexibly. Displays changes incrementally with visible tools.
 * **Inner Artifact Alignment**: Immediately writes and synchronizes all decisions, plan updates, and step outcomes produced in inner agent docs/Artifacts to the corresponding version-controlled files under `agent-workspace/plans/<feature-name>/`.
 * **User Interruption & Clarification**: Between scaffolding steps, the agent maintains an active communication window where the user can interrupt, ask questions, or request adjustments. No opaque background delegations are used.

@@ -65,7 +65,10 @@ graph TD
 - **Comprehensive Lifecycle Supervision**: Runs all testing tiers (layer unit tests, cross-layer contract suites, E2E browser flows, regression catalogs), performs multi-layer defect attribution, and generates audit artifacts (`QUALIFICATION_REPORT.md` and `qualification_log.json`).
 
 ### Action 6: Operations & Delivery (`/operate`)
-- **Production Packaging & Deployment**: Builds production-ready Docker containers, generates Git release tags, opens pull requests, produces walkthrough summaries, and coordinates deployment handoffs.
+- **Pure Execution, Like `/qualify`**: `/operate` designs nothing and builds nothing it did not construct. It reads the environment topology, image specifications, and promotion policy that `/plan` Phase 6 designed and `/implement` constructed, and executes delivery against them.
+- **Per-Environment Entry Gate**: Every environment in `phase-6-operation.md` §0 declares its own entry gate — `none` or `certification: full`. An environment gated `none` accepts any build; one gated `certification: full` requires a `full` (never `provisional`) `QUALIFICATION_REPORT.md`. This is what makes delivery to a pre-certification test environment legitimate without weakening the production gate.
+- **The Provenance Gate**: Before promoting into any `certification: full` environment, `/operate` verifies the digest it is promoting is byte-identical to the digest `QUALIFICATION_REPORT.md` certified. Build once, promote everywhere — never rebuild per environment.
+- **Production Packaging & Deployment**: Builds production-ready Docker containers once, tags them immutably, generates Git release tags, opens pull requests, produces walkthrough summaries (`WALKTHROUGH.md`), and coordinates deployment handoffs.
 
 ---
 
@@ -77,10 +80,10 @@ A cornerstone of the Guards Framework is that **every action answers a fundament
 | :--- | :--- | :--- | :--- |
 | **`/init`** | **"Where and how do we work?"** | **System Administrator** | Bootstraps environments, sandboxes, layer skeletons, and tracking sheets. Makes zero code edits. |
 | **`/process`** | **"What already exists?"** | **Archaeologist & Analyst** | Ingests brownfield legacy code intact, stages reference docs, and generates code graphs. |
-| **`/plan`** | **"What should the system do, and what must be proven?"** | **Architect & Designer** | Designs blueprints across 6 phases, drafts implementation maps, and owns **all verification design**: `TEST_STRATEGY.md`, `phase-5-test.md`, ratified `SC-*` scenarios, and ratification authority. |
+| **`/plan`** | **"What should the system do, and what must be proven?"** | **Architect & Designer** | Designs blueprints across 6 phases, drafts implementation maps, owns **all verification design**: `TEST_STRATEGY.md`, `phase-5-test.md`, ratified `SC-*` scenarios, and ratification authority, and owns **all operations design**: environment topology, image specs, configuration declarations, pipeline topology, and promotion policy in `phase-6-operation.md`. |
 | **`/implement`** | **"Does my code work?"** | **Software Engineer** | Scaffolds code layer-by-layer, writes unit tests in `codebase-*/tests/`, and **builds the cross-layer harness in `codebase-qualify/`** from ratified scenarios it did not author. |
 | **`/qualify`** | **"Does the whole system work?"** | **Quality Engineer (QA)** | Executes the qualification matrix against a booted environment, gates on scenario coverage, attributes defects across layers, renders the release verdict, and promotes ratified scenarios to the regression catalog. Authors no test assets. |
-| **`/operate`** | **"Is the system deployed?"** | **Operations Engineer (DevOps)** | Builds production Docker images, tags release versions, generates audit walkthroughs, and creates pull requests. |
+| **`/operate`** | **"Is the system deployed?"** | **Operations Engineer (DevOps)** | Executes delivery; designs and builds nothing. Builds production Docker images once, tags release versions immutably, gates on a per-environment entry gate plus a provenance gate, generates audit walkthroughs, and creates pull requests. |
 
 ### Clear Separation of Testing Concerns
 
@@ -296,7 +299,8 @@ The following tables provide the authoritative catalogue of all six fundamental 
 
 | Command / Option | Execution Mode / Scope | Description |
 | :--- | :--- | :--- |
-| `/operate` | **Default Interactive Delivery** | Prompts for release version, verifies certified qualification report, builds production Docker images, tags Git, and opens PR. |
+| `/operate` | **Default Interactive Delivery** | Prompts for target environment and release version, verifies the environment's entry gate, builds production Docker images, tags Git, and opens PR. |
+| `/operate --env <name>` | **Environment Targeting** | Targets a specific environment defined in `phase-6-operation.md` §0. Its declared entry gate (`none` or `certification: full`) governs whether certification is required. |
 | `/operate --version <vX.Y.Z>` | **Explicit Version Tagging** | Explicitly specifies release version tag (e.g. `v1.0.0`) for Docker image tagging and Git release tags. |
 | `/operate --auto` | **Automated Delivery Mode** | Builds images, creates tags, generates release walkthrough, and opens PR without pausing for confirmation. |
 | `/operate --dry-run` | **Preview Mode** | Simulates release build and packaging, outputting walkthrough preview without modifying Git tags or pushing images. |

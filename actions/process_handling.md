@@ -25,7 +25,7 @@ When a project adopts the Guards framework, its entire development process is go
 - **Target Release / Feature**: `[e.g., release/v1.0.0 or feature/ui-dashboard]`
 - **Git Branch**: `[e.g., release/v1.0.0]`
 - **Initialization Date**: `YYYY-MM-DD`
-- **Active Workflow**: `[init | process | plan | implement | qualify | release | idle]`
+- **Active Workflow**: `[init | process | plan | implement | qualify | operate | idle]`
 
 ---
 
@@ -43,10 +43,10 @@ This matrix tracks top-level workflows and focused sub-processes. The 6-Phase Pl
 | ├── **3.3 Phase 3: Data** | `[ ] Not Started` | Data capturing, storing mechanisms & lifecycle events (`phase-3-data.md`) | YYYY-MM-DD |
 | ├── **3.4 Phase 4: Engine** | `[ ] Not Started` | Core engine logic, DTO mappers & API services (`phase-4-engine.md`) | YYYY-MM-DD |
 | ├── **3.5 Phase 5: Test** | `[ ] Not Started` | Verification Scope & Test Delta (`phase-5-test.md`) | YYYY-MM-DD |
-| └── **3.6 Phase 6: Operations** | `[ ] Not Started` | Dockerfiles, Compose & CI/CD (`phase-6-operation.md`) | YYYY-MM-DD |
+| └── **3.6 Phase 6: Operations** | `[ ] Not Started` | Environments, Dockerfiles, Compose, CI/CD & Promotion Policy (`phase-6-operation.md`) | YYYY-MM-DD |
 | **4. /implement** | `[ ] Not Started` | Code scaffolding & layout implementation | YYYY-MM-DD |
 | **5. /qualify** | `[ ] Not Started` | Full-spectrum qualification & release gating | YYYY-MM-DD |
-| **6. /operate** | `[ ] Not Started` | Docker builds, PR creation & deployment | YYYY-MM-DD |
+| **6. /operate** | `[ ] Not Started` | Image build, environment promotion & deployment (`WALKTHROUGH.md`) | YYYY-MM-DD |
 
 ### Status Key:
 - `[ ] Not Started`: Workflow or sub-process has not been initiated.

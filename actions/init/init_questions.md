@@ -19,7 +19,7 @@ To ensure operational consistency and structural stability, the following baseli
     *   `agent-workspace/.agents/`: Control directory (`rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`).
     *   `agent-workspace/plans/`: Feature-bound planning blueprints organized by branch (`plans/initial/`, `plans/<feature_name>/`).
     *   `agent-workspace/docs/`: Human-facing system documentation.
-    *   `agent-workspace/src/`: Empty entry point directory (with `.gitkeep`) ready to receive relative symlinks when software layers are introduced during `/plan` (greenfield) or linked during `/process` (brownfield).
+    *   `agent-workspace/src/`: Empty entry point directory (with `.gitkeep`) ready to receive relative symlinks when software layers are provisioned during `/implement` (greenfield, following scope designed in `/plan`) or linked during `/process` (brownfield).
 *   *Note*: Software layer scope (`codebase-*`), programming languages, and containerization strategy (Hybrid Docker) are planned during `/plan` (or discovered by `/process` for brownfield projects), not during `/init`.
 
 ---

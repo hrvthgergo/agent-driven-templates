@@ -319,4 +319,8 @@ power to expand the certification bar and then render judgment against its own e
 | **`/plan`** | `existing_coverage.md`, prior `QUALIFICATION_REPORT.md` | `TEST_STRATEGY.md`, `phase-5-test.md`, `tests/scenarios/*.md`, ratification transitions |
 | **`/implement`** | `phase-5-test.md`, `tests/scenarios/*.md` | Harness code bearing `@scenario` citations |
 | **`/qualify`** | All of the above | `QUALIFICATION_REPORT.md`, `qualification_log.json`, unratified proposals, regression promotions |
-| **`/operate`** | `QUALIFICATION_REPORT.md` (certification state) | — |
+| **`/operate`** | `QUALIFICATION_REPORT.md` (certification state) | `WALKTHROUGH.md` (ops findings only) |
+
+`/operate` never writes a scenario, never alters a `status` field, and never promotes anything into
+`agent-workspace/tests/regression/`. Its only artifact touching verification state is a read of the
+certified digest for the provenance gate; it authors no verification artifact.
