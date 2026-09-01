@@ -49,8 +49,20 @@
 ### Q9: Phase 5 - Verification Scope Delta & Scenario Authoring
 * **Selection**: [Encountered behaviour scenarios]
 
-### Q10: Phase 6 - Docker & Operations Deployment Impact
-* **Selection**: [Container & Ops specifications]
+### Q10.1: Environment Topology
+* **Selection**: [Environment topology choices and entry gates]
+
+### Q10.2: Containerization & Image Impact
+* **Selection**: [Container profiles and orchestration choices]
+
+### Q10.3: Configuration & Secret Declarations
+* **Selection**: [Secret and config key names and scopes (names only)]
+
+### Q10.4: CI/CD Pipeline Impact & Promotion Policy
+* **Selection**: [Pipeline mappings and promotion edges]
+
+### Q10.5: Observability & Monitoring Design
+* **Selection**: [Signal names, tooling endpoints, and health contracts]
 
 ### Q11: Versioned Implementation Map Drafting Gate (Node S5)
 * **Selection**: [Drafted map version or deferred]

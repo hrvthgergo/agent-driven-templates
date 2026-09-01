@@ -12,7 +12,7 @@
 | 3.3 Phase 3: Data Handling | `agent-workspace/plans/[feature]/phase-3-data.md` | Data Capturing, Storage Schemas & Lifecycle | `[ ] Pending` |
 | 3.4 Phase 4: Core Engine | `agent-workspace/plans/[feature]/phase-4-engine.md` | Core Engine, API Contracts & Backend Routing | `[ ] Pending` |
 | 3.5 Phase 5: Verification | `agent-workspace/plans/[feature]/phase-5-test.md` | Verification Scope Delta & Scenario Links | `[ ] Pending` |
-| 3.6 Phase 6: Operations | `agent-workspace/plans/[feature]/phase-6-operation.md` | Docker Compose & Deployment Operations | `[ ] Pending` |
+| 3.6 Phase 6: Operations | `agent-workspace/plans/[feature]/phase-6-operation.md` | Environment Topology & Operations Design | `[ ] Pending` |
 | **Implementation Map** | `agent-workspace/plans/[feature]/implementation_maps/implementation_map_v1.0.0.md` | Software Version Release Map (v1.0.0) | `[ ] Drafted` |
 | **4. Implementation** | `agent-workspace/plans/[feature]/implementation_log.md` | Incremental Code Scaffolding & Solution Tests | `[ ] Pending` |
 | **5. Qualification** | `agent-workspace/plans/[feature]/QUALIFICATION_REPORT.md` | Test Suite Execution & Quality Certification | `[ ] Pending` |

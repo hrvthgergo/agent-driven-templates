@@ -122,9 +122,10 @@ For an already-initialized workspace, Q0 is presented:
 ### 6.1 Scenario A: Greenfield Test
 
 ```bash
-# 1. Prepare clean test directory
+# 1. Prepare clean test directory and mock remote repository
 mkdir -p /tmp/test-init-greenfield && cd /tmp/test-init-greenfield
 git init
+git init --bare /tmp/mock-remote.git
 
 # 2. Run /init workflow in dry-run mode first to verify output
 /init --dry-run
@@ -135,13 +136,22 @@ git init
 # 4. Run automated assertions
 test -f agent-workspace/plans/initial/GRILL_STATUS.md && echo "ASSERT PASS: GRILL_STATUS.md present"
 test -f agent-workspace/plans/initial/PROCESS_STATUS.md && echo "ASSERT PASS: PROCESS_STATUS.md present"
+test -f agent-workspace/plans/initial/phase-1-summary.md && echo "ASSERT PASS: phase-1-summary.md present"
+test -f agent-workspace/.agents/rules/.gitkeep && echo "ASSERT PASS: .gitkeep in rules/"
+test -f agent-workspace/.agents/workflows/.gitkeep && echo "ASSERT PASS: .gitkeep in workflows/"
 test -f agent-workspace/.agents/skills/.gitkeep && echo "ASSERT PASS: .gitkeep in skills/"
+test -f agent-workspace/.agents/hooks/.gitkeep && echo "ASSERT PASS: .gitkeep in hooks/"
+test -f agent-workspace/.agents/sidecars/.gitkeep && echo "ASSERT PASS: .gitkeep in sidecars/"
 test -f agent-workspace/docs/.gitkeep && echo "ASSERT PASS: .gitkeep in docs/"
 test -f agent-workspace/src/.gitkeep && echo "ASSERT PASS: .gitkeep in src/"
 test ! -d codebase-devops && echo "ASSERT PASS: No codebase-devops created during /init"
 test ! -d codebase-layout && echo "ASSERT PASS: No codebase-layout created during /init"
+test ! -d codebase-engine && echo "ASSERT PASS: No codebase-engine created during /init"
 test -x .git/hooks/pre-commit && echo "ASSERT PASS: Pre-commit hook executable"
 grep -q "mode: major_feature" agent-workspace/plans/initial/GRILL_STATUS.md && echo "ASSERT PASS: Mode recorded as major_feature"
+grep -q "Q5 Primary Remote Origin" agent-workspace/plans/initial/GRILL_STATUS.md && echo "ASSERT PASS: Q5 remote origin recorded"
+git ls-remote --heads origin initial | grep -q "refs/heads/initial" && echo "ASSERT PASS: Initial commit pushed to remote origin"
+.git/hooks/pre-commit && echo "ASSERT PASS: Pre-commit hook passed validation"
 ```
 
 ### 6.2 Scenario B: Quick & Simple Test
@@ -163,4 +173,7 @@ git branch --show-current | grep -q "bugfix/fix-checkout-button" && echo "ASSERT
 
 # 3. Verify no new sub-repos were created
 test ! -d codebase-fix-checkout-button && echo "ASSERT PASS: No new sub-repo created for Quick & Simple"
+
+# 4. Verify pre-commit hook validation on feature branch
+.git/hooks/pre-commit && echo "ASSERT PASS: Pre-commit hook passed validation on bugfix branch"
 ```

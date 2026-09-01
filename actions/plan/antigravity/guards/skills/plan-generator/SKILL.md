@@ -1,11 +1,11 @@
 ---
 name: plan-generator
-description: Skill for generating 6-phase blueprints, test strategies, scenarios, and versioned implementation maps
+description: Skill for generating 6-phase blueprints, test strategies, scenarios, operations design, and versioned implementation maps
 ---
 
 # Plan Generator Skill
 
-This skill provides step-by-step procedures for scaffolding 6-Phase Blueprints, multi-layer `phase_details/` subfolders, research reports, project-durable test strategies, Given/When/Then scenarios, and software versioned implementation maps.
+This skill provides step-by-step procedures for scaffolding 6-Phase Blueprints, multi-layer `phase_details/` subfolders, research reports, project-durable test strategies, Given/When/Then scenarios, operations specifications (§0–§7), and software versioned implementation maps.
 
 ---
 
@@ -18,7 +18,7 @@ This skill provides step-by-step procedures for scaffolding 6-Phase Blueprints, 
    * Selected: `phase-3-data.md` (Data models, schemas, capture/storing mechanisms & store lifecycle).
    * Selected: `phase-4-engine.md` (Core engine, API contracts, mappers & service routing).
    * Selected: `phase-5-test.md` (Verification Scope Delta referencing `TEST_STRATEGY.md` and listing `SC-*` scenario IDs).
-   * Selected: `phase-6-operation.md` (Docker compose, environment variables & CI/CD deployment impact).
+   * Selected: `phase-6-operation.md` (8-Section Content Contract: §0 Environment Topology matrix with entry gates, §1 Containerization & Image Specs, §2 Service Orchestration, §3 Configuration & Secret Declarations [names only], §4 CI/CD Pipeline Topology, §5 Delivery & Promotion Policy [including post-delivery hooks], §6 Observability & Health Contracts [6a signals, 6b monitoring tools, 6c health/readiness/alert contracts], §7 Operations ADRs).
 3. Populate each active phase document with user specifications, embedded decisions, and markdown links to research reports.
 
 ---
@@ -87,7 +87,25 @@ This skill provides step-by-step procedures for scaffolding 6-Phase Blueprints, 
 
 ---
 
-## 7. Procedure: Versioned Implementation Map Drafting (`implementation_maps/`)
+## 7. Procedure: Operations & Environment Design (`phase-6-operation.md`)
+
+1. Populate `agent-workspace/plans/<feature-name>/phase-6-operation.md` adhering to the 8-section content contract:
+   * **§0 Environment Topology**: Canonical environment matrix (`ENV-<id>`, purpose, services, config source, entry gate ∈ {`none`, `certification: full`}, promoted-from). Respect First-Definer Rule.
+   * **§1 Containerization & Image Specifications**: Base images, multi-stage targets, runtime profiles, image naming.
+   * **§2 Service Orchestration & Compose**: Services, networks, volumes, ports, startup ordering.
+   * **§3 Configuration & Secret Declarations**: Key name, scope, environments, source. **Names only — never values**.
+   * **§4 CI/CD Pipeline Topology**: Mapped to 3-tier hierarchy.
+   * **§5 Delivery & Promotion Policy**: Versioning scheme, image tagging, immutable digest, promotion edges, rebuild/rollback policies, and post-delivery hooks.
+   * **§6 Observability & Health Contracts**:
+     - Block 6a: Signals & Instrumentation Contract (signal name, type `metric`/`log`/`trace`, source layer, emitted-when).
+     - Block 6b: Monitoring Tooling & Endpoints (tool name, scrape/ingest endpoint per environment; First-Definer Rule applies).
+     - Block 6c: Health, Readiness & Alert Contracts (check, endpoint/command, expected, timeout, optional soak duration, alert rule, condition, window, routing target).
+   * **§7 Operations Decisions (Embedded ADRs)**: Context, Options, Choice, Consequence.
+2. Note: `/plan` specifies only and never writes Dockerfiles, Compose files, or pipeline YAMLs (owned by `/implement`).
+
+---
+
+## 8. Procedure: Versioned Implementation Map Drafting (`implementation_maps/`)
 
 1. When option is selected in Node S5 or via `/plan --map`:
    * Create directory: `agent-workspace/plans/<feature-name>/implementation_maps/`.

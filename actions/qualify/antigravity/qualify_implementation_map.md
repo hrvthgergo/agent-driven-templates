@@ -48,7 +48,7 @@ The implementation plan directly realizes the following design blueprints and al
 - [ ] `[NEW]` `actions/qualify/antigravity/guards/skills/qualify-evaluator/SKILL.md` - Core qualification evaluator skill for parsing `@scenario` citations, evaluating the coverage gate formula, executing multi-tier test suites, diagnosing failure stack traces for layer attribution, generating audit reports, and promoting ratified scenarios.
 - [ ] `[NEW]` `actions/qualify/antigravity/guards/templates/QUALIFICATION_REPORT.md` - Human-readable qualification audit report template with Section 0 Coverage Gate result, Test Suite breakdown, Defect Attribution, Coverage Gap Proposals, and Release Certification.
 - [ ] `[NEW]` `actions/qualify/antigravity/guards/templates/qualification_log.json` - Machine-readable JSON execution log template.
-- [ ] `[NEW]` `actions/qualify/antigravity/guards/templates/PROCESS_STATUS.md` - Process status matrix update template tracking Row 5 (`/qualify`).
+- [ ] `[NEW]` `actions/qualify/antigravity/guards/templates/PROCESS_STATUS.md` - Process status matrix update template tracking the `/qualify` row.
 
 ---
 
@@ -150,7 +150,7 @@ The implementation plan directly realizes the following design blueprints and al
 3. **Actions Taken**:
    - `[NEW]` `actions/qualify/antigravity/guards/templates/QUALIFICATION_REPORT.md`: Comprehensive template containing Section 0 Coverage Gate, Section 1 Test Suite Summary, Section 2 Identified Defects & Layer Attribution, Section 3 Coverage Gap Proposals, Section 4 Unproven Scope, and Section 5 Release Certification.
    - `[NEW]` `actions/qualify/antigravity/guards/templates/qualification_log.json`: Standardized JSON audit schema.
-   - `[NEW]` `actions/qualify/antigravity/guards/templates/PROCESS_STATUS.md`: Status update template marking Row 5 (`/qualify`) as `Completed`.
+   - `[NEW]` `actions/qualify/antigravity/guards/templates/PROCESS_STATUS.md`: Status update template marking the `/qualify` row as `[x] Done`.
 4. **Verification Fulfilled**:
    - Templates conform to markdown/JSON lint standards and qualification schema.
 

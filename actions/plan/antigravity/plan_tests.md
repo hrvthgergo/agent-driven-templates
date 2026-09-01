@@ -6,9 +6,9 @@ This document defines the test scenario, mock execution sequence, user input sim
 
 ## 1. Test Overview & Objectives
 
-*   **Target Workflow**: `/plan` (Interactive Planning workflow for 6-Phase Blueprints, Test Strategies, Scenarios, and Versioned Implementation Maps)
+*   **Target Workflow**: `/plan` (Interactive Planning workflow for 6-Phase Blueprints, Test Strategies, Scenarios, Operations Design, and Versioned Implementation Maps)
 *   **Target Environment**: Google Antigravity Agent Execution Environment
-*   **Test Scenario**: Feature Planning & Blueprint Generation Scenario (Fullstack Web App with Data Handling + Core Engine + Docker Ops + Verification Strategy & Scenarios)
+*   **Test Scenario**: Feature Planning & Blueprint Generation Scenario (Fullstack Web App with Data Handling + Core Engine + Operations Design + Verification Strategy & Scenarios)
 *   **Primary Objective**: Validate end-to-end execution of the `/plan` workflow state machine (Nodes S1 $\rightarrow$ S7), asserting that:
     1. Node S2 presents an Initial Feature Understanding Summary prior to starting Q&A.
     2. Q1–Q11 prompts generate neutral choices, persistent `GRILL_STATUS.md` audit logs, and Node S5 Execution Acceptance Gate prompts.
@@ -19,9 +19,10 @@ This document defines the test scenario, mock execution sequence, user input sim
     7. Test Strategy (`agent-workspace/tests/TEST_STRATEGY.md`) is authored/asserted project-wide (Q8b) with declared tiers, thresholds, and mocking policy.
     8. Scenarios are authored under `agent-workspace/tests/scenarios/SC-<feature-slug>-<nnn>.md` with immutable identifiers, `origin: plan`, `status: ratified`, and Given/When/Then behaviour criteria (Q9).
     9. `phase-5-test.md` serves as Verification Scope Delta, referencing `TEST_STRATEGY.md` and listing the binding scenario IDs in scope.
-    10. Node S5 offers an option to draft a software versioned implementation map (`implementation_map_v1.0.0.md`) adhering to `implementation_map_taxonomy.md` without executing source code modifications.
-    11. Write actions are strictly restricted to `agent-workspace/plans/<feature-name>/` (and project-durable verification artifacts in `agent-workspace/tests/`).
-    12. `PROCESS_STATUS.md` matrix (sub-rows 3.1–3.6) is synchronized cleanly.
+    10. `phase-6-operation.md` adheres to the 8-section content contract (§0 Environment Topology matrix with entry gates, §1 Containerization, §2 Service Orchestration, §3 Config/Secrets declarations [names only], §4 CI/CD Pipeline Topology, §5 Delivery & Promotion Policy, §6 Observability Contracts [6a/6b/6c], §7 ADRs), populated via Q10.1–Q10.5.
+    11. Node S5 offers an option to draft a software versioned implementation map (`implementation_map_v1.0.0.md`) adhering to `implementation_map_taxonomy.md` without executing source code modifications.
+    12. Write actions are strictly restricted to `agent-workspace/plans/<feature-name>/` (and project-durable verification artifacts in `agent-workspace/tests/`).
+    13. `PROCESS_STATUS.md` matrix (sub-rows 3.1–3.6) is synchronized cleanly, and row 6 points to `/operate`.
 
 ---
 
@@ -61,7 +62,11 @@ The test harness simulates an interactive user session responding to the sequent
 | **Q8b** | **Test Strategy Assertion & Amendment** | Selected Option 3 (*Author the strategy for the first time: unit, integration, e2e, regression tiers, 80% threshold, mock policy*). | Authors project-durable `agent-workspace/tests/TEST_STRATEGY.md`. |
 | **Q8c** | **Carry-Over Ratification** | Selected Option 1 (*No carry-over proposals present / adopt into active scope*). | Confirms unratified carry-over queue state in `agent-workspace/tests/scenarios/`. |
 | **Q9** | **Phase 5 - Verification Scope Delta & Scenario Authoring** | Selected Option 1 (*Enumerate behaviours: SC-user-auth-001 for credential login, SC-user-auth-002 for JWT refresh token rotation*). | Populates `phase-5-test.md` citing `SC-user-auth-001` and `SC-user-auth-002`; authors scenario files in `agent-workspace/tests/scenarios/`. |
-| **Q10** | **Phase 6 - Docker & Operations Deployment** | Selected Option 1 (*Multi-container Compose orchestration*). | Populates `agent-workspace/plans/user-auth/phase-6-operation.md` with container profiles & ops decisions. |
+| **Q10.1** | **Environment Topology** | Selected Option 2 (*New environment: ENV-staging, purpose: integration validation, services: auth_api, web_ui, postgres, entry gate: certification: full*). | Populates `phase-6-operation.md` §0 (Environment Topology). |
+| **Q10.2** | **Containerization & Image Impact** | Selected Option 1 (*Multi-container Compose orchestration with environment variable isolation*). | Populates `phase-6-operation.md` §1–§2 (Containerization & Service Orchestration). |
+| **Q10.3** | **Configuration & Secret Declarations** | Selected Option 2 (*New secret keys: JWT_SECRET_KEY, DB_PASSWORD; scope: engine, auth; envs: staging, prod; source: vault. Names only.*). | Populates `phase-6-operation.md` §3 (Configuration & Secret Declarations). |
+| **Q10.4** | **CI/CD Pipeline Impact & Promotion Policy** | Selected Option 2 (*Layer micro-pipeline updates + standard promotion edges*). | Populates `phase-6-operation.md` §4–§5 (CI/CD Pipeline Topology & Promotion Policy). |
+| **Q10.5** | **Observability & Monitoring Design** | Selected Option 2 (*Signals: auth_login_total, auth_latency_ms; Tool: Prometheus at /metrics; Health checks: /healthz 200 OK, alert on error rate > 1% over 5m*). | Populates `phase-6-operation.md` §6 (blocks 6a, 6b, 6c). |
 | **S5** | **Execution Acceptance Gate & Map Option** | Displays understanding recap. Selected Option 2 (*Draft Full Feature Release Map v1.0.0*). | User acceptance logged; drafts `agent-workspace/plans/user-auth/implementation_maps/implementation_map_v1.0.0.md` without code execution. |
 | **S6** | **PROCESS_STATUS.md Sync** | System synchronizes process status matrix sub-rows 3.1–3.6. | `PROCESS_STATUS.md` matrix updated to `Completed` for planning phase. |
 
@@ -75,7 +80,7 @@ Upon completion of Node S7, the test harness executes automated verification che
 | :--- | :--- | :--- | :--- |
 | **S1** | Precondition & Branch Verification | Git Context & `agent-workspace/` | Verified environments exist. Active branch confirmed as `feature/user-auth`. |
 | **S2** | Initial Feature Summary Mandate | Subprocess Stdout / Audit Log | Console output contains Initial Feature Understanding Summary prior to Q1 prompt. |
-| **S3** | Audit Log & Transcript | `agent-workspace/plans/user-auth/GRILL_STATUS.md` | File exists. Contains full Q1–Q11 transcript, question texts, selected options, and user inputs. |
+| **S3** | Audit Log & Transcript | `agent-workspace/plans/user-auth/GRILL_STATUS.md` | File exists. Contains full Q1–Q11 (and Q10.1–Q10.5) transcript, question texts, selected options, and user inputs. |
 | **S4** | Master Governor Blueprint | `agent-workspace/plans/user-auth/phase-1-summary.md` | File exists. Contains vision, System Impact Analysis, and links to research reports. |
 | **S4** | 6-Phase Blueprints Set | `agent-workspace/plans/user-auth/` | All 6 files present: `phase-1-summary.md`, `phase-2-layout.md`, `phase-3-data.md`, `phase-4-engine.md`, `phase-5-test.md`, `phase-6-operation.md`. |
 | **S4** | Phase Details Subfolders | `agent-workspace/plans/user-auth/phase_details/` | Subfolders present: `phase_details/web_ui/` and `phase_details/auth_api/`. Each contains sub-element phase specs. |
@@ -83,10 +88,11 @@ Upon completion of Node S7, the test harness executes automated verification che
 | **S4** | Test Strategy Specification | `agent-workspace/tests/TEST_STRATEGY.md` | File exists. Contains declared testing tiers, tooling, thresholds, mocking policy, and definition of certified. |
 | **S4** | Ratified Scenario Files | `agent-workspace/tests/scenarios/` | Files `SC-user-auth-001.md` and `SC-user-auth-002.md` exist with `origin: plan`, `status: ratified`, and Given/When/Then criteria. |
 | **S4** | Verification Scope Delta | `agent-workspace/plans/user-auth/phase-5-test.md` | File exists. References `TEST_STRATEGY.md` and explicitly cites `SC-user-auth-001` and `SC-user-auth-002`. Zero restated tooling/thresholds. |
+| **S4** | Operations & Environment Design | `agent-workspace/plans/user-auth/phase-6-operation.md` | File exists. Contains full 8-section content contract (§0 Environment Topology matrix with entry gates, §1 Containerization, §2 Compose, §3 Secret declarations [names only], §4 CI/CD Topology, §5 Promotion & post-delivery hooks, §6 Observability blocks [6a/6b/6c], §7 ADRs). |
 | **S4** | Embedded Decision Verification | `agent-workspace/plans/user-auth/phase-*.md` | Decisions documented directly inside `phase-*.md` blueprints. **Zero `decisions/` subfolder created**. |
 | **S5** | Versioned Implementation Map | `agent-workspace/plans/user-auth/implementation_maps/` | File `implementation_maps/implementation_map_v1.0.0.md` exists, adhering to `implementation_map_taxonomy.md`. **Zero source code modified in `src/` or `codebase-*/`**. |
 | **S5** | Filesystem Sandbox Boundary | Workspace Root | All created/edited feature files are strictly confined to `agent-workspace/plans/user-auth/` (plus project-durable `agent-workspace/tests/`). **Zero edits in `docs/` or `src/*/code_graph/`**. |
-| **S6** | Guard Process Status | `agent-workspace/plans/user-auth/PROCESS_STATUS.md` | Block 1 matrix contains planning sub-rows 3.1–3.6 marked `[x] Done`. Block 2 daily history updated. |
+| **S6** | Guard Process Status | `agent-workspace/plans/user-auth/PROCESS_STATUS.md` | Block 1 matrix contains planning sub-rows 3.1–3.6 marked `[x] Done`. Row 6 designates `/operate`. Block 2 daily history updated. |
 | **S7** | Execution Completion Output | Subprocess Stdout | Terminal prints planning summary report and recommended next workflow command (`/implement`). |
 
 ---
@@ -112,12 +118,15 @@ test -f agent-workspace/plans/user-auth/phase-1-summary.md && echo "ASSERT PASS:
 test -f agent-workspace/plans/user-auth/phase-3-data.md && echo "ASSERT PASS: phase-3-data.md present"
 test -f agent-workspace/plans/user-auth/phase-4-engine.md && echo "ASSERT PASS: phase-4-engine.md present"
 test -f agent-workspace/plans/user-auth/phase-5-test.md && echo "ASSERT PASS: phase-5-test.md present"
+test -f agent-workspace/plans/user-auth/phase-6-operation.md && echo "ASSERT PASS: phase-6-operation.md present"
 test -d agent-workspace/plans/user-auth/phase_details/web_ui && echo "ASSERT PASS: phase_details/web_ui present"
 test -f agent-workspace/plans/user-auth/knowledge/research_report_oauth2_vs_jwt.md && echo "ASSERT PASS: research report present in knowledge/"
 test -f agent-workspace/tests/TEST_STRATEGY.md && echo "ASSERT PASS: TEST_STRATEGY.md present in agent-workspace/tests/"
 test -f agent-workspace/tests/scenarios/SC-user-auth-001.md && echo "ASSERT PASS: SC-user-auth-001.md present in agent-workspace/tests/scenarios/"
 test -f agent-workspace/tests/scenarios/SC-user-auth-002.md && echo "ASSERT PASS: SC-user-auth-002.md present in agent-workspace/tests/scenarios/"
 grep -q "SC-user-auth-001" agent-workspace/plans/user-auth/phase-5-test.md && echo "ASSERT PASS: scenario cited in phase-5-test.md"
+grep -q "Environment Topology" agent-workspace/plans/user-auth/phase-6-operation.md && echo "ASSERT PASS: Environment Topology present in phase-6-operation.md"
+grep -q "Observability" agent-workspace/plans/user-auth/phase-6-operation.md && echo "ASSERT PASS: Observability present in phase-6-operation.md"
 test -f agent-workspace/plans/user-auth/implementation_maps/implementation_map_v1.0.0.md && echo "ASSERT PASS: versioned implementation_map_v1.0.0.md present"
 test ! -d agent-workspace/plans/user-auth/decisions && echo "ASSERT PASS: no separate decisions folder created"
 ```

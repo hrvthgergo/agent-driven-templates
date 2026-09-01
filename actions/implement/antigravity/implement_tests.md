@@ -6,19 +6,21 @@ This document defines the test scenario, mock execution sequence, user input sim
 
 ## 1. Test Overview & Objectives
 
-* **Target Workflow**: `/implement` (Action Implementation workflow for physical code scaffolding, cross-layer test harness construction, solution testing, code graph sync, and system doc updates)
+* **Target Workflow**: `/implement` (Action Implementation workflow for execution repository provisioning, physical code scaffolding, cross-layer test harness construction, observability instrumentation, solution testing, code graph sync, and system doc updates)
 * **Target Environment**: Google Antigravity Agent Execution Environment
-* **Test Scenario**: Fullstack Feature Implementation Scenario (`user-auth` feature spanning `codebase-data`, `codebase-engine`, `codebase-ui`, and `codebase-qualify`)
+* **Test Scenario**: Fullstack Feature Implementation Scenario (`user-auth` feature spanning `codebase-data`, `codebase-engine`, `codebase-ui`, `codebase-qualify`, and `codebase-devops`)
 * **Primary Objective**: Validate end-to-end execution of the `/implement` workflow state machine (Nodes S1 $\rightarrow$ S7), asserting that:
   1. **FIRST ACTION Mandate**: Node S2 immediately checks and verifies (1) `implementation_map_v1.0.0.md`, (2) `phase-5-test.md`, and (3) that all scenario IDs in `phase-5-test.md` resolve to `agent-workspace/tests/scenarios/` with `status: ratified` before touching code.
   2. **Rejection Guards**: Agent strictly rejects code modification if the implementation map, test plan, or any scenario ratification resolution fails, returning scope to `/plan`.
-  3. **4-Part Step Schema & Stream Categorization**: Scaffolding executes sequential steps, parallel steps, and the test harness stream (`codebase-qualify/`), asserting Requirement, Prerequisites, Actions, and Verification for each step.
-  4. **Visible Scaffolding & Interruption Checkpoints**: Scaffolding actions are visible and allow direct user interruption without opaque subagent delegation.
-  5. **Solution Testing & Cross-Layer Test Harness**: Runs layer-local unit/integration tests per step AND builds cross-layer test harness in `codebase-qualify/src/` tagged with `@scenario SC-<feature-slug>-<nnn>`.
-  6. **Red-First Harness Isolation Mode**: Supports `--tests-only` to build failing test harnesses in `codebase-qualify/` ahead of feature code.
-  7. **Token Economy Guard**: AST Code Graph (`src/<layer>/code_graph/`) and System Documentation (`docs/`) updates are skipped by default and run only with `--code-graph`, `--docs`, or `--full-sync`.
-  8. **Decision Persistence & Artifact Sync**: All decisions and outcomes recorded in inner agent docs (Artifacts) are 100% synchronized into version-controlled files under `agent-workspace/plans/user-auth/`.
-  9. **Process Status Sync**: `PROCESS_STATUS.md` Row 4 is marked `Completed` with datestamped history log.
+  3. **Repository Provisioning Authority**: As the sole provisioner of execution directories, `/implement` provisions non-existent `codebase-<layer>/`, `codebase-qualify/`, and `codebase-devops/` repositories applying the `/init`-owned skeleton contract (`src/`, `config/`, `tests/`, `.github/workflows/`, `Dockerfile`, `.gitkeep`) before scaffolding content.
+  4. **4-Part Step Schema & Stream Categorization**: Scaffolding executes sequential steps, parallel steps, and the test harness stream (`codebase-qualify/`), asserting Requirement, Prerequisites, Actions, and Verification for each step.
+  5. **Visible Scaffolding & Interruption Checkpoints**: Scaffolding actions are visible and allow direct user interruption without opaque subagent delegation.
+  6. **Solution Testing & Cross-Layer Test Harness**: Runs layer-local unit/integration tests per step AND builds cross-layer test harness in `codebase-qualify/src/` tagged with `@scenario SC-<feature-slug>-<nnn>`.
+  7. **Observability Artifacts Partitioning**: Instruments runtime code (metrics, health endpoints) in `codebase-<layer>/` and monitoring infrastructure (collector configs, alert rules) in `codebase-devops/` realizing `phase-6-operation.md` §6 contracts.
+  8. **Red-First Harness Isolation Mode**: Supports `--tests-only` to build failing test harnesses in `codebase-qualify/` ahead of feature code.
+  9. **Token Economy Guard**: AST Code Graph (`src/<layer>/code_graph/`) and System Documentation (`docs/`) updates are skipped by default and run only with `--code-graph`, `--docs`, or `--full-sync`.
+  10. **Decision Persistence & Artifact Sync**: All decisions and outcomes recorded in inner agent docs (Artifacts) are 100% synchronized into version-controlled files under `agent-workspace/plans/user-auth/`.
+  11. **Process Status Sync**: `PROCESS_STATUS.md` Row 4 is marked `Completed` with datestamped history log, recommending `/qualify` before final `/operate`.
 
 ---
 
@@ -30,12 +32,13 @@ To ensure isolated, reproducible test runs, the test environment MUST meet the f
 2. **Pre-scaffolded Planning Artifacts**: Directory `agent-workspace/plans/user-auth/` containing:
    - `phase-1-summary.md` through `phase-6-operation.md`
    - `phase-5-test.md` (Test Plan with critical regression assertions, verification scope delta, and in-scope scenario ID list)
+   - `phase-6-operation.md` (Operations blueprint declaring environments, CI/CD topology, and observability contracts)
    - `implementation_maps/implementation_map_v1.0.0.md` adhering to the 4-part step schema
    - `PROCESS_STATUS.md` with Rows 1–3 marked `Completed`
 3. **Ratified Test Scenarios**: Directory `agent-workspace/tests/scenarios/` containing:
    - `SC-user-auth-001.md` (`status: ratified`)
    - `SC-user-auth-002.md` (`status: ratified`)
-4. **Sub-Repository Layer Symlinks**: Relative symlinks under `agent-workspace/src/` resolving to `codebase-data/`, `codebase-engine/`, `codebase-ui/`, and `codebase-qualify/`.
+4. **Execution Layer Targets**: Non-existent layer repositories (`codebase-data/`, `codebase-engine/`, `codebase-ui/`, `codebase-qualify/`, `codebase-devops/`) are provisioned dynamically by `/implement` (or linked in-place by `/process` in brownfield mode) and symlinked under `agent-workspace/src/<layer>/`.
 
 ---
 
@@ -73,12 +76,12 @@ To ensure isolated, reproducible test runs, the test environment MUST meet the f
 | **Q3** | **Starting Layer / Entry Point** | Selected Option 1 (*Data Layer & Persistence Models: codebase-data*). | Starting layer set to `codebase-data`. |
 | **Q4** | **Scaffolding Strategy & Visibility** | Selected Option 1 (*Step-by-step with explicit developer approval and diff preview*). | Plan-First interactive mode engaged. |
 | **Q4b** | **Test Harness Construction Ordering** | Selected Option 1 (*Red-first: Build harness before feature code via /implement --tests-only*). | Harness stream scheduled prior to feature code. |
-| **Q5** | **Sequential vs Parallel Sequencing** | Selected Option 1 (*Interleaved sequential execution: Step 1 -> Step 2 -> Parallel Step 3.A & 3.B -> Step 4*). | Execution stream sequence established (including `codebase-qualify/` stream). |
+| **Q5** | **Sequential vs Parallel Sequencing** | Selected Option 1 (*Interleaved sequential execution: Step 1 -> Step 2 -> Parallel Step 3.A & 3.B -> Step 4*). | Execution stream sequence established (including `codebase-qualify/` and `codebase-devops/` streams). |
 | **Q6** | **Token Economy: Code Graph** | Selected Option 1 (*Skip Code Graph updates - Default*). | Code graph generation bypassed (conserves tokens). |
 | **Q7** | **Token Economy: System Docs** | Selected Option 1 (*Skip System Docs updates - Default*). | System docs generation bypassed (conserves tokens). |
-| **Q8** | **Symlink Integrity Check** | Selected Option 1 (*Yes - Verify symlink resolution*). | Asserted symlinks in `agent-workspace/src/` (incl. `qualify`) are valid relative links. |
-| **Q9** | **Execution Start Confirmation** | Selected Option 1 (*Confirm and execute implementation*). | User approval logged; begins Node S4 code & harness scaffolding loop. |
-| **S4** | **Step-by-Step Scaffolding, Harness & Tests** | User confirms Step 1 (Data Models) $\rightarrow$ Step 2 (Engine Service) $\rightarrow$ Step 3.A/3.B (UI Presenters) $\rightarrow$ Step 4 (API Routes & Qualify Harness). | Scaffolds files, builds `codebase-qualify/src/` test citing `@scenario SC-user-auth-001`, runs unit tests, syncs decisions to `plans/user-auth/`. |
+| **Q8** | **Symlink Integrity Check** | Selected Option 1 (*Yes - Verify symlink resolution*). | Asserted symlinks in `agent-workspace/src/` (incl. `qualify` & `devops`) are valid relative links. |
+| **Q9** | **Execution Start Confirmation** | Selected Option 1 (*Confirm and execute implementation*). | User approval logged; begins Node S4 repository provisioning & code scaffolding loop. |
+| **S4** | **Step-by-Step Scaffolding, Harness & Tests** | User confirms Step 1 (Data Models) $\rightarrow$ Step 2 (Engine Service) $\rightarrow$ Step 3.A/3.B (UI & DevOps) $\rightarrow$ Step 4 (API Routes & Qualify Harness). | Provisions repositories applying skeleton contract, scaffolds files, builds `codebase-qualify/src/` test citing `@scenario SC-user-auth-001`, instruments health/metrics endpoints, runs unit tests, syncs decisions to `plans/user-auth/`. |
 | **S7** | **PROCESS_STATUS.md Sync** | System synchronizes process status matrix. | Row 4 marked `Completed`. Next command recommended: `/qualify`. |
 
 ---
@@ -89,15 +92,17 @@ To ensure isolated, reproducible test runs, the test environment MUST meet the f
 | :--- | :--- | :--- | :--- |
 | **S2** | 3-Leg Dual Grounding Gate | `agent-workspace/plans/user-auth/` & `agent-workspace/tests/scenarios/` | `implementation_map_v1.0.0.md` exists, `phase-5-test.md` exists, and all in-scope scenario IDs carry `status: ratified`. |
 | **S3** | Audit Log & Transcript | `agent-workspace/plans/user-auth/GRILL_STATUS.md` | Contains full Q1–Q9 (incl. Q4b) prompt choices, selected options, and user inputs. |
+| **S4** | Repository Provisioning | `codebase-data/`, `codebase-engine/`, `codebase-ui/`, `codebase-qualify/`, `codebase-devops/` | Repositories provisioned with standard skeleton contract (`src/`, `config/`, `tests/`, `.github/workflows/`, `Dockerfile`, `.gitkeep`) and registered in `agent-workspace/src/`. |
 | **S4** | Data Layer Scaffolding | `codebase-data/src/models/user.py` | Entity class and database migration script created. |
-| **S4** | Engine Layer Scaffolding | `codebase-engine/src/services/auth.py` | `AuthService` logic and DTO mappers created. |
+| **S4** | Engine Layer Scaffolding | `codebase-engine/src/services/auth.py` | `AuthService` logic, DTO mappers, and health check endpoints created. |
 | **S4** | UI Layer Scaffolding | `codebase-ui/src/views/LoginView.tsx` | UI presentation view component created. |
 | **S4** | Test Harness Construction | `codebase-qualify/src/test_auth_flow.py` | Cross-layer harness test created and tagged with `@scenario SC-user-auth-001`. |
+| **S4** | DevOps & Observability Scaffolding | `codebase-devops/` | Collector configuration and CI/CD workflow created per `phase-6-operation.md` §6. |
 | **S4** | Solution Testing: Unit Tests | `codebase-data/tests/`, `codebase-engine/tests/` | Unit test files scaffolded and passing (`exit code 0`). |
 | **S4** | Decision Persistence & Artifact Sync | `agent-workspace/plans/user-auth/` | 100% parity between inner agent Artifacts and version-controlled `plans/` documents. |
 | **S5** | Token Economy: Code Graph Bypass | `agent-workspace/src/*/code_graph/` | Directory unmodified during default `/implement` run. |
 | **S6** | Token Economy: System Docs Bypass | `agent-workspace/docs/` | Directory unmodified during default `/implement` run. |
-| **S7** | Guard Process Status | `agent-workspace/plans/user-auth/PROCESS_STATUS.md` | Row 4 marked `Completed`. Daily history contains datestamped log entry. |
+| **S7** | Guard Process Status | `agent-workspace/plans/user-auth/PROCESS_STATUS.md` | Row 4 marked `Completed`, Row 6 reflects `/operate`. Daily history contains datestamped log entry. |
 
 ---
 
@@ -184,21 +189,30 @@ grep -q "1. \*\*Requirement Fulfilled\*\*" agent-workspace/plans/user-auth/imple
   && echo "PASS: 4-Part Step Schema validated in implementation_map"
 ```
 
-#### Test 2.2: Incremental Code Scaffolding Execution
+#### Test 2.2: Repository Provisioning & Incremental Code Scaffolding Execution
 ```bash
 # Command: Execute /implement in continuous mode
 /implement --auto --version v1.0.0
 
-# Assertions: Verify files created in respective sub-repositories
+# Assertions: Verify layer repositories provisioned with skeleton contract (.gitkeep preservation)
+test -d codebase-data/src && test -f codebase-data/tests/.gitkeep && echo "PASS: codebase-data provisioned with skeleton contract"
+test -d codebase-engine/src && test -f codebase-engine/tests/.gitkeep && echo "PASS: codebase-engine provisioned with skeleton contract"
+test -d codebase-ui/src && test -f codebase-ui/tests/.gitkeep && echo "PASS: codebase-ui provisioned with skeleton contract"
+test -d codebase-qualify/src && test -f codebase-qualify/tests/.gitkeep && echo "PASS: codebase-qualify provisioned with skeleton contract"
+test -d codebase-devops/config && test -f codebase-devops/.github/workflows/.gitkeep && echo "PASS: codebase-devops provisioned with skeleton contract"
+
+# Assertions: Verify source, test, and devops files created
 test -f codebase-data/src/models/user.py && echo "PASS: Data model scaffolded in codebase-data"
 test -f codebase-engine/src/services/auth.py && echo "PASS: Auth service scaffolded in codebase-engine"
 test -f codebase-ui/src/views/LoginView.tsx && echo "PASS: Login view scaffolded in codebase-ui"
 test -f codebase-qualify/src/test_auth_flow.py && echo "PASS: Test harness scaffolded in codebase-qualify"
+test -f codebase-devops/config/collector.yaml && echo "PASS: Observability config scaffolded in codebase-devops"
 
 # Assertions: Verify symlinks in agent-workspace/src/ resolve properly
 test -L agent-workspace/src/data && test -e agent-workspace/src/data/models/user.py \
   && test -L agent-workspace/src/qualify && test -e agent-workspace/src/qualify/src/test_auth_flow.py \
-  && echo "PASS: Symlinks in agent-workspace/src/ resolve to codebase-* and codebase-qualify"
+  && test -L agent-workspace/src/devops && test -e agent-workspace/src/devops/config/collector.yaml \
+  && echo "PASS: Symlinks in agent-workspace/src/ resolve to codebase-*, codebase-qualify, and codebase-devops"
 ```
 
 #### Test 2.3: Test Harness Scaffolding & `@scenario` Tag Validation (`--tests-only`)
@@ -300,7 +314,11 @@ grep -q "UserModel" "$PLANS_DOC_PATH" && echo "PASS: Decision parity confirmed i
 grep "| \*\*4\*\* | \`/implement\` | Completed |" agent-workspace/plans/user-auth/PROCESS_STATUS.md \
   && echo "PASS: PROCESS_STATUS.md Row 4 marked Completed"
 
-# 2. Assert Daily History Log contains datestamped entry
+# 2. Assert Row 6 is /operate (Operations lifecycle phase)
+grep -q "| \*\*6\*\* | \`/operate\` |" agent-workspace/plans/user-auth/PROCESS_STATUS.md \
+  && echo "PASS: PROCESS_STATUS.md Row 6 reflects /operate"
+
+# 3. Assert Daily History Log contains datestamped entry
 grep -q "Scaffolded source code across codebase-\*" agent-workspace/plans/user-auth/PROCESS_STATUS.md \
   && echo "PASS: Datestamped execution entry recorded in daily history log"
 ```

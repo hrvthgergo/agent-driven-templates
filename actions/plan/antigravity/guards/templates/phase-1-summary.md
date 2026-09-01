@@ -13,7 +13,7 @@
 | **Data Handling & Storage** | `[x] Affected` | [New schemas, database migrations, persistence policies] |
 | **Core Engine & API Contracts** | `[x] Affected` | [New REST endpoints, DTO mappers, domain services] |
 | **Verification & Test Delta** | `[x] Affected` | [New ratified test scenarios in tests/scenarios/] |
-| **Docker & Operations** | `[x] Affected` | [Container orchestration, environment configs] |
+| **Docker & Operations** | `[x] Affected` | [Environment topology, container configs, and observability contracts] |
 
 ---
 

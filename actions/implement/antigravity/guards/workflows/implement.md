@@ -43,12 +43,14 @@ This stateful execution playbook defines the 7-node state machine governing sour
 
 ### Node S4: Visible Step-by-Step Code Scaffolding, Test Harness Loop & Solution Testing
 1. Invoke `skills/implement-scaffolder/SKILL.md`.
-2. Execute code modifications step-by-step in target `codebase-*` sub-repositories following the mandatory 4-part step schema (Requirement, Prerequisites, Actions, Verification).
-3. **Test Harness Scaffolding**: For each in-scope ratified scenario, scaffold cross-layer tests in `codebase-qualify/src/` tagged with `@scenario SC-<feature-slug>-<nnn>` inside test declaration blocks (or execute exclusively when `--tests-only` is active).
-4. **Layer-Local Tests**: Scaffold unit and integration test files in `codebase-<layer>/tests/` alongside production code.
-5. **Solution Testing**: Execute unit, integration, and regression assertions per step.
-6. **Inner Agent Artifact Sync**: Immediately write and synchronize all decisions, plan updates, and step outcomes produced in inner agent docs (Artifacts) to the corresponding version-controlled files under `agent-workspace/plans/<feature-name>/`.
-7. **User Interruption Checkpoints**: Maintain an active communication window between steps where the user can interrupt, ask questions, or request adjustments (no opaque subagent delegation).
+2. **Repository Provisioning (First Act)**: Before any file content is written, provision any `codebase-<layer>/`, `codebase-qualify/`, or `codebase-devops/` repository named in the blueprint that does not yet exist, applying the `/init`-owned skeleton contract (`src/`, `config/`, `tests/`, `.github/workflows/`, `Dockerfile`, `.gitkeep`) and registering relative symlinks under `agent-workspace/src/<layer>/`.
+3. **Incremental Code Scaffolding**: Execute code modifications step-by-step in target `codebase-*` sub-repositories following the mandatory 4-part step schema (Requirement, Prerequisites, Actions, Verification).
+4. **Test Harness Scaffolding**: For each in-scope ratified scenario, scaffold cross-layer tests in `codebase-qualify/src/` tagged with `@scenario SC-<feature-slug>-<nnn>` inside test declaration blocks (or execute exclusively when `--tests-only` is active).
+5. **Observability & DevOps Scaffolding**: Scaffold runtime instrumentation (metrics, health endpoints) in `codebase-<layer>/` and monitoring infrastructure (collector configs, alert rules) in `codebase-devops/` realizing `phase-6-operation.md` §6 contracts.
+6. **Layer-Local Tests**: Scaffold unit and integration test files in `codebase-<layer>/tests/` alongside production code.
+7. **Solution Testing**: Execute unit, integration, and regression assertions per step.
+8. **Inner Agent Artifact Sync**: Immediately write and synchronize all decisions, plan updates, and step outcomes produced in inner agent docs (Artifacts) to the corresponding version-controlled files under `agent-workspace/plans/<feature-name>/`.
+9. **User Interruption Checkpoints**: Maintain an active communication window between steps where the user can interrupt, ask questions, or request adjustments (no opaque subagent delegation).
 
 ### Node S5: OPTIONAL AST Code Graph Generation & Update
 1. **Condition**: Executed ONLY when `--code-graph` or `--full-sync` flag is present (skipped by default).

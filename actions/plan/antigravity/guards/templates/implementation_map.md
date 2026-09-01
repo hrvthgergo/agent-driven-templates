@@ -8,6 +8,7 @@ This document defines the actionable, step-by-step implementation roadmap for sc
 * **Target Release Version**: `v[version]`
 * **Feature Plan Reference**: `agent-workspace/plans/[feature]/phase-1-summary.md`
 * **Test Delta Reference**: `agent-workspace/plans/[feature]/phase-5-test.md`
+* **Operations Design Reference**: `agent-workspace/plans/[feature]/phase-6-operation.md`
 * **Scenarios in Scope**: `SC-[feature]-001`, `SC-[feature]-002`
 
 ---

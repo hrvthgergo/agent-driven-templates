@@ -42,7 +42,7 @@ graph TD
     
     Q4 -->|100% Pass Rate| Q5
     
-    Q5 --> Q6[Node Q6: Release Gating & Regression Promotion<br/>Promote ratified scenarios to tests/regression/<br/>Sync PROCESS_STATUS.md Row 5]
+    Q5 --> Q6[Node Q6: Release Gating & Regression Promotion<br/>Promote ratified scenarios to tests/regression/<br/>Sync PROCESS_STATUS.md /qualify row]
 ```
 
 ---
@@ -108,6 +108,6 @@ graph TD
 ### Node Q6: Release Gating, Regression Promotion & Handoff
 1. **Regression Catalog Promotion**: If certification is `full` and pass rate is 100%, copy/promote all **ratified** feature scenarios from `tests/scenarios/` into `agent-workspace/tests/regression/`.
 2. **Process Status Update**:
-   - If certification is `full` and all suites pass: Update `agent-workspace/plans/<feature-name>/PROCESS_STATUS.md` Row 5 (`/qualify`) to `Completed`. Unlocks `/operate`.
-   - If certification is `provisional` or defects exist: Mark Row 5 as `Blocked` or `Failed` with diagnostic notes. `/operate` remains locked.
+   - If certification is `full` and all suites pass: Update `agent-workspace/plans/<feature-name>/PROCESS_STATUS.md` `/qualify` row to `[x] Done`. Unlocks `/operate`.
+   - If certification is `provisional` or defects exist: Mark the `/qualify` row as `Blocked` or `Failed` with diagnostic notes. `/operate` remains locked.
 3. **Handoff**: Display execution summary and recommend proceeding to `/operate` upon successful certification.

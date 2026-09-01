@@ -9,27 +9,36 @@ This skill provides step-by-step procedures for scaffolding source code in `code
 
 ---
 
-## 1. Incremental Code Scaffolding in `codebase-*` and `codebase-qualify/`
+## 1. Execution Repository Provisioning & Incremental Code Scaffolding
 
-1. Read target `implementation_map_v<version>.md` and `phase-5-test.md` from `agent-workspace/plans/<feature-name>/`, and extract in-scope scenario IDs.
+1. Read target `implementation_map_v<version>.md`, `phase-5-test.md`, and `phase-6-operation.md` from `agent-workspace/plans/<feature-name>/`, and extract in-scope scenario IDs.
 2. Verify all in-scope scenarios carry `status: ratified` in `agent-workspace/tests/scenarios/`.
-3. Parse planned tasks adhering to the mandatory 4-part step schema:
+3. **Repository & Execution Directory Provisioning (First Act)**:
+   * For each repository named in the blueprint (`codebase-<layer>/`, `codebase-qualify/`, `codebase-devops/`) that does not yet exist:
+     - Provision the repository root and initialize `.git`.
+     - Apply the standard skeleton contract (`src/`, `config/`, `tests/`, `.github/workflows/`, `Dockerfile`, and universal `.gitkeep` files).
+     - Register the relative symlink under `agent-workspace/src/<layer>/`.
+   * (In brownfield mode, write directly into repositories linked by `/process`).
+4. Parse planned tasks adhering to the mandatory 4-part step schema:
    * 1. **Requirement Fulfilled**: Map to corresponding `phase-*.md` section.
    * 2. **Prerequisites**: Verify preceding dependencies are satisfied.
-   * 3. **Actions Taken**: Detail target sub-repositories (`codebase-<layer>/`, `codebase-qualify/`, or `src/<layer>/`) and files (`[NEW]`, `[MODIFY]`, `[REFACTOR]`).
+   * 3. **Actions Taken**: Detail target sub-repositories (`codebase-<layer>/`, `codebase-qualify/`, `codebase-devops/`, or `src/<layer>/`) and files (`[NEW]`, `[MODIFY]`, `[REFACTOR]`).
    * 4. **Verification Fulfilled**: Execute unit, regression, and harness test commands.
-4. **Test Harness Construction (`codebase-qualify/src/`)**:
+5. **Test Harness Construction (`codebase-qualify/src/`)**:
    * For each in-scope ratified scenario, scaffold a cross-layer test in `codebase-qualify/src/`.
    * Inject the mandatory language-invariant citation token within the test declaration block:
      ```
      @scenario SC-<feature-slug>-<nnn>
      ```
    * When `--tests-only` is invoked, execute only this stream (red-first harness construction).
-5. **Feature Code & Layer-Local Tests (`codebase-*`)**:
+6. **Feature Code & Layer-Local Tests (`codebase-*`)**:
    * Create new source files or edit existing code in target `codebase-*` sub-repositories.
    * Create layer-local unit and integration test files in `codebase-<layer>/tests/` alongside production code.
+   * Scaffold runtime observability instrumentation (metrics, health endpoints) in `codebase-<layer>/`.
    * Enforce architectural boundaries and clean layer separation.
-   * Verify workspace symlinks in `agent-workspace/src/<layer>/` and `agent-workspace/src/qualify/`.
+7. **DevOps & Monitoring Infrastructure (`codebase-devops/`)**:
+   * Scaffold monitoring infrastructure (collector configs, alert rules, dashboards-as-code) and CI/CD pipelines in `codebase-devops/` per `phase-6-operation.md` §6.
+   * Verify workspace symlinks in `agent-workspace/src/<layer>/`, `agent-workspace/src/qualify/`, and `agent-workspace/src/devops/`.
 
 ---
 

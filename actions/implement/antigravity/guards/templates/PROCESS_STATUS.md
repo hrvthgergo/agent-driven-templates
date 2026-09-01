@@ -19,9 +19,9 @@
 | **3.4** | Phase 4: Core Engine & API Contracts | Completed | `phase-4-engine.md` | API contracts finalized |
 | **3.5** | Phase 5: Verification Specifications | Completed | `phase-5-test.md` | Test plan active |
 | **3.6** | Phase 6: Operations & Deployment | Completed | `phase-6-operation.md` | Ops specs finalized |
-| **4** | `/implement` | Completed | `implementation_map_v1.0.0.md` | Source code, test harness & solution tests executed |
+| **4** | `/implement` | Completed | `implementation_map_v1.0.0.md` | Repositories provisioned, source code, test harness & solution tests executed |
 | **5** | `/qualify` | Pending | `QUALIFICATION_REPORT.md` | Automated test suite execution & qualification report pending |
-| **6** | `/operate` | Pending | `release_notes.md` | Production deployment pending |
+| **6** | `/operate` | Pending | `release_notes.md` | Production deployment & operational assertions pending |
 
 ---
 
@@ -29,4 +29,4 @@
 
 | Timestamp | Workflow Phase | Agent / User Action Executed | Target Files Affected | Execution Status |
 | :--- | :--- | :--- | :--- | :--- |
-| `YYYY-MM-DD HH:MM` | `/implement` | Scaffolded source code, ran solution tests, synced artifact decisions to `plans/` | `codebase-*`, `plans/<feature>/` | Completed |
+| `YYYY-MM-DD HH:MM` | `/implement` | Provisioned layer repositories, scaffolded source code and test harness, ran solution tests, synced artifact decisions to `plans/` | `codebase-*`, `codebase-qualify/`, `codebase-devops/`, `plans/<feature>/` | Completed |

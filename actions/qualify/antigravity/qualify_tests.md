@@ -18,7 +18,7 @@ This document defines the test scenario, mock execution sequence, user input sim
   6. **Defect vs. Coverage Gap Distinction**: Defects block release; discovered gaps are authored as proposals (`origin: qualify, status: unratified`) and never certified against.
   7. **Audit Report Generation**: Generates `QUALIFICATION_REPORT.md` (with Section 0 Coverage Gate result) and `qualification_log.json`.
   8. **Regression Catalog Promotion**: Promotes only passing `status: ratified` scenarios into `agent-workspace/tests/regression/`.
-  9. **Process Status Sync**: `PROCESS_STATUS.md` Row 5 is marked `Completed` with datestamped history log.
+  9. **Process Status Sync**: `PROCESS_STATUS.md` `/qualify` row is marked `[x] Done` with datestamped history log.
 
 ---
 
@@ -84,7 +84,7 @@ To ensure isolated, reproducible test runs, the test environment MUST meet the f
 | **Q5 (Grill)**| **Defect Routing Confirmation** | *(Skipped silently: 100% pass rate)*. | No defects to route. |
 | **Q6 (Grill)**| **Coverage Gap Proposal Review** | *(Skipped silently: zero gaps)*. | Proceeds to reporting. |
 | **Q5 (Node)** | **Qualification Reporting** | System generates `QUALIFICATION_REPORT.md` & `qualification_log.json`. | Audit report written; Section 0 logs gate pass, Section 5 logs `certification: full`. |
-| **Q6 (Node)** | **Release Gating & Regression Promotion** | System promotes `SC-user-auth-001` & `002` to `tests/regression/` and syncs `PROCESS_STATUS.md`. | Row 5 marked `Completed`. Handoff to `/operate` unlocked. |
+| **Q6 (Node)** | **Release Gating & Regression Promotion** | System promotes `SC-user-auth-001` & `002` to `tests/regression/` and syncs `PROCESS_STATUS.md`. | `/qualify` row marked `[x] Done`. Handoff to `/operate` unlocked. |
 
 ---
 
@@ -104,7 +104,7 @@ To ensure isolated, reproducible test runs, the test environment MUST meet the f
 | **Q5** | Audit Report Schema | `agent-workspace/plans/user-auth/QUALIFICATION_REPORT.md` | Contains Section 0 (Coverage Gate), Section 1 (Execution Summary), Section 2 (Defects), Section 3 (Proposals), Section 5 (Certification). |
 | **Q5** | Machine Audit Log | `agent-workspace/plans/user-auth/qualification_log.json` | Valid JSON with timestamps, tier counts, exit codes, and coverage metrics. |
 | **Q6** | Regression Catalog Promotion | `agent-workspace/tests/regression/` | Ratified scenarios `SC-user-auth-001.md` and `SC-user-auth-002.md` copied/promoted into regression catalog. |
-| **Q6** | Guard Process Status | `agent-workspace/plans/user-auth/PROCESS_STATUS.md` | Row 5 marked `Completed`. Datestamped execution log entry added. |
+| **Q6** | Guard Process Status | `agent-workspace/plans/user-auth/PROCESS_STATUS.md` | `/qualify` row marked `[x] Done`. Datestamped execution log entry added. |
 
 ---
 
@@ -328,6 +328,6 @@ test -f /tmp/test-qualify-suite/agent-workspace/plans/user-auth/qualification_lo
   && echo "PASS: qualification_log.json created"
 test -f /tmp/test-qualify-suite/agent-workspace/tests/regression/SC-user-auth-001.md \
   && echo "PASS: Ratified scenario SC-user-auth-001 promoted to regression catalog"
-grep -q "Row 5.*Completed" /tmp/test-qualify-suite/agent-workspace/plans/user-auth/PROCESS_STATUS.md \
-  || echo "PASS: PROCESS_STATUS.md Row 5 updated to Completed"
+grep -q "/qualify.*\[x\] Done" /tmp/test-qualify-suite/agent-workspace/plans/user-auth/PROCESS_STATUS.md \
+  || echo "PASS: PROCESS_STATUS.md /qualify row updated to Done"
 ```

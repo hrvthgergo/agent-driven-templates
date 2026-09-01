@@ -11,7 +11,7 @@ This rule defines the unchangeable baselines, prompting laws, auto-detection sca
 
 ## 1. Unchangeable Baselines (No Questions Asked)
 
-The following eight baselines are solid and non-negotiable. Zero questions are asked about these baselines during `/plan`:
+The following ten baselines are solid and non-negotiable. Zero questions are asked about these baselines during `/plan`:
 
 1. **Baseline 1: Initial Feature Understanding Summary Mandate (Node S2)**: Every `/plan` session MUST open with the agent synthesizing its initial understanding of the feature (from `/init`, `/process`, and user prompt) and presenting an **Initial Feature Understanding Summary** to the developer before any questions are asked.
 2. **Baseline 2: Strict Feature Plan Sandbox (`agent-workspace/plans/<feature-name>/`)**: All feature-specific files created or modified during `/plan`—including active phase blueprints, `knowledge/` research reports, `phase_details/` folders, and versioned `implementation_maps/`—MUST reside strictly within `agent-workspace/plans/<feature-name>/`.
@@ -20,7 +20,9 @@ The following eight baselines are solid and non-negotiable. Zero questions are a
 5. **Baseline 5: Version-Based Implementation Map Naming & Schema**: Implementation map documents MUST be named after the target software version created from that map (e.g. `implementation_map_v1.0.0.md` or `implementation_map_v1.1.0_layout.md`) and MUST adhere to the Tier 1 schema defined in `implementation_map_taxonomy.md`.
 6. **Baseline 6: Verification Design Authority Guard**: `/plan` is the **sole design authority for verification** (`TEST_STRATEGY.md`, `phase-5-test.md`, and `tests/scenarios/SC-*.md`) and the **sole ratification authority** (`/plan --ratify`). `/plan` is strictly prohibited from writing harness code or executing tests.
 7. **Baseline 7: Scenario Identity Guard**: Enforces immutable `SC-<feature-slug>-<nnn>` identifiers assigned in creation order. Identifiers are never reused and never renumbered. Scenarios authored in `/plan` carry `origin: plan` and `status: ratified`.
-8. **Baseline 8: Strategy Hoisting Guard**: Tooling, thresholds, and mocking policy are answered once in `agent-workspace/tests/TEST_STRATEGY.md`. `phase-5-test.md` references the strategy and lists scenario IDs; it never restates tooling, thresholds, or mocking policy.
+8. **Baseline 8: Strategy Hoisting Guard**: Tooling, thresholds, and mocking policy are defined once in `agent-workspace/tests/TEST_STRATEGY.md`. `phase-5-test.md` references the strategy and lists scenario IDs; it never restates tooling, thresholds, or mocking policy.
+9. **Baseline 9: Operations Design Authority Guard**: `/plan` is the **sole design authority for operations**: environment topology, image specifications, configuration and secret *declarations*, pipeline topology, promotion policy, and observability contracts (§0–§7 of `phase-6-operation.md`). `/plan` specifies and never constructs (no Dockerfiles, Compose files, pipeline YAMLs, or deploy scripts). Secrets are declared as **names only — never values**. Observability contracts in §6c are never authored as `SC-*` scenarios.
+10. **Baseline 10: First-Definer Rule**: The first feature to define an environment (§0) or monitoring tool (§6b) owns the canonical row; later features reference it and record deltas.
 
 ---
 
@@ -28,7 +30,8 @@ The following eight baselines are solid and non-negotiable. Zero questions are a
 
 1. **Neutrality Law**: The Grill Engine MUST NOT mark any option as `[Recommended]`. All options must be presented neutrally.
 2. **Free-Text Option Law**: Every multiple-choice question MUST include a final free-text input option enabling the user to provide custom specifications.
-3. **Context Notification Law**: Every turn MUST output the 1-line response banner quote (`> 📍 **Active Workflow**: /plan | **Scope**: <feature> | **Node**: <Node_ID>`).
+3. **Turn Economy Law**: Respect the max-2-questions-per-turn prompting rule.
+4. **Context Notification Law**: Every turn MUST output the 1-line response banner quote (`> 📍 **Active Workflow**: /plan | **Scope**: <feature> | **Node**: <Node_ID>`).
 
 ---
 
@@ -151,14 +154,55 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > 4. Other / Free-text (Describe the verification delta)
 * **Resulting Action**: Populates `phase-5-test.md` referencing `TEST_STRATEGY.md` and listing scenario IDs; writes scenario files to `agent-workspace/tests/scenarios/`.
 
-### Q10: Phase 6 - Docker & Operations Deployment Impact (If Ops Affected)
-* **Goal**: Gather container profiles, environment variables, Compose orchestration, and CI/CD deployment decisions.
+### Q10: Phase 6 - Operations & Environment Design (If Ops Affected)
+* **Goal**: Gather environment topology, container profiles, configuration/secret declarations, CI/CD pipeline impact, and promotion policy decisions across 5 focused sub-questions.
+
+#### Q10.1: Environment Topology
+* **Goal**: Determine which environments this feature targets, and whether a new environment is required.
+* **Auto-Detection Scanning Rule**: Read `phase-6-operation.md` §0 from prior feature cycles for existing `ENV-*` definitions (First-Definer Rule).
 * **Prompt**:
-  > **What are the Docker containerization and operations deployment impact requirements?**
+  > **Which environments does this feature target, and does it require a new one?**
+  > 1. Existing environments only (reference current topology; no new `ENV-*` row)
+  > 2. A new environment is required (specify purpose, services, and entry gate — `none` or `certification: full`)
+  > 3. Other / Free-text (Describe environment topology impact)
+* **Resulting Action**: Populates `phase-6-operation.md` §0 (Environment Topology).
+
+#### Q10.2: Containerization & Image Impact
+* **Goal**: Gather container profiles, base images, and service orchestration decisions.
+* **Prompt**:
+  > **What are the containerization and service orchestration requirements?**
   > 1. Multi-container Compose orchestration with environment variable isolation
-  > 2. Standalone container image build with CI/CD deployment pipeline integration
-  > 3. Other / Free-text (Describe Dockerfiles, Compose profiles, and environment variables)
-* **Resulting Action**: Populates `agent-workspace/plans/<feature-name>/phase-6-operation.md`.
+  > 2. Standalone container image build with no new orchestrated services
+  > 3. Other / Free-text (Describe Dockerfiles, base images, and Compose profiles)
+* **Resulting Action**: Populates `phase-6-operation.md` §1–§2 (Containerization & Service Orchestration).
+
+#### Q10.3: Configuration & Secret Declarations
+* **Goal**: Declare configuration keys and secret names this feature requires, scoped by environment (**names and scope only — never a value**).
+* **Prompt**:
+  > **What configuration keys or secrets does this feature require? (Names and scope only — never a value.)**
+  > 1. No new configuration or secrets required
+  > 2. New configuration/secret keys required (specify key name, scope, and target environments)
+  > 3. Other / Free-text (Describe configuration or secret declarations)
+* **Resulting Action**: Populates `phase-6-operation.md` §3 (Configuration & Secret Declarations).
+
+#### Q10.4: CI/CD Pipeline Impact & Promotion Policy
+* **Goal**: Map this feature onto the 3-tier CI/CD hierarchy and determine its delivery/promotion policy.
+* **Prompt**:
+  > **What CI/CD pipeline and promotion policy changes does this feature require?**
+  > 1. No pipeline changes; standard promotion policy applies
+  > 2. Pipeline changes required (specify layer micro-pipeline, qualification pipeline, or macro-pipeline impact and promotion edges)
+  > 3. Other / Free-text (Describe pipeline topology or promotion policy changes)
+* **Resulting Action**: Populates `phase-6-operation.md` §4–§5 (CI/CD Pipeline Topology & Delivery/Promotion Policy).
+
+#### Q10.5: Observability & Monitoring Design
+* **Goal**: Declare what the system must emit, which tool observes it, and what conditions constitute unhealthy.
+* **Auto-Detection Scanning Rule**: Read prior cycles' `phase-6-operation.md` §6b for declared tooling (First-Definer Rule).
+* **Prompt**:
+  > **What observability and monitoring contracts does this feature require?**
+  > 1. No new observability contracts (existing health checks and monitoring suffice)
+  > 2. New signals, health checks, or alert conditions required (specify signal names, monitoring tool, thresholds, soak windows, and routing targets)
+  > 3. Other / Free-text (Describe observability and monitoring requirements)
+* **Resulting Action**: Populates `phase-6-operation.md` §6 (blocks 6a, 6b, 6c). Observability contracts are never authored as `SC-*` scenarios.
 
 ### Q11: Versioned Implementation Map Drafting Gate (Node S5)
 * **Goal**: Determine if a versioned `implementation_map_v<version>.md` should be drafted at the conclusion of `/plan`.
