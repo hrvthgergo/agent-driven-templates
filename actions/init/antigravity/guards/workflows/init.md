@@ -1,11 +1,11 @@
 ---
 name: init
-description: Dual-mode bootstrapping workflow for Guards framework in Antigravity
+description: Flat sequential bootstrapping workflow for Guards framework in Antigravity
 ---
 
 # `/init` Workflow Execution Playbook
 
-This stateful execution playbook defines the dual-path state machine governing project initialization, pure control plane scaffolding (`agent-workspace/`), and remote Git origin synchronization within Google Antigravity.
+This stateful execution playbook defines the linear, single-path state machine governing project initialization, pure control plane scaffolding (`agent-workspace/`), and remote Git origin synchronization within Google Antigravity.
 
 ---
 
@@ -14,11 +14,12 @@ This stateful execution playbook defines the dual-path state machine governing p
 ### CLI Parameter Handling
 *   `/init`: Default interactive execution.
     *   **Greenfield run** (uninitialized workspace, no `agent-workspace/plans/initial/`): Scaffolds base agent control plane (`agent-workspace/`), creates Git branch `initial`, configures primary remote origin, and pushes initial documentation.
-    *   **Re-run** (initialized workspace without options): Presents Q0 Mode Gate (Quick & Simple vs. Major Feature) and scaffolds feature-bound plans under `agent-workspace/plans/<feature_name>/`.
+    *   **Re-run** (initialized workspace without options): Runs the sequential Q1–Q9 interview (auto-detecting conformant root), creates a feature/scope branch per branch origination rules, and scaffolds feature-bound plans under `agent-workspace/plans/<scope_name>/`.
 *   `/init --auto`: Non-interactive execution mode. Bypasses the Node S4 Execution Acceptance prompt and automatically executes all planned scaffolding and remote sync tasks.
 *   `/init --feature <feature_name>`: Explicitly initializes a feature development scope on Git branch `feature/<feature_name>` and creates `agent-workspace/plans/<feature_name>/`.
+*   `/init --release <vX.Y.Z>`: Initializes a release branch (`release/vX.Y.Z`) and prepares release-scoped tracking.
 *   `/init --dry-run`: Simulates the initialization sequence, previewing proposed folder structures and plan sheets without writing changes to disk.
-*   `/init --force`: Overwrites default `.agents/` control rules and workflows while preserving user custom phase blueprints.
+*   `/init --force`: Overwrites default `.agents/` control rules and workflows while strictly preserving custom phase blueprints.
 
 ### Operational Rules of Thumb
 1.  **Branch Origination Rule**: When creating a new branch in an existing repository (e.g. for feature, bugfix, or hotfix):
@@ -42,81 +43,73 @@ Every turn during `/init` MUST:
 
 ```mermaid
 graph TD
-    S1[Step 1: Check Environment] --> S2{Step 2: Mode Gate — Q0}
-    S2 -->|Quick & Simple| S2a[Step 2a: Quick Interview — QS1–QS3]
-    S2 -->|Major Feature / Greenfield| S2b[Step 2b: Full Deep-Dive — Q1–Q7]
-    S2a --> S3[Step 3: Lightweight Scan & Path Verification]
-    S2b --> S3
+    S1[Step 1: Check Environment] --> S2[Step 2: Interview — Q1–Q9]
+    S2 --> S3[Step 3: Lightweight Scan & Path Verification]
     S3 --> S4[Step 4: Execution Acceptance Gate]
     S4 -->|Approved / --auto| S5[Step 5: Scaffolding Workspace & PROCESS_STATUS.md]
     S5 --> S6[Step 6: Git Hook Registration & Remote Setup]
-    S6 --> S7[Step 7: Initialization Done & Initial Push]
+    S6 --> S7[Step 7: Initialization Done, Branch Checkout & Initial Push]
 ```
 
-### Node S1: Check Environment & Branch Initialization
-1.  **Environment Check**: Verify filesystem write permissions and Git binary availability.
-2.  **Branch Check**:
-    *   If workspace is uninitialized (greenfield): Create and check out baseline Git branch: `git checkout -b initial`.
-    *   If workspace is already initialized: Apply branch origination rules to determine parent branch, create and check out the new branch.
+### Node S1: Check Environment
+1.  **Environment Check**: Verify filesystem write permissions and Git binary availability before asking interview questions.
+2.  If permissions or binaries are missing, output setup diagnostics and halt.
 
-### Node S2: Mode Gate (Q0)
-1.  **Greenfield Detection**: If `agent-workspace/plans/initial/` does NOT exist, auto-select **Major Feature / Greenfield Mode** and route to Node S2b.
-2.  **Initialized Workspace**: Present Q0 mode selection prompt adhering to `rules/init-grill.md`.
-    *   If Quick & Simple selected $\rightarrow$ Route to Node S2a.
-    *   If Major Feature selected $\rightarrow$ Route to Node S2b.
-
-### Node S2a: Quick & Simple Interview (QS1 – QS3)
-1.  Execute QS1 (Aim & Reason + Feature/Branch Name), QS2 (Issue/Bug Reference), QS3 (Pre-Planning Decisions & Constraints).
-2.  Write Q&A audit log to `agent-workspace/plans/<feature_name>/GRILL_STATUS.md` with header `mode: quick_simple`.
-3.  Transition to Node S3.
-
-### Node S2b: Major Feature / Greenfield Deep-Dive (Q1 – Q7)
-1.  Execute sequential Q1 to Q7 interview prompts neutrally per `rules/init-grill.md`:
-    - Q1: Scope, Purpose, & Milestones
-    - Q2: Local System Folders & Existing Locations
-    - Q3: Remote / Cloud Documentation Repository
-    - Q4: Additional Remote Code Repositories
-    - Q5: Primary Remote Git Origin & Provider (captures URL for initial push)
-    - Q6: Agent Guidance, Rules, Skills, MCPs, & Hooks
-    - Q7: Summary Verification & Reflection
-2.  Write full Q&A audit log to `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` with header `mode: major_feature`.
+### Node S2: Interview (Q1 to Q9)
+1.  Execute the flat, sequential interview schema defined in `rules/init-grill.md` across four core sections:
+    *   **Section A (Design Goal & Environment)**:
+        - **Q1 (Local Workspace Parent Directory)**: Resolve parent directory and verify Baseline 2 (Clean Root Mandate via `git rev-parse --show-toplevel`).
+        - **Q2 (Project Scope, Purpose & Names)**: Collect project purpose, milestones, `<local_workspace_root_name>` (if newly created), and `<scope_name>` (`initial` for greenfield, or named feature).
+        - **Q3 (Git Set-up & Primary Remote Origin)**: Resolve Git identity mode (`adopt` | `clone` | `initialize`) and primary remote origin URL. Check Baseline 4 (Remote Divergence Halts).
+    *   **Section B (Supporting Documentation)**:
+        - **Q4/Q4b (Local Documentation Repository)**: Discover and link local documentation paths.
+        - **Q5/Q5b (Remote / Cloud Documentation Repository)**: Discover and link cloud documentation URLs (Confluence, Notion, Wiki).
+        - **Q6 (Further Documentation & Issue References)**: Capture linked issue references (e.g. `#142`), bug tickets, or context.
+    *   **Section C (Agentic Environment)**:
+        - **Q7 (Agent Guidance, Rules, Skills, MCPs & Hooks)**: Identify rules, skills, MCP servers, and hooks.
+    *   **Section D (Verification & Confirmation)**:
+        - **Q8 (Constraints & Pre-Planning Decisions)**: Explicitly record breaking changes, constraints, or dependency decisions.
+        - **Q9 (Q&A Summary Verification & Reflection)**: Present formatted recap table of Q1–Q8 gathered answers; allow modifications or open reflections.
+2.  Write full Q&A audit log to `agent-workspace/plans/<scope_name>/GRILL_STATUS.md`.
 3.  Transition to Node S3.
 
 ### Node S3: Lightweight Scan & Path Verification
-1.  Perform surface-level directory inspection to verify target paths and auto-detect existing version control configs.
-2.  Strictly preserve brownfield code—do NOT perform any codebase restructuring or file relocation.
+1.  Verify target workspace paths and auto-detect existing version control configs (`.git/config`).
+2.  **Test Strategy Assertion**: Check for the existence of `agent-workspace/tests/TEST_STRATEGY.md`. If absent, record the gap in `PROCESS_STATUS.md` without halting.
+3.  Strictly preserve existing source files without restructuring.
 
 ### Node S4: Execution Acceptance Gate
 1.  Synthesize gathered information into an understanding summary and list planned scaffolding tasks.
 2.  **User Acceptance Prompt**:
     *   If `--auto` flag is present: Log automatic bypass and proceed to Node S5.
     *   If interactive mode: Present understanding summary and prompt user for explicit approval (*"Proceed with execution?"*).
-3.  Log acceptance decision into `agent-workspace/plans/<branch_name>/GRILL_STATUS.md`.
+3.  Log acceptance decision into `agent-workspace/plans/<scope_name>/GRILL_STATUS.md`.
 
 ### Node S5: Scaffolding Workspace & `PROCESS_STATUS.md`
 1.  Invoke `skills/init-scaffolder/SKILL.md`.
-2.  **Quick & Simple Mode**:
-    *   Create `agent-workspace/plans/<feature_name>/`.
-    *   Create Git branch (`bugfix/<feature_name>` or `feature/<feature_name>`).
-    *   Deploy `PROCESS_STATUS.md` and `phase-1-summary.md` (populated with QS1–QS3 data).
-3.  **Major Feature / Greenfield Mode**:
+2.  **Control Plane Scaffolding**:
     *   Scaffold `agent-workspace/` control structures (`.agents/rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`).
-    *   Create plan subfolder `agent-workspace/plans/<branch_name>/`.
+    *   Create plan subfolder `agent-workspace/plans/<scope_name>/`.
     *   Create empty staging directories `agent-workspace/docs/` and `agent-workspace/src/`.
-    *   Provision a `.gitkeep` file inside **every scaffolded directory node** to guarantee tracking in remote Git.
-    *   Deploy starter templates: `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md` to `agent-workspace/plans/<branch_name>/`.
+    *   Provision a `.gitkeep` file inside **every scaffolded directory node** to guarantee tracking in Git.
+    *   Deploy starter templates `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md` into `agent-workspace/plans/<scope_name>/`.
+3.  **Git Set-up Execution (Baseline 3)**:
+    *   If Q3 resolved to **clone**: Execute `git clone <origin_url> agent-workspace/`.
+    *   If Q3 resolved to **initialize**: Execute `git init` on `agent-workspace/` (and register remote origin).
+    *   If Q3 resolved to **adopt**: Use existing repository in place.
 
-### Node S6: Git Hook Registration & Remote Setup
-1.  Register primary Git remote origin URL captured in Q5 (`git remote add origin <url>` or update existing).
+### Node S6: Git Hook Registration & Remote Origin Setup
+1.  Register primary Git remote origin URL captured in Q3 (`git remote add origin <url>` or update existing).
 2.  Install `hooks/pre-commit-plan-validator.sh` into `.git/hooks/pre-commit` and grant execution permissions (`chmod +x`).
 
-### Node S7: Initialization Done & Initial Push
-1.  Mark `/init` step as `Completed` in `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` Block 1 matrix.
-2.  Record datestamped entry in Block 2 daily history.
-3.  Stage, commit, and push initial workspace control plane and documentation to remote origin:
+### Node S7: Initialization Done, Branch Checkout & Initial Push
+1.  **Branch Checkout Guarantee**: Ensure and assert the target working branch is checked out on `agent-workspace/` (`initial` for greenfield, `feature/<scope_name>` or `bugfix/<scope_name>` per branch origination rules).
+2.  Mark `/init` step as `Completed` in `agent-workspace/plans/<scope_name>/PROCESS_STATUS.md` Block 1 matrix.
+3.  Record datestamped entry in Block 2 daily history.
+4.  Stage, commit, and push initial workspace control plane and documentation to remote origin:
     ```bash
     git add agent-workspace/
-    git commit -m "chore(init): bootstrap agent control plane and documentation"
+    git commit -m "chore(init): bootstrap agent-workspace control plane and initial documentation"
     git push -u origin <branch_name>
     ```
-4.  Output initialization summary and recommend next workflow command (`/plan` or `/process`).
+5.  Output initialization summary and recommend next workflow command (`/plan` or `/process`).

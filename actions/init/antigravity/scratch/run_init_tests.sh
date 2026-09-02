@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-echo "=== STARTING DUAL-MODE E2E TEST SUITE FOR /init WORKFLOW (init_tests.md) ==="
+echo "=== STARTING FLAT Q1-Q9 E2E TEST SUITE FOR /init WORKFLOW (init_tests.md) ==="
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 RM_PATH="${SCRIPT_DIR}/test_sandbox"
@@ -10,7 +10,7 @@ REMOTE_REPO_PATH="${SCRIPT_DIR}/mock_remote.git"
 rm -rf "$RM_PATH" "$REMOTE_REPO_PATH"
 mkdir -p "$RM_PATH"
 
-# Create a bare remote Git repository to test push
+# Create a bare remote Git repository to test remote push
 git init --bare "$REMOTE_REPO_PATH" >/dev/null
 
 cd "$RM_PATH"
@@ -21,11 +21,11 @@ echo "--> Mock remote repository at $REMOTE_REPO_PATH"
 ERRORS=0
 
 # ==============================================================================
-# SCENARIO A: Greenfield / Major Feature Setup (Full Deep-Dive)
+# SCENARIO A: Greenfield Initialization (Fresh Git Setup)
 # ==============================================================================
 echo ""
 echo "========================================================================"
-echo ">>> SCENARIO A: Greenfield Control Plane Setup (Major Feature Mode)"
+echo ">>> SCENARIO A: Greenfield Initialization (Fresh Git Setup)"
 echo "========================================================================"
 
 # S1: Check environment & branch initialization
@@ -57,17 +57,20 @@ cp "${SCRIPT_DIR}/../guards/rules/init-grill.md" agent-workspace/.agents/rules/
 mkdir -p agent-workspace/.agents/skills/init-scaffolder
 cp "${SCRIPT_DIR}/../guards/skills/init-scaffolder/SKILL.md" agent-workspace/.agents/skills/init-scaffolder/
 
-# Deploy Status & Audit Documents (Q1–Q7)
+# Deploy Status & Audit Documents (Q1–Q9)
 cat << 'LOG' > agent-workspace/plans/initial/GRILL_STATUS.md
 # GRILL_STATUS Audit Log
-mode: major_feature
-Q1 Purpose & Scope: Fullstack e-commerce engine with real-time inventory management targeting Q3 MVP release
-Q2 Local System Folders: Current working directory
-Q3 Cloud Docs: None
-Q4 Additional Remotes: None
-Q5 Primary Remote Origin: file://MOCK_REMOTE (Provider: Other)
-Q6 Agent Guiders: Standard Guards framework defaults
-Q7 Summary Verification: Accepted
+root_name: ecommerce-engine
+scope_name: initial
+Q1 Local Workspace Parent Directory: Current working directory (empty, ready for new root)
+Q2 Scope, Purpose & Names: Fullstack e-commerce engine with real-time inventory management targeting Q3 MVP release
+Q3 Git Set-up & Origin: initialize (Primary Origin: file://MOCK_REMOTE)
+Q4 Local Docs: None
+Q5 Remote Docs: None
+Q6 Further Documentation: None
+Q7 Agent Guidance: Standard Guards framework defaults
+Q8 Constraints: None
+Q9 Summary Verification: Accepted
 Node S4 Execution Acceptance: Accepted
 LOG
 
@@ -75,7 +78,7 @@ cat << 'STATUS' > agent-workspace/plans/initial/PROCESS_STATUS.md
 # Process Status Matrix
 **Target Release/Feature**: Initial Setup
 **Git Branch**: initial
-**Date**: 2026-08-19
+**Date**: 2026-09-02
 **Active Workflow**: /init
 
 ## Block 1: Workflow Execution Matrix
@@ -95,7 +98,7 @@ cat << 'STATUS' > agent-workspace/plans/initial/PROCESS_STATUS.md
 | **6** | `/release` | Pending | Release Tag & Merge | Pending |
 
 ## Block 2: Daily Execution History
-### [2026-08-19]
+### [2026-09-02]
 - **Action**: Executed `/init` workflow.
 - **Result**: Scaffolded agent-workspace/ control structures, configured origin, and pushed initial documentation.
 STATUS
@@ -104,8 +107,8 @@ cat << 'SUMMARY' > agent-workspace/plans/initial/phase-1-summary.md
 # Phase 1 Summary Blueprint: Project & Feature Overview
 **Project / Feature Name**: Initial E-Commerce Platform
 **Branch**: initial
-**Date**: 2026-08-19
-**Mode**: major_feature
+**Date**: 2026-09-02
+**Scope**: initial
 
 ## 1. Executive Summary & Change Scope
 ### Aim & Purpose
@@ -137,7 +140,7 @@ chmod +x .git/hooks/pre-commit
 
 # S7: Initial Commit & Push
 git add agent-workspace/
-git commit -m "chore(init): bootstrap agent control plane and documentation" >/dev/null 2>&1
+git commit -m "chore(init): bootstrap agent-workspace control plane and initial documentation" >/dev/null 2>&1
 git push -u origin initial >/dev/null 2>&1
 
 echo "--> Scenario A Scaffolding complete. Running Assertions..."
@@ -151,11 +154,11 @@ else
     ERRORS=$((ERRORS+1))
 fi
 
-# Assertion A2: Audit Log & Mode Check
-if grep -q "mode: major_feature" agent-workspace/plans/initial/GRILL_STATUS.md && grep -q "Q5 Primary Remote Origin" agent-workspace/plans/initial/GRILL_STATUS.md; then
-    echo "[PASS A2] GRILL_STATUS.md has mode: major_feature and Q5 remote origin"
+# Assertion A2: Audit Log Check (Q1-Q9)
+if grep -q "Q1 Local Workspace Parent Directory" agent-workspace/plans/initial/GRILL_STATUS.md && grep -q "Q3 Git Set-up" agent-workspace/plans/initial/GRILL_STATUS.md; then
+    echo "[PASS A2] GRILL_STATUS.md has Q1 and Q3 flat interview records"
 else
-    echo "[FAIL A2] GRILL_STATUS.md missing mode or Q5 entry"
+    echo "[FAIL A2] GRILL_STATUS.md missing Q1 or Q3 entries"
     ERRORS=$((ERRORS+1))
 fi
 
@@ -229,29 +232,33 @@ fi
 
 
 # ==============================================================================
-# SCENARIO B: Quick & Simple / Bugfix Setup (3-Question Fast Track)
+# SCENARIO B: Feature Scope Initialization (Adopt Setup)
 # ==============================================================================
 echo ""
 echo "========================================================================"
-echo ">>> SCENARIO B: Quick & Simple Mode (Bugfix / Minor Change)"
+echo ">>> SCENARIO B: Feature Scope Initialization (Adopt Setup)"
 echo "========================================================================"
 
-# S1 & S2: Mode Gate -> Quick & Simple selected
-# Branch origination: branch creates from initial
+# S1: Branch origination: branch creates from initial
 git checkout -b bugfix/fix-checkout-button >/dev/null 2>&1
 
 # S5: Scaffolding feature plan directory
 mkdir -p agent-workspace/plans/fix-checkout-button
 
-# Write QS1-QS3 transcript
+# Write Q1-Q9 transcript for feature scope with adopt setup
 cat << 'LOG' > agent-workspace/plans/fix-checkout-button/GRILL_STATUS.md
 # GRILL_STATUS Audit Log
-mode: quick_simple
-feature_name: fix-checkout-button
+scope_name: fix-checkout-button
 branch: bugfix/fix-checkout-button
-QS1 Aim & Reason: Fix checkout button alignment on mobile view — button overflows container on screens < 375px
-QS2 Issue Reference: GitHub Issue #142 — Checkout button overflow on mobile
-QS3 Pre-Planning Decisions: None (Proceed with initialization)
+Q1 Local Workspace Parent Directory: Conformant root detected at cwd
+Q2 Scope, Purpose & Names: Fix checkout button alignment on mobile view — button overflows container on screens < 375px
+Q3 Git Set-up & Origin: adopt
+Q4 Local Docs: None
+Q5 Remote Docs: None
+Q6 Further Documentation: GitHub Issue #142 — Checkout button overflow on mobile
+Q7 Agent Guidance: Standard Guards framework defaults
+Q8 Constraints: None
+Q9 Summary Verification: Accepted
 Node S4 Execution Acceptance: Accepted
 LOG
 
@@ -259,14 +266,14 @@ cat << 'STATUS' > agent-workspace/plans/fix-checkout-button/PROCESS_STATUS.md
 # Process Status Matrix
 **Target Release/Feature**: fix-checkout-button
 **Git Branch**: bugfix/fix-checkout-button
-**Date**: 2026-08-19
+**Date**: 2026-09-02
 **Active Workflow**: /init
 
 ## Block 1: Workflow Execution Matrix
 | Step | Workflow Stage | Status | Assigned Plan / Artifact | Next Action |
 | :--- | :--- | :--- | :--- | :--- |
 | **1** | `/init` | Completed | `agent-workspace/plans/fix-checkout-button/GRILL_STATUS.md` | Proceed to `/plan` |
-| **2** | `/process` | Skipped | N/A (Quick & Simple bugfix) | N/A |
+| **2** | `/process` | Skipped | N/A (Feature scope) | N/A |
 | **3** | `/plan` | In Progress | `agent-workspace/plans/fix-checkout-button/phase-1-summary.md` | Execute Phase 1 |
 | 3.1 | -- Phase 1: Summary | In Progress | `phase-1-summary.md` | Draft Scope & Goals |
 | 3.2 | -- Phase 2: Layout | Pending | `phase-2-layout.md` | Pending |
@@ -279,8 +286,8 @@ cat << 'STATUS' > agent-workspace/plans/fix-checkout-button/PROCESS_STATUS.md
 | **6** | `/release` | Pending | Release Tag & Merge | Pending |
 
 ## Block 2: Daily Execution History
-### [2026-08-19]
-- **Action**: Executed `/init` workflow in Quick & Simple mode.
+### [2026-09-02]
+- **Action**: Executed `/init` workflow for feature scope.
 - **Result**: Scaffolded agent-workspace/plans/fix-checkout-button/ and prepared for planning.
 STATUS
 
@@ -288,8 +295,8 @@ cat << 'SUMMARY' > agent-workspace/plans/fix-checkout-button/phase-1-summary.md
 # Phase 1 Summary Blueprint: Project & Feature Overview
 **Project / Feature Name**: fix-checkout-button
 **Branch**: bugfix/fix-checkout-button
-**Date**: 2026-08-19
-**Mode**: quick_simple
+**Date**: 2026-09-02
+**Scope**: fix-checkout-button
 
 ## 1. Executive Summary & Change Scope
 ### Aim & Purpose
@@ -316,20 +323,20 @@ SUMMARY
 
 echo "--> Scenario B Scaffolding complete. Running Assertions..."
 
-# Assertion B1: Branch Check
+# Assertion B1: Branch Checkout Guarantee
 BRANCH=$(git branch --show-current)
 if [ "$BRANCH" = "bugfix/fix-checkout-button" ]; then
-    echo "[PASS B1] Git Branch is 'bugfix/fix-checkout-button'"
+    echo "[PASS B1] Branch Checkout Guarantee passed: Git Branch is 'bugfix/fix-checkout-button'"
 else
-    echo "[FAIL B1] Git Branch is '$BRANCH' (expected 'bugfix/fix-checkout-button')"
+    echo "[FAIL B1] Branch Checkout Guarantee failed: Git Branch is '$BRANCH' (expected 'bugfix/fix-checkout-button')"
     ERRORS=$((ERRORS+1))
 fi
 
-# Assertion B2: Audit Log & Mode Check
-if grep -q "mode: quick_simple" agent-workspace/plans/fix-checkout-button/GRILL_STATUS.md; then
-    echo "[PASS B2] Feature GRILL_STATUS.md has mode: quick_simple"
+# Assertion B2: Audit Log Check (Adopt & Q6)
+if grep -q "Q3 Git Set-up & Origin: adopt" agent-workspace/plans/fix-checkout-button/GRILL_STATUS.md && grep -q "Q6 Further Documentation" agent-workspace/plans/fix-checkout-button/GRILL_STATUS.md; then
+    echo "[PASS B2] Feature GRILL_STATUS.md has adopt Git setup and Q6 record"
 else
-    echo "[FAIL B2] Feature GRILL_STATUS.md missing mode: quick_simple"
+    echo "[FAIL B2] Feature GRILL_STATUS.md missing adopt setup or Q6 record"
     ERRORS=$((ERRORS+1))
 fi
 
@@ -343,7 +350,7 @@ fi
 
 # Assertion B4: No Redundant Sub-Repositories Created
 if [ ! -d codebase-fix-checkout-button ] && [ ! -d codebase-bugfix ]; then
-    echo "[PASS B4] No redundant sub-repositories created for Quick & Simple mode"
+    echo "[PASS B4] No redundant sub-repositories created during feature /init"
 else
     echo "[FAIL B4] Redundant sub-repositories were created!"
     ERRORS=$((ERRORS+1))

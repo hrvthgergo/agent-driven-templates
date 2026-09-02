@@ -3,7 +3,7 @@
 **Project / Feature Name**: {{PROJECT_NAME}}  
 **Branch**: {{GIT_BRANCH}}  
 **Date**: {{DATE}}  
-**Mode**: {{MODE}}  
+**Scope**: {{SCOPE_NAME}}  
 
 ---
 

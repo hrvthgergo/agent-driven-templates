@@ -1,21 +1,28 @@
 ---
 name: init-grill
-description: Dual-mode neutral Q&A interview rule guard for project initialization
+description: Flat sequential neutral Q&A interview rule guard for project initialization
 ---
 
 # `init-grill` Rule Guard
 
-This rule guard governs the `/init` Grill-Me Q&A interview engine, enforcing unchangeable architecture baselines, dual-mode selection (Quick & Simple vs. Major Feature), neutral choice presentation, and permanent audit logging.
+This rule guard governs the `/init` Grill-Me Q&A interview engine, enforcing unchangeable architecture baselines, neutral choice presentation, sequential Q1–Q9 prompt execution, and permanent audit logging.
 
 ---
 
 ## 1. Unchangeable Baselines (No Questions Asked)
 
-Zero questions are asked about this baseline during the `/init` interview regardless of selected mode:
+Zero questions are asked about these baselines during the `/init` interview:
 
-1.  **Baseline 1: Pure Agent Control Plane (`agent-workspace/`) Layout**:
-    *   `agent-workspace/` acts strictly as Control Plane & Knowledge Hub (`.agents/`, `plans/`, `docs/`, `src/`).
-    *   Software layer skeletons (`codebase-*`) and container configurations are decoupled from `/init` and planned in `/plan` or linked in `/process`.
+1.  **Baseline 1: Pure Control Plane Scope**:
+    *   `/init`'s scope is strictly `agent-workspace/` — the **Control Plane & Knowledge Hub** (`.agents/`, `plans/`, `docs/`, `src/`).
+    *   It does NOT create, clone, or link `codebase-*/` sub-repositories, and it asks zero questions about them. Layer discovery and scaffolding belong to `/process` or `/plan`.
+2.  **Baseline 2: Clean Root Mandate**:
+    *   A new Local Workspace Root MUST NOT be created or cloned inside an existing Git working tree (verified via `git rev-parse --show-toplevel` on the resolved parent directory).
+    *   On violation, `/init` halts at Q1 and requires a clean parent directory (adopting an already-conformant root is exempt).
+3.  **Baseline 3: Mutations Behind Acceptance Gate**:
+    *   No directory is created, no repository is cloned, and no file is written during the Q1–Q9 interview itself. All mutations execute only at Node S5 after passing the Node S4 Execution Acceptance Gate.
+4.  **Baseline 4: Remote Divergence Halts**:
+    *   If Q3 resolves to **adopt** and the local `agent-workspace/` history has diverged from its registered remote, `/init` halts and reports divergence rather than silently merging or force-pushing.
 
 ---
 
@@ -23,48 +30,80 @@ Zero questions are asked about this baseline during the `/init` interview regard
 
 *   **Zero Bias**: The Grill Engine MUST NOT mark any option as `[Recommended]`. Options must be listed neutrally.
 *   **Mandatory Free-Text**: Every multiple-choice question MUST include a final free-text input option (`Other / Free-text (...)`).
-*   **Audit Persistence**: Write all questions, option choices, and user answers permanently to `agent-workspace/plans/<branch_name>/GRILL_STATUS.md`.
+*   **Audit Persistence**: Write all questions, option choices, and user answers permanently to `agent-workspace/plans/<scope_name>/GRILL_STATUS.md`.
 *   **Workflow Context Notification**: Output turn banner quote `> 📍 **Active Workflow**: /init | **Scope**: <branch> | **Node**: <Node_ID>` on every interaction.
 
 ---
 
-## 3. Mode Selection Gate (Q0)
+## 3. Sequential Question Prompts (Execution Order: Q1 to Q9)
 
-*   **Greenfield First-Time Run**: If `agent-workspace/plans/initial/` does NOT exist, auto-select **Major Feature / Greenfield Mode** (skip Q0).
-*   **Initialized Workspace**: Present Q0 mode selection prompt:
-    *   *Prompt*: "What type of change are you initializing?"
-    *   *Option 1*: Quick & Simple (Bugfix / Minor Change) — 3 focused questions (QS1–QS3).
-    *   *Option 2*: Major Feature / Greenfield Setup — 7 interview questions (Q1–Q7).
-    *   *Option 3*: Other / Free-text (Describe scope).
-*   **Branch Auto-Detection**: If Git branch starts with `bugfix/`, `fix/`, `hotfix/`, or `patch/`, pre-select Quick & Simple Mode.
+### Section A — Design Goal & Environment
+
+*   **Q1: Local Workspace Parent Directory**:
+    *   *Prompt*: "Where should this project's Local Workspace Root live?"
+    *   *Option 1*: Use current directory (`<cwd>`) — [state detected: conformant root / empty, ready for new root / non-conformant]
+    *   *Option 2*: Specify a different parent directory path
+    *   *Option 3*: Other / Free-text (Describe custom directory resolution)
+    *   *Check*: Enforce Baseline 2 (Clean Root Mandate via `git rev-parse --show-toplevel`).
+
+*   **Q2: Project/Feature Scope, Purpose, & Names**:
+    *   *Prompt*: "Could you define the project scope, high-level purpose, and key milestones for the planning phase documentation?"
+    *   *Options*: 1. Fullstack web application | 2. Standalone API engine / backend microservice | 3. User interface / presentation application | 4. Other / Free-text (Describe goals and milestones)
+    *   *[If Q1 found no conformant root]*: "What should the Local Workspace Root be named?" (e.g. software/system name)
+    *   *Working Scope*: "What is the working scope for this session?" (1. Initial greenfield setup [`initial`] | 2. Named feature/change | 3. Other / Free-text)
+
+*   **Q3: Git Set-up & Primary Remote Origin**:
+    *   *Prompt*: "How should `agent-workspace/` be set up?"
+    *   *Option 1*: **Adopt** — Use existing local `agent-workspace/` in place (offered only if conformant root detected)
+    *   *Option 2*: **Clone** — Clone existing remote `agent-workspace/` repository (Provide URL)
+    *   *Option 3*: **Initialize** — Initialize a fresh repository here (Optionally register remote origin URL)
+    *   *Option 4*: Other / Free-text (Describe custom Git set-up)
+    *   *Check*: Enforce Baseline 4 on adopt; defer execution to Node S5 per Baseline 3.
+
+### Section B — Supporting & Existing Documentation
+
+*   **Q4: Local Documentation Repository**:
+    *   *Prompt*: "Is there a local folder containing existing documentation for this project?"
+    *   *Option 1*: Yes (Provide folder path) | *Option 2*: No local documentation folder | *Option 3*: Other / Free-text
+    *   *Q4b (Conditional)*: "Are there any additional local documentation repositories or folders?"
+
+*   **Q5: Remote / Cloud-Based Documentation Repository**:
+    *   *Prompt*: "Is there an external documentation repository for the project (e.g., Confluence, Notion, Wiki, Google Docs)?"
+    *   *Option 1*: Confluence | *Option 2*: Notion | *Option 3*: GitHub/GitLab Wiki | *Option 4*: No external documentation | *Option 5*: Other / Free-text
+    *   *Q5b (Conditional)*: "Are there any additional remote or cloud-based documentation repositories?"
+
+*   **Q6: Further Documentation & Issue References**:
+    *   *Prompt*: "Is there any further documentation, issue, or ticket reference relevant to this session?"
+    *   *Option 1*: Yes — Link issue or ticket (Provide URL or ID, e.g. `#142`, `JIRA-1055`)
+    *   *Option 2*: No formal reference — Describe context in own words
+    *   *Option 3*: No further documentation
+    *   *Option 4*: Other / Free-text (Reference context, reproduction steps, error logs)
+
+### Section C — Agentic Environment Elements
+
+*   **Q7: Agent Guidance, Rules, Skills, MCPs, & Hooks**:
+    *   *Prompt*: "Are there any existing rules, skills, MCP tools, hooks, or sidecars you would like the agent to use during the project, and where are these sources located?"
+    *   *Option 1*: Standard Guards framework defaults (`.agents/` directory)
+    *   *Option 2*: Custom local/remote agent guiders
+    *   *Option 3*: Other / Free-text (Specify paths/URLs for MCPs, rules, skills, hooks, sidecars)
+
+### Section D — Verification & Confirmation
+
+*   **Q8: Constraints & Pre-Planning Decisions**:
+    *   *Prompt*: "Are there any major decisions, constraints, or dependencies to consider before we proceed?"
+    *   *Option 1*: No — No blockers or constraints to record
+    *   *Option 2*: Yes — There are decisions to document (Describe constraints, breaking changes, dependencies)
+    *   *Option 3*: Other / Free-text
+
+*   **Q9: Q&A Summary Verification & Open Reflection**:
+    *   Display structured summary table of answers gathered across Q1–Q8.
+    *   *Prompt*: "Reflecting on this summary, is there anything else you would like to add, adjust, or clarify for the project initialization?"
+    *   *Option 1*: Everything is accurate → Proceed to finalize `/init`
+    *   *Option 2*: Edit a specific answer (Specify question number to re-run)
+    *   *Option 3*: Other / Free-text (Add further instructions or constraints)
 
 ---
 
-## 4. Quick & Simple Mode Questions (QS1 – QS3)
+## 4. Playbook Layer Narrowing Reference
 
-*   **QS1: Aim & Reason of the Change**:
-    *   Capture summary of purpose, expected outcome, affected area, and feature/branch name (`fix-<name>` or `<feature-name>`).
-*   **QS2: Issue & Bug Reference**:
-    *   Option 1: Link issue (URL or ticket ID, e.g. `#142`, `JIRA-1055`).
-    *   Option 2: No formal ticket — describe bug/issue in own words.
-    *   Option 3: Other / Free-text (reproduction steps, error logs).
-*   **QS3: Pre-Planning Decisions & Constraints**:
-    *   Option 1: No — Proceed with initialization (no blockers).
-    *   Option 2: Yes — Document constraints, breaking changes, or dependencies.
-    *   Option 3: Other / Free-text (additional planning context).
-
----
-
-## 5. Major Feature / Greenfield Mode Questions (Q1 – Q7)
-
-*   **Q1: Project Scope, Purpose, & Milestones**: Ask high-level business goals and target release milestones. Auto-detect from `README.md` if available.
-*   **Q2: Local System Folders & Existing Locations**:
-    *   Q2.a (If folder exists): List local folder paths. Auto-detect remotes from `.git/config`.
-    *   Q2.b (If no folder exists): Select folder creation strategy (current working directory or custom path).
-*   **Q3: Remote / Cloud Documentation Repository**: Ask for external documentation links (Confluence, Notion, Wiki). If auto-scan fails, state scan failure before asking.
-*   **Q4: Additional Remote Code Repositories**: Ask for secondary/additional remote repository URLs (Q4.a URL list).
-*   **Q5: Primary Remote Git Origin & Provider**:
-    *   Capture primary remote Git repository URL (e.g. `https://github.com/org/repo.git`) and provider type (GitHub, GitLab, Bitbucket, Other).
-    *   This remote origin is configured in Node S6 and used in Node S7 to push the initial documentation and control plane commit.
-*   **Q6: Agent Guidance, Rules, Skills, MCPs, & Hooks**: Select agentic control defaults (`.agents/` standards, custom skills, hooks, or MCP servers).
-*   **Q7: Summary Verification & Reflection**: Present clean recap table of Q1–Q6 gathered choices for user verification, adjustment, or final approval.
+Per-use-case interview narrowing (e.g. bugfix vs. greenfield) is resolved by the active playbook (`playbooks/`), which determines which questions auto-resolve by detection versus require explicit user prompts. The active playbook is recorded via `playbook: <name>` metadata in `GRILL_STATUS.md`.
