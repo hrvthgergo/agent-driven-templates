@@ -18,7 +18,7 @@ To ensure the Guards Framework can be baselined and implemented consistently acr
     *   [summary.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/summary.md): Central framework sitemap and 6-stage operational lifecycle.
     *   [multi_repo_architecture.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/multi_repo_architecture.md): Hybrid Multi-Repo structure, relative symlinks, Rule of Dependency config isolation, and Hybrid Docker handling strategy.
     *   [init_action.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_action.md) (*This Document*): Core `/init` workflow state machine design, step-by-step reasoning, state storage mechanics, and guard element definitions.
-    *   [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_questions.md): Dual-mode Q&A interview schema — Q0 Mode Gate, QS1–QS3 Quick & Simple interview, Q1–Q7 Major Feature interview, baselines, and auto-detection rules.
+    *   [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_questions.md): Flat, single-path Q&A interview schema — Q1–Q9 sequential questions, unchangeable baselines, and auto-detection rules. Interview depth narrowing is a playbook-layer concern, not an `/init`-internal mode gate.
     *   [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/folder_structure.md): Standard workspace folder layout specifications.
 2.  **Environment-Specific Execution Guidelines**:
     *   [antigravity/init_implementation_map.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/antigravity/init_implementation_map.md): Specific execution guideline detailing how our agent implements these baselines within **Google Antigravity** using its native primitives (**rules, skills, workflows, hooks, sidecars, templates**) by scaffolding master guard files under `actions/init/antigravity/guards/`.
@@ -70,27 +70,23 @@ graph TD
 
 ## 3. Step-by-Step Workflow Design & Implementation Reasoning
 
-The execution of the `/init` action follows a dual-path state machine design. Node S2 acts as a **Mode Gate** that branches the interview flow into two paths — **Quick & Simple** (S2a, 3 questions) or **Major Feature** (S2b, 7 questions) — before converging back to the shared execution path (S3–S7):
+The execution of the `/init` action follows a single-path, seven-node state machine. Node S2 runs one flat interview (Q1–Q9) — there is no mode gate and no alternate branch:
 
 ```mermaid
 graph TD
-    S1[Step 1: Check Environment] --> S2{Step 2: Mode Gate — Q0}
-    S2 -->|Quick & Simple| S2a[Step 2a: Quick Interview — QS1–QS3]
-    S2 -->|Major Feature / Greenfield| S2b[Step 2b: Full Interview — Q1–Q7]
-    S2a --> S3[Step 3: Lightweight Scan & Path Verification]
-    S2b --> S3
+    S1[Step 1: Check Environment] --> S2[Step 2: Interview — Q1–Q9]
+    S2 --> S3[Step 3: Lightweight Scan & Path Verification]
     S3 --> S4[Step 4: Execution Acceptance Gate]
     S4 -->|Approved / --auto| S5[Step 5: Scaffolding Workspace & PROCESS_STATUS.md]
     S5 --> S6[Step 6: Git Hook Registration & Remote Setup]
-    S6 --> S7[Step 7: Initialization Done & Initial Push]
+    S6 --> S7[Step 7: Initialization Done, Branch Checkout & Initial Push]
 ```
 
 ### State Machine Execution & Transition Rules
-1.  **Dual-Path Execution Guarantee**: Execution is strictly linear within each path: S1 $\rightarrow$ S2 $\rightarrow$ S2a *or* S2b $\rightarrow$ S3 $\rightarrow$ S4 $\rightarrow$ S5 $\rightarrow$ S6 $\rightarrow$ S7. Once the mode is selected, the alternate branch is never entered. S3–S7 are shared by both paths.
-2.  **Mode Gate Selection Rule**: For **greenfield first-time runs** (no `agent-workspace/plans/initial/` exists), the system automatically selects **Major Feature / Greenfield Mode** and skips Q0. For **already initialized workspaces**, the Mode Gate (Q0) is always presented.
-3.  **Gate Validation Before Transition**: A step MUST complete its verification assertions before transitioning state to the next node. If any step fails (e.g. S1 filesystem permission denied, S4 User Rejection), execution halts immediately with a diagnostic report.
-4.  **Resume & Audit State**: If execution is interrupted, the state machine reads `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` and `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` to resume from the last completed node without re-prompting previously answered questions.
-5.  **Action Context Notification Law (Combined Multi-Layer Strategy)**: Every turn during `/init` MUST open with a 1-line response banner quote (`> 📍 **Active Workflow**: /init | **Scope**: <branch> | **Node**: <Node_ID>`), print a stylized transition box when entering new nodes, and maintain header metadata in `PROCESS_STATUS.md` and `GRILL_STATUS.md`.
+1.  **Single-Path Execution Guarantee**: Execution is strictly linear: S1 $\rightarrow$ S2 $\rightarrow$ S3 $\rightarrow$ S4 $\rightarrow$ S5 $\rightarrow$ S6 $\rightarrow$ S7. Every `/init` invocation walks the same nodes in the same order; nothing forks. Which of Q1–Q9 auto-resolve by detection versus require an answer is narrowed by the active playbook, not by `/init`'s own state machine — see [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_questions.md) §5.
+2.  **Gate Validation Before Transition**: A step MUST complete its verification assertions before transitioning state to the next node. If any step fails (e.g. S1 filesystem permission denied, S4 User Rejection, Baseline 2 Clean Root Mandate violation at Q1), execution halts immediately with a diagnostic report.
+3.  **Resume & Audit State**: If execution is interrupted, the state machine reads `agent-workspace/plans/<scope_name>/GRILL_STATUS.md` and `agent-workspace/plans/<scope_name>/PROCESS_STATUS.md` to resume from the last completed node without re-prompting previously answered questions.
+4.  **Action Context Notification Law (Combined Multi-Layer Strategy)**: Every turn during `/init` MUST open with a 1-line response banner quote (`> 📍 **Active Workflow**: /init | **Scope**: <branch> | **Node**: <Node_ID>`), print a stylized transition box when entering new nodes, and maintain header metadata in `PROCESS_STATUS.md` and `GRILL_STATUS.md`.
 
 ---
 
@@ -107,50 +103,19 @@ graph TD
 
 ---
 
-#### Step 2: Mode Gate (Node S2)
-*   **Description**: Determines the scope and magnitude of the initialization to select the appropriate interview path. For greenfield first-time runs (no `agent-workspace/plans/initial/` exists), this node automatically selects **Major Feature / Greenfield Mode** and transitions to S2b. For already initialized workspaces, it presents Q0 to the user.
+#### Step 2: Interview (Node S2)
+*   **Description**: Runs the flat, sequential Q1–Q9 interview defined in [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_questions.md) across the target **Agentic Environment** and **Folder-Based Control Plane**. Every `/init` invocation runs the same nine questions in the same order; there is no mode selection inside this node.
 *   **Architectural & Implementation Reasoning**:
-    *   *Why a Mode Gate?*: A single `/init` workflow must serve both major architectural setups and minor bug fixes. Forcing users through multiple questions for a button-placement fix wastes time and erodes trust. The Mode Gate ensures the interview depth matches the task scope.
-    *   *Greenfield Auto-Selection*: First-time runs have no existing stack to inherit, so Q0 is skipped and the full interview is mandatory.
-    *   *Branch Name Auto-Detection*: If the current Git branch starts with `bugfix/`, `fix/`, `hotfix/`, or `patch/`, Quick & Simple Mode is pre-selected (user can override).
-*   **State & Storage Processing**:
-    *   Records selected mode into `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` header metadata (`mode: quick_simple | major_feature`).
-*   **Guard Elements Implementing S2**:
-    *   **Action Playbook Guard**: Executed by `workflows/init.md` (Node S2 mode gate logic).
-
----
-
-#### Step 2a: Quick & Simple Interview (Node S2a) — *Quick & Simple Mode Only*
-*   **Description**: Runs a focused 3-question interview (QS1–QS3) designed for bug fixes and minor changes. Inherits the existing remote origin, agentic rules, and workspace structure from `agent-workspace/plans/initial/GRILL_STATUS.md`.
-*   **Architectural & Implementation Reasoning**:
-    *   *Inheritance-First Design*: Quick & Simple Mode assumes the workspace was already fully initialized during a prior greenfield run. All remote repository settings and agentic configurations are inherited from the initial `GRILL_STATUS.md` — no need to re-ask.
-    *   *3-Question Focus*:
-        *   **QS1 (Aim & Reason)**: Captures purpose, expected outcome, affected area, and feature/branch name.
-        *   **QS2 (Issue & Bug Reference)**: Links to a ticket/issue or captures a bug description.
-        *   **QS3 (Pre-Planning Decisions)**: Final gate for constraints, breaking changes, or dependencies that must be flagged before planning begins.
-    *   *Neutral Choice & Free-Text Law*: Same neutral prompting rules as the full interview — no `[Recommended]` labels, mandatory free-text option on every prompt.
-*   **State & Storage Processing**:
-    *   Records QS1–QS3 answers into `agent-workspace/plans/<feature_name>/GRILL_STATUS.md` as an immutable audit log.
-    *   Inherits baseline configuration from `agent-workspace/plans/initial/GRILL_STATUS.md` into the new feature's `GRILL_STATUS.md`.
-    *   Creates `agent-workspace/plans/<feature_name>/phase-1-summary.md` with aim, issue reference, and decisions.
-*   **Guard Elements Implementing S2a**:
-    *   **Rule Guard**: Governed by `rules/init-grill.md` (Neutral prompts, QS1–QS3 sequence, inheritance rules).
-    *   **State Engine**: Governed by `grill_engine.md` (Managing `agent-workspace/plans/<feature_name>/GRILL_STATUS.md`).
-
----
-
-#### Step 2b: Major Feature / Greenfield Interview (Node S2b) — *Major Feature Mode Only*
-*   **Description**: Runs the focused 7-question interview (Q1–Q7) across the target **Agentic Environment** and **Folder-Based Control Plane**.
-*   **Architectural & Implementation Reasoning**:
-    *   *Unchangeable Baseline (Pure Control Plane)*: Enforces the **Standard Guards Control Plane Layout** (`agent-workspace/`, `.agents/`, `plans/`, `docs/`, `src/`) without asking structural layout choices.
+    *   *Why No Mode Gate?*: Interview depth (which of Q1–Q9 are asked versus auto-resolved by detection) is a per-use-case concern, and use cases are the responsibility of the playbook layer (`playbooks/`), not of `/init`. Keeping `/init` single-path means its state machine, its audit log shape, and its guard elements never diverge across use cases — only the *narrowing* applied on top of them does.
+    *   *Unchangeable Baseline (Pure Control Plane)*: Enforces the **Standard Guards Control Plane Layout** (`agent-workspace/`, `.agents/`, `plans/`, `docs/`, `src/`) without asking structural layout choices, and never asks about `codebase-*` (Baseline 1 in `init_questions.md`).
     *   *Neutral Choice & Free-Text Law*: All options are presented neutrally without `[Recommended]` labels. Every multiple-choice prompt includes a mandatory final free-text choice (`Other / Free-text (...)`).
-    *   *Sequential Question Order*: Executes Q1 (Project Scope & Goals), Q2 (Local System Folders & Locations), Q3 (Cloud Docs), Q4 (Additional Remotes), Q5 (Primary Remote Git Origin & Provider), Q6 (Agent Guiders & MCPs), and Q7 (Summary Verification & Reflection).
+    *   *Sequential Question Order*: Executes Q1 (Local Workspace Parent Directory), Q2 (Scope, Purpose & Names), Q3 (Git Set-up & Primary Remote Origin), Q4/Q4b (Local Documentation), Q5/Q5b (Remote Documentation), Q6 (Further Documentation & Issue References), Q7 (Agent Guiders & MCPs), Q8 (Constraints & Pre-Planning Decisions), and Q9 (Summary Verification & Reflection).
 *   **State & Storage Processing**:
-    *   **Persistent Q&A Audit Log (`GRILL_STATUS.md`)**: As questions are answered, the agent records all prompts, options, and user inputs into `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` (e.g., `agent-workspace/plans/initial/GRILL_STATUS.md` or `agent-workspace/plans/<feature_name>/GRILL_STATUS.md`). This file is preserved permanently alongside `PROCESS_STATUS.md` as an immutable audit log.
-    *   **Q7 Reflection & Modification**: In Q7, the agent formats a clean recap table of all gathered Q1–Q6 answers. The user can choose to confirm, modify any specific answer by re-running its prompt, or add open-ended notes.
-*   **Guard Elements Implementing S2b**:
-    *   **Rule Guard**: Governed by `rules/init-grill.md` (Neutral prompts, Baseline 1, Q1–Q7 sequence).
-    *   **State Engine**: Governed by `grill_engine.md` (Managing `agent-workspace/plans/<branch_name>/GRILL_STATUS.md` state machine).
+    *   **Persistent Q&A Audit Log (`GRILL_STATUS.md`)**: As questions are answered, the agent records all prompts, options, and user inputs into `agent-workspace/plans/<scope_name>/GRILL_STATUS.md` (e.g., `agent-workspace/plans/initial/GRILL_STATUS.md` or `agent-workspace/plans/<feature_name>/GRILL_STATUS.md`). This file is preserved permanently alongside `PROCESS_STATUS.md` as an immutable audit log.
+    *   **Q9 Reflection & Modification**: In Q9, the agent formats a clean recap table of all gathered Q1–Q8 answers. The user can choose to confirm, modify any specific answer by re-running its prompt, or add open-ended notes.
+*   **Guard Elements Implementing S2**:
+    *   **Rule Guard**: Governed by `rules/init-grill.md` (Neutral prompts, Baselines 1–4, Q1–Q9 sequence).
+    *   **State Engine**: Governed by `grill_engine.md` (Managing `agent-workspace/plans/<scope_name>/GRILL_STATUS.md` state machine).
 
 ---
 
@@ -190,8 +155,9 @@ graph TD
     *   *Pure Control Plane Focus*:
         *   `/init` scaffolds strictly `agent-workspace/`. It does **not** create `codebase-*/` sub-repositories, Dockerfiles, or initial symlinks. Software layers and `src/` symlinks are created when layers are defined in `/plan` (greenfield) or linked during `/process` (brownfield).
     *   *Process Guard Initialization*: Deploys `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` containing **Block 1 (Action Execution Matrix)** with 6-phase planning sub-rows (3.1 to 3.6), and **Block 2 (Datestamped Daily History)** bound to the active branch (e.g. `initial` or `feature/<feature_name>`).
+    *   *Git Set-up Execution (Baseline 3)*: The Git resolution decided at Q3 is executed here, not during the interview. If Q3 resolved to **clone**, `git clone <origin_url> agent-workspace/` runs now into the resolved Local Workspace Root. If Q3 resolved to **initialize**, `git init` runs on `agent-workspace/` (with `git remote add origin <url>` if a URL was supplied). If Q3 resolved to **adopt**, no Git mutation occurs here — the existing repository is used in place.
 *   **State & Storage Processing**:
-    *   Creates directory tree, provisions `.gitkeep` files in every created folder node, creates `agent-workspace/plans/<branch_name>/` subfolder, and deploys starter templates `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md` into `agent-workspace/plans/<branch_name>/`. Fills metadata gathered from Q1–Q7.
+    *   Creates directory tree, provisions `.gitkeep` files in every created folder node, creates `agent-workspace/plans/<branch_name>/` subfolder, and deploys starter templates `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md` into `agent-workspace/plans/<branch_name>/`. Fills metadata gathered from Q1–Q9. Executes the Q3 Git resolution (clone / init / adopt) per Baseline 3.
 *   **Guard Elements Implementing S5**:
     *   **Action Skill**: Executed by `skills/init-scaffolder/SKILL.md` (Directory scaffolding, `.gitkeep` provisioning).
     *   **Templates**: Deploys `templates/PROCESS_STATUS.md` and `templates/phase-1-summary.md`.
@@ -199,7 +165,7 @@ graph TD
 ---
 
 #### Step 6: Git Hook Registration & Remote Origin Setup (Node S6)
-*   **Description**: Configures Git repository context, sets up the primary remote origin URL (`git remote add origin <url>`) on GitHub/GitLab/Bitbucket based on Q5, and installs the `pre-commit-plan-validator.sh` safety hook into `.git/hooks/pre-commit`.
+*   **Description**: Configures Git repository context, sets up the primary remote origin URL (`git remote add origin <url>`) on GitHub/GitLab/Bitbucket based on Q3, and installs the `pre-commit-plan-validator.sh` safety hook into `.git/hooks/pre-commit`.
 *   **Architectural & Implementation Reasoning**:
     *   *Remote Origin Setup*: Initializes Git on `agent-workspace/` and registers the primary remote origin URL to ensure the repository can synchronize with remote hosting.
     *   *Why Safety Interception?*: To guarantee process compliance, code changes MUST NOT be committed if `PROCESS_STATUS.md` or required `agent-workspace/plans/` status sheets are missing or corrupted.
@@ -215,6 +181,7 @@ graph TD
 *   **Architectural & Implementation Reasoning**:
     *   *Immediate Remote Synchronization*: Pushing the initial documentation and agent control plane to the remote origin immediately ensures that team members and CI/CD pipelines have visibility of the newly initialized project governance from day one.
     *   *Operational Transition*: Formally marks `/init` completed and directs the user to the next logical action: `/process` (for legacy codebase discovery and restructuring) or `/plan` (for feature and architecture blueprinting).
+    *   *Exit Assertion — Branch Checkout Guarantee*: `/init` MUST NOT be considered complete until the working branch is created and checked out on `agent-workspace/` (`initial` for greenfield, `feature/<name>` or `bugfix/<name>` per the branch-origination rules in §4). This is asserted explicitly at S7, not merely implied by earlier steps, so that a failure to check out the correct branch halts completion rather than silently leaving the workspace on the wrong branch.
 *   **State & Storage Processing**:
     *   Updates `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` Block 1 and appends `[YYYY-MM-DD] /init workflow completed` log entry to Block 2.
     *   Executes `git add .agents/ plans/ docs/ src/`, `git commit -m "chore(init): bootstrap agent-workspace control plane and initial documentation"`, and `git push -u origin <branch_name>` (if remote origin is configured).

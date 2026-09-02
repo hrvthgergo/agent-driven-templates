@@ -82,7 +82,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 
 ### Q2: Audit for Omitted Remote Sources & Submodules
 * **Target Environment**: Agentic Environment
-* **Goal**: Discover any remote code origins, Git submodules, external documentation URLs, or cloud repositories linked to the legacy codebase that were omitted or forgotten during `/init`.
+* **Goal**: Discover any remote code origins, Git submodules, external documentation URLs, or cloud repositories linked to the legacy codebase. `codebase-*` remotes and submodules are deliberately out of scope for `/init` (Pure Control Plane Scope baseline — see [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_questions.md) §1) and are discovered here for the first time, not re-checked after being missed.
 * **Auto-Detection Scanning Rule**:
   * Inspect `.git/config` and `.gitmodules` inside all linked legacy folder paths (`git remote -v`, `git submodule status`).
   * Scan `README.md` and documentation files across linked folders for external URLs (Confluence, Notion, Wiki, remote Git hosts).
@@ -92,7 +92,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > *Detected Remotes & Links:*
   > * *[List of auto-detected Git remotes, submodules, and documentation URLs, if any]*
   >
-  > **Are there any additional remote code repositories, Git submodules, or external documentation sources connected to this project that were forgotten or omitted during `/init`?**
+  > **Are there any additional remote code repositories, Git submodules, or external documentation sources connected to this project?**
   > 1. No additional remote sources (Use detected links only)
   > 2. Add remote Git code repository URL(s)
   > 3. Add external documentation URL(s) (Notion, Confluence, Wiki, Google Drive)
@@ -216,3 +216,30 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
   > 3. Skip test discovery (no existing coverage, or greenfield feature)
   > 4. Other / Free-text (Describe custom coverage discovery scope)
 * **Boundary**: Legacy tests are **read and catalogued only**. `/process` never modifies, relocates, refactors, or executes them.
+
+---
+
+## 4. Sync-Scoped Prompt (`--sync`)
+
+**Q1–Q7 and Q-COV above do NOT run under `--sync`.** `--sync` is a separate short path off Node S0 (see [process_action.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/process/process_action.md) §4, Node SY) that bypasses the legacy-ingestion interview entirely. It has exactly one prompt, asked only in interactive invocation.
+
+### QY: Sync Target Selection
+* **Goal**: Resolve which repository (or repositories) this invocation of `--sync` targets.
+* **Precondition**: Asked **only** when `/process --sync` is invoked with no `<repo>` argument. Supplying `<repo>` (or `--all`) resolves this silently and skips the prompt — including when `--sync` is invoked non-interactively as a playbook precondition.
+* **Auto-Detection Scanning Rule**:
+  * Live-scan Local Workspace Root children and legacy symlink targets under `agent-workspace/src/<layer>` (per `process_action.md` §2.1).
+  * For each discovered repository, fetch and compute its state (`aligned` | `ahead` | `behind` | `diverged` | `no-remote`) and working-tree cleanliness.
+* **Reframed Grill Prompt**:
+  > **`<n>` repositories discovered. Select a sync target:**
+  >
+  > | Repo | Ownership | State | Working Tree |
+  > | :--- | :--- | :--- | :--- |
+  > | `agent-workspace` | Framework-owned | `<state>` | `<clean \| dirty>` |
+  > | `codebase-<layer>` | Project-owned | `<state>` | `<clean \| dirty>` |
+  > | `<legacy-folder>` | Foreign / read-only | `<state>` | `<clean \| dirty>` |
+  >
+  > 1. Sync a specific repository (Specify name from the table above)
+  > 2. Sync all discovered repositories in sequence
+  > 3. Abort — no sync
+  > 4. Other / Free-text (Describe custom sync scope)
+* **Resulting Action**: Applies the ownership-classed fetch behavior defined in `process_action.md` §2.3 to the selected target(s), records derived-artifact staleness (§2.4) into `PROCESS_STATUS.md`, and terminates with the gate outcome defined in §2.5. No Q1–Q7 or Q-COV question is presented at any point in this path.

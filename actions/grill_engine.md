@@ -32,7 +32,7 @@ The Grill Engine operates as a gatekeeper at the start of any workflow step. Ins
 
 ### A. Question Schemas (`.agents/rules/questions/`)
 Each workflow step has a predefined set of questions stored as Markdown or JSON templates:
-- [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_questions.md): Project description, stack choices, container needs, and remote Git settings.
+- [init_questions.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_questions.md): Flat Q1–Q9 interview — workspace directory resolution, project/feature scope, Git set-up, local/remote documentation, agent guiders, and pre-planning constraints.
 - `plan_phase_2_questions.md`: UI colors, fonts, layout boundaries.
 - `plan_phase_3_questions.md`: DB types, data flow endpoints, third-party APIs.
 - `qualify_questions.md`: Environment target, tier selection, gate-failure routing, gap proposal review.
@@ -59,12 +59,14 @@ Provides the agent with the guidelines for running the Q&A:
 
 ## 3. Workflow-Specific Question Examples
 
-### 1. In `/init` (Project Bootstrapping)
-To build the foundation of the project, `/init` grills the user on:
-1. **Core Aim**: *"What is the primary goal of this application?"*
-2. **Interface Choice**: *"Will this be a Web App, CLI, API service, or library?"*
-3. **Tech Stack**: *"Which programming languages and frameworks should we initialize?"*
-4. **Docker Base**: *"Should the development environment be built on a standard Python/Node base image, or do you have specific image needs?"*
+### 1. In `/init` (Workspace Bootstrapping)
+To build the foundation of the workspace, `/init` grills the user on a single flat Q1–Q9 sequence — no mode gate, no forked question set:
+1. **Workspace Directory**: *"Where should this project's Local Workspace Root live?"* (Q1)
+2. **Scope & Names**: *"What is the project/feature scope, and what should the workspace and working scope be named?"* (Q2)
+3. **Git Set-up**: *"Should `agent-workspace/` be adopted in place, cloned from a remote, or initialized fresh?"* (Q3)
+4. **Constraints**: *"Are there any decisions, constraints, or dependencies to flag before proceeding?"* (Q8)
+
+Stack choices, container needs, and software-layer scope are explicitly out of `/init`'s Pure Control Plane Scope baseline — those are decided in `/plan` and provisioned by `/implement` or `/process`. Narrowing which questions are asked versus auto-resolved for a given use case (bugfix, hotfix, greenfield, legacy) is a `playbooks/` concern, not something `/init` decides internally.
 
 ### 2. In `/plan` (Blueprint Creation)
 To populate the 5 planning phases, `/plan` runs mini-grill sessions:

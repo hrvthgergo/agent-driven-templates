@@ -1,6 +1,6 @@
 # Architectural Summary: Hybrid Multi-Repo Code & Config Strategy
 
-This document summarizes our transition to a hybrid multi-repo workspace structure. It outlines how we isolate our frontend and backend repositories to maintain clean development boundaries while preserving a unified orchestration workspace for our Antigravity agents.
+This document summarizes our transition to a hybrid multi-repo workspace structure. It outlines how we isolate our frontend and backend repositories to maintain clean development boundaries while preserving a unified orchestration workspace for our Antigravity agents. See [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/folder_structure.md) for the definition of the `[Local Workspace Root]` container this document builds on — it is a plain directory, never a Git repository itself.
 
 ---
 
@@ -22,7 +22,7 @@ On local development environments (both macOS and Windows), symbolic links are p
 
 ### Git & GitHub Remote Origin Setup (`/init` & `/process` Behavior)
 
-During the `/init` action, Git is initialized for `agent-workspace/` and linked to the primary remote Git origin based on Q5 (e.g. `https://github.com/org/my-project-workspace.git`), and the initial documentation is immediately pushed.
+During the `/init` action, Git is initialized for `agent-workspace/` and linked to the primary remote Git origin based on Q3 (e.g. `https://github.com/org/my-project-workspace.git`), and the initial documentation is immediately pushed.
 
 When software layers are subsequently planned in `/plan` or discovered in `/process`, repositories follow:
 
@@ -38,8 +38,7 @@ When software layers are subsequently planned in `/plan` or discovered in `/proc
    - The `/process` action registers relative symbolic links under `agent-workspace/src/<layer>` pointing directly to the existing codebase directories (e.g. `agent-workspace/src/engine` $\rightarrow$ `../../legacy-engine/src/`).
    - `agent-workspace/` tracks the symlinks, enabling unified agent governance, code graphs, and planning across pre-existing repositories without code copying.
 
-3. **Option C: Umbrella Workspace Setup (Single GitHub Repository)**:
-   - If a single repository is used, one root `.git` repository at `[Local Workspace Root]` encompasses all subfolders (`agent-workspace/`, `codebase-devops/`, `codebase-qualify/`, `codebase-layout/`, `codebase-engine/`) under a single GitHub remote origin URL.
+*Note: An earlier revision of this document described a third "Umbrella Workspace Setup" option, where a single root `.git` repository at `[Local Workspace Root]` would encompass every subfolder. That option is retired — the Local Workspace Root is never itself a Git repository (see [folder_structure.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/folder_structure.md) Clean Root Mandate). Only Options A and B are valid topologies.*
 
 ---
 

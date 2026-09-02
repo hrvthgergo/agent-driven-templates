@@ -240,8 +240,8 @@ The following tables provide the authoritative catalogue of all six fundamental 
 | `/process --docs-only` | **Documentation Extraction Mode** | Extracts documentation and synthesizes phase blueprints without modifying workspace symlinks or moving files. |
 | `/process --code-graph` | **By-Request Code Graph Mode** | Parses legacy source code and generates modular `agent-workspace/src/<layer>/code_graph/` subfolders with Version Stamp Headers. |
 | `/process --docs` | **By-Request Documentation Mode** | Promotes non-code legacy documentation from `resource/` into global `agent-workspace/docs/` with Version Stamp Headers. |
-| `/process --full-sync` | **Full Synchronization Mode** | Executes core integration, Code Graph generation, and system documentation update in one pass. |
-| `/process --sync` (or `--pull`) | **Remote Synchronization Mode** | Securely pulls remote coworker commits, identifies diffs, and dynamically re-aligns local Code Graphs and Phase Blueprints. |
+| `/process --full-sync` | **Full Integration Mode** | Executes core integration, Code Graph generation, and system documentation update in one pass. Unrelated to Git remotes — see `--sync` below. |
+| `/process --sync [<repo>]` | **Remote Synchronization Mode** | Live-scans every repository in the workspace and fetches. Behavior splits by ownership: `agent-workspace` fast-forwards only if clean and halts on divergence (no override); every `codebase-*` or legacy repository is reported on, never mutated. Reports derived-artifact staleness without regenerating. Omitting `<repo>` prompts from the scanned list. |
 
 ---
 

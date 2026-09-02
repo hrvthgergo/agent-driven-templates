@@ -92,6 +92,15 @@ This document defines the generic directory layout scaffolded, mapped, and enfor
     └── tests/                   # Meta-tests for the qualification infrastructure itself
 ```
 
+### The Local Workspace Root
+
+The `[Local Workspace Root]` is the top-level container directory of a Guards project. It is composed by `/init` as `<parent_directory>/<local_workspace_root_name>/` and governed by four rules:
+
+1. **It is a container, not a repository.** The Local Workspace Root is a plain directory and MUST NOT be a Git repository itself. Version control lives one level down: `agent-workspace/` is Repo 1 (the Control Plane), and each `codebase-*` sub-repository carries its own independent Git history and remote.
+2. **It is freely named.** No tooling depends on the root folder name. For greenfield projects the practical choice is the name of the software or system being built. The name is collected during `/init` Q2 and recorded in `phase-1-summary.md`.
+3. **Clean Root Mandate.** A new Local Workspace Root MUST NOT be created inside an existing Git working tree (verified with `git rev-parse --show-toplevel`). Nesting the root inside a foreign repository causes that repository to track `agent-workspace/` as an embedded repo and misdirects the `pre-commit-plan-validator.sh` hook to the wrong `.git` directory. This binds the **create** and **clone** paths; adopting an already-conformant root is permitted, since its `agent-workspace/` is legitimately a repository.
+4. **Conformance is name-independent.** A directory qualifies as a conformant Local Workspace Root when it contains `agent-workspace/` with the `.agents/`, `plans/`, `docs/`, `tests/`, and `src/` nodes present. This test requires no knowledge of the project name, which is what allows `/init` to resolve the working directory (Q1) before the project is named (Q2).
+
 *Note on Control Plane Separation: `agent-workspace` serves strictly as the Control Plane & Knowledge Hub (`.agents/`, `plans/`, `docs/`, `src/`). The `/init` action scaffolds `agent-workspace/` with an empty `src/` directory. Every entry point inside `agent-workspace/src/` is strictly a symbolic link pointing to an underlying `codebase-*` sub-repository (for greenfield projects) or directly to an existing legacy codebase folder (for brownfield in-place integration).*
 
 *Brownfield In-Place Integration: For brownfield projects, `/process` creates symbolic links inside `agent-workspace/src/<layer>` pointing directly to the existing codebase directories, allowing agents to navigate and orchestrate existing repositories without moving files or duplicating storage.*
