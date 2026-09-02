@@ -17,7 +17,7 @@ This document defines the test scenario, mock execution sequence, real-world leg
     4. **On-Demand Proposal Mode (`--proposal`)**: Validates that `/process --proposal` generates `agent-workspace/plans/initial/restructure-proposal.md` and pauses for confirmation, while standard `/process` applies layer symlinks directly.
     5. **By-Request Code Graph Generation (`--code-graph`)**: When `--code-graph` flag is used, scoped code graph folders are created inside `agent-workspace/src/<layer>/code_graph/` containing `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md` with Version Stamp Headers. Skipped by default without the flag.
     6. **Selective Blueprint & Status Synthesis (Node S6)**: Selectively populates relevant phase blueprints in `agent-workspace/plans/initial/` based on identified domain knowledge (filling out all 6 is optional) and updates `PROCESS_STATUS.md` Row 2.0 to `Completed`.
-    7. **Remote Synchronization (`--sync` / `--pull`)**: Validates that when invoked with `--sync` (or `--pull`), the workflow bypasses interactive Q&A interview, securely fetches and pulls remote coworker commits, and structurally updates affected local Code Graphs and Blueprints to mirror the new remote state.
+    7. **Remote Synchronization (`--sync [<repo>]`)**: Validates that when invoked with `--sync`, the workflow branches to Node SY (bypassing the legacy-ingestion interview), live-scans the workspace to prompt for target selection via QY (if `<repo>` omitted), applies ownership-classed fetch behavior (`agent-workspace` fast-forwards/halts; `codebase-*` fetches and reports), and reports derived-artifact staleness without mutating Code Graphs or Blueprints.
 
 ---
 
@@ -49,7 +49,7 @@ The test harness simulates an interactive user session responding to the sequent
 | Step | Prompt Title | Mock User Selection / Input | Asserted Output & Action |
 | :--- | :--- | :--- | :--- |
 | **Q1** | **`/init` Baseline Review** | Selected Option 1 (*Proceed with current baseline*). | Discovered legacy source folder (`ai-chronicle-hub`) confirmed. |
-| **Q2** | **Omitted Remote Sources Audit** | Selected Option 1 (*No additional remote sources*). | Remote Git origin (`https://github.com/hrvthgergo/ai-chronicle-hub.git`) acknowledged and registered. |
+| **Q2** | **Omitted Remotes Audit** | Selected Option 1 (*No additional remote sources*). | Remote Git origin (`https://github.com/hrvthgergo/ai-chronicle-hub.git`) acknowledged and registered (discovered for the first time). |
 | **Q3** | **Legacy Source & Non-Code Docs Mapping** | Selected Option 1 (*Accept proposed automatic classification*). | UI components mapped to `agent-workspace/src/layout/`, backend logic to `agent-workspace/src/engine/`, non-code docs to `agent-workspace/plans/initial/resource/`. |
 | **Q4** | **Code Graph & Blueprint Scope** | Selected Option 1 (*Full Extraction & Workspace Code Graphs*). | Selective blueprint synthesis and `agent-workspace/src/<layer>/code_graph/` subfolder generation configured. |
 | **Q-COV** | **Existing Test Coverage Discovery** | Selected Option 1 (*Catalogue all discovered suites, runners, fixtures and coverage config into resource/existing_coverage.md*). | Test assets catalogued in `agent-workspace/plans/initial/resource/existing_coverage.md` as feature reference. |
@@ -75,7 +75,7 @@ Upon completion of Node S6, the test harness executes automated verification che
 | **S6** | By-Request (`--code-graph` flag) | `agent-workspace/src/layout/code_graph/`<br/>`agent-workspace/src/engine/code_graph/` | Subfolders exist inside `src/<layer>/`. Each contains `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md` with Version Stamp Headers. |
 | **S6** | Phase Blueprints | `agent-workspace/plans/initial/phase-*.md` | Relevant phase blueprint documents populated with synthesized domain knowledge extracted from `ai-chronicle-hub` (filling out blueprints is selective/relevance-based). |
 | **S6** | Guard Process Status | `agent-workspace/plans/initial/PROCESS_STATUS.md` | Block 1 matrix contains Row 2.0 (`/process`) marked `Completed`. Block 2 daily history updated. |
-| **S6** | By-Request (`--sync` flag) | `agent-workspace/src/<layer>/code_graph/` | Bypasses interactive interview; `git pull` executed on linked origins; corresponding Code Graphs and Phase Blueprints reflect remote changes. |
+| **SY** | By-Request (`--sync [<repo>]`) | Target Repository States | Bypasses interactive interview; `git fetch` executed on target repositories. Asserts `agent-workspace` fast-forwards/halts, and `codebase-*` fetches and reports without mutation. Staleness reported. |
 
 ---
 
@@ -121,8 +121,8 @@ test -f agent-workspace/src/layout/code_graph/risk_analysis.md && echo "ASSERT P
 # 6e. Assert legacy source code integrity (100% untouched)
 md5sum -c /tmp/legacy-checksums.txt > /dev/null && echo "ASSERT PASS: Original ai-chronicle-hub repo 100% untouched"
 
-# 6f. Optionally: run with --sync flag to validate remote fetch and graph alignment
-/process --sync
-test -f agent-workspace/src/layout/code_graph/graph.md && echo "ASSERT PASS: Graph regenerated after sync"
+# 6f. Optionally: run with --sync flag to validate remote fetch and staleness reporting
+/process --sync agent-workspace
+echo "ASSERT PASS: agent-workspace fast-forwarded or halted on divergence; codebase-* reported on without mutation; Code Graph staleness flagged."
 ```
 

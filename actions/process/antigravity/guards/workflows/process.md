@@ -5,7 +5,7 @@ description: Stateful execution playbook for brownfield legacy codebase discover
 
 # Stateful Execution Playbook: `/process`
 
-This playbook governs the step-by-step execution of the `/process` action within Google Antigravity. It transitions through nodes **S0** to **S6**, enforcing prerequisite initialization checks, read-only legacy source integrity, Q&A interview gating, execution acceptance / on-demand proposal generation, in-place layer symlinking under `agent-workspace/src/<layer>`, non-code doc and test coverage staging in `agent-workspace/plans/<branch_name>/resource/`, on-demand workspace Code Graph subfolder creation (`agent-workspace/src/<layer>/code_graph/`), selective phase blueprint population, remote origin synchronization, and process status updates.
+This playbook governs the step-by-step execution of the `/process` action within Google Antigravity. It transitions through nodes **S0** to **S6** (or **SY** for remote sync), enforcing prerequisite initialization checks, read-only legacy source integrity, Q&A interview gating, execution acceptance / on-demand proposal generation, in-place layer symlinking under `agent-workspace/src/<layer>`, non-code doc and test coverage staging in `agent-workspace/plans/<branch_name>/resource/`, on-demand workspace Code Graph subfolder creation (`agent-workspace/src/<layer>/code_graph/`), selective phase blueprint population, ownership-classed remote origin synchronization, and process status updates.
 
 ---
 
@@ -20,8 +20,8 @@ The `/process` action accepts the following CLI commands and flags:
 - `/process --docs-only`: Extracts documentation, stages non-code docs in `resource/`, and synthesizes phase blueprints without creating workspace layer symlinks.
 - `/process --code-graph`: By-Request Code Graph Mode. Parses legacy code and generates modular `agent-workspace/src/<layer>/code_graph/` subfolders (`graph.md`, `process_flow.md`, `data_flow.md`, `risk_analysis.md`) with Version Stamp Headers. Skipped by default to preserve token efficiency.
 - `/process --docs`: By-Request Documentation Mode. Promotes non-code legacy documentation from `resource/` into `agent-workspace/docs/` with Version Stamp Headers. Skipped by default.
-- `/process --full-sync`: Full Synchronization Mode. Executes core integration, generates Code Graphs, and updates system documentation in one pass.
-- `/process --sync` (or `--pull`): Remote Synchronization Mode. Bypasses interactive interview, fetches remote commits, analyzes diffs, resolves conflicts, and automatically updates local Code Graphs and phase blueprints.
+- `/process --full-sync`: Full Integration Mode. *(Naming note: unrelated to Git remotes — see `--sync` below.)* Executes core integration, Code Graph generation, and documentation promotion in one pass.
+- `/process --sync [<repo>]`: Remote Synchronization Mode. Live-scans every repository in the workspace (or targets `<repo>`) and fetches remote commits. Applies ownership-classed rules (`agent-workspace` fast-forwards if clean and halts on divergence; `codebase-*` and legacy folders are reported on, never mutated). Reports derived-artifact staleness without regenerating them. Omitting `<repo>` prompts from the scanned list via QY.
 
 ---
 
@@ -30,13 +30,13 @@ The `/process` action accepts the following CLI commands and flags:
 ```mermaid
 graph TD
     S0[Node S0: Prerequisite /init Execution Check] -->|Verified (Standard / Proposal)| S1[Node S1: Inspect /init Metadata & Legacy Folders]
-    S0 -->|Verified (--sync / --pull)| S6[Node S6: Remote Synchronization & Maintenance Operations]
+    S0 -->|Verified (--sync [<repo>])| SY[Node SY: Sync Target Resolution & Execution]
     S0 -->|Missing / Uncompleted| Halt[Halt & Prompt User to Run /init]
     S1 -->|Baseline Metadata Read| S2[Node S2: Audit Omitted Remotes & Submodules]
-    S2 -->|Remotes Verified| S3[Node S3: Q&A Grill Gate]
+    S2 -->|Remotes Discovered| S3[Node S3: Q&A Grill Gate]
     S3 -->|Q1-Q7 / Q-COV Verified & GRILL_STATUS.md Written| S4[Node S4: Execution Acceptance & Proposal Gate]
     S4 -->|Approved / --auto| S5[Node S5: Execute Layer Symlinks & Resource Staging]
-    S5 -->|Symlinks & Docs Staged| S6
+    S5 -->|Symlinks & Docs Staged| S6[Node S6: Selective Blueprints & Maintenance Operations]
 ```
 
 ---
@@ -50,6 +50,39 @@ graph TD
 2. **Prerequisite Enforcement Gate**:
    - If `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` is missing or Row 1.0 is marked `Not Started`, halt execution immediately with error:
      > `[ERROR] The /process action requires a pre-initialized workspace. Please run /init first (or /init --feature <name>) to bootstrap workspace boundaries and process tracking before running /process.`
+
+3. **Routing**:
+   - If invoked with `--sync [<repo>]`, transition directly to **Node SY**.
+   - Otherwise, transition to **Node S1**.
+
+---
+
+### Node SY: Sync Target Resolution & Execution (Sync-Scoped)
+
+*Activated ONLY when `/process --sync` is invoked. Bypasses Nodes S1–S6 entirely.*
+
+1. **Workspace Scan & Target Resolution**:
+   - Live-scan workspace root children and legacy symlink targets under `agent-workspace/src/<layer>`.
+   - If `<repo>` argument was provided (or `--all`), resolve silently without prompting.
+   - If `<repo>` was omitted, present prompt **QY (Sync Target Selection)** from `rules/process-grill.md`.
+
+2. **Ownership-Classed Fetch Execution**:
+   - **Framework-Owned (`agent-workspace`)**:
+     * Verify working tree is clean. If dirty, halt and refuse to sync.
+     * Attempt `git merge --ff-only origin/<branch>`.
+     * If diverged, **halt immediately** (no override permitted; requires manual resolution).
+   - **Project-Owned (`codebase-*`) & Foreign / Legacy Repositories**:
+     * Execute `git fetch` only.
+     * Report alignment state (`aligned` | `ahead` | `behind` | `diverged` | `no-remote`) and working tree status.
+     * **Strict No-Mutation Policy**: Never execute `git pull`, `git merge`, or modify project codebases.
+
+3. **Derived-Artifact Staleness Reporting**:
+   - Inspect Version Stamp Headers of existing Code Graphs (`agent-workspace/src/<layer>/code_graph/*.md`) and phase blueprints (`agent-workspace/plans/<branch_name>/phase-*.md`) against fetched commit hashes.
+   - Flag stale artifacts in status output and `PROCESS_STATUS.md`.
+   - **Strict Token Economy Policy**: Do **NOT** regenerate Code Graphs or blueprints automatically during `--sync`.
+
+4. **Status & Termination**:
+   - Record sync outcome in `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md` Block 2 and terminate.
 
 ---
 
@@ -68,6 +101,7 @@ graph TD
 
 1. **Scan Version Control Configs**:
    - Inspect `.git/config` and `.gitmodules` across linked legacy source folders for remote Git origins, submodules, and external documentation URLs.
+   - Note: `codebase-*` remotes and submodules are discovered here for the first time (as `/init` maintains a Pure Control Plane scope).
 
 2. **Audit Assembly**:
    - Assemble list of auto-detected remotes and submodules to present during Node S3.
@@ -76,16 +110,13 @@ graph TD
 
 ### Node S3: Q&A Grill Gate
 
-1. **Invocation Check**:
-   - If invoked with `--sync` (or `--pull`), bypass Nodes S1–S5 entirely and transition immediately to Node S6 (Remote Synchronization).
-
-2. **Invoke Rule Guard**:
+1. **Invoke Rule Guard**:
    - Load and execute `rules/process-grill.md`.
 
-3. **Sequential Interview Execution**:
+2. **Sequential Interview Execution**:
    - Prompt user sequentially through:
      * **Q1**: `/init` Baseline Review (linked legacy folders & project purpose).
-     * **Q2**: Omitted Remote Sources Audit (remotes, submodules, external doc URLs).
+     * **Q2**: Omitted Remote Sources Audit (remotes, submodules, external doc URLs discovered for the first time).
      * **Q3**: Legacy Source & Non-Code Docs Mapping Strategy (code to `agent-workspace/src/<layer>/`, non-code docs to `agent-workspace/plans/<branch_name>/resource/`).
      * **Q4**: Workspace Code Graphs & Blueprint Extraction Scope (selective blueprint population).
      * **Q-COV**: Existing Test Coverage Discovery (catalogue suites, runners, fixtures into `resource/existing_coverage.md`).
@@ -94,7 +125,7 @@ graph TD
      * **Q7**: Q&A Summary Verification & Reflection.
    - Enforce **Neutral Prompting Law**: List options neutrally with zero `[Recommended]` tags and a mandatory final `Other / Free-text (...)` option.
 
-4. **Permanent Audit Log Persistence**:
+3. **Permanent Audit Log Persistence**:
    - Write full transcript of questions, choices, and text inputs to `agent-workspace/plans/<branch_name>/GRILL_STATUS.md`.
 
 ---
@@ -141,11 +172,11 @@ graph TD
 2. **Optional Operations (By-Request Flags)**:
    - **Code Graph Generation (`--code-graph`)**: If requested, scaffold `agent-workspace/src/<layer>/code_graph/` subfolders containing `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md` with Version Stamp Headers.
    - **System Documentation Update (`--docs`)**: If requested, synthesize and promote non-code legacy documentation from `resource/` into `agent-workspace/docs/` with Version Stamp Headers.
-   - **Remote Synchronization (`--sync` / `--pull`)**: If requested, execute Procedure 4 in `skills/process-migrator/SKILL.md` (fetch/pull remote coworker commits, analyze structural diffs, resolve conflicts, and dynamically re-align affected local Code Graphs and phase blueprints).
 
 3. **Update Process Status**:
    - Update `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md`. Mark Row 2.0 (`/process`) as `Completed` in Block 1 and append datestamped entry in Block 2.
 
 4. **Finalize State Machine**:
    - Report completion summary and recommend next command (`/plan`).
+
 

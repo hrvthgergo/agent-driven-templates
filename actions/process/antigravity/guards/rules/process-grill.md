@@ -26,9 +26,9 @@ To ensure operational safety, non-destructive file processing, and clean workspa
 
 ---
 
-## 3. Sequential Question List (Execution Order: Q1 to Q7)
+## 3. Sequential Question List (Execution Order: Q1 to Q7 & Q-COV)
 
-The Grill Engine MUST evaluate and ask questions in the strict sequential order listed below (bypassed entirely when `/process --sync` / `--pull` is invoked):
+The Grill Engine MUST evaluate and ask questions in the strict sequential order listed below (bypassed entirely when `/process --sync` is invoked):
 
 ### Q1: `/init` Baseline Review & Verification
 > **Here is the summary of project knowledge and legacy folders collected during `/init`:**
@@ -53,7 +53,7 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 > *Detected Remotes & Links:*
 > * *[List of auto-detected Git remotes, submodules, and documentation URLs, if any]*
 >
-> **Are there any additional remote code repositories, Git submodules, or external documentation sources connected to this project that were forgotten or omitted during `/init`?**
+> **Are there any additional remote code repositories, Git submodules, or external documentation sources connected to this project?**
 > 1. No additional remote sources (Use detected links only)
 > 2. Add remote Git code repository URL(s)
 > 3. Add external documentation URL(s) (Notion, Confluence, Wiki, Google Drive)
@@ -132,3 +132,31 @@ The Grill Engine MUST evaluate and ask questions in the strict sequential order 
 > 1. Everything is accurate $\rightarrow$ Execute `/process` action
 > 2. Edit a specific answer (Specify question number to re-run)
 > 3. Other / Free-text (Add further instructions, constraints, or notes for execution)
+
+---
+
+## 4. Sync-Scoped Prompt (`--sync`)
+
+**Q1–Q7 and Q-COV above do NOT run under `--sync`.** `--sync` is a separate short path off Node S0 that bypasses the legacy-ingestion interview entirely. It has exactly one prompt, asked only in interactive invocation.
+
+### QY: Sync Target Selection
+* **Goal**: Resolve which repository (or repositories) this invocation of `--sync` targets.
+* **Precondition**: Asked **only** when `/process --sync` is invoked with no `<repo>` argument. Supplying `<repo>` (or `--all`) resolves this silently and skips the prompt.
+* **Auto-Detection Scanning Rule**:
+  * Live-scan workspace root children and legacy symlink targets under `agent-workspace/src/<layer>`.
+  * For each discovered repository, fetch and compute its state (`aligned` | `ahead` | `behind` | `diverged` | `no-remote`) and working-tree cleanliness.
+* **Reframed Grill Prompt**:
+  > **`<n>` repositories discovered. Select a sync target:**
+  >
+  > | Repo | Ownership | State | Working Tree |
+  > | :--- | :--- | :--- | :--- |
+  > | `agent-workspace` | Framework-owned | `<state>` | `<clean \| dirty>` |
+  > | `codebase-<layer>` | Project-owned | `<state>` | `<clean \| dirty>` |
+  > | `<legacy-folder>` | Foreign / read-only | `<state>` | `<clean \| dirty>` |
+  >
+  > 1. Sync a specific repository (Specify name from the table above)
+  > 2. Sync all discovered repositories in sequence
+  > 3. Abort — no sync
+  > 4. Other / Free-text (Describe custom sync scope)
+* **Resulting Action**: Applies the ownership-classed fetch behavior defined in `workflows/process.md` Node SY to the selected target(s), records derived-artifact staleness into `PROCESS_STATUS.md`, and terminates. No Q1–Q7 or Q-COV question is presented at any point in this path.
+

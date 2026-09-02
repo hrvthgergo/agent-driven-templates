@@ -55,17 +55,29 @@ When the `--code-graph` command flag is passed, Code Graphs are generated exclus
 
 ---
 
-## Procedure 4: Remote Synchronization (`--sync` / `--pull`)
+## Procedure 4: Remote Synchronization (`--sync`)
 
-When the `--sync` flag is passed, the agent MUST synchronize the workspace with remote coworker commits:
+When the `--sync` command flag is passed, the agent MUST synchronize the workspace according to ownership-classed fetch rules:
 
-1. **Remote Fetch & Pull**:
-   - Execute `git fetch` and `git pull` on the active workspace and linked legacy repository origins.
-   - If merge conflicts occur, halt and present the conflicts to the user or resolve them if trivial.
+1. **Target Discovery & Ownership Classification**:
+   - Live-scan workspace root children and legacy symlink targets under `agent-workspace/src/<layer>`.
+   - Classify discovered repositories:
+     * **Framework-Owned (`agent-workspace`)**: The active control plane repository.
+     * **Project-Owned (`codebase-*`)**: Active project layer sub-repositories.
+     * **Foreign / Read-Only**: Linked external legacy folders.
 
-2. **Structural Diff Analysis**:
-   - Analyze the `git diff` against the previous local HEAD to identify precisely which files, modules, or directories were modified by remote coworkers.
+2. **Ownership-Classed Fetch Execution**:
+   - **Framework-Owned (`agent-workspace`)**:
+     * Check working tree cleanliness (`git status --porcelain`). If dirty, halt immediately.
+     * Attempt `git merge --ff-only origin/<branch>`.
+     * If divergence is detected, **halt immediately** (no override permitted; requires manual resolution).
+   - **Project-Owned (`codebase-*`) & Foreign / Legacy Repositories**:
+     * Execute `git fetch` only against remote origins.
+     * Compute and report alignment state (`aligned` | `ahead` | `behind` | `diverged` | `no-remote`) and working-tree cleanliness.
+     * **Strict No-Mutation Policy**: NEVER execute `git pull`, `git merge`, or modify project source code during `--sync`.
 
-3. **Incremental Knowledge Alignment**:
-   - For layers affected by the diffs, selectively re-execute **Procedure 2 (Code Graph Generation)** to update `graph.md`, `process_flow.md`, `data_flow.md`, and `risk_analysis.md`.
-   - Selectively update relevant phase blueprint documents in **Procedure 3** (e.g., if a new data model was pulled, update `phase-3-data.md`).
+3. **Derived-Artifact Staleness Reporting (No Regeneration)**:
+   - Compare Version Stamp Headers in existing `agent-workspace/src/<layer>/code_graph/*.md` and `phase-*.md` documents against the newly fetched commit hashes.
+   - Output a list of stale derived artifacts in the sync summary report and update `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md`.
+   - **Strict Token Economy Policy**: Do **NOT** automatically regenerate Code Graphs or phase blueprints during `--sync`. Full regeneration is deferred to explicit maintenance commands (e.g. `/process --code-graph`).
+
