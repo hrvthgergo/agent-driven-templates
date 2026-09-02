@@ -70,6 +70,9 @@ This section logs daily process initiations, completed milestones, and key decis
 ### [YYYY-MM-DD]
 - **[HH:MM] Workflow Initiated**: `/implement`
   - Applied layout DTO mappings and engine API routes.
+- **[HH:MM] ⚠️ SYSTEM OVERRIDE**: User invoked God-Mode to bypass `/plan`.
+  - Cascading Risk: No verification scope ratified for `/qualify`.
+  - User authorization: "Confirm Override" received.
 ```
 
 ---
@@ -90,7 +93,20 @@ This section logs daily process initiations, completed milestones, and key decis
 
 ---
 
-## 4. Workflow Context Notification Law (Combined Multi-Layer Strategy)
+## 4. The God-Mode Protocol (Law of Sovereignty)
+
+Under **Law I (WHO) of the Global Governor**, the User retains absolute authority to override the framework's state machine, but the agent MUST permanently log the bypass.
+
+1. **Interception & Acknowledgment**: When a User commands a bypass of a lifecycle constraint, the agent must halt, output a Risk Assessment, and require the User to explicitly reply with "Confirm Override".
+2. **Audit Logging**: Upon receiving the override confirmation, the agent must immediately append a `⚠️ SYSTEM OVERRIDE` entry to Block 2 of `PROCESS_STATUS.md`.
+3. **Traceability Requirement**: The log entry MUST document:
+   - The exact rule or phase bypassed.
+   - The cascading risk originally assessed by the agent.
+   - The confirmation receipt of the override.
+
+---
+
+## 5. Workflow Context Notification Law (Combined Multi-Layer Strategy)
 
 To maintain continuous context awareness during active development, all workflows and status sheet tools MUST enforce the 3-Layer Workflow Context Notification Law:
 

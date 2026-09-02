@@ -92,7 +92,8 @@ This document defines the test scenarios, mock execution sequences, user input s
 | **S4** | Execution Acceptance Record | `agent-workspace/plans/<scope_name>/GRILL_STATUS.md` | Contains Execution Acceptance Summary and User Confirmation record (`Accepted`). |
 | **S5** | Control Directory & `.gitkeep` | `agent-workspace/.agents/` | Directories present: `rules/`, `workflows/`, `skills/`, `hooks/`, `sidecars/`. **`.gitkeep` present inside every control folder node**. |
 | **S5** | Pure Control Plane Scope | Filesystem | `agent-workspace/` created. **Zero `codebase-*/` sub-repositories created during `/init`**. |
-| **S6** | Pre-Commit Safety Hook | `.git/hooks/pre-commit` | File installed, executable (`chmod +x`), intercepts commits missing valid `PROCESS_STATUS.md`. |
+| **S6** | Pre-Commit Safety Hook (Law III) | `.git/hooks/pre-commit` | File installed, executable (`chmod +x`), intercepts `codebase-*` commits if `/plan` is not Done. |
+| **S6** | AGY Gatekeeper (Law IV) | `agent-workspace/.agents/hooks/agy-gatekeeper.sh` | File installed, executable (`chmod +x`), enforces `[LOCKED]` directories per active workflow. |
 | **S7** | Branch Checkout Guarantee | Git Context | Active branch matches target scope (`initial` or `feature/<scope_name>` / `bugfix/<scope_name>`). |
 | **S7** | Execution Output | Subprocess Stdout | Terminal prints completion summary report and recommended next workflow command (`/plan` or `/process`). |
 
@@ -155,6 +156,24 @@ grep -q "Q1 Local Workspace Parent Directory" agent-workspace/plans/initial/GRIL
 grep -q "Q3 Git Set-up" agent-workspace/plans/initial/GRILL_STATUS.md && echo "ASSERT PASS: Q3 recorded"
 git branch --show-current | grep -q "initial" && echo "ASSERT PASS: Branch checkout assertion passed"
 git ls-remote --heads origin initial | grep -q "refs/heads/initial" && echo "ASSERT PASS: Initial commit pushed to remote origin"
+
+# Test AGY Gatekeeper (Law IV Enforcement)
+# Simulate /plan active workflow in PROCESS_STATUS.md
+sed -i 's/- \*\*Active Workflow\*\*: \/init/- \*\*Active Workflow\*\*: \/plan/' agent-workspace/plans/initial/PROCESS_STATUS.md
+# Attempt to run a command in a restricted directory
+./agent-workspace/.agents/hooks/agy-gatekeeper.sh mkdir codebase-engine/src 2>/dev/null
+test $? -ne 0 && echo "ASSERT PASS: agy-gatekeeper.sh blocked /plan from writing to codebase-*"
+
+# Test Pre-Commit Hook (Law III Enforcement)
+mkdir -p codebase-engine/src && touch codebase-engine/src/test.txt
+git add codebase-engine/src/test.txt
+.git/hooks/pre-commit 2>/dev/null
+test $? -ne 0 && echo "ASSERT PASS: Pre-commit hook blocked codebase-* commit because /plan is not Done"
+git reset codebase-engine/src/test.txt
+rm -rf codebase-engine
+
+# Reset status and run standard validation
+sed -i 's/- \*\*Active Workflow\*\*: \/plan/- \*\*Active Workflow\*\*: \/init/' agent-workspace/plans/initial/PROCESS_STATUS.md
 .git/hooks/pre-commit && echo "ASSERT PASS: Pre-commit hook passed validation"
 ```
 

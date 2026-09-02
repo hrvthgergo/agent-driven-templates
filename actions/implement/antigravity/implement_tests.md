@@ -175,6 +175,21 @@ test $? -ne 0 && echo "PASS: /implement halted due to unratified scenario SC-use
 test ! -d /tmp/test-implement-suite/codebase-data/src && echo "PASS: Zero source code modified"
 ```
 
+#### Test 1.5: Structural Gate (Hold-and-Propose) Rejection
+```bash
+# Setup: Agent proposes a new directory structure but user inputs 'reject'
+mkdir -p /tmp/test-implement-suite/agent-workspace/plans/user-auth/implementation_maps/
+touch /tmp/test-implement-suite/agent-workspace/plans/user-auth/implementation_maps/implementation_map_v1.0.0.md
+# Assume testing framework provides mock user input for "No, do not provision" when Structural Gate is presented
+
+# Command: Run /implement with mock rejection
+cd /tmp/test-implement-suite && echo "reject" | /implement --version v1.0.0
+
+# Assertion: Must exit with error code, and no directories should be created
+test $? -ne 0 && echo "PASS: /implement halted at Structural Gate"
+test ! -d /tmp/test-implement-suite/codebase-data && echo "PASS: Zero structural modifications occurred"
+```
+
 ---
 
 ### Test Suite 2: 4-Part Step Schema, Multi-Project Code Scaffolding & Test Harness

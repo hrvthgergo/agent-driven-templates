@@ -35,6 +35,7 @@ The implementation plan directly realizes the following design blueprints and `/
 | **Primary Remote Origin Sync & Branch Checkout Guarantee** | [init_action.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_action.md) Section 3 | Workflow Primitive | `workflows/init.md` (Node S6 & S7) |
 | **Decoupled Brownfield Flow (No Restructuring)** | [init_action.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_action.md) Section 1 | Workflow & Skill Primitives | `workflows/init.md` & `skills/init-scaffolder/SKILL.md` |
 | **Pre-Commit Safety Interceptor** | [init_action.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_action.md) & `/grill-me` Q2 | Hook Primitive | `hooks/pre-commit-plan-validator.sh` |
+| **OS-Level Bash Enforcement (Law III & IV)** | [global_governor.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/global_governor.md) | Hook Primitives | `hooks/pre-commit-plan-validator.sh` & `hooks/agy-gatekeeper.sh` |
 | **Workflow Context Notification Law** | [user_guide.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/user_guide.md) | Rule, Workflow & Template Primitives | `rules/init-grill.md`, `workflows/init.md` & `templates/PROCESS_STATUS.md` |
 
 ---
@@ -159,18 +160,16 @@ The implementation plan directly realizes the following design blueprints and `/
 
 ---
 
-### Step 7: Implement Pre-Commit Validator Safety Hook (`hooks/pre-commit-plan-validator.sh`)
+### Step 7: Implement Hard-Coded Bash Gates (`hooks/*`)
 
 *   **List of Actions**:
-    1.  Create `actions/init/antigravity/guards/hooks/pre-commit-plan-validator.sh`.
-    2.  Write bash validation logic:
-        *   Check active Git branch and resolve corresponding plan path `agent-workspace/plans/<branch_name>/PROCESS_STATUS.md`.
-        *   Verify that `PROCESS_STATUS.md` contains Block 1 and Block 2 formatting.
-        *   Check that required phase blueprints exist for active in-progress workflows.
-        *   Exit with code `0` if valid; exit with code `1` and print error trace if validation fails.
+    1.  Update `actions/init/antigravity/guards/hooks/pre-commit-plan-validator.sh`.
+        *   Write bash validation logic to enforce **Law III (WHEN)**: Check `git diff --cached` for `codebase-*` files. If present, parse `PROCESS_STATUS.md` and block the commit unless `/plan` is `[x] Done` (or `[-] Not In Scope`).
+    2.  Create `actions/init/antigravity/guards/hooks/agy-gatekeeper.sh`.
+        *   Write bash validation logic to enforce **Law IV (WHERE)**: Wrap system commands (e.g. `mkdir`, `touch`). Parse `- **Active Workflow**` from `PROCESS_STATUS.md` and block write access if the command targets a `[LOCKED]` directory from the Territorial Matrix.
     3.  Add installation instructions for Step 5 (S5) (`cp` to `.git/hooks/pre-commit` and `chmod +x`).
 *   **Reasons & Design Decision Links**:
-    *   *Safety Interceptor*: Implements the pre-commit validation hook specified in [init_action.md Node S6](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_action.md) and `/grill-me` Question 2 alignment.
+    *   *Safety Interceptor*: Implements the OS-level bash enforcement of the 5-W Global Governor. Even if an LLM hallucinates or suffers prompt injection, it is physically locked out of bypassing the framework at the shell level.
 
 ---
 

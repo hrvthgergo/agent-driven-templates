@@ -43,7 +43,7 @@ The implementation plan directly realizes the following design blueprints and al
 ## 3. Implementation Plan Schema & Task Sequence
 
 ### Block 1: Target Files & Scaffolding Checklist
-- [ ] `[NEW]` `actions/implement/antigravity/guards/rules/implement-governor.md` - Core governor rule enforcing 3-leg dual grounding, artifact sync, 4-part step schema, repository provisioning authority, harness construction authority, `@scenario` tagging, and write boundaries.
+- [ ] `[NEW]` `actions/implement/antigravity/guards/rules/implement-governor.md` - Core governor rule enforcing 3-leg dual grounding, artifact sync, 4-part step schema, repository provisioning authority, structural gate (Hold-and-Propose), harness construction authority, `@scenario` tagging, and write boundaries.
 - [ ] `[NEW]` `actions/implement/antigravity/guards/rules/implement-grill.md` - Micro-architecture interview rule guard enforcing Q1–Q9 prompts (including Q4b harness ordering).
 - [ ] `[NEW]` `actions/implement/antigravity/guards/workflows/implement.md` - Stateful execution playbook governing 7-node state machine with repository provisioning in Node S4, `--tests-only` mode, and 3-leg fail-closed Node S2.
 - [ ] `[NEW]` `actions/implement/antigravity/guards/skills/implement-scaffolder/SKILL.md` - Scaffolder skill for repository provisioning (`codebase-*`, `codebase-qualify/`, `codebase-devops/`), incremental code modification, observability partitioning, harness construction in `codebase-qualify/src/`, `@scenario` tag injection, AST graphs, and doc updates.
@@ -80,7 +80,7 @@ The implementation plan directly realizes the following design blueprints and al
 2. **Prerequisites**:
    - Directory `actions/implement/antigravity/guards/rules/` initialized.
 3. **Actions Taken**:
-   - `[NEW]` `actions/implement/antigravity/guards/rules/implement-governor.md`: Define constraints prohibiting code editing without map, test plan, and ratified scenarios; enforce fail-closed return to `/plan` on precondition failure; establish sole provisioner authority over `codebase-*`, `codebase-qualify/`, and `codebase-devops/` applying the skeleton contract; mandate `@scenario SC-<feature-slug>-<nnn>` tag inside test declaration blocks in `codebase-qualify/src/`; partition observability artifacts (instrumentation in `codebase-<layer>/`, monitoring infra in `codebase-devops/`); enforce strict harness write boundaries (no scenario authorship or verdict rendering).
+   - `[NEW]` `actions/implement/antigravity/guards/rules/implement-governor.md`: Define constraints prohibiting code editing without map, test plan, and ratified scenarios; enforce fail-closed return to `/plan` on precondition failure; implement the Structural Gate (Hold-and-Propose) requiring visual trees and user ratification before provisioning directories; establish sole provisioner authority over `codebase-*`, `codebase-qualify/`, and `codebase-devops/` applying the skeleton contract; mandate `@scenario SC-<feature-slug>-<nnn>` tag inside test declaration blocks in `codebase-qualify/src/`; partition observability artifacts (instrumentation in `codebase-<layer>/`, monitoring infra in `codebase-devops/`); enforce strict harness write boundaries (no scenario authorship or verdict rendering).
 4. **Verification Fulfilled**:
    - Antigravity rule syntax and frontmatter validated.
 
@@ -134,6 +134,7 @@ Automated and manual verification procedures defined in [implement_tests.md](fil
 ### Block 5: Acceptance Criteria & Consent Gate
 - All 7 guard files scaffolded adhering to Antigravity primitive standards.
 - Rejection tests assert 3-leg dual grounding before code modification (map, test plan, ratified scenarios).
+- Rejection tests assert Structural Gate (Hold-and-Propose) blocks directory creation without user ratification.
 - Repository provisioning authority over `codebase-<layer>/`, `codebase-qualify/`, and `codebase-devops/` verified.
 - Test harness construction in `codebase-qualify/src/` enforces `@scenario SC-<feature-slug>-<nnn>` tag syntax.
 - `/implement --tests-only` mode verified for red-first harness building.
