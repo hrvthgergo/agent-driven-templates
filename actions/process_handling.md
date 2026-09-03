@@ -90,6 +90,9 @@ This section logs daily process initiations, completed milestones, and key decis
 3. **Immutability of Closed Logs**: Past daily log entries in Block 2 must never be modified or overwritten; new events are strictly appended under the current date header.
 4. **Brownfield Discovery Scope**: The `/process` workflow is responsible for discovering and cataloguing existing Docker configurations, tech stacks, programming languages, CI/CD pipelines, cloud infrastructure, **and existing test assets** in brownfield projects. These discoveries inform `/plan` Phase 6 (Operations) and Phase 5 (Verification Scope) decisions.
 5. **Existing Coverage Catalogue**: Test-asset discovery is not optional context. Because `phase-5-test.md` is a **delta against coverage that already exists**, `/plan` cannot author a correct verification scope without knowing what the legacy codebase already proves. `/process` therefore catalogues existing suites, fixtures, and runners into `agent-workspace/plans/<feature-name>/resource/existing_coverage.md`.
+6. **Deterministic Synchronization & No-Status-No-Commit**:
+   - Status transitions in Block 1 and event logging in Block 2 must be executed via the deterministic synchronization utility (`./global/antigravity/guards/scripts/sync-process-status.sh`), eliminating manual markdown formatting errors.
+   - The repository pre-commit hook enforces that any commit containing operational work (blueprints, tests, code) MUST also stage `PROCESS_STATUS.md`. Commits without status synchronization are rejected fail-closed.
 
 ---
 

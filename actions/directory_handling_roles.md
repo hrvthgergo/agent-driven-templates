@@ -1,6 +1,6 @@
 # Directory Handling Roles & Folder Authority Map
 
-This document defines the strict physical boundaries for each action in the **Guards Framework**. Under **Law IV (WHERE) of the Global Governor**, this matrix is not a suggestion—it is a mandatory access control list. An active action is mathematically locked to the directory jurisdictions defined below.
+This document defines the strict physical boundaries for each action in the **Guards Framework**. Under [Law IV (WHERE) of the Global Governor](../global/global_governor.md#4-where-territorial-directory-locks), this matrix is not a suggestion—it is a mandatory access control list. An active action is mathematically locked to the directory jurisdictions defined below.
 
 ### Legend
 * **[C] (Create)**: Bootstraps the folder, establishes the skeleton, or provisions the initial tracking sheets.

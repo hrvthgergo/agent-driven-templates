@@ -35,7 +35,7 @@ The implementation plan directly realizes the following design blueprints and `/
 | **Primary Remote Origin Sync & Branch Checkout Guarantee** | [init_action.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_action.md) Section 3 | Workflow Primitive | `workflows/init.md` (Node S6 & S7) |
 | **Decoupled Brownfield Flow (No Restructuring)** | [init_action.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_action.md) Section 1 | Workflow & Skill Primitives | `workflows/init.md` & `skills/init-scaffolder/SKILL.md` |
 | **Pre-Commit Safety Interceptor** | [init_action.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/init/init_action.md) & `/grill-me` Q2 | Hook Primitive | `hooks/pre-commit-plan-validator.sh` |
-| **OS-Level Bash Enforcement (Law III & IV)** | [global_governor.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/global_governor.md) | Hook Primitives | `hooks/pre-commit-plan-validator.sh` & `hooks/agy-gatekeeper.sh` |
+| **OS-Level Bash Enforcement (Law III & IV)** | [global_governor.md](../../../global/global_governor.md) | Hook Primitives | `hooks/pre-commit-plan-validator.sh` & `hooks/agy-gatekeeper.sh` |
 | **Workflow Context Notification Law** | [user_guide.md](file:///Users/horvathgergo/Desktop/agent-driven-templates/actions/user_guide.md) | Rule, Workflow & Template Primitives | `rules/init-grill.md`, `workflows/init.md` & `templates/PROCESS_STATUS.md` |
 
 ---

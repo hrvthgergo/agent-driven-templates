@@ -38,6 +38,7 @@ If any of the three prerequisites is missing, ambiguous, or unratified (e.g., `s
 ## 3. Decision Persistence & Inner Agent Artifact Synchronization
 1. **Mandatory Document Parity**: Every single result, decision, architectural choice, trade-off rationale, edge-case clarification, or step outcome recorded in inner agent docs (e.g. Antigravity Artifacts such as `implementation_plan.md` or `walkthrough.md`) MUST be immediately written and synchronized into the corresponding version-controlled files under `agent-workspace/plans/<feature-name>/`.
 2. **Single Source of Truth**: The version-controlled files under `agent-workspace/plans/<feature-name>/` remain the sole authoritative record of truth for the codebase across Git history, developers, and future agent sessions.
+3. **Mandatory Status Synchronization**: State transitions during `/implement` (initiating workflow, completing steps, updating matrix) MUST be synchronized via `./global/antigravity/guards/scripts/sync-process-status.sh` rather than unvalidated manual table edits.
 
 ---
 

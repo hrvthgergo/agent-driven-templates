@@ -28,6 +28,26 @@ if ! grep -q "Block 1: Workflow Execution Matrix" "$STATUS_FILE"; then
     exit 1
 fi
 
+# ENFORCING LAW V: State Synchronization Gate (No-Status-No-Commit)
+# If operational work (blueprints, tests, code) is staged, PROCESS_STATUS.md MUST also be staged.
+STAGED_OPERATIONAL_FILES=$(git diff --cached --name-only | grep -E '^(codebase-|agent-workspace/plans/|agent-workspace/tests/)' | grep -v 'PROCESS_STATUS.md' || true)
+
+if [ -n "$STAGED_OPERATIONAL_FILES" ]; then
+    if ! git diff --cached --name-only | grep -q 'PROCESS_STATUS.md'; then
+        echo ""
+        echo "🚨 GLOBAL GOVERNOR VIOLATION: Law V (Traceability & State Sync) 🚨"
+        echo "You are attempting to commit operational changes (blueprints, tests, or code),"
+        echo "but 'PROCESS_STATUS.md' is NOT staged in this commit!"
+        echo ""
+        echo "Staged operational files:"
+        echo "$STAGED_OPERATIONAL_FILES"
+        echo ""
+        echo "Every operational advancement must be synchronized with the status matrix."
+        echo "Run './global/antigravity/guards/scripts/sync-process-status.sh' to update and stage the status."
+        exit 1
+    fi
+fi
+
 # ENFORCING LAW III: Process Sequencing Check
 # If any codebase-* file is staged for commit, /plan MUST be [x] Done or [-] Not In Scope.
 STAGED_CODEBASE_FILES=$(git diff --cached --name-only | grep -E '^codebase-' || true)

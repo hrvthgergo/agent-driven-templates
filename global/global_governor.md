@@ -22,6 +22,8 @@ These laws apply universally across all playbooks, workflows, and tools.
 > **Law III (WHEN):** Execution is strictly sequential; no action shall be invoked, and no code scaffolding shall occur, unless its prerequisite phases are formally verified as completed in the active `PROCESS_STATUS.md`.
 
 - **State Verification:** Every action invocation must parse the active state machine. If `/plan` is not `[x] Done` (or `[-] Not In Scope`), `/implement` is explicitly forbidden.
+- **Atomic State Synchronization:** Agents must not rely on unvalidated manual edits to state tracking documents; all transitions must be executed via validated deterministic synchronization tooling.
+- **Handoff Verification Gate:** Orchestrators (Playbooks) must mechanically assert that an action has reached `[x] Done` on disk before handing off execution to the next action.
 
 ## 4. WHERE (Territorial Directory Locks)
 > **Law IV (WHERE):** The Agent's read and write permissions are mathematically locked to the distinct directory jurisdictions defined by the active workflow in the Directory Authority Matrix.
@@ -32,4 +34,5 @@ These laws apply universally across all playbooks, workflows, and tools.
 > **Law V (WHY):** Every implemented asset must trace directly to a formally ratified architectural map and verification scope, and any executed override must be permanently logged to preserve the system's audit trail.
 
 - **Dual Grounding:** Code authored without a formalized "Why" (e.g., `implementation_map.md` and `phase-5-test.md`) must be rejected.
+- **Immutable State Traceability:** Every workflow advancement or milestone MUST append a datestamped log entry to Block 2 of `PROCESS_STATUS.md`.
 - **Risk Assessment Logging:** Whenever the User invokes a God-Mode Override, the agent MUST append a datestamped log entry to Block 2 of `PROCESS_STATUS.md` detailing the exact rule bypassed.
